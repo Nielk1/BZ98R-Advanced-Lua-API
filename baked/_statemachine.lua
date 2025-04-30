@@ -124,7 +124,7 @@ function StateMachineIter.switch(self, key)
     self.state_key = key;
 end
 
--- Creates an StateMachineIter Template with the given indentifier.
+--- Creates an StateMachineIter Template with the given indentifier.
 -- @param name Name of the StateMachineIter Template (string)
 -- @param states State function table
 function _statemachine.Create( name, states )
@@ -137,8 +137,8 @@ function _statemachine.Create( name, states )
     _statemachine.Machines[ name ] = states;
 end
 
--- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
--- @tparam string event Name of the StateMachineIter Template
+--- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
+-- @tparam string name Name of the StateMachineIter Template
 -- @tparam string state_key Initial state
 -- @tparam table init Initial data
 function _statemachine.Start( name, state_key, init )
@@ -149,8 +149,7 @@ function _statemachine.Start( name, state_key, init )
     return CreateStateMachineIter(name, -1, -1, state_key, init);
 end
 
--- Wait a set period of time on this state.
--- @tparam StateMachineIter state StateMachineIter data
+--- Wait a set period of time on this state.
 -- @tparam int calls How many calls to wait
 -- @tparam string next_state Next state when timer hits zero
 function _statemachine.SleepCalls( calls, next_state )
@@ -170,8 +169,7 @@ function _statemachine.SleepCalls( calls, next_state )
     end), {seconds, next_state}};
 end
 
--- Wait a set period of time on this state.
--- @tparam StateMachineIter state StateMachineIter data
+--- Wait a set period of time on this state.
 -- @tparam number seconds How many seconds to wait
 -- @tparam string next_state Next state when timer hits zero
 function _statemachine.SleepSeconds( seconds, next_state )

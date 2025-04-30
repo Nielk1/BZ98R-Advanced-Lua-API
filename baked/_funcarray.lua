@@ -122,7 +122,7 @@ function FuncArrayIter.next(self)
     self.state_index = self.state_index + 1;
 end
 
--- Creates an FuncArrayIter Template with the given indentifier.
+--- Creates an FuncArrayIter Template with the given indentifier.
 -- @tparam string name Name of the FuncArrayIter Template
 -- @tparam function ... State functions
 function _funcarray.Create( name, ... )
@@ -135,8 +135,8 @@ function _funcarray.Create( name, ... )
     _funcarray.Machines[ name ] = { ... };
 end
 
--- Starts an FuncArrayIter based on the FuncArrayIter Template with the given indentifier.
--- @tparam string event Name of the FuncArrayIter Template
+--- Starts an FuncArrayIter based on the FuncArrayIter Template with the given indentifier.
+-- @tparam string name Name of the FuncArrayIter Template
 -- @tparam table init Initial data
 function _funcarray.Start( name, init )
     if not isstring(name) then error("Parameter name must be a string."); end
@@ -146,8 +146,7 @@ function _funcarray.Start( name, init )
     return CreateFuncArrayIter(name, -1, -1, 1, init);
 end
 
--- Wait a set period of time on this state.
--- @tparam FuncArrayIter state FuncArrayIter data
+--- Wait a set period of time on this state.
 -- @tparam number calls How many calls to wait
 function _funcarray.SleepCalls( calls )
     if not isinteger(seconds) then error("Parameter seconds must be an integer."); end
@@ -165,8 +164,7 @@ function _funcarray.SleepCalls( calls )
     end), {seconds}};
 end
 
--- Wait a set period of time on this state.
--- @tparam FuncArrayIter state FuncArrayIter data
+--- Wait a set period of time on this state.
 -- @tparam number seconds How many seconds to wait
 function _funcarray.SleepSeconds( seconds )
     if not isnumber(seconds) then error("Parameter seconds must be a number."); end

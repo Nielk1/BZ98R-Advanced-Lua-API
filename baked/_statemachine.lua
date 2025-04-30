@@ -63,7 +63,7 @@ StateMachineIter.__index = function(table, key)
   return rawget(StateMachineIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
 end
 StateMachineIter.__newindex = function(table, key, value)
-  if key ~= "template" and key ~= "state_key" and key ~= "timer" and key ~= "target_turn" and key ~= "addonData" then
+  if key ~= "template" and key ~= "state_key" and key ~= "timer" and key ~= "target_time" and key ~= "addonData" then
     local addonData = rawget(table, "addonData");
     if addonData == nil then
       rawset(table, "addonData", {});
@@ -79,14 +79,14 @@ StateMachineIter.__type = "StateMachineIter";
 --- Create StateMachineIter
 -- @tparam string name StateMachineIter template
 -- @tparam int timer Timer's value, -1 for not set
--- @tparam int target_turn TargetTurn's value, -1 for not set
+-- @tparam int target_time TargetTurn's value, -1 for not set
 -- @tparam string state_key Current state
 -- @tparam table values Table of values embeded in the StateMachineIter
-local CreateStateMachineIter = function(name, timer, target_turn, state_key, values)
+local CreateStateMachineIter = function(name, timer, target_time, state_key, values)
   local self = setmetatable({}, StateMachineIter);
   self.template = name;
   self.timer = timer;
-  self.target_turn = target_turn;
+  self.target_time = target_time;
   self.state_key = state_key;
   
   if istable(values) then
@@ -152,39 +152,55 @@ end
 --- Wait a set period of time on this state.
 -- @tparam int calls How many calls to wait
 -- @tparam string next_state Next state when timer hits zero
-function _statemachine.SleepCalls( calls, next_state )
-    if not isinteger(seconds) then error("Parameter seconds must be an integer."); end
+-- @tparam[opt] function early_exit Boolean function to check if the state should be exited early
+-- @tparam[opt] string early_exit_state State to switch to when early_exit is true, else use next_state
+function _statemachine.SleepCalls( calls, next_state, early_exit, early_exit_state )
+    if not isinteger(calls) then error("Parameter calls must be an integer."); end
     if not isstring(next_state) then error("Parameter next_state must be a string."); end
+    if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
+    if early_exit_state ~= nil and not isstring(early_exit_state) then error("Parameter early_exit_state must be a string or nil."); end
 
     return {(function(state, ...)
-        local seconds, next_state = ...;
-        if state.timer == -1 then
+        local calls, next_state, early_exit, early_exit_state = ...;
+        if early_exit ~= nil and early_exit(state) then
+            state:switch(early_exit_state or next_state);
+            return;
+        end
+        if state.timer == nil then
             state.timer = calls;
         elseif state.timer == 0 then
             state:switch(next_state);
-            state.timer = -1;
+            state.timer = nil; -- ensure that the timer is reset
         else
             state.timer = state.timer - 1;
         end
-    end), {seconds, next_state}};
+    end), {calls, next_state, early_exit, early_exit_state}};
 end
 
 --- Wait a set period of time on this state.
 -- @tparam number seconds How many seconds to wait
 -- @tparam string next_state Next state when timer hits zero
-function _statemachine.SleepSeconds( seconds, next_state )
+-- @tparam[opt] function early_exit Boolean function to check if the state should be exited early
+-- @tparam[opt] string early_exit_state State to switch to when early_exit is true, else use next_state
+function _statemachine.SleepSeconds( seconds, next_state, early_exit, early_exit_state )
     if not isnumber(seconds) then error("Parameter seconds must be a number."); end
     if not isstring(next_state) then error("Parameter next_state must be a string."); end
+    if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
+    if early_exit_state ~= nil and not isstring(early_exit_state) then error("Parameter early_exit_state must be a string or nil."); end
 
     return {(function(state, ...)
-        local seconds, next_state = ...;
-        if state.target_turn == -1 then
-            state.target_turn = _statemachine.game_time + seconds);
-        elseif state.target_turn <= _statemachine.game_time  then
-            state:switch(next_state);
-            state.target_turn = -1;
+        local seconds, next_state, early_exit, early_exit_state = ...;
+        if early_exit ~= nil and early_exit(state) then
+            state:switch(early_exit_state or next_state);
+            return;
         end
-    end), {seconds, next_state}};
+        if state.target_time == nil then
+            state.target_time = _statemachine.game_time + seconds;
+        elseif state.target_time <= _statemachine.game_time  then
+            state:switch(next_state);
+            state.target_time = nil; -- ensure that the timer is reset
+        end
+    end), {seconds, next_state, early_exit, early_exit_state}};
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -206,30 +222,14 @@ end
 -- INTERNAL USE.
 -- @param data
 function StateMachineIter.Load(data)
-    return CreateStateMachineIter(data.template, data.timer, data.target_turn, data.state_key, data.addonData);
-end
-
---- BulkSave event function.
---
--- INTERNAL USE.
--- @return data to save in bulk
-function StateMachineIter.BulkSave()
-    return _statemachine.game_time;
+    return CreateStateMachineIter(data.template, data.timer, data.target_time, data.state_key, data.addonData);
 end
 
 --- BulkLoad event function.
 --
 -- INTERNAL USE.
--- @param data
-function StateMachineIter.BulkLoad(data)
-    _statemachine.game_time = data;
-end
-
---- BulkPostLoad event function.
---
--- INTERNAL USE.
-function StateMachineIter.BulkPostLoad()
-    
+function StateMachineIter.BulkLoad()
+    _statemachine.game_time = GetTime();
 end
 
 hook.Add("Update", "_statemachine_Update", function(dtime, ttime)

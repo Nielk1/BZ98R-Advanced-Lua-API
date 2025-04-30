@@ -61,7 +61,7 @@ FuncArrayIter.__index = function(table, key)
   return rawget(FuncArrayIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
 end
 FuncArrayIter.__newindex = function(table, key, value)
-  if key ~= "template" and key ~= "state_index" and key ~= "timer" and key ~= "target_turn" and key ~= "addonData" then
+  if key ~= "template" and key ~= "state_index" and key ~= "timer" and key ~= "target_time" and key ~= "addonData" then
     local addonData = rawget(table, "addonData");
     if addonData == nil then
       rawset(table, "addonData", {});
@@ -77,14 +77,14 @@ FuncArrayIter.__type = "FuncArrayIter";
 --- Create FuncArrayIter
 -- @tparam string name FuncArrayIter template
 -- @tparam int timer Timer's value, -1 for not set
--- @tparam int target_turn TargetTurn's value, -1 for not set
+-- @tparam int target_time TargetTurn's value, -1 for not set
 -- @tparam int state_index Current state
 -- @tparam table values Table of values embeded in the FuncArrayIter
-local CreateFuncArrayIter = function(name, timer, target_turn, state_index, values)
+local CreateFuncArrayIter = function(name, timer, target_time, state_index, values)
   local self = setmetatable({}, FuncArrayIter);
   self.template = name;
   self.timer = timer;
-  self.target_turn = target_turn;
+  self.target_time = target_time;
   self.state_index = state_index;
   
   if istable(values) then
@@ -148,36 +148,48 @@ end
 
 --- Wait a set period of time on this state.
 -- @tparam number calls How many calls to wait
-function _funcarray.SleepCalls( calls )
-    if not isinteger(seconds) then error("Parameter seconds must be an integer."); end
+-- @tparam[opt] function early_exit Boolean function to check if the state should be exited early
+function _funcarray.SleepCalls( calls, early_exit )
+    if not isinteger(calls) then error("Parameter calls must be an integer."); end
+    if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
     return {(function(state, ...)
-        local seconds = ...;
-        if state.timer == -1 then
+        local calls, early_exit = ...;
+        if early_exit ~= nil and early_exit(state) then
+            state:next();
+            return;
+        end
+        if state.timer == nil then
             state.timer = calls;
         elseif state.timer == 0 then
             state:next();
-            state.timer = -1;
+            state.timer = nil; -- ensure that the timer is reset
         else
             state.timer = state.timer - 1;
         end
-    end), {seconds}};
+    end), {calls, early_exit}};
 end
 
 --- Wait a set period of time on this state.
 -- @tparam number seconds How many seconds to wait
-function _funcarray.SleepSeconds( seconds )
+-- @tparam[opt] function early_exit Boolean function to check if the state should be exited early
+function _funcarray.SleepSeconds( seconds, early_exit )
     if not isnumber(seconds) then error("Parameter seconds must be a number."); end
+    if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
     return {(function(state, ...)
-        local seconds = ...;
-        if state.target_turn == -1 then
-            state.target_turn = _funcarray.game_time + seconds);
-        elseif state.target_turn <= _funcarray.game_time  then
+        local seconds, early_exit = ...;
+        if early_exit ~= nil and early_exit(state) then
             state:next();
-            state.target_turn = -1;
+            return;
         end
-    end), {seconds}};
+        if state.target_time == nil then
+            state.target_time = _funcarray.game_time + seconds;
+        elseif state.target_time <= _funcarray.game_time  then
+            state:next();
+            state.target_time = nil; -- ensure that the timer is reset
+        end
+    end), {seconds, early_exit}};
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -199,30 +211,14 @@ end
 -- INTERNAL USE.
 -- @param data
 function FuncArrayIter.Load(data)
-    return CreateFuncArrayIter(data.template, data.timer, data.target_turn, data.state_index, data.addonData);
-end
-
---- BulkSave event function.
---
--- INTERNAL USE.
--- @return data to save in bulk
-function FuncArrayIter.BulkSave()
-    return _funcarray.game_time;
+    return CreateFuncArrayIter(data.template, data.timer, data.target_time, data.state_index, data.addonData);
 end
 
 --- BulkLoad event function.
 --
 -- INTERNAL USE.
--- @param data
-function FuncArrayIter.BulkLoad(data)
-    _funcarray.game_time = data;
-end
-
---- BulkPostLoad event function.
---
--- INTERNAL USE.
-function FuncArrayIter.BulkPostLoad()
-
+function FuncArrayIter.BulkLoad()
+    _funcarray.game_time = GetTime();
 end
 
 hook.Add("Update", "_funcarray_Update", function(dtime, ttime)

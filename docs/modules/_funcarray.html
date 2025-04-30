@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#FuncArrayIter___Core">FuncArrayIter - Core </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><strong>_funcarray</strong></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_funcarray</code></h1>
+<p>BZ98R LUA Extended API FuncArrayIter.</p>
+<p>
+
+ Function Array and Function Array Iterator for serial event sequences across game turns.
+
+ Dependencies: <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local funcarray = require(&quot;_funcarray&quot;);
+
+funcarray.Create(&quot;TestMachine&quot;,
+    function(state)
+        print(&quot;test &quot; .. state.test1);
+        state:next();
+    end,
+    funcarray.SleepSeconds(10),
+    function(state)
+        print(&quot;test &quot; .. state.test2);
+        state:next();
+    end,
+    funcarray.SleepSeconds(15),
+    function(state)
+        print(&quot;test &quot; .. state.test3);
+        state:next();
+    end);
+
+hook.Add(&quot;InitialSetup&quot;, &quot;Custom_InitialSetup&quot;, function(turn)
+    MissionData.TestFAI = funcarray.Start(&quot;TestMachine&quot;,{test1=&apos;a&apos;,test2=&quot;b&quot;,test3=&quot;c&quot;});
+end);
+
+hook.Add(&quot;Update&quot;, &quot;Custom_Update&quot;, function(turn)
+    MissionData.TestFAI:run();
+end);
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#isfuncarrayiter">isfuncarrayiter (object)</a></td>
+	<td class="summary">Is this object an instance of FuncArrayIter?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.run">FuncArrayIter.run (self)</a></td>
+	<td class="summary">Run FuncArrayIter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.next">FuncArrayIter.next (self)</a></td>
+	<td class="summary">Next FuncArrayIter State.</td>
+	</tr>
+</table>
+<h2><a href="#FuncArrayIter___Core">FuncArrayIter - Core </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.Save">FuncArrayIter.Save (self)</a></td>
+	<td class="summary">Save event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.Load">FuncArrayIter.Load (data)</a></td>
+	<td class="summary">Load event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.BulkSave">FuncArrayIter.BulkSave ()</a></td>
+	<td class="summary">BulkSave event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.BulkLoad">FuncArrayIter.BulkLoad (data)</a></td>
+	<td class="summary">BulkLoad event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FuncArrayIter.BulkPostLoad">FuncArrayIter.BulkPostLoad ()</a></td>
+	<td class="summary">BulkPostLoad event function.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "isfuncarrayiter"></a>
+    <strong>isfuncarrayiter (object)</strong>
+    </dt>
+    <dd>
+    Is this object an instance of FuncArrayIter?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FuncArrayIter.run"></a>
+    <strong>FuncArrayIter.run (self)</strong>
+    </dt>
+    <dd>
+    Run FuncArrayIter.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">FuncArrayIter</span></span>
+         FuncArrayIter instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FuncArrayIter.next"></a>
+    <strong>FuncArrayIter.next (self)</strong>
+    </dt>
+    <dd>
+    Next FuncArrayIter State.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">FuncArrayIter</span></span>
+         FuncArrayIter instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="FuncArrayIter___Core"></a>FuncArrayIter - Core </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "FuncArrayIter.Save"></a>
+    <strong>FuncArrayIter.Save (self)</strong>
+    </dt>
+    <dd>
+    Save event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         FuncArrayIter instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ...
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FuncArrayIter.Load"></a>
+    <strong>FuncArrayIter.Load (data)</strong>
+    </dt>
+    <dd>
+    Load event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FuncArrayIter.BulkSave"></a>
+    <strong>FuncArrayIter.BulkSave ()</strong>
+    </dt>
+    <dd>
+    BulkSave event function.
+<p> INTERNAL USE.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        data to save in bulk
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FuncArrayIter.BulkLoad"></a>
+    <strong>FuncArrayIter.BulkLoad (data)</strong>
+    </dt>
+    <dd>
+    BulkLoad event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FuncArrayIter.BulkPostLoad"></a>
+    <strong>FuncArrayIter.BulkPostLoad ()</strong>
+    </dt>
+    <dd>
+    BulkPostLoad event function.
+<p> INTERNAL USE.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-04-29 21:13:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

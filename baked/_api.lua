@@ -1,0 +1,499 @@
+--- BZ98R LUA Extended API.
+--
+-- This API creates a full OOP wrapper and replacement the mission
+-- functions with an event based system for easier expansion.
+--
+-- Dependencies: @{_hook}
+-- @module _api
+-- @author John "Nielk1" Klein
+
+local debugprint = debugprint or function() end;
+local traceprint = traceprint or function() end;
+
+debugprint("_api Loading");
+
+local hook = require("_hook");
+
+--- Called when saving mission data.
+--
+-- Return multiple values to save.
+--
+-- Call method: @{_hook.CallSave|CallSave}
+-- @event Save
+-- @see _hook.AddSaveLoad
+
+--- Called when loading mission data.
+--
+-- Provide multiple Parameters to save.
+--
+-- Call method: @{_hook.CallLoad|CallLoad}
+-- @event Load
+-- @tparam ... loaded data
+-- @see _hook.AddSaveLoad
+
+--- Called when the mission starts for the first time.
+-- Use this function to perform any one-time script initialization.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event Start
+-- @see _hook.Add
+
+--- Called after any game object is created.
+-- Handle is the game object that was created.
+-- This function will get a lot of traffic so it should not do too much work.
+-- Note that many game object functions may not work properly here.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event AddObject
+-- @tparam GameObject object
+-- @see _hook.Add
+
+--- Called before a game object is deleted.
+-- Handle is the game object to be deleted.
+-- This function will get a lot of traffic so it should not do too much work.
+-- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event DeleteObject
+-- @tparam GameObject object
+-- @see _hook.Add
+
+--- Called once per tick after updating the network system and before simulating game objects.
+-- This function performs most of the mission script's game logic.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event Update
+-- @tparam float dtime
+-- @tparam float ttime
+-- @see _hook.Add
+
+--- X
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event CreatePlayer
+-- @see _hook.Add
+-- @tparam int id DPID number for this player
+-- @tparam string name name for this player
+-- @tparam int team Team number for this player
+
+--- Called when a player joins the game world.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event AddPlayer
+-- @see _hook.Add
+-- @tparam int id DPID number for this player
+-- @tparam string name name for this player
+-- @tparam int team Team number for this player
+
+--- X
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event DeletePlayer
+-- @see _hook.Add
+-- @tparam int id DPID number for this player
+-- @tparam string name name for this player
+-- @tparam int team Team number for this player
+
+--- X
+--
+-- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn}
+-- @event Command
+-- @see _hook.Add
+-- @tparam string command
+-- @tparam ... Parameters
+-- @tparam[opt] HookResult priorResult prior event handler's result
+
+--- X
+--
+-- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn}
+-- @event Receive
+-- @see _hook.Add
+-- @tparam int from
+-- @tparam string type
+-- @tparam ... data
+-- @tparam[opt] HookResult priorResult prior event handler's result
+
+
+
+-------------------------------------------------------------------------------
+-- Utility Functions
+-------------------------------------------------------------------------------
+-- @section
+
+--- Is this object a function?
+-- @param object Object in question
+-- @treturn bool
+function isfunction(object)
+  return (type(object) == "function");
+end
+
+--- Is this object a table?
+-- @param object Object in question
+-- @treturn bool
+function istable(object)
+  return (type(object) == 'table');
+end
+
+--- Is this object a string?
+-- @param object Object in question
+-- @treturn bool
+function isstring(object)
+  return (type(object) == "string");
+end
+
+--- Is this object a boolean?
+-- @param object Object in question
+-- @treturn bool
+function isboolean(object)
+  return (type(object) == "boolean");
+end
+
+--- Is this object a number?
+-- @param object Object in question
+-- @treturn bool
+function isnumber(object)
+  return (type(object) == "number");
+end
+
+--- Is this object an integer?
+-- @param object Object in question
+-- @treturn bool
+function isinteger(object)
+  if not isnumber(object) then return false end;
+  return object == math.floor(object);
+end
+
+-------------------------------------------------------------------------------
+-- Enums
+-------------------------------------------------------------------------------
+-- @section
+
+
+
+-------------------------------------------------------------------------------
+-- Custom Types
+-------------------------------------------------------------------------------
+-- @section
+
+local CustomSavableTypes = {};
+local CustomTypeMap = nil; -- maps name to ID number
+
+local _api = {};
+
+function _api.RegisterCustomSavableType(obj)
+    if obj == nil or obj.__type == nil then error("Custom type malformed, no __type"); end
+    local typeT = {};
+    if obj.Save ~= nil then
+        typeT.Save = obj.Save;
+    --else
+    --    typeT.Save = function() end
+    end
+    if obj.Load ~= nil then
+        typeT.Load = obj.Load;
+    --else
+    --    typeT.Load = function() end
+    end
+    if obj.PostLoad ~= nil then
+        typeT.PostLoad = obj.PostLoad;
+    --else
+    --    typeT.PostLoad = function() end
+    end
+    if obj.BulkSave ~= nil then
+        typeT.BulkSave = obj.BulkSave;
+    --else
+    --    typeT.BulkSave = function() end
+    end
+    if obj.BulkLoad ~= nil then
+        typeT.BulkLoad = obj.BulkLoad;
+    --else
+    --    typeT.BulkLoad = function() end
+    end
+    if obj.BulkPostLoad ~= nil then
+        typeT.BulkPostLoad = obj.BulkPostLoad;
+    --else
+    --    typeT.BulkPostLoad = function() end
+    end
+    typeT.TypeName = obj.__type;
+    CustomSavableTypes[obj.__type] = typeT;
+end
+
+function SimplifyForSave(...)
+    local output = {}; -- output array
+    local count = select ("#", ...); -- get count of params
+    for k = 1,count,1 do  -- loop params via count
+        local v = select(k,...); -- get Kth Parameter, store in v
+        if istable(v) then -- it's a table, start special logic
+            if CustomSavableTypes[v.__type] ~= nul then
+                local specialTypeTable = {};
+                local typeIndex = CustomTypeMap[v.__type];
+                debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
+                specialTypeTable["*custom_type"] = typeIndex;
+                if CustomSavableTypes[v.__type].Save ~= nil then
+                    specialTypeTable["*data"] = {CustomSavableTypes[v.__type].Save(v)};
+                end
+                table.insert(output, specialTypeTable);
+            else
+                local newTable = {};
+                for k2, v2 in pairs( v ) do 
+                    newTable[k2] = SimplifyForSave(v2);
+                end
+                table.insert(output, newTable);
+            end
+        else -- it's not a table, really simple
+            table.insert(output, v);
+        end
+    end
+    return table.unpack(output);
+end
+
+function DeSimplifyForLoad(...)
+    local output = {}; -- output array
+    local count = select ("#", ...); -- get count of params
+    for k = 1,count,1 do  -- loop params via count
+        local v = select(k,...); -- get Kth Parameter, store in v
+        if istable(v) then -- it's a table, start special logic
+            if v["*custom_type"] ~= nil then
+                local typeName = CustomTypeMap[v["*custom_type"]];
+                local typeObj = CustomSavableTypes[typeName];
+                if typeObj.Load ~= nil then
+                    if v["*data"] ~= nil then
+                        table.insert(output, typeObj.Load(table.unpack(v["*data"])));
+                    else
+                        table.insert(output, typeObj.Load());
+                    end
+                end
+            else
+                local newTable = {};
+                for k2, v2 in pairs( v ) do 
+                    newTable[k2] = DeSimplifyForLoad(v2);
+                end
+                table.insert(output, newTable);
+            end
+        else -- it's not a table, really simple
+            table.insert(output, v);
+        end
+    end
+    return table.unpack(output);
+end
+
+-------------------------------------------------------------------------------
+-- Hooks
+-------------------------------------------------------------------------------
+-- @section
+
+--- Save is called when you save a game
+-- @local
+function Save()
+    debugprint("_api::Save()");
+    CustomTypeMap = {};
+
+    debugprint("Beginning save code");
+
+    local saveData = {};
+    debugprint("Save Data Container ready");
+
+    debugprint("Saving custom types map");
+    local CustomSavableTypesCounter = 1;
+    local CustomSavableTypeTmpTable = {};
+    for k,v in pairs(CustomSavableTypes) do
+        CustomSavableTypeTmpTable[CustomSavableTypesCounter] = k;
+        CustomTypeMap[k] = CustomSavableTypesCounter;
+        debugprint("[" .. CustomSavableTypesCounter .. "] = " .. k);
+        CustomSavableTypesCounter = CustomSavableTypesCounter + 1;
+    end
+    saveData.CustomSavableTypes = CustomSavableTypeTmpTable; -- Write TmpID -> Name map
+    debugprint("Saved custom types map");
+    
+    debugprint("Saving custom types");
+    local CustomSavableTypeDataTmpTable = {};
+    for idNum,name in ipairs(CustomSavableTypeTmpTable) do
+        local entry = CustomSavableTypes[name];
+        if entry.BulkSave ~= nil and isfunction(entry.BulkSave) then
+            debugprint("Saved " .. entry.TypeName);
+            CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.BulkSave())};
+        else
+            debugprint("Saved " .. entry.TypeName .. " (nothing to save)");
+            CustomSavableTypeDataTmpTable[idNum] = {};
+        end
+    end
+    saveData.CustomSavableTypeData = CustomSavableTypeDataTmpTable; -- Write TmpID -> Data map
+    CustomSavableTypeDataTmpTable = nil;
+    CustomSavableTypeTmpTable = nil;
+    debugprint("Saved custom types");
+    
+    debugprint("Calling all hooked save functions");
+    table.insert(saveData,saveData.Hooks)
+    local hookResults = hook.CallSave();
+    if hookResults ~= nil then
+      saveData.HooksData = {SimplifyForSave(hookResults)};
+    else
+      saveData.HooksData = {};
+    end
+    
+    debugprint(table.show(saveData));
+    
+    debugprint("_api::/Save");
+    return saveData;
+end
+
+--- Load is called when you load a game, or when a Resync is loaded.
+-- @local
+function Load(...)
+    debugprint("_api::Load()");
+    local args = ...;
+
+--    str = table.show(args);
+--    for s in str:gmatch("[^\r\n]+") do
+--        debugprint(s);
+--    end
+    debugprint(table.show(args));
+
+--    debugprint("Beginning load code");
+
+    traceprint("Loading custom types map");
+    CustomTypeMap = args.CustomSavableTypes
+    traceprint("Loaded custom types map");
+    
+    traceprint("Loading custom types data");
+    for idNum,data in ipairs(args.CustomSavableTypeData) do
+        local entry = CustomSavableTypes[CustomTypeMap[idNum]];
+        if entry.BulkLoad ~= nil and isfunction(entry.BulkLoad) then
+            traceprint("Loaded " .. entry.TypeName);
+            entry.BulkLoad(DeSimplifyForLoad(table.unpack(data)));
+        end
+    end
+    traceprint("Loaded custom types data");
+
+    traceprint("Calling all hooked load functions");
+    hook.CallLoad(DeSimplifyForLoad(table.unpack(args.HooksData)));
+    debugprint("_api::/Load");
+end
+
+--- Called when the mission starts for the first time.
+-- Use this function to perform any one-time script initialization.
+-- @local
+function Start()
+    debugprint("_api::Start()");
+    hook.CallAllNoReturn( "Start" );
+    debugprint("_api::/Start");
+end
+
+--- Called after any game object is created.
+-- Handle is the game object that was created.
+-- This function will get a lot of traffic so it should not do too much work.
+-- Note that many game object functions may not work properly here.
+-- @local
+function CreateObject(h)
+    traceprint("_api::CreateObject(" .. tostring(h) .. ")");
+    hook.CallAllNoReturn( "CreateObject", GameObject.FromHandle(h) );
+    traceprint("_api::/CreateObject");
+end
+
+--- Called after any game object is created.
+-- Handle is the game object that was created.
+-- This function will get a lot of traffic so it should not do too much work.
+-- Note that many game object functions may not work properly here.
+-- @local
+function AddObject(h)
+    traceprint("_api::AddObject(" .. tostring(h) .. ")");
+    hook.CallAllNoReturn( "AddObject", GameObject.FromHandle(h) );
+    traceprint("_api::/AddObject");
+end
+
+--- Called before a game object is deleted.
+-- Handle is the game object to be deleted.
+-- This function will get a lot of traffic so it should not do too much work.
+-- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+-- @local
+function DeleteObject(h)
+    traceprint("_api::DeleteObject(" .. tostring(h) .. ")");
+    local object = GameObject.FromHandle(h);
+    hook.CallAllNoReturn( "DeleteObject", object );
+    traceprint("_api::/DeleteObject");
+end
+
+--- Called once per tick after updating the network system and before simulating game objects.
+-- This function performs most of the mission script's game logic.
+-- @local
+function Update(dtime)
+    traceprint("_api::Update()");
+	local ttime = GetTime();
+    hook.CallAllNoReturn( "Update", dtime, ttime);
+    traceprint("_api::/Update");
+end
+
+--- Called when a player joins the game world.
+-- @tparam int id DPID number for this player
+-- @tparam string name name for this player
+-- @tparam int team Team number for this player
+-- @local
+function CreatePlayer(id, name, team)
+    debugprint("_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    hook.CallAllNoReturn("CreatePlayer", id, name, team);
+    debugprint("_api::/CreatePlayer");
+end
+
+--- Called when a player joins the game world.
+-- @tparam int id DPID number for this player
+-- @tparam string name name for this player
+-- @tparam int team Team number for this player
+-- @local
+function AddPlayer(id, name, team)
+    debugprint("_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    hook.CallAllNoReturn("AddPlayer", id, name, team);
+    debugprint("_api::/AddPlayer");
+end
+
+--- Called when a player leaves the game world.
+-- @tparam int id DPID number for this player
+-- @tparam string name name for this player
+-- @tparam int team Team number for this player
+-- @local
+function DeletePlayer(id, name, team)
+    debugprint("_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    hook.CallAllNoReturn("DeletePlayer", id, name, team);
+    debugprint("_api::/DeletePlayer");
+end
+
+--- Command
+-- @tparam string command the command string
+-- @local
+function Command(command, ...)
+    traceprint("_api::Command('" .. command .. "')");
+	local args = ...;
+    debugprint(table.show(args));
+	
+    local retVal = nil;
+	retVal = hook.CallAllPassReturn("Command", command, table.unpack(args));
+    traceprint("_api::/Command");
+    return retVal;
+end
+
+--- Receive
+-- @tparam int from x
+-- @tparam string type x
+-- @tparam ... data
+-- @local
+function Receive(from, type, ...)
+    traceprint("_api::Receive(" .. from .. ", '" .. type .. "')");
+	local args = ...;
+    debugprint(table.show(args));
+	
+    local retVal = nil;
+	retVal = hook.CallAllPassReturn("Receive", from, type, table.unpack(args));
+    traceprint("_api::/Receive");
+    return retVal;
+end
+
+
+-- @section Script Run
+
+debugprint("_api Loaded");
+
+if GameVersion ~= nil then
+    print("GameVersion v" .. GameVersion .. " detected");
+else
+    print("GameVersion unknown");
+end
+
+return _api;

@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_funcarray.html">_funcarray</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><strong>_hook</strong></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_hook</code></h1>
+<p>BZ98R LUA Extended API Hook.</p>
+<p>
+
+ Event hook for event observer pattern.
+ </p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local hook = require(&quot;_hook&quot;);
+
+-- optional priority overrides
+_api_hook_priority_override = {
+    [&quot;Update&quot;] = {
+        [&quot;_statemachine_Update&quot;] = 10000;
+        [&quot;_funcarray_Update&quot;] = 10000;
+    },
+    [&quot;DeleteObject&quot;] = {
+        [&quot;GameObject_DeleteObject&quot;] = -10000;
+    }
+};
+
+hook.Add(&quot;InitialSetup&quot;, &quot;Custom_InitialSetup&quot;, function(turn)
+
+end);
+
+hook.Add(&quot;Update&quot;, &quot;Custom_Update&quot;, function(turn)
+
+end);
+
+hook.AddSaveLoad(&quot;Custom_SaveLoad&quot;,
+function()
+    return MissionData;
+end,
+function(savedData)
+    MissionData = savedData;
+end,
+function()
+    print(table.show(MissionData,&quot;MissionData&quot;));
+end);
+
+-- 10% of the time players will just respawn instead of eject, this overrides all other event hooks
+hook.Add(&quot;PlayerEjected&quot;, function(DeadObject)
+    if object:IsPlayer() and GetRandomFloat(10) &gt; 9 then
+        return hook.AbortResult(EjectKillRetCodes.DoRespawnSafest);
+    end
+end, 9999)
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#hook.GetTable">hook.GetTable ()</a></td>
+	<td class="summary">Table of all hooks.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.isresult">hook.isresult (object)</a></td>
+	<td class="summary">Is this object an instance of HookResult?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.AbortResult">hook.AbortResult (...)</a></td>
+	<td class="summary">Create an Abort HookResult</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.WrapResult">hook.WrapResult (...)</a></td>
+	<td class="summary">Create an basic HookResult
+<p> This wraps a return value similarly to <a href="../modules/_hook.html#hook.AbortResult">AbortResult</a> and
+ can be used optionally to wrap return values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.Add">hook.Add (event, identifier, func[, priority=0])</a></td>
+	<td class="summary">Add a hook to listen to the specified event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.AddSaveLoad">hook.AddSaveLoad (identifier[, save[, load]])</a></td>
+	<td class="summary">Add a hook to listen to the Save and Load event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.RemoveSaveLoad">hook.RemoveSaveLoad (identifier)</a></td>
+	<td class="summary">Removes the Save and Load hooks with the given indentifier.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.CallSave">hook.CallSave ()</a></td>
+	<td class="summary">Calls hooks associated with Save.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.CallLoad">hook.CallLoad (SaveData)</a></td>
+	<td class="summary">Calls hooks associated with Load.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.CallAllNoReturn">hook.CallAllNoReturn (event, ...)</a></td>
+	<td class="summary">Calls hooks associated with the hook name ignoring any return values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hook.CallAllPassReturn">hook.CallAllPassReturn (event, ...)</a></td>
+	<td class="summary">Calls hooks associated with the hook name passing each return to the next.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "hook.GetTable"></a>
+    <strong>hook.GetTable ()</strong>
+    </dt>
+    <dd>
+    Table of all hooks.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.isresult"></a>
+    <strong>hook.isresult (object)</strong>
+    </dt>
+    <dd>
+    Is this object an instance of HookResult?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.AbortResult"></a>
+    <strong>hook.AbortResult (...)</strong>
+    </dt>
+    <dd>
+    Create an Abort HookResult
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         Return values passed from hook function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">HookResult</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.WrapResult"></a>
+    <strong>hook.WrapResult (...)</strong>
+    </dt>
+    <dd>
+    Create an basic HookResult
+<p> This wraps a return value similarly to <a href="../modules/_hook.html#hook.AbortResult">AbortResult</a> and
+ can be used optionally to wrap return values.  This is primarily used internally
+ to wrap the prior return value to be passed as the next Parameter in
+ <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a> based event triggers as event
+ handler return values are auto-unwrapped by the event handler if wrapping is
+ detected but process fine if unwrapped.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         Return values passed from hook function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">HookResult</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.Add"></a>
+    <strong>hook.Add (event, identifier, func[, priority=0])</strong>
+    </dt>
+    <dd>
+    Add a hook to listen to the specified event.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Event to be hooked
+        </li>
+        <li><span class="parameter">identifier</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Identifier for this hook observer
+        </li>
+        <li><span class="parameter">func</span>
+            <span class="types"><span class="type">func</span></span>
+         Function to be executed
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">number</span></span>
+         Higher numbers are higher priority
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.AddSaveLoad"></a>
+    <strong>hook.AddSaveLoad (identifier[, save[, load]])</strong>
+    </dt>
+    <dd>
+    Add a hook to listen to the Save and Load event.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">identifier</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Identifier for this hook observer
+        </li>
+        <li><span class="parameter">save</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to be executed for Save
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">load</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to be executed for Load
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.RemoveSaveLoad"></a>
+    <strong>hook.RemoveSaveLoad (identifier)</strong>
+    </dt>
+    <dd>
+    Removes the Save and Load hooks with the given indentifier.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">identifier</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Identifier for this hook observer
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.CallSave"></a>
+    <strong>hook.CallSave ()</strong>
+    </dt>
+    <dd>
+    Calls hooks associated with Save.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.CallLoad"></a>
+    <strong>hook.CallLoad (SaveData)</strong>
+    </dt>
+    <dd>
+    Calls hooks associated with Load.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">SaveData</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.CallAllNoReturn"></a>
+    <strong>hook.CallAllNoReturn (event, ...)</strong>
+    </dt>
+    <dd>
+    Calls hooks associated with the hook name ignoring any return values.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Event to be hooked
+        </li>
+        <li><span class="parameter">...</span>
+         Parameters passed to every hooked function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Return true if stopped early, else nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hook.CallAllPassReturn"></a>
+    <strong>hook.CallAllPassReturn (event, ...)</strong>
+    </dt>
+    <dd>
+    Calls hooks associated with the hook name passing each return to the next.
+ Hooked functions may return multiple values. The return value is always passed
+ to the next hook wrapped in an EventResult. If the value is generated by one
+ of the hook library's event functions it will be parsed and passed along without
+ wrapping. This allows for the hook chain to be broken early through the use of
+ the AbortResult function. The best action here is to nil check and test your last
+ Parameter with hook.isresult before processing it.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Event to be hooked
+        </li>
+        <li><span class="parameter">...</span>
+         Parameters passed to every hooked function
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-04-29 21:13:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,0 +1,2631 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Core">Core </a></li>
+<li><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></li>
+<li><a href="#Orders">Orders </a></li>
+<li><a href="#Position___Velocity">Position & Velocity </a></li>
+<li><a href="#Condition_Checks">Condition Checks </a></li>
+<li><a href="#Damage__Health__and_Ammo">Damage, Health, and Ammo </a></li>
+<li><a href="#Team">Team </a></li>
+<li><a href="#Other">Other </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_funcarray.html">_funcarray</a></li>
+  <li><strong>_gameobject</strong></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_gameobject</code></h1>
+<p>BZ98R LUA Extended API GameObject.</p>
+<p>
+
+ GameObject wrapper functions.
+
+ Dependencies: <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#isgameobject">isgameobject (object)</a></td>
+	<td class="summary">Is this object an instance of GameObject?</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject">GameObject</a></td>
+	<td class="summary">GameObject.</td>
+	</tr>
+</table>
+<h2><a href="#Core">Core </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.FromHandle">GameObject.FromHandle (handle)</a></td>
+	<td class="summary">Create new GameObject Intance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetHandle">GameObject.GetHandle (self)</a></td>
+	<td class="summary">Get Handle used by BZ98R.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Save">GameObject.Save (self)</a></td>
+	<td class="summary">Save event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Load">GameObject.Load (id)</a></td>
+	<td class="summary">Load event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.BulkSave">GameObject.BulkSave ()</a></td>
+	<td class="summary">BulkSave event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.BulkLoad">GameObject.BulkLoad (data, dataDead)</a></td>
+	<td class="summary">BulkLoad event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.BulkPostLoad">GameObject.BulkPostLoad ()</a></td>
+	<td class="summary">BulkPostLoad event function.</td>
+	</tr>
+</table>
+<h2><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#BuildGameObject">BuildGameObject (odf, team, pos)</a></td>
+	<td class="summary">Build Object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BuildGameObject">BuildGameObject (odf, team, pos[, point])</a></td>
+	<td class="summary">Build Object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.RemoveObject">GameObject.RemoveObject (self)</a></td>
+	<td class="summary">Remove GameObject from world.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetPlayerGameObject">GetPlayerGameObject ([team])</a></td>
+	<td class="summary">Get Player GameObject of team.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetRecyclerGameObject">GetRecyclerGameObject ([team])</a></td>
+	<td class="summary">Get Recycler GameObject of team.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetFactoryGameObject">GetFactoryGameObject ([team])</a></td>
+	<td class="summary">Get Factory GameObject of team.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetArmoryGameObject">GetArmoryGameObject ([team])</a></td>
+	<td class="summary">Get Armory GameObject of team.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetConstructorGameObject">GetConstructorGameObject ([team])</a></td>
+	<td class="summary">Get Factory GameObject of team.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetGameObject">GetGameObject (key)</a></td>
+	<td class="summary">Get GameObject by Label.</td>
+	</tr>
+</table>
+<h2><a href="#Orders">Orders </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Attack">GameObject.Attack (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Attack target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target[, priority])</a></td>
+	<td class="summary">Order GameObject to Goto target GameObject</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target[, priority])</a></td>
+	<td class="summary">Order GameObject to Goto target Vector</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target[, priority])</a></td>
+	<td class="summary">Order GameObject to Goto target Vector</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target, point[, priority])</a></td>
+	<td class="summary">Order GameObject to Goto target Path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Mine">GameObject.Mine (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Mine target Path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Follow">GameObject.Follow (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Follow target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Follow">GameObject.Follow (self, target)</a></td>
+	<td class="summary">Is the GameObject following the target GameObject?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Defend">GameObject.Defend (self, priority)</a></td>
+	<td class="summary">Order GameObject to Defend area.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Defend2">GameObject.Defend2 (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Defend2 target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Stop">GameObject.Stop (self, priority)</a></td>
+	<td class="summary">Order GameObject to Stop.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Patrol">GameObject.Patrol (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Patrol target path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Retreat">GameObject.Retreat (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Retreat.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetIn">GameObject.GetIn (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to GetIn target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Pickup">GameObject.Pickup (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Pickup target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Dropoff">GameObject.Dropoff (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Pickup target path name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Build">GameObject.Build (self, odf, priority)</a></td>
+	<td class="summary">Order GameObject to Build target config.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.BuildAt">GameObject.BuildAt (self, odf, target, priority)</a></td>
+	<td class="summary">Order GameObject to BuildAt target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Formation">GameObject.Formation (self, target, priority)</a></td>
+	<td class="summary">Order GameObject to Formation follow target GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Hunt">GameObject.Hunt (self, priority)</a></td>
+	<td class="summary">Order GameObject to Hunt area.</td>
+	</tr>
+</table>
+<h2><a href="#Position___Velocity">Position & Velocity </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetPosition">GameObject.GetPosition (self)</a></td>
+	<td class="summary">Get object's position vector.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetFront">GameObject.GetFront (self)</a></td>
+	<td class="summary">Get front vector.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetPosition">GameObject.SetPosition (self, position[, point])</a></td>
+	<td class="summary">Set the position of the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetTransform">GameObject.GetTransform (self)</a></td>
+	<td class="summary">Get object's tranform matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetTransform">GameObject.SetTransform (self, transform)</a></td>
+	<td class="summary">Set the tranform matrix of the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetVelocity">GameObject.GetVelocity (self)</a></td>
+	<td class="summary">Get object's velocity vector.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetVelocity">GameObject.SetVelocity (self, vel)</a></td>
+	<td class="summary">Set the velocity of the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetOmega">GameObject.GetOmega (self)</a></td>
+	<td class="summary">Get object's omega.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetOmega">GameObject.SetOmega (self, omega)</a></td>
+	<td class="summary">Set the omega of the GameObject.</td>
+	</tr>
+</table>
+<h2><a href="#Condition_Checks">Condition Checks </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsAlive">GameObject.IsAlive (self)</a></td>
+	<td class="summary">Is the GameObject alive and is still pilot controlled?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsAliveAndPilot">GameObject.IsAliveAndPilot (self)</a></td>
+	<td class="summary">Is the GameObject alive and piloted?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsCraft">GameObject.IsCraft (self)</a></td>
+	<td class="summary">Returns true if it's a Craft.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsPerson">GameObject.IsPerson (self)</a></td>
+	<td class="summary">Returns true if it's a person.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsBuilding">GameObject.IsBuilding (self)</a></td>
+	<td class="summary">Returns true if it's a Building.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.HasCargo">GameObject.HasCargo (self)</a></td>
+	<td class="summary">Checks if the GameObject has cargo (tug).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetCargo">GameObject.GetCargo (self)</a></td>
+	<td class="summary">What tug GameObject is tugging this if any?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetTug">GameObject.GetTug (self)</a></td>
+	<td class="summary">What tug GameObject is tugging this if any?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.HoppedOutOf">GameObject.HoppedOutOf (self)</a></td>
+	<td class="summary">Has the GameObject hopped out of a vehicle?</td>
+	</tr>
+</table>
+<h2><a href="#Damage__Health__and_Ammo">Damage, Health, and Ammo </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.Damage">GameObject.Damage (self, amt)</a></td>
+	<td class="summary">Cause GameObject to take damage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetHealth">GameObject.GetHealth (self)</a></td>
+	<td class="summary">Get health ratio of GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetCurHealth">GameObject.GetCurHealth (self)</a></td>
+	<td class="summary">Get current health of GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetMaxHealth">GameObject.GetMaxHealth (self)</a></td>
+	<td class="summary">Get max health of GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetCurHealth">GameObject.SetCurHealth (self, amt)</a></td>
+	<td class="summary">Sets the current health of the GameObject to the NewHealth value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetMaxHealth">GameObject.SetMaxHealth (self, amt)</a></td>
+	<td class="summary">Sets the max health of the GameObject to the NewHealth value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.AddHealth">GameObject.AddHealth (self, amt)</a></td>
+	<td class="summary">Adds the health to the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GiveMaxHealth">GameObject.GiveMaxHealth (self)</a></td>
+	<td class="summary">GiveMaxHealth</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetAmmo">GameObject.GetAmmo (self)</a></td>
+	<td class="summary">Get ammo ratio of GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetCurAmmo">GameObject.GetCurAmmo (self)</a></td>
+	<td class="summary">Get current ammo of GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetMaxAmmo">GameObject.GetMaxAmmo (self)</a></td>
+	<td class="summary">Get max ammo of GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetCurAmmo">GameObject.SetCurAmmo (self, amt)</a></td>
+	<td class="summary">Sets the current ammo of the GameObject to the NewAmmo value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetMaxAmmo">GameObject.SetMaxAmmo (self, amt)</a></td>
+	<td class="summary">Sets the max ammo of the GameObject to the NewAmmo value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.AddAmmo">GameObject.AddAmmo (self, amt)</a></td>
+	<td class="summary">Adds the ammo to the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GiveMaxAmmo">GameObject.GiveMaxAmmo (self)</a></td>
+	<td class="summary">GiveMaxAmmo</td>
+	</tr>
+</table>
+<h2><a href="#Team">Team </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetTeamNum">GameObject.GetTeamNum (self)</a></td>
+	<td class="summary">Get team number of the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetTeamNum">GameObject.SetTeamNum (self, team)</a></td>
+	<td class="summary">Set team number of the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetPerceivedTeam">GameObject.GetPerceivedTeam (self)</a></td>
+	<td class="summary">Get perceived team number of the GameObject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetPerceivedTeam">GameObject.SetPerceivedTeam (self, team)</a></td>
+	<td class="summary">Set perceived team number of the GameObject.</td>
+	</tr>
+</table>
+<h2><a href="#Other">Other </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsOdf">GameObject.IsOdf (self, odf)</a></td>
+	<td class="summary">Is the GameObject this odf?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetOdf">GameObject.GetOdf (self)</a></td>
+	<td class="summary">Get odf of GameObject</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetBase">GameObject.GetBase (self)</a></td>
+	<td class="summary">Get base of GameObject</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetLabel">GameObject.GetLabel (self)</a></td>
+	<td class="summary">Get label of GameObject</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetLabel">GameObject.SetLabel (self, label)</a></td>
+	<td class="summary">Is the GameObject this odf?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNation">GameObject.GetNation (self)</a></td>
+	<td class="summary">Get nation of GameObject</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "isgameobject"></a>
+    <strong>isgameobject (object)</strong>
+    </dt>
+    <dd>
+    Is this object an instance of GameObject?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject"></a>
+    <strong>GameObject</strong>
+    </dt>
+    <dd>
+    GameObject.
+ An object containing all functions and data related to a game object.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Core"></a>Core </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.FromHandle"></a>
+    <strong>GameObject.FromHandle (handle)</strong>
+    </dt>
+    <dd>
+    Create new GameObject Intance.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">handle</span>
+            <span class="types"><span class="type">handle</span></span>
+         Handle from BZ98R
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetHandle"></a>
+    <strong>GameObject.GetHandle (self)</strong>
+    </dt>
+    <dd>
+    Get Handle used by BZ98R.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Handle</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Save"></a>
+    <strong>GameObject.Save (self)</strong>
+    </dt>
+    <dd>
+    Save event function.
+ INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ...
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Load"></a>
+    <strong>GameObject.Load (id)</strong>
+    </dt>
+    <dd>
+    Load event function.
+ INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+         Handle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.BulkSave"></a>
+    <strong>GameObject.BulkSave ()</strong>
+    </dt>
+    <dd>
+    BulkSave event function.
+ INTERNAL USE.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ...
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.BulkLoad"></a>
+    <strong>GameObject.BulkLoad (data, dataDead)</strong>
+    </dt>
+    <dd>
+    BulkLoad event function.
+ INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+         Object data
+        </li>
+        <li><span class="parameter">dataDead</span>
+         Dead object data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.BulkPostLoad"></a>
+    <strong>GameObject.BulkPostLoad ()</strong>
+    </dt>
+    <dd>
+    BulkPostLoad event function.
+ INTERNAL USE.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Object_Creation___Destruction"></a>Object Creation / Destruction </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "BuildGameObject"></a>
+    <strong>BuildGameObject (odf, team, pos)</strong>
+    </dt>
+    <dd>
+    Build Object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Object Definition File (without ".odf")
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number for the object, 0 to 15
+        </li>
+        <li><span class="parameter">pos</span>
+         Position as GameObject, Vector, or Matrix
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        Newly built GameObject
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BuildGameObject"></a>
+    <strong>BuildGameObject (odf, team, pos[, point])</strong>
+    </dt>
+    <dd>
+    Build Object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Object Definition File (without ".odf")
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number for the object, 0 to 15
+        </li>
+        <li><span class="parameter">pos</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Pathpoint Name
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         index
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        Newly built GameObject
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.RemoveObject"></a>
+    <strong>GameObject.RemoveObject (self)</strong>
+    </dt>
+    <dd>
+    Remove GameObject from world.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetPlayerGameObject"></a>
+    <strong>GetPlayerGameObject ([team])</strong>
+    </dt>
+    <dd>
+    Get Player GameObject of team.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number of player
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of player or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetRecyclerGameObject"></a>
+    <strong>GetRecyclerGameObject ([team])</strong>
+    </dt>
+    <dd>
+    Get Recycler GameObject of team.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number of player
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of player or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetFactoryGameObject"></a>
+    <strong>GetFactoryGameObject ([team])</strong>
+    </dt>
+    <dd>
+    Get Factory GameObject of team.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number of player
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of player or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetArmoryGameObject"></a>
+    <strong>GetArmoryGameObject ([team])</strong>
+    </dt>
+    <dd>
+    Get Armory GameObject of team.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number of player
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of player or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetConstructorGameObject"></a>
+    <strong>GetConstructorGameObject ([team])</strong>
+    </dt>
+    <dd>
+    Get Factory GameObject of team.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number of player
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of player or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetGameObject"></a>
+    <strong>GetGameObject (key)</strong>
+    </dt>
+    <dd>
+    Get GameObject by Label.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+         Label
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject with Label or nil if none found
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Orders"></a>Orders </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.Attack"></a>
+    <strong>GameObject.Attack (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Attack target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         Target GameObject
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Goto"></a>
+    <strong>GameObject.Goto (self, target[, priority])</strong>
+    </dt>
+    <dd>
+    Order GameObject to Goto target GameObject
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target GameObject
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Goto"></a>
+    <strong>GameObject.Goto (self, target[, priority])</strong>
+    </dt>
+    <dd>
+    Order GameObject to Goto target Vector
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target Vector
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Goto"></a>
+    <strong>GameObject.Goto (self, target[, priority])</strong>
+    </dt>
+    <dd>
+    Order GameObject to Goto target Vector
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target Matrix
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Goto"></a>
+    <strong>GameObject.Goto (self, target, point[, priority])</strong>
+    </dt>
+    <dd>
+    Order GameObject to Goto target Path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target Path name
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">int</span></span>
+         Path point index, 0 based
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Mine"></a>
+    <strong>GameObject.Mine (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Mine target Path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target Vector, Matrix, or Path name
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Follow"></a>
+    <strong>GameObject.Follow (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Follow target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target GameObject instance
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Follow"></a>
+    <strong>GameObject.Follow (self, target)</strong>
+    </dt>
+    <dd>
+    Is the GameObject following the target GameObject?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Defend"></a>
+    <strong>GameObject.Defend (self, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Defend area.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Defend2"></a>
+    <strong>GameObject.Defend2 (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Defend2 target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target GameObject instance
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Stop"></a>
+    <strong>GameObject.Stop (self, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Stop.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Patrol"></a>
+    <strong>GameObject.Patrol (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Patrol target path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target Path name
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Retreat"></a>
+    <strong>GameObject.Retreat (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Retreat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target GameObject or Path name
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetIn"></a>
+    <strong>GameObject.GetIn (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to GetIn target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         Target GameObject
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Pickup"></a>
+    <strong>GameObject.Pickup (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Pickup target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         Target GameObject
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Dropoff"></a>
+    <strong>GameObject.Dropoff (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Pickup target path name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target vector, matrix, or path name
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Build"></a>
+    <strong>GameObject.Build (self, odf, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Build target config.
+ Oddly this function does not include a location for the action, might want to use the far more powerful orders system.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Object Definition
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.BuildAt"></a>
+    <strong>GameObject.BuildAt (self, odf, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to BuildAt target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Object Definition
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         Target GameObject instance, vector, matrix, or path name
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Formation"></a>
+    <strong>GameObject.Formation (self, target, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Formation follow target GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">target</span>
+         Target GameObject instance
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.Hunt"></a>
+    <strong>GameObject.Hunt (self, priority)</strong>
+    </dt>
+    <dd>
+    Order GameObject to Hunt area.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Order priority, >0 removes user control
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Position___Velocity"></a>Position & Velocity </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.GetPosition"></a>
+    <strong>GameObject.GetPosition (self)</strong>
+    </dt>
+    <dd>
+    Get object's position vector.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Vector</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetFront"></a>
+    <strong>GameObject.GetFront (self)</strong>
+    </dt>
+    <dd>
+    Get front vector.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Vector</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetPosition"></a>
+    <strong>GameObject.SetPosition (self, position[, point])</strong>
+    </dt>
+    <dd>
+    Set the position of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">position</span>
+         Vector position, Matrix position, or path name
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">int</span></span>
+         Index of the path point in the path (optional)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetTransform"></a>
+    <strong>GameObject.GetTransform (self)</strong>
+    </dt>
+    <dd>
+    Get object's tranform matrix.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Matrix</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetTransform"></a>
+    <strong>GameObject.SetTransform (self, transform)</strong>
+    </dt>
+    <dd>
+    Set the tranform matrix of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><span class="type">Matrix</span></span>
+         transform matrix
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetVelocity"></a>
+    <strong>GameObject.GetVelocity (self)</strong>
+    </dt>
+    <dd>
+    Get object's velocity vector.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Vector</span></span>
+        Vector, (0,0,0) if the handle is invalid or isn't movable.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetVelocity"></a>
+    <strong>GameObject.SetVelocity (self, vel)</strong>
+    </dt>
+    <dd>
+    Set the velocity of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">vel</span>
+            <span class="types"><span class="type">Vector</span></span>
+         Vector velocity
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetOmega"></a>
+    <strong>GameObject.GetOmega (self)</strong>
+    </dt>
+    <dd>
+    Get object's omega.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Vector</span></span>
+        Vector, (0,0,0) if the handle is invalid or isn't movable.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetOmega"></a>
+    <strong>GameObject.SetOmega (self, omega)</strong>
+    </dt>
+    <dd>
+    Set the omega of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">omega</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Condition_Checks"></a>Condition Checks </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.IsAlive"></a>
+    <strong>GameObject.IsAlive (self)</strong>
+    </dt>
+    <dd>
+    Is the GameObject alive and is still pilot controlled?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsAliveAndPilot"></a>
+    <strong>GameObject.IsAliveAndPilot (self)</strong>
+    </dt>
+    <dd>
+    Is the GameObject alive and piloted?
+ Returns true if the handle passed in is a user's pilot, returns false if dead, no AI pilot, or pilotClass is NULL.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsCraft"></a>
+    <strong>GameObject.IsCraft (self)</strong>
+    </dt>
+    <dd>
+    Returns true if it's a Craft.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsPerson"></a>
+    <strong>GameObject.IsPerson (self)</strong>
+    </dt>
+    <dd>
+    Returns true if it's a person.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsBuilding"></a>
+    <strong>GameObject.IsBuilding (self)</strong>
+    </dt>
+    <dd>
+    Returns true if it's a Building.
+ Does not include guntowers.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.HasCargo"></a>
+    <strong>GameObject.HasCargo (self)</strong>
+    </dt>
+    <dd>
+    Checks if the GameObject has cargo (tug).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetCargo"></a>
+    <strong>GameObject.GetCargo (self)</strong>
+    </dt>
+    <dd>
+    What tug GameObject is tugging this if any?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of the GameObject carried by the GameObject, or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetTug"></a>
+    <strong>GameObject.GetTug (self)</strong>
+    </dt>
+    <dd>
+    What tug GameObject is tugging this if any?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of the tug carrying the GameObject, or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.HoppedOutOf"></a>
+    <strong>GameObject.HoppedOutOf (self)</strong>
+    </dt>
+    <dd>
+    Has the GameObject hopped out of a vehicle?  What vehicle?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        GameObject of the vehicle that the pilot most recently hopped out of, or nil
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Damage__Health__and_Ammo"></a>Damage, Health, and Ammo </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.Damage"></a>
+    <strong>GameObject.Damage (self, amt)</strong>
+    </dt>
+    <dd>
+    Cause GameObject to take damage.
+ Note that if the damager is set the amt will be an integer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         damage amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetHealth"></a>
+    <strong>GameObject.GetHealth (self)</strong>
+    </dt>
+    <dd>
+    Get health ratio of GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number health ratio
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">if</span> friend1:GetHealth() &lt; <span class="number">0.5</span> <span class="keyword">then</span> friend1:Retreat(<span class="string">"retreat_path"</span>); <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetCurHealth"></a>
+    <strong>GameObject.GetCurHealth (self)</strong>
+    </dt>
+    <dd>
+    Get current health of GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number current health or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetMaxHealth"></a>
+    <strong>GameObject.GetMaxHealth (self)</strong>
+    </dt>
+    <dd>
+    Get max health of GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number max health or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetCurHealth"></a>
+    <strong>GameObject.SetCurHealth (self, amt)</strong>
+    </dt>
+    <dd>
+    Sets the current health of the GameObject to the NewHealth value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         health amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetMaxHealth"></a>
+    <strong>GameObject.SetMaxHealth (self, amt)</strong>
+    </dt>
+    <dd>
+    Sets the max health of the GameObject to the NewHealth value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         health amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.AddHealth"></a>
+    <strong>GameObject.AddHealth (self, amt)</strong>
+    </dt>
+    <dd>
+    Adds the health to the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         health amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GiveMaxHealth"></a>
+    <strong>GameObject.GiveMaxHealth (self)</strong>
+    </dt>
+    <dd>
+    GiveMaxHealth
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetAmmo"></a>
+    <strong>GameObject.GetAmmo (self)</strong>
+    </dt>
+    <dd>
+    Get ammo ratio of GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number ammo ratio
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetCurAmmo"></a>
+    <strong>GameObject.GetCurAmmo (self)</strong>
+    </dt>
+    <dd>
+    Get current ammo of GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number current ammo or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetMaxAmmo"></a>
+    <strong>GameObject.GetMaxAmmo (self)</strong>
+    </dt>
+    <dd>
+    Get max ammo of GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        number max ammo or nil
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetCurAmmo"></a>
+    <strong>GameObject.SetCurAmmo (self, amt)</strong>
+    </dt>
+    <dd>
+    Sets the current ammo of the GameObject to the NewAmmo value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         ammo amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetMaxAmmo"></a>
+    <strong>GameObject.SetMaxAmmo (self, amt)</strong>
+    </dt>
+    <dd>
+    Sets the max ammo of the GameObject to the NewAmmo value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         ammo amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.AddAmmo"></a>
+    <strong>GameObject.AddAmmo (self, amt)</strong>
+    </dt>
+    <dd>
+    Adds the ammo to the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">amt</span>
+         ammo amount
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GiveMaxAmmo"></a>
+    <strong>GameObject.GiveMaxAmmo (self)</strong>
+    </dt>
+    <dd>
+    GiveMaxAmmo
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Team"></a>Team </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.GetTeamNum"></a>
+    <strong>GameObject.GetTeamNum (self)</strong>
+    </dt>
+    <dd>
+    Get team number of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        Team number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetTeamNum"></a>
+    <strong>GameObject.SetTeamNum (self, team)</strong>
+    </dt>
+    <dd>
+    Set team number of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         new team number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetPerceivedTeam"></a>
+    <strong>GameObject.GetPerceivedTeam (self)</strong>
+    </dt>
+    <dd>
+    Get perceived team number of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        Team number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetPerceivedTeam"></a>
+    <strong>GameObject.SetPerceivedTeam (self, team)</strong>
+    </dt>
+    <dd>
+    Set perceived team number of the GameObject.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         new team number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Other"></a>Other </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.IsOdf"></a>
+    <strong>GameObject.IsOdf (self, odf)</strong>
+    </dt>
+    <dd>
+    Is the GameObject this odf?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF filename
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">enemy1:IsOdf(<span class="string">"svturr"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetOdf"></a>
+    <strong>GameObject.GetOdf (self)</strong>
+    </dt>
+    <dd>
+    Get odf of GameObject
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetBase"></a>
+    <strong>GameObject.GetBase (self)</strong>
+    </dt>
+    <dd>
+    Get base of GameObject
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        character identifier for race
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetLabel"></a>
+    <strong>GameObject.GetLabel (self)</strong>
+    </dt>
+    <dd>
+    Get label of GameObject
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Label name string
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetLabel"></a>
+    <strong>GameObject.SetLabel (self, label)</strong>
+    </dt>
+    <dd>
+    Is the GameObject this odf?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">label</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Label
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">enemy1:SetLabel(<span class="string">"special_object_7"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetNation"></a>
+    <strong>GameObject.GetNation (self)</strong>
+    </dt>
+    <dd>
+    Get nation of GameObject
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        character identifier for race
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-04-29 21:13:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

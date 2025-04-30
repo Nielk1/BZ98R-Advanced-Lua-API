@@ -1,0 +1,648 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Events">Events</a></li>
+<li><a href="#Utility_Functions">Utility Functions </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><strong>_api</strong></li>
+  <li><a href="../modules/_funcarray.html">_funcarray</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_api</code></h1>
+<p>BZ98R LUA Extended API.</p>
+<p>
+<p> This API creates a full OOP wrapper and replacement the mission
+ functions with an event based system for easier expansion.
+<p> Dependencies: <a href="../modules/_hook.html#">_hook</a></p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Events">Events</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Save">Save</a></td>
+	<td class="summary">Called when saving mission data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Load">Load</a></td>
+	<td class="summary">Called when loading mission data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Start">Start</a></td>
+	<td class="summary">Called when the mission starts for the first time.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddObject">AddObject</a></td>
+	<td class="summary">Called after any game object is created.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DeleteObject">DeleteObject</a></td>
+	<td class="summary">Called before a game object is deleted.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Update">Update</a></td>
+	<td class="summary">Called once per tick after updating the network system and before simulating game objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CreatePlayer">CreatePlayer</a></td>
+	<td class="summary">X</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddPlayer">AddPlayer</a></td>
+	<td class="summary">Called when a player joins the game world.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DeletePlayer">DeletePlayer</a></td>
+	<td class="summary">X</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Command">Command</a></td>
+	<td class="summary">X</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Receive">Receive</a></td>
+	<td class="summary">X</td>
+	</tr>
+</table>
+<h2><a href="#Utility_Functions">Utility Functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#isfunction">isfunction (object)</a></td>
+	<td class="summary">Is this object a function?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#istable">istable (object)</a></td>
+	<td class="summary">Is this object a table?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isstring">isstring (object)</a></td>
+	<td class="summary">Is this object a string?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isboolean">isboolean (object)</a></td>
+	<td class="summary">Is this object a boolean?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isnumber">isnumber (object)</a></td>
+	<td class="summary">Is this object a number?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isinteger">isinteger (object)</a></td>
+	<td class="summary">Is this object an integer?</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Events"></a>Events</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Save"></a>
+    <strong>Save</strong>
+    </dt>
+    <dd>
+    Called when saving mission data.
+<p> Return multiple values to save.
+<p> Call method: <a href="../modules/_hook.html#hook.CallSave">CallSave</a>
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.AddSaveLoad">_hook.AddSaveLoad</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Load"></a>
+    <strong>Load</strong>
+    </dt>
+    <dd>
+    Called when loading mission data.
+<p> Provide multiple Parameters to save.
+<p> Call method: <a href="../modules/_hook.html#hook.CallLoad">CallLoad</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">loaded</span>
+            <span class="types"><span class="type">...</span></span>
+         data
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.AddSaveLoad">_hook.AddSaveLoad</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Start"></a>
+    <strong>Start</strong>
+    </dt>
+    <dd>
+    Called when the mission starts for the first time.
+ Use this function to perform any one-time script initialization.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "AddObject"></a>
+    <strong>AddObject</strong>
+    </dt>
+    <dd>
+    Called after any game object is created.
+ Handle is the game object that was created.
+ This function will get a lot of traffic so it should not do too much work.
+ Note that many game object functions may not work properly here.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><span class="type">GameObject</span></span>
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "DeleteObject"></a>
+    <strong>DeleteObject</strong>
+    </dt>
+    <dd>
+    Called before a game object is deleted.
+ Handle is the game object to be deleted.
+ This function will get a lot of traffic so it should not do too much work.
+ Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><span class="type">GameObject</span></span>
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Update"></a>
+    <strong>Update</strong>
+    </dt>
+    <dd>
+    Called once per tick after updating the network system and before simulating game objects.
+ This function performs most of the mission script's game logic.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dtime</span>
+            <span class="types"><span class="type">float</span></span>
+
+        </li>
+        <li><span class="parameter">ttime</span>
+            <span class="types"><span class="type">float</span></span>
+
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "CreatePlayer"></a>
+    <strong>CreatePlayer</strong>
+    </dt>
+    <dd>
+    X  Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+            <span class="types"><span class="type">int</span></span>
+         DPID number for this player
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         name for this player
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number for this player
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "AddPlayer"></a>
+    <strong>AddPlayer</strong>
+    </dt>
+    <dd>
+    Called when a player joins the game world.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+            <span class="types"><span class="type">int</span></span>
+         DPID number for this player
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         name for this player
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number for this player
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "DeletePlayer"></a>
+    <strong>DeletePlayer</strong>
+    </dt>
+    <dd>
+    X  Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+            <span class="types"><span class="type">int</span></span>
+         DPID number for this player
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         name for this player
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number for this player
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Command"></a>
+    <strong>Command</strong>
+    </dt>
+    <dd>
+    X  Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">command</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+        <li><span class="parameter">Parameters</span>
+            <span class="types"><span class="type">...</span></span>
+
+        </li>
+        <li><span class="parameter">priorResult</span>
+            <span class="types"><span class="type">HookResult</span></span>
+         prior event handler's result
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Receive"></a>
+    <strong>Receive</strong>
+    </dt>
+    <dd>
+    X  Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">int</span></span>
+
+        </li>
+        <li><span class="parameter">type</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><span class="type">...</span></span>
+
+        </li>
+        <li><span class="parameter">priorResult</span>
+            <span class="types"><span class="type">HookResult</span></span>
+         prior event handler's result
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Utility_Functions"></a>Utility Functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "isfunction"></a>
+    <strong>isfunction (object)</strong>
+    </dt>
+    <dd>
+    Is this object a function?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "istable"></a>
+    <strong>istable (object)</strong>
+    </dt>
+    <dd>
+    Is this object a table?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isstring"></a>
+    <strong>isstring (object)</strong>
+    </dt>
+    <dd>
+    Is this object a string?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isboolean"></a>
+    <strong>isboolean (object)</strong>
+    </dt>
+    <dd>
+    Is this object a boolean?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isnumber"></a>
+    <strong>isnumber (object)</strong>
+    </dt>
+    <dd>
+    Is this object a number?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isinteger"></a>
+    <strong>isinteger (object)</strong>
+    </dt>
+    <dd>
+    Is this object an integer?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-04-29 21:13:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

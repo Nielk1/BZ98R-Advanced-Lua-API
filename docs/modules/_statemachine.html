@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#StateMachineIter___Core">StateMachineIter - Core </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_funcarray.html">_funcarray</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><strong>_statemachine</strong></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_statemachine</code></h1>
+<p>BZ98R LUA Extended API StateMachineIter.</p>
+<p>
+
+ State Machine and State Machine Iterator for serial event sequences across game turns.
+
+ Dependencies: <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local statemachine = require(&quot;_statemachine&quot;);
+
+statemachine.Create(&quot;TestMachine2&quot;,
+{
+    [&quot;state_a&quot;] = function(state)
+        print(&quot;test &quot; .. state.test1);
+        state:switch(&quot;state_b&quot;);
+    end,
+    [&quot;state_b&quot;] = statemachine.SleepSeconds(10,&quot;state_c&quot;),
+    [&quot;state_c&quot;] = function(state)
+        print(&quot;test &quot; .. state.test2);
+        state:switch(&quot;state_d&quot;);
+    end,
+    [&quot;state_d&quot;] = statemachine.SleepSeconds(15,&quot;state_e&quot;),
+    [&quot;state_e&quot;] = function(state)
+        print(&quot;test &quot; .. state.test3);
+        state:switch(&quot;state_f&quot;);
+    end
+});
+
+hook.Add(&quot;InitialSetup&quot;, &quot;Custom_InitialSetup&quot;, function(turn)
+    MissionData.TestSMI = statemachine.Start(&quot;TestMachine2&quot;,&quot;state_a&quot;,{test1=&apos;d&apos;,test2=&quot;e&quot;,test3=&quot;f&quot;});
+end);
+
+hook.Add(&quot;Update&quot;, &quot;Custom_Update&quot;, function(turn)
+    MissionData.TestSMI:run();
+end);
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#isstatemachineiter">isstatemachineiter (object)</a></td>
+	<td class="summary">Is this object an instance of StateMachineIter?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.run">StateMachineIter.run (self)</a></td>
+	<td class="summary">Run StateMachineIter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.switch">StateMachineIter.switch (self, key)</a></td>
+	<td class="summary">Switch StateMachineIter State.</td>
+	</tr>
+</table>
+<h2><a href="#StateMachineIter___Core">StateMachineIter - Core </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.Save">StateMachineIter.Save (self)</a></td>
+	<td class="summary">Save event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.Load">StateMachineIter.Load (data)</a></td>
+	<td class="summary">Load event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.BulkSave">StateMachineIter.BulkSave ()</a></td>
+	<td class="summary">BulkSave event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.BulkLoad">StateMachineIter.BulkLoad (data)</a></td>
+	<td class="summary">BulkLoad event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIter.BulkPostLoad">StateMachineIter.BulkPostLoad ()</a></td>
+	<td class="summary">BulkPostLoad event function.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "isstatemachineiter"></a>
+    <strong>isstatemachineiter (object)</strong>
+    </dt>
+    <dd>
+    Is this object an instance of StateMachineIter?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIter.run"></a>
+    <strong>StateMachineIter.run (self)</strong>
+    </dt>
+    <dd>
+    Run StateMachineIter.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateMachineIter</span></span>
+         FuncArrayIter instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIter.switch"></a>
+    <strong>StateMachineIter.switch (self, key)</strong>
+    </dt>
+    <dd>
+    Switch StateMachineIter State.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateMachineIter</span></span>
+         StateMachineIter instance
+        </li>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         State to switch to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="StateMachineIter___Core"></a>StateMachineIter - Core </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "StateMachineIter.Save"></a>
+    <strong>StateMachineIter.Save (self)</strong>
+    </dt>
+    <dd>
+    Save event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         StateMachineIter instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ...
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIter.Load"></a>
+    <strong>StateMachineIter.Load (data)</strong>
+    </dt>
+    <dd>
+    Load event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIter.BulkSave"></a>
+    <strong>StateMachineIter.BulkSave ()</strong>
+    </dt>
+    <dd>
+    BulkSave event function.
+<p> INTERNAL USE.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        data to save in bulk
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIter.BulkLoad"></a>
+    <strong>StateMachineIter.BulkLoad (data)</strong>
+    </dt>
+    <dd>
+    BulkLoad event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIter.BulkPostLoad"></a>
+    <strong>StateMachineIter.BulkPostLoad ()</strong>
+    </dt>
+    <dd>
+    BulkPostLoad event function.
+<p> INTERNAL USE.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-04-29 21:13:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

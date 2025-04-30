@@ -68,47 +68,57 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#Save">Save</a></td>
-	<td class="summary">Called when saving mission data.</td>
+	<td class="summary">Called when saving state to a save game file, allowing the script to preserve its state.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Load">Load</a></td>
-	<td class="summary">Called when loading mission data.</td>
+	<td class="summary">Called when loading state from a save game file, allowing the script to restore its state.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Start">Start</a></td>
 	<td class="summary">Called when the mission starts for the first time.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddObject">AddObject</a></td>
-	<td class="summary">Called after any game object is created.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#DeleteObject">DeleteObject</a></td>
-	<td class="summary">Called before a game object is deleted.</td>
+	<td class="name" nowrap><a href="#GameKey">GameKey</a></td>
+	<td class="summary">Called any time a game key is pressed.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Update">Update</a></td>
 	<td class="summary">Called once per tick after updating the network system and before simulating game objects.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#CreateObject">CreateObject</a></td>
+	<td class="summary">Called after any game object is created.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddObject">AddObject</a></td>
+	<td class="summary">Called when a game object gets added to the mission
+<p> Handle is the game object that was added
+<p> This function is normally called for "important" game objects, and excludes things like Scrap pieces.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#DeleteObject">DeleteObject</a></td>
+	<td class="summary">Called before a game object is fully deleted.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#CreatePlayer">CreatePlayer</a></td>
-	<td class="summary">X</td>
+	<td class="summary">Called when a player joins the session.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AddPlayer">AddPlayer</a></td>
-	<td class="summary">Called when a player joins the game world.</td>
+	<td class="summary">Called when a player starts sending state updates.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#DeletePlayer">DeletePlayer</a></td>
-	<td class="summary">X</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Command">Command</a></td>
-	<td class="summary">X</td>
+	<td class="summary">Called when a player leaves the session.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Receive">Receive</a></td>
-	<td class="summary">X</td>
+	<td class="summary">Called when a script-defined message arrives.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Command">Command</a></td>
+	<td class="summary">Called for any in-game chat command that was not handled by the system, allowing script-defined commands.</td>
 	</tr>
 </table>
 <h2><a href="#Utility_Functions">Utility Functions </a></h2>
@@ -151,8 +161,9 @@
     <strong>Save</strong>
     </dt>
     <dd>
-    Called when saving mission data.
-<p> Return multiple values to save.
+    Called when saving state to a save game file, allowing the script to preserve its state.
+<p> Any values returned by this function will be passed as parameters to Load when loading the save game file. Save supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+<p> The console window will print the saved values in human-readable format.
 <p> Call method: <a href="../modules/_hook.html#hook.CallSave">CallSave</a>
 
 
@@ -171,8 +182,9 @@
     <strong>Load</strong>
     </dt>
     <dd>
-    Called when loading mission data.
-<p> Provide multiple Parameters to save.
+    Called when loading state from a save game file, allowing the script to restore its state.
+<p> Data values returned from Save will be passed as parameters to Load in the same order they were returned. Load supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+<p> The console window will print the loaded values in human-readable format.
 <p> Call method: <a href="../modules/_hook.html#hook.CallLoad">CallLoad</a>
 
 
@@ -199,10 +211,98 @@
     </dt>
     <dd>
     Called when the mission starts for the first time.
- Use this function to perform any one-time script initialization.
+<p> Use this function to perform any one-time script initialization.
 <p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
 
 
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "GameKey"></a>
+    <strong>GameKey</strong>
+    </dt>
+    <dd>
+    Called any time a game key is pressed.
+<p> Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
+<p> The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
+<p> The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         zero or more modifiers (Ctrl, Shift, Alt) and a base key
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "Update"></a>
+    <strong>Update</strong>
+    </dt>
+    <dd>
+    Called once per tick after updating the network system and before simulating game objects.
+<p> This function performs most of the mission script's game logic.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dtime</span>
+            <span class="types"><span class="type">float</span></span>
+         Delta Time
+        </li>
+        <li><span class="parameter">ttime</span>
+            <span class="types"><span class="type">float</span></span>
+         Total Time
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "CreateObject"></a>
+    <strong>CreateObject</strong>
+    </dt>
+    <dd>
+    Called after any game object is created.
+<p> Handle is the game object that was created.
+<p> This function will get a lot of traffic so it should not do too much work.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><span class="type">GameObject</span></span>
+
+        </li>
+    </ul>
 
 
 
@@ -218,10 +318,9 @@
     <strong>AddObject</strong>
     </dt>
     <dd>
-    Called after any game object is created.
- Handle is the game object that was created.
- This function will get a lot of traffic so it should not do too much work.
- Note that many game object functions may not work properly here.
+    Called when a game object gets added to the mission
+<p> Handle is the game object that was added
+<p> This function is normally called for "important" game objects, and excludes things like Scrap pieces.
 <p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
 
 
@@ -247,10 +346,9 @@
     <strong>DeleteObject</strong>
     </dt>
     <dd>
-    Called before a game object is deleted.
- Handle is the game object to be deleted.
- This function will get a lot of traffic so it should not do too much work.
- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+    Called before a game object is fully deleted.
+<p> This function will get a lot of traffic so it should not do too much work.
+<p> Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
 <p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
 
 
@@ -272,42 +370,15 @@
 
 </dd>
     <dt>
-    <a name = "Update"></a>
-    <strong>Update</strong>
-    </dt>
-    <dd>
-    Called once per tick after updating the network system and before simulating game objects.
- This function performs most of the mission script's game logic.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">dtime</span>
-            <span class="types"><span class="type">float</span></span>
-
-        </li>
-        <li><span class="parameter">ttime</span>
-            <span class="types"><span class="type">float</span></span>
-
-        </li>
-    </ul>
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
-    </ul>
-
-
-</dd>
-    <dt>
     <a name = "CreatePlayer"></a>
     <strong>CreatePlayer</strong>
     </dt>
     <dd>
-    X  Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+    Called when a player joins the session.
+<p> Players that join before the host launches trigger CreatePlayer just before the first Update.
+<p> Players that join joining after the host launches trigger CreatePlayer on entering the pre-game lobby.
+<p> This function gets called for the local player.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
 
 
     <h3>Parameters:</h3>
@@ -340,7 +411,9 @@
     <strong>AddPlayer</strong>
     </dt>
     <dd>
-    Called when a player joins the game world.
+    Called when a player starts sending state updates.
+<p> This indicates that a player has finished loaded and started simulating.
+<p> This function is _not_ called for the local player.
 <p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
 
 
@@ -374,7 +447,8 @@
     <strong>DeletePlayer</strong>
     </dt>
     <dd>
-    X  Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+    Called when a player leaves the session.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
 
 
     <h3>Parameters:</h3>
@@ -403,22 +477,28 @@
 
 </dd>
     <dt>
-    <a name = "Command"></a>
-    <strong>Command</strong>
+    <a name = "Receive"></a>
+    <strong>Receive</strong>
     </dt>
     <dd>
-    X  Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a>
+    Called when a script-defined message arrives.
+<p> This function should return true if it handled the message and false, nil, or none if it did not.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a> (TODO consider changing call type to stop after first true)
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">command</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-
+        <li><span class="parameter">from</span>
+            <span class="types"><span class="type">int</span></span>
+         network player id of the sender.
         </li>
-        <li><span class="parameter">Parameters</span>
+        <li><span class="parameter">type</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         an arbitrary one-character string indicating the script-defined message type.
+        </li>
+        <li><span class="parameter">data</span>
             <span class="types"><span class="type">...</span></span>
-
+         values passed as parameters to Send will arrive as parameters to Receive in the same order they were sent. Receive supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
         </li>
         <li><span class="parameter">priorResult</span>
             <span class="types"><span class="type">HookResult</span></span>
@@ -437,24 +517,31 @@
 
 </dd>
     <dt>
-    <a name = "Receive"></a>
-    <strong>Receive</strong>
+    <a name = "Command"></a>
+    <strong>Command</strong>
     </dt>
     <dd>
-    X  Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a>
+    Called for any in-game chat command that was not handled by the system, allowing script-defined commands.
+<p> This function should return true if it handled the command and false, nil, or none if it did not.
+<p> LuaMission breaks the command into
+<p> Command is the string immediately following the '/'. For example, the command for "/foo" is "foo".
+<p> Arguments arrive as a string parameter to Command. For example "/foo 1 2 3" would receive "1 2 3".
+<p> The Lua string library provides several functions that can split the string into separate items.
+<p> You can use string.match with captures if you have a specific argument list:
+ <pre>local foo, bar, baz = string.match(arguments, "(%g+) (%g+) (%g+)")</pre>
+<p> You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
+ <pre>for arg in string.gmatch(arguments, "%g+") do ... end</pre>
+<p> Check the Lua <a href="http://lua-users.org/wiki/PatternsTutorial">patterns tutorial</a> and <a href="http://www.lua.org/manual/5.2/manual.html#6.4.1">patterns manual</a> for more details.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a>
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">from</span>
-            <span class="types"><span class="type">int</span></span>
-
-        </li>
-        <li><span class="parameter">type</span>
+        <li><span class="parameter">command</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
 
         </li>
-        <li><span class="parameter">data</span>
+        <li><span class="parameter">parameters</span>
             <span class="types"><span class="type">...</span></span>
 
         </li>
@@ -641,7 +728,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-04-29 21:13:32 </i>
+<i style="float:right;">Last updated 2025-04-29 23:10:22 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

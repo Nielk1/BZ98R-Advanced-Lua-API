@@ -47,23 +47,12 @@ debugprint("_hook Loading");
 local hook = {};
 
 hook.Hooks = {};
-hook.SaveLoadHooks = {};
+hook.HookLookup = {};
 
-local priorities = {};
+hook.SaveLoadHooks =  = {};
 
 --- Table of all hooks.
 function hook.GetTable() return hook.Hooks end
-
-local function has_value (tab, val)
-    for index, value in ipairs(tab) do
-        if value == val then
-            return true
-        end
-    end
-
-    return false
-end
-
 
 hookresult_meta = {};
 
@@ -120,6 +109,13 @@ function hook.WrapResult(...)
     }, hookresult_meta);
 end
 
+function sort_handlers(item1, item2)
+    if item1.priority == item1.priority then
+        return item1.identifier < item2.identifier;
+    end
+    return item1.priority > item1.priority;
+end
+
 --- Add a hook to listen to the specified event.
 -- @tparam string event Event to be hooked
 -- @tparam string identifier Identifier for this hook observer
@@ -136,13 +132,27 @@ function hook.Add( event, identifier, func, priority )
     if (hook.Hooks[ event ] == nil) then
         hook.Hooks[ event ] = {};
     end
-
-    if not has_value(priorities, priority) then
-        table.insert(priorities, priority);
-        table.sort(priorities);
+    if (hook.HookLookup[ event ] == nil) then
+        hook.HookLookup[ event ] = {};
+    end
+    
+    if (hook.HookLookup[ event ][ identifier ] ~= nil) then
+        local found = hook.HookLookup[ event ][ identifier ];
+        hook.HookLookup[ event ][ identifier ] = nil;
+		
+		-- delete the item from the sorted array
+		for i, v in ipairs(hook.Hooks[ event ]) do
+			if v.identifier == identifier then
+				table.remove(hook.Hooks[ event ], i)
+				break;
+			end
+		end
     end
 
-    hook.Hooks[ event ][ identifier ] = { priority = priority, func = func };
+    local new_handler =  { identifier = identifier, priority = priority, func = func };
+    hook.HookLookup[ event ][ identifier ] = new_handler; -- store in lookup strong-table
+    table.insert(hook.Hooks[ event ], new_handler); -- store in priority weak-table
+    table.sort(hook.Hooks[ event ], sort_handlers);
   
     debugprint("Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
 end
@@ -153,8 +163,21 @@ end
 function hook.Remove( event, name )
     if not isstring(event) then error("Parameter event must be a string."); end
     if not isstring(identifier) then error("Parameter identifier must be a string."); end
-    hook.Hooks[ event ][ name ] = nil;
-    
+
+    if (hook.HookLookup[ event ][ identifier ] ~= nil) then
+        -- deal with existing hook before replacing it?
+        local found = hook.HookLookup[ event ][ identifier ];
+        hook.HookLookup[ event ][ identifier ] = nil;
+		
+		-- delete the item from the sorted array
+		for i, v in ipairs(hook.Hooks[ event ]) do
+			if v.identifier == identifier then
+				table.remove(hook.Hooks[ event ], i)
+				break;
+			end
+		end
+    end
+
     debugprint("Removed " .. event .. " hook for " .. identifier);
 end
 
@@ -235,28 +258,15 @@ end
 -- @tparam string event Event to be hooked
 -- @param ... Parameters passed to every hooked function
 -- @treturn bool Return true if stopped early, else nil
--- @todo this function must be rewritten to not be n*m and awful.
 function hook.CallAllNoReturn( event, ... )
     local HookTable = hook.Hooks[ event ]
-    local stopnow = false;
     if ( HookTable ~= nil ) then
-        for i = #priorities, 1, -1 do
-            local j = priorities[i];
-            for k, v in pairs( HookTable ) do 
-                if ( isstring( k ) ) then
-                    if ( v.priority == j ) then
-                        local lastreturn = { v.func( ... ) };
-                        -- ignore the result value and just check Abort flag
-                        if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) and lastreturn[1].Abort then
-                            stopnow = true;
-                            break;
-                        end
-                    end
-                else
-                    HookTable[ k ] = nil
-                end
-            end
-            if stopnow == true then break; end
+        for h in HookTable do 
+			local lastreturn = { v.func( ... ) };
+			-- ignore the result value and just check Abort flag
+			if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) and lastreturn[1].Abort then
+				break;
+			end
         end
     end
 end
@@ -279,33 +289,20 @@ end
 -- Parameter with hook.isresult before processing it.
 -- @tparam string event Event to be hooked
 -- @param ... Parameters passed to every hooked function
--- @todo this function must be rewritten to not be n*m and awful.
 function hook.CallAllPassReturn( event, ... )
     local HookTable = hook.Hooks[ event ]
     local lastreturn = nil;
-    local stopnow = false;
     if ( HookTable ~= nil ) then
-        for i = #priorities, 1, -1 do
-            local j = priorities[i];
-            for k, v in pairs( HookTable ) do 
-                if ( isstring( k ) ) then
-                    if ( v.priority == j ) then
-                        lastreturn = { v.func(appendvargs(hook.WrapResult(lastreturn), ... )) };
-                        -- preserve the Abort flag, then unwrap the result
-                        if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) then
-                            local abort = lastreturn[1].Abort;
-                            lastreturn = lastreturn[1].Return;
-                            if abort then
-                                stopnow = true;
-                                break;
-                            end
-                        end
-                    end
-                else
-                    HookTable[ k ] = nil
-                end
-            end
-            if stopnow == true then break; end
+        for h in HookTable do 
+			lastreturn = { v.func(appendvargs(hook.WrapResult(lastreturn), ... )) };
+			-- preserve the Abort flag, then unwrap the result
+			if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) then
+				local abort = lastreturn[1].Abort;
+				lastreturn = lastreturn[1].Return;
+				if abort then
+					break;
+				end
+			end
         end
     end
     if lastreturn ~= nil then

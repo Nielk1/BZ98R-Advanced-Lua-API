@@ -161,14 +161,13 @@ local hook = require("_hook");
 --
 -- The Lua string library provides several functions that can split the string into separate items.
 --
--- @usage -- You can use string.match with captures if you have a specific argument list:
--- local foo, bar, baz = string.match(arguments, "(%g+) (%g+) (%g+)")
+-- You can use string.match with captures if you have a specific argument list:
+-- <pre>local foo, bar, baz = string.match(arguments, "(%g+) (%g+) (%g+)")</pre>
 --
--- @usage -- You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
--- for arg in string.gmatch(arguments, "%g+") do ... end
--- 
--- @see http://lua-users.org/wiki/PatternsTutorial
--- @see http://www.lua.org/manual/5.2/manual.html#6.4.1
+-- You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
+-- <pre>for arg in string.gmatch(arguments, "%g+") do ... end</pre>
+--
+-- Check the Lua <a href="http://lua-users.org/wiki/PatternsTutorial">patterns tutorial</a> and <a href="http://www.lua.org/manual/5.2/manual.html#6.4.1">patterns manual</a> for more details.
 --
 -- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn}
 -- @event Command

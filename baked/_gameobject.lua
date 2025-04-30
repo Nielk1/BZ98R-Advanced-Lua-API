@@ -493,11 +493,11 @@ end
 -- @tparam[opt] int point Index of the path point in the path (optional)
 function GameObject.SetPosition(self, position, point)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-	if point ~= nil then
-		SetPosition(self:GetHandle(), position, point);
-	else
-		SetPosition(self:GetHandle(), position);
-	end
+    if point ~= nil then
+        SetPosition(self:GetHandle(), position, point);
+    else
+        SetPosition(self:GetHandle(), position);
+    end
 end
 
 --- Get object's tranform matrix.
@@ -645,7 +645,7 @@ end
 function GameObject.Damage(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not isnumber(amt) then error("Parameter amt must be number."); end
-	Damage(self:GetHandle(), amt);
+    Damage(self:GetHandle(), amt);
 end
 
 --- Get health ratio of GameObject.

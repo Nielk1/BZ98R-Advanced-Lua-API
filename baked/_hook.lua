@@ -6,7 +6,7 @@
 -- @author John "Nielk1" Klein
 -- @usage local hook = require("_hook");
 -- 
--- -- optional priority overrides
+-- -- optional priority overrides, only applies when adding hooks
 -- _api_hook_priority_override = {
 --     ["Update"] = {
 --         ["_statemachine_Update"] = 10000;
@@ -31,9 +31,6 @@
 -- end,
 -- function(savedData)
 --     MissionData = savedData;
--- end,
--- function()
---     print(table.show(MissionData,"MissionData"));
 -- end);
 -- 
 -- -- 10% of the time players will just respawn instead of eject, this overrides all other event hooks
@@ -126,7 +123,7 @@ end
 --- Add a hook to listen to the specified event.
 -- @tparam string event Event to be hooked
 -- @tparam string identifier Identifier for this hook observer
--- @tparam func func Function to be executed
+-- @tparam function func Function to be executed
 -- @tparam[opt=0] number priority Higher numbers are higher priority
 function hook.Add( event, identifier, func, priority )
     if not isstring(event) then error("Parameter event must be a string."); end
@@ -150,7 +147,7 @@ function hook.Add( event, identifier, func, priority )
     debugprint("Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
 end
 
--- Removes the hook with the given indentifier.
+-- Removes the hook with the given identifier.
 -- @tparam string event Event to be hooked
 -- @tparam string identifier Identifier for this hook observer
 function hook.Remove( event, name )
@@ -181,7 +178,7 @@ function hook.AddSaveLoad( identifier, save, load )
     debugprint("Added Save/Load hooks for " .. identifier);
 end
 
---- Removes the Save and Load hooks with the given indentifier.
+--- Removes the Save and Load hooks with the given identifier.
 -- @tparam string identifier Identifier for this hook observer
 function hook.RemoveSaveLoad( identifier )
     if not isstring(identifier) then error("Parameter identifier must be a string."); end

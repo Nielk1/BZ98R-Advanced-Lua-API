@@ -99,7 +99,7 @@ end
 --- Run FuncArrayIter.
 -- @tparam FuncArrayIter self FuncArrayIter instance
 function FuncArrayIter.run(self)
-    if not isfuncarrayiter(self) then error("Paramater self must be FuncArrayIter instance."); end
+    if not isfuncarrayiter(self) then error("Parameter self must be FuncArrayIter instance."); end
     
     local machine = _funcarray.Machines[self.template];
     if machine == nil then return false; end
@@ -126,7 +126,7 @@ end
 -- @tparam string name Name of the FuncArrayIter Template
 -- @tparam function ... State functions
 function _funcarray.Create( name, ... )
-    if not isstring(name) then error("Paramater name must be a string."); end
+    if not isstring(name) then error("Parameter name must be a string."); end
     
     if (_funcarray.Machines[ name ] == nil) then
         _funcarray.Machines[ name ] = {};
@@ -139,8 +139,8 @@ end
 -- @tparam string event Name of the FuncArrayIter Template
 -- @tparam table init Initial data
 function _funcarray.Start( name, init )
-    if not isstring(name) then error("Paramater name must be a string."); end
-    if init ~= nil and not istable(init) then error("Paramater init must be table or nil."); end
+    if not isstring(name) then error("Parameter name must be a string."); end
+    if init ~= nil and not istable(init) then error("Parameter init must be table or nil."); end
     if (_funcarray.Machines[ name ] == nil) then error('FuncArrayIter Template "' .. name .. '" not found.'); end
 
     return CreateFuncArrayIter(name, -1, -1, 1, init);
@@ -148,9 +148,9 @@ end
 
 -- Wait a set period of time on this state.
 -- @tparam FuncArrayIter state FuncArrayIter data
--- @tparam int calls How many calls to wait
+-- @tparam number calls How many calls to wait
 function _funcarray.SleepCalls( calls )
-    if not isinteger(seconds) then error("Paramater seconds must be an integer."); end
+    if not isinteger(seconds) then error("Parameter seconds must be an integer."); end
 
     return {(function(state, ...)
         local seconds = ...;
@@ -169,7 +169,7 @@ end
 -- @tparam FuncArrayIter state FuncArrayIter data
 -- @tparam number seconds How many seconds to wait
 function _funcarray.SleepSeconds( seconds )
-    if not isnumber(seconds) then error("Paramater seconds must be a number."); end
+    if not isnumber(seconds) then error("Parameter seconds must be a number."); end
 
     return {(function(state, ...)
         local seconds = ...;

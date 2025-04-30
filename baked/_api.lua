@@ -14,17 +14,22 @@ debugprint("_api Loading");
 
 local hook = require("_hook");
 
---- Called when saving mission data.
+--- Called when saving state to a save game file, allowing the script to preserve its state.
 --
--- Return multiple values to save.
+-- Any values returned by this function will be passed as parameters to Load when loading the save game file. Save supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+--
+-- The console window will print the saved values in human-readable format.
 --
 -- Call method: @{_hook.CallSave|CallSave}
 -- @event Save
+-- @return ... saved data
 -- @see _hook.AddSaveLoad
 
---- Called when loading mission data.
+--- Called when loading state from a save game file, allowing the script to restore its state.
 --
--- Provide multiple Parameters to save.
+-- Data values returned from Save will be passed as parameters to Load in the same order they were returned. Load supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+--
+-- The console window will print the loaded values in human-readable format.
 --
 -- Call method: @{_hook.CallLoad|CallLoad}
 -- @event Load
@@ -32,42 +37,76 @@ local hook = require("_hook");
 -- @see _hook.AddSaveLoad
 
 --- Called when the mission starts for the first time.
+--
 -- Use this function to perform any one-time script initialization.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event Start
 -- @see _hook.Add
 
+--- Called any time a game key is pressed.
+--
+-- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
+--
+-- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
+--
+-- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event GameKey
+-- @tparam string key zero or more modifiers (Ctrl, Shift, Alt) and a base key
+-- @see _hook.Add
+
+--- Called once per tick after updating the network system and before simulating game objects.
+--
+-- This function performs most of the mission script's game logic.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event Update
+-- @tparam float dtime Delta Time
+-- @tparam float ttime Total Time
+-- @see _hook.Add
+
 --- Called after any game object is created.
+--
 -- Handle is the game object that was created.
+--
 -- This function will get a lot of traffic so it should not do too much work.
--- Note that many game object functions may not work properly here.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+-- @event CreateObject
+-- @tparam GameObject object
+-- @see _hook.Add
+
+--- Called when a game object gets added to the mission
+--
+-- Handle is the game object that was added
+--
+-- This function is normally called for "important" game objects, and excludes things like Scrap pieces.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event AddObject
 -- @tparam GameObject object
 -- @see _hook.Add
 
---- Called before a game object is deleted.
--- Handle is the game object to be deleted.
+--- Called before a game object is fully deleted.
+--
 -- This function will get a lot of traffic so it should not do too much work.
+--
 -- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event DeleteObject
--- @tparam GameObject object
+-- @tparam GameObject object 
 -- @see _hook.Add
 
---- Called once per tick after updating the network system and before simulating game objects.
--- This function performs most of the mission script's game logic.
+--- Called when a player joins the session.
 --
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event Update
--- @tparam float dtime
--- @tparam float ttime
--- @see _hook.Add
-
---- X
+-- Players that join before the host launches trigger CreatePlayer just before the first Update.
+--
+-- Players that join joining after the host launches trigger CreatePlayer on entering the pre-game lobby.
+--
+-- This function gets called for the local player.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event CreatePlayer
@@ -76,7 +115,11 @@ local hook = require("_hook");
 -- @tparam string name name for this player
 -- @tparam int team Team number for this player
 
---- Called when a player joins the game world.
+--- Called when a player starts sending state updates.
+--
+-- This indicates that a player has finished loaded and started simulating.
+--
+-- This function is _not_ called for the local player.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event AddPlayer
@@ -85,7 +128,7 @@ local hook = require("_hook");
 -- @tparam string name name for this player
 -- @tparam int team Team number for this player
 
---- X
+--- Called when a player leaves the session.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event DeletePlayer
@@ -94,23 +137,44 @@ local hook = require("_hook");
 -- @tparam string name name for this player
 -- @tparam int team Team number for this player
 
---- X
+--- Called when a script-defined message arrives.
+--
+-- This function should return true if it handled the message and false, nil, or none if it did not.
+--
+-- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn} (TODO consider changing call type to stop after first true)
+-- @event Receive
+-- @see _hook.Add
+-- @tparam int from network player id of the sender.
+-- @tparam string type an arbitrary one-character string indicating the script-defined message type.
+-- @tparam ... data values passed as parameters to Send will arrive as parameters to Receive in the same order they were sent. Receive supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+-- @tparam[opt] HookResult priorResult prior event handler's result
+
+--- Called for any in-game chat command that was not handled by the system, allowing script-defined commands.
+--
+-- This function should return true if it handled the command and false, nil, or none if it did not.
+--
+-- LuaMission breaks the command into
+--
+-- Command is the string immediately following the '/'. For example, the command for "/foo" is "foo".
+--
+-- Arguments arrive as a string parameter to Command. For example "/foo 1 2 3" would receive "1 2 3".
+--
+-- The Lua string library provides several functions that can split the string into separate items.
+--
+-- @usage -- You can use string.match with captures if you have a specific argument list:
+-- local foo, bar, baz = string.match(arguments, "(%g+) (%g+) (%g+)")
+--
+-- @usage -- You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
+-- for arg in string.gmatch(arguments, "%g+") do ... end
+-- 
+-- @see http://lua-users.org/wiki/PatternsTutorial
+-- @see http://www.lua.org/manual/5.2/manual.html#6.4.1
 --
 -- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn}
 -- @event Command
 -- @see _hook.Add
 -- @tparam string command
--- @tparam ... Parameters
--- @tparam[opt] HookResult priorResult prior event handler's result
-
---- X
---
--- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn}
--- @event Receive
--- @see _hook.Add
--- @tparam int from
--- @tparam string type
--- @tparam ... data
+-- @tparam ... parameters
 -- @tparam[opt] HookResult priorResult prior event handler's result
 
 
@@ -378,6 +442,17 @@ function Start()
     debugprint("_api::/Start");
 end
 
+--- Called any time a game key is pressed.
+-- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
+-- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
+-- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
+-- @local
+function GameKey(key)
+    traceprint("_api::GameKey('" .. key .. "')");
+    hook.CallAllNoReturn( "GameKey", key );
+    traceprint("_api::/GameKey");
+end
+
 --- Called after any game object is created.
 -- Handle is the game object that was created.
 -- This function will get a lot of traffic so it should not do too much work.
@@ -417,7 +492,7 @@ end
 -- @local
 function Update(dtime)
     traceprint("_api::Update()");
-	local ttime = GetTime();
+    local ttime = GetTime();
     hook.CallAllNoReturn( "Update", dtime, ttime);
     traceprint("_api::/Update");
 end
@@ -460,11 +535,11 @@ end
 -- @local
 function Command(command, ...)
     traceprint("_api::Command('" .. command .. "')");
-	local args = ...;
+    local args = ...;
     debugprint(table.show(args));
-	
+    
     local retVal = nil;
-	retVal = hook.CallAllPassReturn("Command", command, table.unpack(args));
+    retVal = hook.CallAllPassReturn("Command", command, table.unpack(args));
     traceprint("_api::/Command");
     return retVal;
 end
@@ -476,11 +551,11 @@ end
 -- @local
 function Receive(from, type, ...)
     traceprint("_api::Receive(" .. from .. ", '" .. type .. "')");
-	local args = ...;
+    local args = ...;
     debugprint(table.show(args));
-	
+    
     local retVal = nil;
-	retVal = hook.CallAllPassReturn("Receive", from, type, table.unpack(args));
+    retVal = hook.CallAllPassReturn("Receive", from, type, table.unpack(args));
     traceprint("_api::/Receive");
     return retVal;
 end

@@ -101,7 +101,7 @@ end
 --- Run StateMachineIter.
 -- @tparam StateMachineIter self FuncArrayIter instance
 function StateMachineIter.run(self)
-    if not isstatemachineiter(self) then error("Paramater self must be StateMachineIter instance."); end
+    if not isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
     
     local machine = _statemachine.Machines[self.template];
     if machine == nil then return false; end
@@ -128,7 +128,7 @@ end
 -- @param name Name of the StateMachineIter Template (string)
 -- @param states State function table
 function _statemachine.Create( name, states )
-    if not isstring(name) then error("Paramater name must be a string."); end
+    if not isstring(name) then error("Parameter name must be a string."); end
     
     if (_statemachine.Machines[ name ] == nil) then
         _statemachine.Machines[ name ] = {};
@@ -142,8 +142,8 @@ end
 -- @tparam string state_key Initial state
 -- @tparam table init Initial data
 function _statemachine.Start( name, state_key, init )
-    if not isstring(name) then error("Paramater name must be a string."); end
-    if init ~= nil and not istable(init) then error("Paramater init must be table or nil."); end
+    if not isstring(name) then error("Parameter name must be a string."); end
+    if init ~= nil and not istable(init) then error("Parameter init must be table or nil."); end
     if (_statemachine.Machines[ name ] == nil) then error('StateMachineIter Template "' .. name .. '" not found.'); end
 
     return CreateStateMachineIter(name, -1, -1, state_key, init);
@@ -154,8 +154,8 @@ end
 -- @tparam int calls How many calls to wait
 -- @tparam string next_state Next state when timer hits zero
 function _statemachine.SleepCalls( calls, next_state )
-    if not isinteger(seconds) then error("Paramater seconds must be an integer."); end
-    if not isstring(next_state) then error("Paramater next_state must be a string."); end
+    if not isinteger(seconds) then error("Parameter seconds must be an integer."); end
+    if not isstring(next_state) then error("Parameter next_state must be a string."); end
 
     return {(function(state, ...)
         local seconds, next_state = ...;
@@ -172,11 +172,11 @@ end
 
 -- Wait a set period of time on this state.
 -- @tparam StateMachineIter state StateMachineIter data
--- @tparam int seconds How many seconds to wait
+-- @tparam number seconds How many seconds to wait
 -- @tparam string next_state Next state when timer hits zero
 function _statemachine.SleepSeconds( seconds, next_state )
-    if not isnumber(seconds) then error("Paramater seconds must be a number."); end
-    if not isstring(next_state) then error("Paramater next_state must be a string."); end
+    if not isnumber(seconds) then error("Parameter seconds must be a number."); end
+    if not isstring(next_state) then error("Parameter next_state must be a string."); end
 
     return {(function(state, ...)
         local seconds, next_state = ...;

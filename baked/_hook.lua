@@ -40,6 +40,8 @@
 --     end
 -- end, 9999)
 
+table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+
 local debugprint = debugprint or function() end;
 
 debugprint("_hook Loading");
@@ -49,7 +51,7 @@ local hook = {};
 hook.Hooks = {};
 hook.HookLookup = {};
 
-hook.SaveLoadHooks =  = {};
+hook.SaveLoadHooks = {};
 
 --- Table of all hooks.
 function hook.GetTable() return hook.Hooks end
@@ -261,7 +263,7 @@ end
 function hook.CallAllNoReturn( event, ... )
     local HookTable = hook.Hooks[ event ]
     if ( HookTable ~= nil ) then
-        for h in HookTable do 
+        for i, v in ipairs(HookTable) do
 			local lastreturn = { v.func( ... ) };
 			-- ignore the result value and just check Abort flag
 			if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) and lastreturn[1].Abort then
@@ -293,7 +295,7 @@ function hook.CallAllPassReturn( event, ... )
     local HookTable = hook.Hooks[ event ]
     local lastreturn = nil;
     if ( HookTable ~= nil ) then
-        for h in HookTable do 
+        for i, v in ipairs(HookTable) do
 			lastreturn = { v.func(appendvargs(hook.WrapResult(lastreturn), ... )) };
 			-- preserve the Abort flag, then unwrap the result
 			if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) then

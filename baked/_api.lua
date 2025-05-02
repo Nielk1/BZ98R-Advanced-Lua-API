@@ -7,6 +7,8 @@
 -- @module _api
 -- @author John "Nielk1" Klein
 
+table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+
 local debugprint = debugprint or function() end;
 local traceprint = traceprint or function() end;
 

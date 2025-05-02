@@ -31,6 +31,8 @@
 --     MissionData.TestFAI:run();
 -- end);
 
+table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+
 local debugprint = debugprint or function() end;
 
 debugprint("_funcarray Loading");
@@ -98,7 +100,8 @@ end
 
 --- Run FuncArrayIter.
 -- @tparam FuncArrayIter self FuncArrayIter instance
-function FuncArrayIter.run(self)
+-- @param ... Arguments to pass to the state function
+function FuncArrayIter.run(self, ...)
     if not isfuncarrayiter(self) then error("Parameter self must be FuncArrayIter instance."); end
     
     local machine = _funcarray.Machines[self.template];
@@ -106,11 +109,11 @@ function FuncArrayIter.run(self)
     if #machine < self.state_index then return false; end
     
     if isfunction(machine[self.state_index]) then
-        return true, machine[self.state_index](self);
+        return true, machine[self.state_index](self, ...);
     end
     if istable(machine[self.state_index]) then
-        if isfunction(machine[self.state_index][1]) then
-            return true, machine[self.state_index][1](self, table.unpack(machine[self.state_index][2]));
+        if isfunction(machine[self.state_index].f) then
+            return true, machine[self.state_index].f(self, table.unpack(machine[self.state_index].p), ...);
         end
     end
     return false;
@@ -128,9 +131,9 @@ end
 function _funcarray.Create( name, ... )
     if not isstring(name) then error("Parameter name must be a string."); end
     
-    if (_funcarray.Machines[ name ] == nil) then
-        _funcarray.Machines[ name ] = {};
-    end
+    --if (_funcarray.Machines[ name ] == nil) then
+    --    _funcarray.Machines[ name ] = {};
+    --end
     
     _funcarray.Machines[ name ] = { ... };
 end
@@ -143,21 +146,27 @@ function _funcarray.Start( name, init )
     if init ~= nil and not istable(init) then error("Parameter init must be table or nil."); end
     if (_funcarray.Machines[ name ] == nil) then error('FuncArrayIter Template "' .. name .. '" not found.'); end
 
-    return CreateFuncArrayIter(name, -1, -1, 1, init);
+    return CreateFuncArrayIter(name, nil, nil, 1, init);
 end
 
 --- Wait a set period of time on this state.
 -- @tparam number calls How many calls to wait
--- @tparam[opt] function early_exit Boolean function to check if the state should be exited early
+-- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next index
 function _funcarray.SleepCalls( calls, early_exit )
     if not isinteger(calls) then error("Parameter calls must be an integer."); end
     if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
-    return {(function(state, ...)
-        local calls, early_exit = ...;
-        if early_exit ~= nil and early_exit(state) then
-            state:next();
-            return;
+    return { f = function(state, calls, early_exit, ...)
+        if early_exit ~= nil then
+            local early_exit_result = early_exit(state, ...);
+            if (early_exit_result) then
+                if isinteger(early_exit_result) then
+                    state:switch(early_exit_result);
+                else
+                    state:next();
+                end
+                return;
+            end
         end
         if state.timer == nil then
             state.timer = calls;
@@ -167,29 +176,59 @@ function _funcarray.SleepCalls( calls, early_exit )
         else
             state.timer = state.timer - 1;
         end
-    end), {calls, early_exit}};
+    end, p = {calls, early_exit}};
+end
+
+--- Check if a set period of time has passed.
+-- This first time this is called the target time is latched in until true is returned.
+-- Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
+-- @tparam FuncArrayIter self FuncArrayIter instance
+-- @tparam[opt] number seconds How many seconds to wait
+-- @treturn bool True if the time is up
+function _funcarray.SecondsHavePassed(self, seconds)
+    if seconds == nil then
+        self.target_time = nil;
+        return true;
+    end
+    if self.target_time == nil then
+        self.target_time = _funcarray.game_time + seconds;
+        return false; -- start sleeping
+    elseif self.target_time <= _funcarray.game_time  then
+        self.target_time = nil; -- ensure that the timer is reset
+        return true; -- time is up
+    end
+    return false; -- still sleeping
 end
 
 --- Wait a set period of time on this state.
 -- @tparam number seconds How many seconds to wait
--- @tparam[opt] function early_exit Boolean function to check if the state should be exited early
+-- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next index
 function _funcarray.SleepSeconds( seconds, early_exit )
     if not isnumber(seconds) then error("Parameter seconds must be a number."); end
     if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
-    return {(function(state, ...)
-        local seconds, early_exit = ...;
-        if early_exit ~= nil and early_exit(state) then
-            state:next();
-            return;
+    return { f = function(state, seconds, early_exit, ...)
+        if early_exit ~= nil then
+            local early_exit_result = early_exit(state, ...);
+            if (early_exit_result) then
+                if isinteger(early_exit_result) then
+                    state:switch(early_exit_result);
+                else
+                    state:next();
+                end
+                return;
+            end
         end
-        if state.target_time == nil then
-            state.target_time = _funcarray.game_time + seconds;
-        elseif state.target_time <= _funcarray.game_time  then
+        --if state.target_time == nil then
+        --    state.target_time = _funcarray.game_time + seconds;
+        --elseif state.target_time <= _funcarray.game_time  then
+        --    state.target_time = nil; -- ensure that the timer is reset
+        --    state:next();
+        --end
+        if state:SecondsHavePassed(seconds) then
             state:next();
-            state.target_time = nil; -- ensure that the timer is reset
         end
-    end), {seconds, early_exit}};
+    end, p = {seconds, early_exit}};
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------

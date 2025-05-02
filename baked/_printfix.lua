@@ -5,7 +5,26 @@
 -- @module _printfix
 -- @author John "Nielk1" Klein
 
--- tail -F -n0 BZLogger.txt | grep -oP '(?<=\|LUA\|PRINT\|).*?(?=\|PRINT\|LUA\|)|(?<=\|LUA\|ERROR\|).*?(?=\|ERROR\|LUA\|)'
+--[[
+tail -F -n0 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '
+/^\|LUA\|PRINT\|/ { sub(/^\|LUA\|PRINT\|/, ""); sub(/\|PRINT\|LUA\|$/, ""); print; system("") }
+/^\|LUA\|ERROR\|/ { sub(/^\|LUA\|ERROR\|/, ""); sub(/\|ERROR\|LUA\|$/, ""); print "\033[31m" $0 "\033[0m"; system("") }
+'
+--]]
+
+--[[
+tail -F -n +1 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '
+/^\|LUA\|PRINT\|/ { sub(/^\|LUA\|PRINT\|/, ""); sub(/\|PRINT\|LUA\|$/, ""); print; system("") }
+/^\|LUA\|ERROR\|/ { sub(/^\|LUA\|ERROR\|/, ""); sub(/\|ERROR\|LUA\|$/, ""); print "\033[31m" $0 "\033[0m"; system("") }
+' | tee BZLuaLog.txt
+--]]
+
+--[[
+cat BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '
+/^\|LUA\|PRINT\|/ { sub(/^\|LUA\|PRINT\|/, ""); sub(/\|PRINT\|LUA\|$/, ""); print; system("") }
+/^\|LUA\|ERROR\|/ { sub(/^\|LUA\|ERROR\|/, ""); sub(/\|ERROR\|LUA\|$/, ""); print "\033[31m" $0 "\033[0m"; system("") }
+' > BZLuaLog.txt
+--]]
 
 local oldPrint = print;
 print = function(...)
@@ -19,10 +38,13 @@ print = function(...)
 end
 
 local oldError = error;
-error = function(a1, ...)
-    if isstring(a1) then
-        oldError("|LUA|ERROR|"..a.."|ERROR|LUA|");
-    else
-        oldError(a1, ...);
+error = function(...)
+    local args = {};
+    for i, v in ipairs({...}) do
+        args[i] = tostring(v); -- Convert each argument to a string
     end
+    for s in table.concat(args, "\t"):gmatch("[^\r\n]+") do
+        oldPrint("|LUA|ERROR|"..s.."|ERROR|LUA|");
+    end
+    oldError(...);
 end

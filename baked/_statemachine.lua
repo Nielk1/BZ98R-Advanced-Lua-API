@@ -7,7 +7,7 @@
 -- @author John "Nielk1" Klein
 -- @usage local statemachine = require("_statemachine");
 -- 
--- statemachine.Create("TestMachine2",
+-- statemachine.Create("TestMachine",
 -- {
 --     ["state_a"] = function(state)
 --         print("test " .. state.test1);
@@ -25,8 +25,44 @@
 --     end
 -- });
 -- 
+-- -- ordered state machine that supports state:next()
+-- statemachine.Create("OrderedTestMachine",
+-- {
+--     -- named state function
+--     { "state_a", function(state)
+--         print("test " .. state.test1);
+--         state:switch("state_b");
+--     end },
+--
+--     -- named magic state function (SleepSeconds)
+--     -- note nil next_state means next state by index
+--     { "state_b", statemachine.SleepSeconds(10) },
+--
+--     -- named state function with automatic name
+--     { nil, function(state)
+--         print("test " .. state.test2);
+--         state:switch("state_d");
+--     end },
+--
+--     -- named state function with automatic name
+--     { function(state)
+--         print("test " .. state.test2);
+--         state:switch("state_d");
+--     end },
+--
+--     -- magic state function (SleepSeconds)
+--     statemachine.SleepSeconds(15,"nonexistent_state"),
+--
+--     -- stsate function with automatic name
+--     function(state)
+--         print("test " .. state.test3);
+--         state:next();
+--     end
+-- });
+--
 -- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
---     MissionData.TestSMI = statemachine.Start("TestMachine2","state_a",{test1='d',test2="e",test3="f"});
+--     MissionData.TestSMI = statemachine.Start("TestMachine","state_a",{test1='d',test2="e",test3="f"});
+--     MissionData.TestSMI = statemachine.Start("OrderedTestMachine","state_a",{test1='d',test2="e",test3="f"});
 -- end);
 -- 
 -- hook.Add("Update", "Custom_Update", function(turn)

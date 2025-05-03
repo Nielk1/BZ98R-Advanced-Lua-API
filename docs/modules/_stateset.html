@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#StateSetRunner___Core">StateSetRunner - Core </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><strong>_stateset</strong></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_stateset</code></h1>
+<p>BZ98R LUA Extended API StateSetRunner.</p>
+<p>
+
+ Function Array and Function Array Iterator for serial event sequences across game turns.
+
+ Dependencies: <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local stateset = require(&quot;_stateset&quot;);
+
+-- TODO
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#StateSet.Add">StateSet.Add (self, name, state[, permitBased])</a></td>
+	<td class="summary">Add a state to the StateSet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isstatesetrunner">isstatesetrunner (object)</a></td>
+	<td class="summary">Is this object an instance of StateSetRunner?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateSetRunner.run">StateSetRunner.run (self, ...)</a></td>
+	<td class="summary">Run StateSetRunner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateSetRunner.on">StateSetRunner.on (self, name)</a></td>
+	<td class="summary">Set state on.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateSetRunner.off">StateSetRunner.off (self, name)</a></td>
+	<td class="summary">Set state off.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Create">Create (name)</a></td>
+	<td class="summary">Creates an StateSetRunner Template with the given indentifier.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Start">Start (name, init)</a></td>
+	<td class="summary">Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.</td>
+	</tr>
+</table>
+<h2><a href="#StateSetRunner___Core">StateSetRunner - Core </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#StateSetRunner.Save">StateSetRunner.Save (self)</a></td>
+	<td class="summary">Save event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateSetRunner.Load">StateSetRunner.Load (data)</a></td>
+	<td class="summary">Load event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateSetRunner.BulkLoad">StateSetRunner.BulkLoad ()</a></td>
+	<td class="summary">BulkLoad event function.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "StateSet.Add"></a>
+    <strong>StateSet.Add (self, name, state[, permitBased])</strong>
+    </dt>
+    <dd>
+    Add a state to the StateSet.
+ If the state is basic either active or inactive based on last on/off call.
+ If the state is permit based it is active if the on count is greater than 0.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateSet</span></span>
+         StateSet instance
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the state
+        </li>
+        <li><span class="parameter">state</span>
+            <span class="types"><span class="type">function</span></span>
+         Function to be called when the state is active, should return true if the state did something.
+        </li>
+        <li><span class="parameter">permitBased</span>
+            <span class="types"><span class="type">bool</span></span>
+         If true, the state is permit based
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">StateSet</span></span>
+        For function chaining
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isstatesetrunner"></a>
+    <strong>isstatesetrunner (object)</strong>
+    </dt>
+    <dd>
+    Is this object an instance of StateSetRunner?
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         Object in question
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateSetRunner.run"></a>
+    <strong>StateSetRunner.run (self, ...)</strong>
+    </dt>
+    <dd>
+    Run StateSetRunner.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateSetRunner</span></span>
+         StateSetRunner instance
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments to pass to the state function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        True if at least one state was found and executed and returned true
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateSetRunner.on"></a>
+    <strong>StateSetRunner.on (self, name)</strong>
+    </dt>
+    <dd>
+    Set state on.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateSetRunner</span></span>
+         StateSetRunner instance
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the state
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">StateSetRunner</span></span>
+        For function chaining
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateSetRunner.off"></a>
+    <strong>StateSetRunner.off (self, name)</strong>
+    </dt>
+    <dd>
+    Set state off.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateSetRunner</span></span>
+         StateSetRunner instance
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the state
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">StateSetRunner</span></span>
+        For function chaining
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Create"></a>
+    <strong>Create (name)</strong>
+    </dt>
+    <dd>
+    Creates an StateSetRunner Template with the given indentifier.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the StateSetRunner Template
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">StateSet</span></span>
+        StateSet for calling Add and AddPermit, can not be saved.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Start"></a>
+    <strong>Start (name, init)</strong>
+    </dt>
+    <dd>
+    Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the StateSetRunner Template
+        </li>
+        <li><span class="parameter">init</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Initial data
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="StateSetRunner___Core"></a>StateSetRunner - Core </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "StateSetRunner.Save"></a>
+    <strong>StateSetRunner.Save (self)</strong>
+    </dt>
+    <dd>
+    Save event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         StateSetRunner instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ...
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateSetRunner.Load"></a>
+    <strong>StateSetRunner.Load (data)</strong>
+    </dt>
+    <dd>
+    Load event function.
+<p> INTERNAL USE.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateSetRunner.BulkLoad"></a>
+    <strong>StateSetRunner.BulkLoad ()</strong>
+    </dt>
+    <dd>
+    BulkLoad event function.
+<p> INTERNAL USE.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-05-03 02:20:38 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

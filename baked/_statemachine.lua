@@ -119,8 +119,8 @@ StateMachineIter.__type = "StateMachineIter";
 
 --- Create StateMachineIter
 -- @tparam string name StateMachineIter template
--- @tparam int timer Timer's value, -1 for not set
--- @tparam int target_time TargetTurn's value, -1 for not set
+-- @tparam int timer Timer's value, nil for not set
+-- @tparam int target_time TargetTurn's value, nil for not set
 -- @param state_key Current state, string name or integer index if state machine is ordered
 -- @tparam table values Table of values embeded in the StateMachineIter
 local CreateStateMachineIter = function(name, timer, target_time, state_key, values)

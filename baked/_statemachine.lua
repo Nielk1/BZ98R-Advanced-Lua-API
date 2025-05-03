@@ -61,12 +61,13 @@
 -- });
 --
 -- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
---     MissionData.TestSMI = statemachine.Start("TestMachine","state_a",{test1='d',test2="e",test3="f"});
---     MissionData.TestSMI = statemachine.Start("OrderedTestMachine","state_a",{test1='d',test2="e",test3="f"});
+--     MissionData.TestSMI1 = statemachine.Start("TestMachine","state_a",{test1='d',test2="e",test3="f"});
+--     MissionData.TestSMI2 = statemachine.Start("OrderedTestMachine","state_a",{test1='d',test2="e",test3="f"});
 -- end);
 -- 
 -- hook.Add("Update", "Custom_Update", function(turn)
---     MissionData.TestSMI:run();
+--     MissionData.TestSMI1:run();
+--     MissionData.TestSMI2:run();
 -- end);
 
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
@@ -245,18 +246,17 @@ function _statemachine.Create( name, ... )
     --    _statemachine.Machines[ name ] = {};
     --end
 
-    --debugprint(table.show(states, "StateMachineIter states: "));
+    --debugprint(table.show({...}, "StateMachineIter states: "));
 
     local is_ordered = true;
     local has_any_named = false;
     local super_states = {};
-    for i, v in pairs({...}) do
+    for _, v in ipairs({...}) do
         if isfunction(v) then
             -- we are a bare function, so we are ordered but have no name
             -- func
             table.insert(super_states, {v}); -- wrap the state into an array of 1
-        end
-        if istable(v) then
+        elseif istable(v) then
             -- we have a table, it could be an array, a map, or a special state function like sleep
             -- { ... }
             if isfunction(v.f) and istable(v.p) then

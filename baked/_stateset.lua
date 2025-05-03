@@ -1,13 +1,34 @@
 --- BZ98R LUA Extended API StateSetRunner.
 -- 
--- Function Array and Function Array Iterator for serial event sequences across game turns.
+-- Simplistic system to run multiple functions or "states" in a single call.
+-- The main use case of this is to hold multiple toggelable objectives.
+-- If you want to do something more complex, use the hook module instead.
+-- Like most similar constructs State Set Runners have internal data storage and can be saved and loaded.
 -- 
 -- Dependencies: @{_api}, @{_hook}
 -- @module _stateset
 -- @author John "Nielk1" Klein
 -- @usage local stateset = require("_stateset");
 -- 
--- -- TODO
+-- stateset.Create("TestSet")
+--     :Add("state_a", function(runner, a, b)
+--         print("test " .. runner.test1 .. " " .. tostring(a) .. " " .. tostring(b));
+--     end)
+--     :Add("state_a", function(runner, a, b)
+--         print("test " .. runner.test2 .. " " .. tostring(a) .. " " .. tostring(b));
+--     end, true);
+--
+-- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
+--     MissionData.TestSet = statemachine.Start("TestSet",{test1='d',test2="e");
+--     MissionData.TestSet:on("state_a"); -- state true
+--     MissionData.TestSet:on("state_b"); -- state 1
+--     MissionData.TestSet:on("state_b"); -- state 2
+--     MissionData.TestSet:off("state_b"); -- state 1, still on as this is a permit based state
+-- end);
+-- 
+-- hook.Add("Update", "Custom_Update", function(turn)
+--     MissionData.TestSMI:run(1, 2);
+-- end);
 
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 
@@ -23,6 +44,7 @@ local _stateset = {};
 _stateset.Sets = {};
 
 local StateSet = {};
+StateSet.__index = StateSet;
 
 --- Add a state to the StateSet.
 -- If the state is basic either active or inactive based on last on/off call.
@@ -33,6 +55,7 @@ local StateSet = {};
 -- @tparam[opt] bool permitBased If true, the state is permit based
 -- @treturn StateSet For function chaining
 function StateSet.Add(self, name, state, permitBased)
+    debugprint("Add state '"..name.."' to StateSet '"..self.template.."'.", permitBased);
     if permitBased then
         _stateset.Sets[self.template][name] = { f = state, p = true };
     else
@@ -51,7 +74,6 @@ end
 --- StateSetRunner.
 -- An object containing all functions and data related to an StateSetRunner.
 local StateSetRunner = {}; -- the table representing the class, which will double as the metatable for the instances
---GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 StateSetRunner.__index = function(table, key)
   local retVal = rawget(table, key);
   if retVal ~= nil then return retVal; end
@@ -103,7 +125,9 @@ function StateSetRunner.run(self, ...)
         if v then
             local state = sets[name].f;
             if isfunction(state) then
-                foundState = foundState or state(...);
+                foundState = foundState or state(self, ...);
+            elseif isstatemachineiter(state) then
+                foundState = foundState or state:run(self, ...);
             end
         end
     end
@@ -138,15 +162,16 @@ end
 --- Set state off.
 -- @tparam StateSetRunner self StateSetRunner instance
 -- @tparam string name Name of the state
+-- @tparam[opt] bool force If true, the state is set off regardless of the current permits
 -- @treturn StateSetRunner For function chaining
-function StateSetRunner.off(self, name)
+function StateSetRunner.off(self, name, force)
     if not isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not isstring(name) then error("Parameter name must be string."); end
     local sets = _stateset.Sets[ self.template ];
     if not istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
-    if state.p then
+    if state.p and not force then
         local activation = self.active_states[name];
         if activation ~= nil then
             self.active_states[name] = activation - 1;
@@ -164,14 +189,17 @@ end
 -- @treturn StateSet StateSet for calling Add and AddPermit, can not be saved.
 function _stateset.Create( name )
     if not isstring(name) then error("Parameter name must be a string."); end
+
+    debugprint("Create StateSetRunner Template '"..name.."'.", _stateset.Sets[name] ~= nil);
     
     --if (_stateset.Machines[ name ] == nil) then
     --    _stateset.Machines[ name ] = {};
     --end
     
-    local self = setmetatable({}, StateSet);
-    _stateset.Sets[ name ] = self;
-    return self;
+    local state = setmetatable({}, StateSet);
+    state.template = name;
+    _stateset.Sets[ name ] = state;
+    return state;
 end
 
 --- Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.

@@ -43,8 +43,16 @@ error = function(...)
     for i, v in ipairs({...}) do
         args[i] = tostring(v); -- Convert each argument to a string
     end
+
+    -- Capture the stack trace at the appropriate level
+    local traceback = debug.traceback("", (level or 2))
+
     for s in table.concat(args, "\t"):gmatch("[^\r\n]+") do
         oldPrint("|LUA|ERROR|"..s.."|ERROR|LUA|");
     end
+    for s in ("Traceback:\n" .. traceback):gmatch("[^\r\n]+") do
+        oldPrint("|LUA|ERROR|"..s.."|ERROR|LUA|");
+    end
+
     oldError(...);
 end

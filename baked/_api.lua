@@ -567,7 +567,7 @@ end
 debugprint("_api Loaded");
 
 if GameVersion ~= nil then
-    print("GameVersion v" .. GameVersion .. " detected");
+    print("GameVersion " .. GameVersion .. " detected");
 else
     print("GameVersion unknown");
 end

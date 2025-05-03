@@ -121,7 +121,7 @@ StateMachineIter.__type = "StateMachineIter";
 -- @tparam string name StateMachineIter template
 -- @tparam int timer Timer's value, -1 for not set
 -- @tparam int target_time TargetTurn's value, -1 for not set
--- @tparam string state_key Current state
+-- @param state_key Current state, string name or integer index if state machine is ordered
 -- @tparam table values Table of values embeded in the StateMachineIter
 local CreateStateMachineIter = function(name, timer, target_time, state_key, values)
   local self = setmetatable({}, StateMachineIter);
@@ -167,12 +167,22 @@ end
 function nextState(state)
     local flags = _statemachine.MachineFlags[ state.template ];
     if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
-    --if flags == nil or not flags.is_ordered then return nil; end
-    local index = flags.name_to_index[ state.state_key ];
+    
+    local index = state.state_key;
+    if flags.index_to_name ~= nil then
+        -- we are an ordered state machine AND don't use numeric keys
+        index = flags.name_to_index[ state.state_key ];
+    end
     if index == nil then
         return nil;
     end
+
     index = index + 1;
+    if flags.index_to_name == nil then
+        -- we use numeric keys, so we can just return the index
+        return index;
+    end
+
     if index > #flags.index_to_name then
         return nil;
     end
@@ -200,26 +210,33 @@ function StateMachineIter.next(self)
     local old_key = self.state_key
     self.state_key = nextState(self);
 
-    debugprint("StateMachineIter '"..self.template.."' next state '"..old_key.."' to '"..self.state_key.."'");
+    debugprint("StateMachineIter '"..self.template.."' next state '"..tostring(old_key).."' to '"..tostring(self.state_key).."'");
 end
 
 --- Switch StateMachineIter State.
 -- @tparam StateMachineIter self StateMachineIter instance
--- @tparam string key State to switch to
+-- @tparam string key State to switch to (will also accept state index if the StateMachineIter is ordered)
 function StateMachineIter.switch(self, key)
+    if isinteger(key) then
+        local flags = _statemachine.MachineFlags[ self.template ];
+        if flags ~= nil and flags.is_ordered and flags.index_to_name ~= nil then
+            -- we are an ordered state machine AND don't use numeric indexes
+            key = self.index_to_name[key];
+        end
+    end
     local old_key = self.state_key
     self.state_key = key;
 
-    debugprint("StateMachineIter '"..self.template.."' switch state '"..old_key.."' to '"..self.state_key.."'");
+    debugprint("StateMachineIter '"..self.template.."' switch state '"..tostring(old_key).."' to '"..tostring(self.state_key).."'");
 end
 
 --- Creates an StateMachineIter Template with the given indentifier.
 -- @param name Name of the StateMachineIter Template (string)
--- @param states State function table, can be a table of named state functions or an array of state descriptors.
+-- @param ... State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
 -- State descriptors are tables with the first element being the state name and the second element being the state function.
 -- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
 -- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
-function _statemachine.Create( name, states )
+function _statemachine.Create( name, ... )
     if not isstring(name) then error("Parameter name must be a string."); end
     
     debugprint("Creating StateMachineIter Template '"..name.."'");
@@ -230,69 +247,189 @@ function _statemachine.Create( name, states )
 
     --debugprint(table.show(states, "StateMachineIter states: "));
 
-    if states[1] ~= nil then
-        -- this is probably an array instead of just a table
+    local is_ordered = true;
+    local has_any_named = false;
+    local super_states = {};
+    for i, v in pairs({...}) do
+        if isfunction(v) then
+            -- we are a bare function, so we are ordered but have no name
+            -- func
+            table.insert(super_states, {v}); -- wrap the state into an array of 1
+        end
+        if istable(v) then
+            -- we have a table, it could be an array, a map, or a special state function like sleep
+            -- { ... }
+            if isfunction(v.f) and istable(v.p) then
+                -- this is a special state function like sleep, so we are ordered but have no name
+                -- { f = func, p = { ... } } -- special state function
+                table.insert(super_states, {v}); -- wrap the state into an array of 1
+            elseif v[1] ~= nil then
+                -- this is probably an array so there's a few options
+                -- { ... }
 
-        debugprint("StateMachineIter states appear to be array");
-
-        local new_states = {};
-        local state_order = {};
-        local state_indexes = {};
-        for i, v in ipairs(states) do
-            local state_name = nil;
-            local state_func = nil;
-
-            if istable(v) then
-                state_name = v[1]; -- first item
-                state_func = v[2]; -- second item
-
-                -- if state_func isn't set and the state_name isn't a string, move it over to state_func
-                if state_func == nil and state_name ~= nil and not isstring(state_name) then
-                    state_func = state_name
-                    state_name = nil;
-                end
-
-                if state_func == nil and state_name == nil then
-                    -- we might have a rich state descriptor here
-                    if isfunction(v.f) and istable(v.p) then
-                        state_func = v
-                        state_name = nil; -- no name since we got
+                if #v == 1 then
+                    -- only one item
+                    if isfunction(v[1]) then
+                        -- function wrapped in a state descriptor that lacks a name
+                        -- { func }
+                        table.insert(super_states, {v}); -- wrap the state into an array of 1
+                    elseif isfunction(v[1].f) and istable(v[1].p) then
+                        -- special state function wrapped in a state descriptor that lacks a name
+                        -- { { f = func, p = { ... } } } -- special state function
+                        table.insert(super_states, {v}); -- wrap the state into an array of 1
                     else
-                        error("StateMachineIter state must be n array of state descriptors");
+                        error("StateMachineIter state descriptor must be a function, a special state function, or collection there of.");
+                    end
+                elseif #v == 2 then
+                    -- two items
+                    -- { ?, ? }
+                    if v[1] == nil then
+                        -- actually the name is nil, so nevermind
+                        -- { nil, ? }
+                        table.insert(super_states, {v}); -- wrap the state into an array of 1
+                    elseif isstring(v[1]) then
+                        -- the first item is a string so we are a named state descriptor
+                        -- { "name", ? }
+                        has_any_named = true;
+                        table.insert(super_states, {v}); -- wrap the state into an array of 1
+                    else
+                        -- an array of items that happens to be length 2 and didn't fit another known structure
+                        -- { ?, ? }
+                        table.insert(super_states, v); -- no need to wrap
+
+                        -- double check if we have any named state descriptors in this array of state descriptors
+                        if not has_any_named then
+                            for _, v2 in ipairs(v) do
+                                if isstring(v2[1]) then
+                                    has_any_named = true;
+                                    break;
+                                end
+                            end
+                        end
+                    end
+                else
+                    -- we are an array of state descriptors
+                    -- { ?, ?, ... }
+                    table.insert(super_states, v);
+
+                    -- double check if we have any named state descriptors in this array of state descriptors
+                    if not has_any_named then
+                        for _, v2 in ipairs(v) do
+                            if isstring(v2[1]) then
+                                has_any_named = true;
+                                break;
+                            end
+                        end 
                     end
                 end
-            elseif isfunction(v) then
-                state_name = nil; -- no name since we got a bare function
-                state_func = v;
+            else
+                -- at this point we have to be a table that is not an array and not a special state function
+                -- { ... }
+                if next(v) == nil then
+                    -- empty table so let's just stuff it to be safe
+                    -- { }
+                    table.insert(super_states, {v}); -- wrap the state into an array of 1
+                else
+                    is_ordered = false; -- we aren't ordered, we know this since we're not a single item or an array, we're a map
+                    has_any_named = true; -- assume we have named state descriptors since we are a map
+                    table.insert(super_states, v);
+                end
             end
-
-            if state_name == nil then
-                state_name = "state_" .. i;
-            end
-
-            if state_func == nil then
-                error("StateMachineIter state must be n array of state descriptors");
-            end
-
-            debugprint("StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
-
-            new_states[state_name] = state_func;
-            state_indexes[state_name] = i;
-            table.insert(state_order, state_name);
+        else
+            error("StateMachineIter state paramaters must be a collection of state descriptors or state descriptor.");
         end
-        _statemachine.Machines[ name ] = new_states;
-        _statemachine.MachineFlags[ name ] = {
-            is_ordered = true,
-            index_to_name = state_order,
-            name_to_index = state_indexes
-        };
-
-        --debugprint(table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
-        --debugprint(table.show(_statemachine.MachineFlags[ name ], "StateMachineIter flags: "));
-        return;
     end
+
+    local new_states = {};
+    local state_order = nil;
+    local state_indexes = nil;
+
+    if is_ordered and has_any_named then
+        -- we need mappings since there are names
+        state_order = {};
+        state_indexes = {};
+    end
+
+    local accumulator = 1;
+    for iCol, states in ipairs(super_states) do
+        if states[1] ~= nil then
+            -- the first item in the state exists, so we're an array
+            for i, v in ipairs(states) do
+                local state_name = nil;
+                local state_func = nil;
+
+                if istable(v) then
+                    state_name = v[1]; -- first item
+                    state_func = v[2]; -- second item
+
+                    -- if state_func isn't set and the state_name isn't a string, move it over to state_func
+                    if state_func == nil and state_name ~= nil and not isstring(state_name) then
+                        state_func = state_name
+                        state_name = nil;
+                    end
+
+                    if state_func == nil and state_name == nil then
+                        -- we might have a rich state descriptor here
+                        if isfunction(v.f) and istable(v.p) then
+                            state_func = v
+                            state_name = nil; -- no name since we got
+                        else
+                            error("StateMachineIter state must be n array of state descriptors");
+                        end
+                    end
+                elseif isfunction(v) then
+                    state_name = nil; -- no name since we got a bare function
+                    state_func = v;
+                end
+
+                if state_name == nil then
+                    state_name = "state_" .. iCol .. "_" .. i;
+                end
+
+                if state_func == nil then
+                    error("StateMachineIter state must be n array of state descriptors");
+                end
+
+                debugprint("StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
+
+                if has_any_named then
+                    -- we have named states in addition to be ordered, so we'll use the lookup table
+                    new_states[state_name] = state_func;
+                    state_indexes[state_name] = accumulator;
+                    table.insert(state_order, state_name);
+                    accumulator = accumulator + 1;
+                else
+                    -- we don't have named states, so we'll just be an array
+                    table.insert(new_states, state_func);
+                end
+            end
+        else
+            -- we're in a table so just stuff them into the state collection
+            for state_name, state_func in pairs(states) do
+                if not isstring(state_name) then
+                    error("StateMachineIter state must be a map of state descriptors");
+                end
+
+                debugprint("StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
+
+                new_states[state_name] = state_func;
+                state_indexes[state_name] = accumulator;
+                table.insert(state_order, state_name);
+                accumulator = accumulator + 1;
+            end
+        end
+    end
+    _statemachine.Machines[ name ] = new_states;
+    _statemachine.MachineFlags[ name ] = {
+        is_ordered = is_ordered,
+        index_to_name = state_order,
+        name_to_index = state_indexes
+    };
+
+    --debugprint(table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
+    --debugprint(table.show(_statemachine.MachineFlags[ name ], "StateMachineIter flags: "));
     
-    _statemachine.Machines[ name ] = states;
+    --_statemachine.Machines[ name ] = states;
     --_statemachine.MachineFlags[ name ] = {};
 
     --debugprint(table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
@@ -300,7 +437,7 @@ end
 
 --- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
 -- @tparam string name Name of the StateMachineIter Template
--- @tparam string state_key Initial state
+-- @param state_key Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
 -- @tparam table init Initial data
 function _statemachine.Start( name, state_key, init )
     if not isstring(name) then error("Parameter name must be a string."); end
@@ -308,10 +445,19 @@ function _statemachine.Start( name, state_key, init )
     if (_statemachine.Machines[ name ] == nil) then error('StateMachineIter Template "' .. name .. '" not found.'); end
 
     if state_key == nil then
-        state_key = _statemachine.MachineFlags[ name ].index_to_name[1];
+        local flags = _statemachine.MachineFlags[ name ];
+        if flags ~= nil and flags.is_ordered then
+            if flags.index_to_name ~= nil then
+                -- we are an ordered state machine AND don't use numeric keys
+                state_key = flags.index_to_name[1];
+            else
+                -- we use numeric keys, so we can just set it to 1
+                state_key = 1;
+            end
+        end
     end
 
-    debugprint("Starting StateMachineIter Template '"..name.."' with state '"..state_key.."'");
+    debugprint("Starting StateMachineIter Template '"..name.."' with state '"..tostring(state_key).."'");
 
     return CreateStateMachineIter(name, nil, nil, state_key, init);
 end

@@ -6,8 +6,6 @@
 -- @module _gameobject
 -- @author John "Nielk1" Klein
 
-print("\27[34m----START MISSION----\27[0m");
-
 local debugprint = debugprint or function() end;
 
 debugprint("_gameobject Loading");
@@ -842,8 +840,9 @@ end
 -- @tparam string name Name of the objective
 function GameObject.SetObjectiveName(self, name)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isstring(odf) then error("Parameter odf must be a string."); end
+    if not isstring(name) then error("Parameter name must be a string."); end
     SetObjectiveName(self:GetHandle(), name);
+    self.IsObjective = true;
 end
 
 --- Sets the game object's visible name.
@@ -853,10 +852,19 @@ end
 -- @see GameObject.SetObjectiveName
 function GameObject.SetName(self, name)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isstring(odf) then error("Parameter odf must be a string."); end
+    if not isstring(name) then error("Parameter name must be a string."); end
     SetName(self:GetHandle(), name);
+    self.IsObjective = nil;
 end
-  
+
+--- If the game object an objective?
+-- @tparam GameObject self GameObject instance
+-- @treturn bool true if the game object is an objective
+function GameObject.IsObjective(self)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    return self.IsObjective;
+end
+
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Other

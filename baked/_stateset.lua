@@ -235,18 +235,6 @@ function StateSetRunner.Load(data)
     return CreateStateSetRunner(data.template, data.timer, data.target_time, data.state_index, data.addonData);
 end
 
---- BulkLoad event function.
---
--- INTERNAL USE.
-function StateSetRunner.BulkLoad()
-    _stateset.game_time = GetTime();
-end
-
-hook.Add("Update", "_stateset_Update", function(dtime, ttime)
-    -- consider accessing total game time instead
-    _stateset.game_time = ttime;
-end, 9999);
-
 _api.RegisterCustomSavableType(StateSetRunner);
 
 debugprint("_stateset Loaded");

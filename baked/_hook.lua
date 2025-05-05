@@ -7,6 +7,7 @@
 -- @usage local hook = require("_hook");
 -- 
 -- -- optional priority overrides, only applies when adding hooks
+-- -- consider removing this now that we have a centralized _config.lua
 -- _api_hook_priority_override = {
 --     ["Update"] = {
 --         ["_statemachine_Update"] = 10000;

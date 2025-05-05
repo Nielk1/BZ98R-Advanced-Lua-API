@@ -6,10 +6,13 @@
 -- @module _gameobject
 -- @author John "Nielk1" Klein
 
+print("\27[34m----START MISSION----\27[0m");
+
 local debugprint = debugprint or function() end;
 
 debugprint("_gameobject Loading");
 
+local config = require("_config");
 local _api = require("_api");
 local hook = require("_hook");
 
@@ -33,10 +36,10 @@ local GameObjectDead = {};
 -- An object containing all functions and data related to a game object.
 GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
-GameObject.__index = function(table, key)
-  local retVal = rawget(table, key);
+GameObject.__index = function(dtable, key)
+  local retVal = rawget(dtable, key);
   if retVal ~= nil then return retVal; end
-  if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then return rawget(rawget(table, "addonData"), key); end
+  if rawget(dtable, "addonData") ~= nil and rawget(rawget(dtable, "addonData"), key) ~= nil then return rawget(rawget(dtable, "addonData"), key); end
   return rawget(GameObject, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
 end
 GameObject.__newindex = function(dtable, key, value)
@@ -806,6 +809,56 @@ function GameObject.SetPerceivedTeam(self, team)
 end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Objective Marker
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- @section
+-- These functions control objective markers.
+-- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
+
+--- Sets the game object as an objective to all teams.
+-- @tparam GameObject self GameObject instance
+function GameObject.SetObjectiveOn(self)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    SetObjectiveOn(self:GetHandle());
+end
+
+--- Sets the game object back to normal.
+-- @tparam GameObject self GameObject instance
+function GameObject.SetObjectiveOff(self)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    SetObjectiveOff(self:GetHandle());
+end
+
+--- Sets the game object's visible name.
+-- @tparam GameObject self GameObject instance
+-- @treturn string Name of the objective/object
+function GameObject.GetObjectiveName(self)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    return GetObjectiveName(self:GetHandle());
+end
+
+--- Sets the game object's visible name.
+-- @tparam GameObject self GameObject instance
+-- @tparam string name Name of the objective
+function GameObject.SetObjectiveName(self, name)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not isstring(odf) then error("Parameter odf must be a string."); end
+    SetObjectiveName(self:GetHandle(), name);
+end
+
+--- Sets the game object's visible name.
+-- (Technicly a unique function, but effectively an alias for SetObjectiveName)
+-- @tparam GameObject self GameObject instance
+-- @tparam string name Name of the objective
+-- @see GameObject.SetObjectiveName
+function GameObject.SetName(self, name)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not isstring(odf) then error("Parameter odf must be a string."); end
+    SetName(self:GetHandle(), name);
+end
+  
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Other
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- @section
@@ -861,11 +914,18 @@ function GameObject.GetNation(self)
     return GetNation(self:GetHandle());
 end
 
+--- Get ClassSig of GameObject
+-- @tparam GameObject self GameObject instance
+function GameObject.GetClassSig(self)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    return GetClassSig(self:GetHandle());
+end
+
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();
     debugprint('Decaying object ' .. tostring(objectId));
     GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (handle might be re-used)
-end, -9999);
+end, config.get("hook_priority.DeleteObject.GameObject"));
 
 hook.Add("Update", "GameObject_Update", function(dtime)
     for k,v in pairs(GameObjectDead) do
@@ -873,7 +933,7 @@ hook.Add("Update", "GameObject_Update", function(dtime)
         GameObjectAltered[k] = nil; -- remove any strong reference for being altered
         GameObjectDead[k] = nil; -- remove any strong reference for being dead
     end
-end, 9999);
+end, config.get("hook_priority.Update.GameObject"));
 
 _api.RegisterCustomSavableType(GameObject);
 

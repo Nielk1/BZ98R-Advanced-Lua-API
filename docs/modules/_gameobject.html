@@ -34,6 +34,7 @@
 <ul>
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#Tables">Tables</a></li>
+<li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Core">Core </a></li>
 <li><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></li>
 <li><a href="#Orders">Orders </a></li>
@@ -49,8 +50,10 @@
 <ul class="nowrap">
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_config.html">_config</a></li>
   <li><strong>_gameobject</strong></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
@@ -87,6 +90,29 @@
 	<tr>
 	<td class="name" nowrap><a href="#GameObject">GameObject</a></td>
 	<td class="summary">GameObject.</td>
+	</tr>
+</table>
+<h2><a href="#Objective_Marker">Objective Marker </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetObjectiveOn">GameObject.SetObjectiveOn (self)</a></td>
+	<td class="summary">Sets the game object as an objective to all teams.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetObjectiveOff">GameObject.SetObjectiveOff (self)</a></td>
+	<td class="summary">Sets the game object back to normal.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetObjectiveName">GameObject.GetObjectiveName (self)</a></td>
+	<td class="summary">Sets the game object's visible name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetObjectiveName">GameObject.SetObjectiveName (self, name)</a></td>
+	<td class="summary">Sets the game object's visible name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetName">GameObject.SetName (self, name)</a></td>
+	<td class="summary">Sets the game object's visible name.</td>
 	</tr>
 </table>
 <h2><a href="#Core">Core </a></h2>
@@ -428,6 +454,10 @@
 	<td class="name" nowrap><a href="#GameObject.GetNation">GameObject.GetNation (self)</a></td>
 	<td class="summary">Get nation of GameObject</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetClassSig">GameObject.GetClassSig (self)</a></td>
+	<td class="summary">Get ClassSig of GameObject</td>
+	</tr>
 </table>
 
 <br/>
@@ -479,6 +509,138 @@
 
 
 
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Objective_Marker"></a>Objective Marker </h2>
+
+          <div class="section-description">
+           functions control objective markers.
+ Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.SetObjectiveOn"></a>
+    <strong>GameObject.SetObjectiveOn (self)</strong>
+    </dt>
+    <dd>
+    Sets the game object as an objective to all teams.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetObjectiveOff"></a>
+    <strong>GameObject.SetObjectiveOff (self)</strong>
+    </dt>
+    <dd>
+    Sets the game object back to normal.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetObjectiveName"></a>
+    <strong>GameObject.GetObjectiveName (self)</strong>
+    </dt>
+    <dd>
+    Sets the game object's visible name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Name of the objective/object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetObjectiveName"></a>
+    <strong>GameObject.SetObjectiveName (self, name)</strong>
+    </dt>
+    <dd>
+    Sets the game object's visible name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the objective
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetName"></a>
+    <strong>GameObject.SetName (self, name)</strong>
+    </dt>
+    <dd>
+    Sets the game object's visible name.
+ (Technicly a unique function, but effectively an alias for SetObjectiveName)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the objective
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_gameobject.html#GameObject.SetObjectiveName">GameObject.SetObjectiveName</a>
+    </ul>
 
 
 </dd>
@@ -2619,6 +2781,27 @@
 
 
 </dd>
+    <dt>
+    <a name = "GameObject.GetClassSig"></a>
+    <strong>GameObject.GetClassSig (self)</strong>
+    </dt>
+    <dd>
+    Get ClassSig of GameObject
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
 
 
@@ -2626,7 +2809,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-03 02:20:38 </i>
+<i style="float:right;">Last updated 2025-05-04 20:30:56 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

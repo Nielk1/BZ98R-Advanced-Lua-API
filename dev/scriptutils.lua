@@ -58,6 +58,7 @@
 -- @treturn message
 -- @tparam string filename
 -- @function AudioMessage
+function AudioMessage(filename) end
 
 --- Returns true if the audio message has stopped. Returns false otherwise.
 -- @treturn boolean
@@ -109,6 +110,7 @@
 -- @treturn handle
 -- @tparam string label
 -- @function GetHandle
+function GetHandle(label) end
 
 --- Creates a game object with the given odf name and team number at the location of a game object.
 -- Returns the handle of the created object if it created one. Returns nil if it failed.
@@ -210,6 +212,7 @@
 -- @treturn boolean
 -- @tparam handle h
 -- @function IsAlive
+function IsAlive(h) end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled and piloted. Returns false otherwise.
 -- @treturn boolean
@@ -505,26 +508,31 @@
 --- Sets the game object as an objective to all teams.
 -- @tparam handle h
 -- @function SetObjectiveOn
+function SetObjectiveOn(h) end
 
 --- Sets the game object back to normal.
 -- @tparam handle h
 -- @function SetObjectiveOff
+function SetObjectiveOff(h) end
 
 --- Gets the game object's visible name.
 -- @treturn string
 -- @tparam handle h
 -- @function GetObjectiveName
+function GetObjectiveName(h) end
 
 --- Sets the game object's visible name.
 -- @tparam handle h
 -- @tparam string name
 -- @function SetObjectiveName
+function SetObjectiveName(h, name) end
 
 --- Sets the game object's visible name. This function is effectively an alias for SetObjectiveName.
 -- [2.1+]
 -- @tparam handle h
 -- @tparam string name
 -- @function SetName
+function SetName(h, name) end
 
 -------------------------------------------------------------------------------
 -- Distance
@@ -556,6 +564,7 @@
 -- @tparam handle h1
 -- @tparam matrix transform
 -- @function GetDistance
+function GetDistance(h1, location) end
 
 --- Returns true if the units are closer than the given distance of each other. Returns false otherwise.
 -- (This function is equivalent to GetDistance (h1, h2) < d)
@@ -827,6 +836,7 @@
 -- @treturn handle
 -- @tparam[opt] integer team
 -- @function GetPlayerHandle
+function GetPlayerHandle(team) end
 
 --- Returns the Recycler on the given team. Returns nil if none exists.
 -- It uses the local player team if no team is given.
@@ -920,6 +930,7 @@
 -- @treturn integer
 -- @tparam integer team
 -- @function GetScrap
+function GetScrap(team) end
 
 --- Adds to the team's maximum scrap count.
 -- Returns the new maximum scrap count.
@@ -1029,6 +1040,7 @@
 --- Returns the elapsed time in seconds since the start of the mission.
 -- @treturn number
 -- @function GetTime
+function GetTime() end
 
 --- Returns the simulation time step in seconds.
 -- @treturn number
@@ -1070,6 +1082,7 @@
 -- @tparam number time
 -- @tparam[opt] string filename
 -- @function FailMission
+function FailMission(time, filename) end
 
 --- Succeeds the mission after the given time elapses. If supplied with a filename (usually a .des), it sets the success message to text from that file.
 -- @tparam number time
@@ -1353,6 +1366,7 @@
 -- @tparam matrix transform
 -- @tparam[opt] integer priority
 -- @function Goto
+function Goto(me, location, priority) end
 
 --- Commands the unit to lay mines at the named path; only minelayer units support this.
 -- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
@@ -1659,6 +1673,7 @@
 -- Always returns true.
 -- @treturn boolean
 -- @function CameraReady
+function CameraReady() end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
 -- Returns true when the camera arrives at its destination. Returns false otherwise.
@@ -1668,6 +1683,7 @@
 -- @tparam integer speed
 -- @tparam handle target
 -- @function CameraPath
+function CameraPath(path, height, speed, target) end
 
 --- Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
 -- Returns true when the camera arrives at its destination. Returns false otherwise.
@@ -1695,10 +1711,12 @@
 -- Always returns true.
 -- @treturn boolean
 -- @function CameraFinish
+function CameraFinish() end
 
 --- Returns true if the player canceled the cinematic. Returns false otherwise.
 -- @treturn boolean
 -- @function CameraCancelled
+function CameraCancelled() end
 
 -------------------------------------------------------------------------------
 -- Info Display

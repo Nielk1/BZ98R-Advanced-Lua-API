@@ -39,9 +39,9 @@
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
-  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><strong>_navmanager</strong></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
-  <li><strong>_requirefix</strong></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
   <li><a href="../modules/_table_show.html">_table_show</a></li>
@@ -51,15 +51,19 @@
 
 <div id="content">
 
-<h1>Module <code>_requirefix</code></h1>
-<p>BZ98R LUA Extended API Require Fix.</p>
+<h1>Module <code>_navmanager</code></h1>
+<p>BZ98R LUA Extended API NavManager.</p>
 <p>
 
- Repairs lua loader to look in mod paths for DLL or LUA modules with names longer than 15 characters.
- </p>
+ Manage navs
+
+ Dependencies: <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">require(&quot;_requirefix&quot;).addmod(&quot;12345&quot;).addmod(&quot;67890&quot;);
+        <pre class="example">local navmanager = require(&quot;_navmanager&quot;);
+
+
+
 </pre>
     </ul>
     <h3>Info:</h3>

@@ -78,6 +78,7 @@ local hook = require("_hook");
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 -- @event CreateObject
 -- @tparam GameObject object
+-- @tparam[opt] bool isMapObject
 -- @see _hook.Add
 
 --- Called when a game object gets added to the mission
@@ -439,6 +440,11 @@ end
 -- @local
 function Start()
     debugprint("_api::Start()");
+    
+    for h in AllObjects() do
+        hook.CallAllNoReturn( "CreateObject", GameObject.FromHandle(h), true );
+    end
+
     hook.CallAllNoReturn( "Start" );
     debugprint("_api::/Start");
 end
@@ -483,8 +489,7 @@ end
 -- @local
 function DeleteObject(h)
     traceprint("_api::DeleteObject(" .. tostring(h) .. ")");
-    local object = GameObject.FromHandle(h);
-    hook.CallAllNoReturn( "DeleteObject", object );
+    hook.CallAllNoReturn( "DeleteObject", GameObject.FromHandle(h) );
     traceprint("_api::/DeleteObject");
 end
 

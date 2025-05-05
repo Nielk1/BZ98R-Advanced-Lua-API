@@ -78,6 +78,7 @@ debugprint("_statemachine Loading");
 
 --require("_table_show");
 
+local config = require("_config");
 local _api = require("_api");
 local hook = require("_hook");
 
@@ -584,9 +585,8 @@ function StateMachineIter.BulkLoad()
 end
 
 hook.Add("Update", "_statemachine_Update", function(dtime, ttime)
-    -- consider accessing total game time instead
     _statemachine.game_time = ttime;
-end, 9999);
+end, config.get("hook_priority.Update.StateMachine"));
 
 _api.RegisterCustomSavableType(StateMachineIter);
 

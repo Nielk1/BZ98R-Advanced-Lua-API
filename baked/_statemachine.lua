@@ -145,9 +145,8 @@ end
 -- @tparam StateMachineIter self FuncArrayIter instance
 function StateMachineIter.run(self, ...)
     if not isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
-    
-    --debugprint("Running StateMachineIter Template '"..self.template.."' with state '"..self.state_key.."'");
 
+    --debugprint("Running StateMachineIter Template '"..self.template.."' with state '"..self.state_key.."'");
     local machine = _statemachine.Machines[self.template];
     if machine == nil then return false; end
 
@@ -157,7 +156,7 @@ function StateMachineIter.run(self, ...)
     if istable(machine[self.state_key]) then
         if isfunction(machine[self.state_key].f) then
             --print("StateMachineIter state '"..self.state_key.."' is "..type(machine[self.state_key].f).." '"..table.show(machine[self.state_key].p).."'");
-            return true, machine[self.state_key].f(self, table.unpack(machine[self.state_key].p), ...);
+            return true, machine[self.state_key].f(self, machine[self.state_key].p, ...);
         end
     end
     return false;
@@ -169,7 +168,7 @@ end
 function nextState(state)
     local flags = _statemachine.MachineFlags[ state.template ];
     if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
-    
+
     local index = state.state_key;
     if flags.index_to_name ~= nil then
         -- we are an ordered state machine AND don't use numeric keys
@@ -472,7 +471,10 @@ function _statemachine.SleepCalls( calls, next_state, early_exit )
     if not isstring(next_state) then error("Parameter next_state must be a string."); end
     if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
-    return { f = function(state, calls, next_state, early_exit, ...)
+    return { f = function(state, params, ...)
+        local calls = params[1];
+        local next_state = params[2];
+        local early_exit = params[3];
         if early_exit ~= nil then
             local early_exit_result = early_exit(state, ...);
             if (early_exit_result) then
@@ -526,12 +528,15 @@ function _statemachine.SleepSeconds(seconds, next_state, early_exit )
     if next_state ~= nil and not isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
     if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
-    return { f = function(state, seconds, next_state, early_exit, ...)
+    return { f = function(state, params, ...)
+        local seconds = params[1];
+        local next_state = params[2];
+        local early_exit = params[3];
         if next_state == nil then
             -- next_state is nil, so try to go to the next state by index
             next_state = nextState(state);
         end
-        
+
         if early_exit ~= nil then
             local early_exit_result = early_exit(state, ...);
             if (early_exit_result) then

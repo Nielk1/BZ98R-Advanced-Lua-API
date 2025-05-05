@@ -818,6 +818,7 @@ end
 function GameObject.SetObjectiveOn(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOn(self:GetHandle());
+    self._IsObjectiveOn = true; -- if a function to check this is implemented, use it instead
 end
 
 --- Sets the game object back to normal.
@@ -825,6 +826,15 @@ end
 function GameObject.SetObjectiveOff(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOff(self:GetHandle());
+    self._IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
+end
+
+--- If the game object an objective?
+-- @tparam GameObject self GameObject instance
+-- @treturn bool true if the game object is an objective
+function GameObject.IsObjectiveOn(self)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    return self._IsObjectiveOn ~= nil; -- if a function to check this is implemented, use it instead
 end
 
 --- Sets the game object's visible name.
@@ -842,7 +852,6 @@ function GameObject.SetObjectiveName(self, name)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not isstring(name) then error("Parameter name must be a string."); end
     SetObjectiveName(self:GetHandle(), name);
-    self.IsObjective = true;
 end
 
 --- Sets the game object's visible name.
@@ -854,15 +863,6 @@ function GameObject.SetName(self, name)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not isstring(name) then error("Parameter name must be a string."); end
     SetName(self:GetHandle(), name);
-    self.IsObjective = nil;
-end
-
---- If the game object an objective?
--- @tparam GameObject self GameObject instance
--- @treturn bool true if the game object is an objective
-function GameObject.IsObjective(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    return self.IsObjective;
 end
 
 

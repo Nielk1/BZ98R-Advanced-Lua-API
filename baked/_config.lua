@@ -79,15 +79,15 @@ end
 --- Priority of hooks
 --
 -- <pre>
--- DeleteObject.GameObject          = -9999
--- DeleteObject.NavManager          =  4999
--- ----------------------------------------
--- CreateObject.NavManager          =  4999
--- ----------------------------------------
--- Update      .StateMachine        =  8999
--- Update      .GameObject          =  9999</pre>
--- <pre>
--- Special.GameObject.SwapObjectReferences = 9999</pre>
+-- DeleteObject                   .GameObject   = -9999
+-- DeleteObject                   .NavManager   =  4999
+-- ----------------------------------------------------
+-- CreateObject                   .NavManager   =  4999
+-- ----------------------------------------------------
+-- Update                         .StateMachine =  8999
+-- Update                         .GameObject   =  9999
+-- ----------------------------------------------------
+-- GameObject_SwapObjectReferences.GameObject   =  9999</pre>
 -- @field config.hook_priority
 -- @table config.hook_priority
 config.hook_priority = {
@@ -102,10 +102,8 @@ config.hook_priority = {
         StateMachine = 8999,
         GameObject = 9999,
     },
-    Special = {
-        GameObject = {
-            SwapObjectReferences = 9999,
-        },
+    GameObject_SwapObjectReferences = {
+        GameObject = 9999,
     },
 }
 

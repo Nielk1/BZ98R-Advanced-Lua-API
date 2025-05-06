@@ -992,7 +992,7 @@ function GameObject.SwapObjectReferences(self, object)
     hook.CallAllNoReturn("GameObject:SwapObjectReferences", self, object);
 end
 
-hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences", function(objectA, objectB)
+hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_GameObject", function(objectA, objectB)
     -- this could have been done where the hook was called, but it's here to act as an example
 
     -- cleanup data that shouldn't have been swapped since it's tied to game state
@@ -1002,7 +1002,7 @@ hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences", f
     objectA._IsObjectiveOn = ObjectiveB;
     objectB._IsObjectiveOn = ObjectiveA;
 
-end, config.get("hook_priority.SwapObjectReferences.GameObject"));
+end, config.get("hook_priority.GameObject_SwapObjectReferences.GameObject"));
 
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();

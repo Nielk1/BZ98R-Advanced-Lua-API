@@ -15,6 +15,18 @@ local _api = require("_api");
 local hook = require("_hook");
 
 
+--- GameObject references swapped.
+-- The GameObject's references have been swapped.
+-- This means that every single reference to object A and object B are now swapped.
+-- An actual swap didn't occur, but instead the data inside the objects was swapped.
+-- Because the full data was swapped you may need to fixup some anomalies in the custom stored data.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+--
+-- @event GameObject:SwapObjectReferences
+-- @tparam GameObject A GameObject instance
+-- @tparam GameObject B GameObject instance
+-- @see _hook.Add
 
 
 --- Is this object an instance of GameObject?
@@ -933,6 +945,9 @@ end
 -- This is possible because all functions that return GameObjects ensure they use a common reference.
 -- This updates the object inside that reference effectively swapping all references between the two object.
 -- It really is a scary operation.
+--
+-- Triggers "GameObject:SwapObjectReferences" event.
+--
 -- @tparam GameObject self GameObject instance
 -- @tparam GameObject object GameObject to replace with
 function GameObject.SwapObjectReferences(self, object)
@@ -973,11 +988,22 @@ function GameObject.SwapObjectReferences(self, object)
     rawset(object, "addonData", ownAddon);
     rawset(self, "addonData", newAddon);
 
-    -- @todo: consider firing an event, though the event wouldn't be very useful as the original game object is gone
+    -- Warn listeners that a swap occured, they might need to fix some addonData.
+    hook.CallAllNoReturn("GameObject:SwapObjectReferences", self, object);
 end
 
 
+hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences", function(objectA, objectB)
+    -- this could have been done where the hook was called, but it's here to act as an example
 
+    -- cleanup data that shouldn't have been swapped since it's tied to game state
+    -- @todo if game gives accessor for this, just disable this section
+    local ObjectiveA = objectA._IsObjectiveOn;
+    local ObjectiveB = objectB._IsObjectiveOn;
+    objectA._IsObjectiveOn = ObjectiveB;
+    objectB._IsObjectiveOn = ObjectiveA;
+
+end, config.get("hook_priority.CreateObject.GameObject"));
 
 
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)

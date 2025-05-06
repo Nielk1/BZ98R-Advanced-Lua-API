@@ -33,7 +33,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
-<li><a href="#Tables">Tables</a></li>
 </ul>
 
 
@@ -41,7 +40,7 @@
 <ul class="nowrap">
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><a href="../modules/_api.html">_api</a></li>
-  <li><strong>_config</strong></li>
+  <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
@@ -50,27 +49,25 @@
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
   <li><a href="../modules/_table_show.html">_table_show</a></li>
-  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><strong>_unsaved</strong></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>_config</code></h1>
-<p>BZ98R LUA Extended API Configuration.</p>
+<h1>Module <code>_unsaved</code></h1>
+<p>BZCC LUA Extended API Unsaved.</p>
 <p>
 
- Constants used to configure the API's system.
- Note that reading any non-table value other than "locked" will lock the config table.
- </p>
+ Crude custom type to make data not save/load exploiting the custom type system.
+
+ Dependencies: <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">local config = require(&quot;_config&quot;);
+        <pre class="example">local unsaved = require(&quot;_unsaved&quot;);
 
-if not config.locked then
-    config.hook_priority.DeleteObject.GameObject = -99999;
-end
+data.unsavable = unsaved(data.unsavable);
 </pre>
     </ul>
     <h3>Info:</h3>
@@ -82,15 +79,8 @@ end
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#config_meta.get">config_meta.get (path)</a></td>
-	<td class="summary">Get a value from the config table using a period or colon delimited path.</td>
-	</tr>
-</table>
-<h2><a href="#Tables">Tables</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#config.hook_priority">config.hook_priority</a></td>
-	<td class="summary">Priority of hooks</td>
+	<td class="name" nowrap><a href="#__call">__call (data)</a></td>
+	<td class="summary">__call</td>
 	</tr>
 </table>
 
@@ -102,53 +92,28 @@ end
 
     <dl class="function">
     <dt>
-    <a name = "config_meta.get"></a>
-    <strong>config_meta.get (path)</strong>
+    <a name = "__call"></a>
+    <strong>__call (data)</strong>
     </dt>
     <dd>
-    Get a value from the config table using a period or colon delimited path.
+    __call
+ Creates a new table or augments the passed in table marking it as unsaved.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         The path to the value, e.g. "hook_priority.Update.StateMachine"
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Table to augment with unsaved data. If nil, a new table is created.
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        The value at the specified path
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        The unsavable table.
     </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "config.hook_priority"></a>
-    <strong>config.hook_priority</strong>
-    </dt>
-    <dd>
-    Priority of hooks  <pre>
- DeleteObject                   .GameObject   = -9999
- DeleteObject                   .NavManager   =  4999
- ----------------------------------------------------
- CreateObject                   .NavManager   =  4999
- ----------------------------------------------------
- Update                         .StateMachine =  8999
- Update                         .GameObject   =  9999
- ----------------------------------------------------
- GameObject_SwapObjectReferences.GameObject   =  9999</pre>
-
-
-
 
 
 

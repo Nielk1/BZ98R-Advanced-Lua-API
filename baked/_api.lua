@@ -289,21 +289,25 @@ function SimplifyForSave(...)
     for k = 1,count,1 do  -- loop params via count
         local v = select(k,...); -- get Kth Parameter, store in v
         if istable(v) then -- it's a table, start special logic
-            if CustomSavableTypes[v.__type] ~= nul then
-                local specialTypeTable = {};
-                local typeIndex = CustomTypeMap[v.__type];
-                debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
-                specialTypeTable["*custom_type"] = typeIndex;
-                if CustomSavableTypes[v.__type].Save ~= nil then
-                    specialTypeTable["*data"] = {CustomSavableTypes[v.__type].Save(v)};
-                end
-                table.insert(output, specialTypeTable);
+            if v.__nosave == true then
+                --debugprint("Skipping save of " .. v.__type .. " (marked as unsavable)");
             else
-                local newTable = {};
-                for k2, v2 in pairs( v ) do 
-                    newTable[k2] = SimplifyForSave(v2);
+                if CustomSavableTypes[v.__type] ~= nil then
+                    local specialTypeTable = {};
+                    local typeIndex = CustomTypeMap[v.__type];
+                    debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
+                    specialTypeTable["*custom_type"] = typeIndex;
+                    if CustomSavableTypes[v.__type].Save ~= nil then
+                        specialTypeTable["*data"] = {CustomSavableTypes[v.__type].Save(v)};
+                    end
+                    table.insert(output, specialTypeTable);
+                else
+                    local newTable = {};
+                    for k2, v2 in pairs( v ) do 
+                        newTable[k2] = SimplifyForSave(v2);
+                    end
+                    table.insert(output, newTable);
                 end
-                table.insert(output, newTable);
             end
         else -- it's not a table, really simple
             table.insert(output, v);

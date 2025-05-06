@@ -13,7 +13,7 @@ debugprint("_gameobject Loading");
 local config = require("_config");
 local _api = require("_api");
 local hook = require("_hook");
-
+local unsaved = require("_unsaved");
 
 --- GameObject references swapped.
 -- The GameObject's references have been swapped.
@@ -33,7 +33,7 @@ local hook = require("_hook");
 -- @param object Object in question
 -- @treturn bool
 function isgameobject(object)
-  return (type(object) == "table" and object.__type == "GameObject");
+    return (type(object) == "table" and object.__type == "GameObject");
 end
 
 local GameObjectMetatable = {};
@@ -47,29 +47,33 @@ local GameObjectDead = {};
 GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 GameObject.__index = function(dtable, key)
-  local retVal = rawget(dtable, key);
-  if retVal ~= nil then return retVal; end
-  if rawget(dtable, "addonData") ~= nil and rawget(rawget(dtable, "addonData"), key) ~= nil then return rawget(rawget(dtable, "addonData"), key); end
-  return rawget(GameObject, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+    local retVal = rawget(dtable, key);
+    if retVal ~= nil then return retVal; end
+    local addonData = rawget(dtable, "addonData");
+    if addonData ~= nil then
+        retVal = rawget(rawget(dtable, "addonData"), key);
+        if retVal ~= nil then return retVal; end
+    end
+    return rawget(GameObject, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
 end
 GameObject.__newindex = function(dtable, key, value)
-  if key == "addonData" then
-    rawset(dtable, "addonData", value);
-    local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
-    GameObjectAltered[objectId] = dtable;
-  elseif key ~= "id" and key ~= "addonData" then
-    local addonData = rawget(dtable, "addonData");
-    if addonData == nil then
-      rawset(dtable, "addonData", {});
-      addonData = rawget(dtable, "addonData");
+    if key == "addonData" then
+        rawset(dtable, "addonData", value);
+        local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
+        GameObjectAltered[objectId] = dtable;
+    elseif key ~= "id" and key ~= "addonData" then
+        local addonData = rawget(dtable, "addonData");
+        if addonData == nil then
+            rawset(dtable, "addonData", {});
+            addonData = rawget(dtable, "addonData");
+        end
+        rawset(addonData, key, value);
+        local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
+        GameObjectAltered[objectId] = dtable;
+        -- @todo consider removing object from GameObjectAltered if addonData is empty
+    else
+        rawset(dtable, key, value);
     end
-    rawset(addonData, key, value);
-    local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
-    GameObjectAltered[objectId] = dtable;
-    -- @todo consider removing object from GameObjectAltered if addonData is empty
-  else
-    rawset(dtable, key, value);
-  end
 end
 GameObject.__type = "GameObject";
 
@@ -122,7 +126,11 @@ function GameObject.BulkSave()
     local returnData = {};
     for k,v in pairs(GameObjectWeakList) do
         if v.addonData ~= nil then
+            -- @todo consider creating an "unsaved" custom type for storing data that doesn't save
+            local tmpUnsaved = v.addonData.unsaved;
+            v.addonData.unsaved = nil;
             returnData[k] = v.addonData;
+            v.addonData.unsaved = tmpUnsaved;
         end
     end
     
@@ -140,9 +148,20 @@ end
 -- @param data Object data
 -- @param dataDead Dead object data
 function GameObject.BulkLoad(data,dataDead)
+    local _ObjectiveObjects = {};
+    for h in ObjectiveObjects() do
+        _ObjectiveObjects[h] = true;
+    end
+
     for k,v in pairs(data) do
         local newGameObject = GameObject.FromHandle(k);
         newGameObject.addonData = v;
+
+        local objectiveData = _ObjectiveObjects[k];
+        if objectiveData ~= nil then
+            newGameObject.unsaved = { _IsObjective = true };
+            _ObjectiveObjects[k] = nil; -- does this speed things up or slow them down?
+        end
     end
     for k,v in pairs(dataDead) do
         local newGameObject = GameObject.FromHandle(v); -- this will be either a new GameObject or an existing one from the above addon data filling loop
@@ -830,7 +849,9 @@ end
 function GameObject.SetObjectiveOn(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOn(self:GetHandle());
-    self._IsObjectiveOn = true; -- if a function to check this is implemented, use it instead
+
+    self.cache_memo = unsaved(self.cache_memo)
+    self.cache_memo._IsObjective = true;
 end
 
 --- Sets the game object back to normal.
@@ -838,15 +859,19 @@ end
 function GameObject.SetObjectiveOff(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOff(self:GetHandle());
-    self._IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
+
+    self.cache_memo = unsaved(self.cache_memo)
+    self.cache_memo._IsObjective = nil; -- if a function to check this is implemented, use it instead
 end
 
 --- If the game object an objective?
 -- @tparam GameObject self GameObject instance
 -- @treturn bool true if the game object is an objective
-function GameObject.IsObjectiveOn(self)
+function GameObject.IsObjective(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    return self._IsObjectiveOn ~= nil; -- if a function to check this is implemented, use it instead
+
+    if not self.cache_memo then return false; end
+    return self.cache_memo._IsObjective ~= nil; -- if a function to check this is implemented, use it instead
 end
 
 --- Sets the game object's visible name.
@@ -997,10 +1022,12 @@ hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_Gam
 
     -- cleanup data that shouldn't have been swapped since it's tied to game state
     -- @todo if game gives accessor for this, just disable this section
-    local ObjectiveA = objectA._IsObjectiveOn;
-    local ObjectiveB = objectB._IsObjectiveOn;
-    objectA._IsObjectiveOn = ObjectiveB;
-    objectB._IsObjectiveOn = ObjectiveA;
+    local ObjectiveA = objectA.unsaved and objectA.unsaved._IsObjective or nil;
+    local ObjectiveB = objectB.unsaved and objectB.unsaved._IsObjective or nil;
+    if not objectA.unsaved then objectA.unsaved = {}; end
+    if not objectB.unsaved then objectB.unsaved = {}; end
+    objectA.unsaved._IsObjective = ObjectiveB;
+    objectB.unsaved._IsObjective = ObjectiveA;
 
 end, config.get("hook_priority.GameObject_SwapObjectReferences.GameObject"));
 

@@ -50,20 +50,20 @@ function BuildImportantNavInternal(odf, team, location, point)
         for i = 1, #NavCollection[team] + 1 do
             shuffledOutNav = NavCollection[team][i];
             if not shuffledOutNav then
-                debugprint("\27[34mGap Found ["..i.."]\27[0m");
+                --debugprint("\27[34mGap Found ["..i.."]\27[0m");
                 break; -- we've got a gap, so do nothing
             end
 
             -- change nav team temporarily
             -- @todo: preserve target data
-            debugprint(table.show(shuffledOutNav.NavManager));
+            --debugprint(table.show(shuffledOutNav.NavManager));
             if not shuffledOutNav.NavManager.important then
-                debugprint("\27[34mNon-critical Nav Found ["..i.."]\27[0m");
+                --debugprint("\27[34mNon-critical Nav Found ["..i.."]\27[0m");
                 shuffledOutNav:SetTeamNum(0);
                 NavCollection[team][i] = nil;
                 break;
-            else
-                debugprint("\27[34mCritical Nav Found ["..i.."]\27[0m");
+            --else
+            --    debugprint("\27[34mCritical Nav Found ["..i.."]\27[0m");
             end
         end
     end
@@ -89,7 +89,7 @@ function BuildImportantNavInternal(odf, team, location, point)
         nav:SetMaxHealth(sourceNav:GetMaxHealth());
         nav:SetCurHealth(sourceNav:GetCurHealth());
 
-        if sourceNav:IsObjectiveOn() then
+        if sourceNav:IsObjective() then
             nav:SetObjectiveOn();
         end
 
@@ -130,7 +130,7 @@ function BuildImportantNavInternal(odf, team, location, point)
                 newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
                 newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
 
-                if shuffledOutNav:IsObjectiveOn() then
+                if shuffledOutNav:IsObjective() then
                     newNav:SetObjectiveOn();
                 end
 
@@ -161,7 +161,7 @@ function BuildImportantNavInternal(odf, team, location, point)
                     newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
                     newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
 
-                    if shuffledOutNav:IsObjectiveOn() then
+                    if shuffledOutNav:IsObjective() then
                         newNav:SetObjectiveOn();
                     end
 
@@ -277,7 +277,7 @@ end
 function PrintNavCollection(func)
     for team, list in pairs(NavCollection) do
         for i, nav in pairs(list) do
-            func("NavCollection["..team.."]["..i.."] = <"..tostring(nav:GetHandle()).."> ["..nav:GetOdf().."] "..nav:GetObjectiveName().." "..tostring(nav._IsObjectiveOn or 'false').." "..tostring(nav:IsObjectiveOn()));
+            func("NavCollection["..team.."]["..i.."] = <"..tostring(nav:GetHandle()).."> ["..nav:GetOdf().."] "..nav:GetObjectiveName().." "..tostring(nav._IsObjective or 'false').." "..tostring(nav:IsObjective()));
         end
     end
 end

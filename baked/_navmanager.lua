@@ -89,7 +89,7 @@ function BuildImportantNavInternal(odf, team, location, point)
         nav:SetMaxHealth(sourceNav:GetMaxHealth());
         nav:SetCurHealth(sourceNav:GetCurHealth());
 
-        if sourceNav:IsObjective() then
+        if sourceNav:IsObjectiveOn() then
             nav:SetObjectiveOn();
         end
 
@@ -130,7 +130,7 @@ function BuildImportantNavInternal(odf, team, location, point)
                 newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
                 newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
 
-                if shuffledOutNav:IsObjective() then
+                if shuffledOutNav:IsObjectiveOn() then
                     newNav:SetObjectiveOn();
                 end
 
@@ -161,7 +161,7 @@ function BuildImportantNavInternal(odf, team, location, point)
                     newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
                     newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
 
-                    if shuffledOutNav:IsObjective() then
+                    if shuffledOutNav:IsObjectiveOn() then
                         newNav:SetObjectiveOn();
                     end
 
@@ -277,7 +277,7 @@ end
 function PrintNavCollection(func)
     for team, list in pairs(NavCollection) do
         for i, nav in pairs(list) do
-            func("NavCollection["..team.."]["..i.."] = <"..tostring(nav:GetHandle()).."> ["..nav:GetOdf().."] "..nav:GetObjectiveName().." "..tostring(nav._IsObjective or 'false').." "..tostring(nav:IsObjective()));
+            func("NavCollection["..team.."]["..i.."] = <"..tostring(nav:GetHandle()).."> ["..nav:GetOdf().."] "..nav:GetObjectiveName().." "..tostring(nav._IsObjective or 'false').." "..tostring(nav:IsObjectiveOn()));
         end
     end
 end

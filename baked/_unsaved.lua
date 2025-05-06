@@ -38,7 +38,7 @@ local unsaved_module_meta = {};
 -- Creates a new table or augments the passed in table marking it as unsaved.
 -- @tparam table data Table to augment with unsaved data. If nil, a new table is created.
 -- @treturn table The unsavable table.
-unsaved_module_meta.__call = function(table, data) 
+unsaved_module_meta.__call = function(table, data)
     --if data ~= nil then
     --    return setmetatable(data, unsaved_meta);
     --end

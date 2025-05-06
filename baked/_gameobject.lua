@@ -126,11 +126,7 @@ function GameObject.BulkSave()
     local returnData = {};
     for k,v in pairs(GameObjectWeakList) do
         if v.addonData ~= nil then
-            -- @todo consider creating an "unsaved" custom type for storing data that doesn't save
-            local tmpUnsaved = v.addonData.unsaved;
-            v.addonData.unsaved = nil;
             returnData[k] = v.addonData;
-            v.addonData.unsaved = tmpUnsaved;
         end
     end
     
@@ -149,17 +145,20 @@ end
 -- @param dataDead Dead object data
 function GameObject.BulkLoad(data,dataDead)
     local _ObjectiveObjects = {};
-    for h in ObjectiveObjects() do
-        _ObjectiveObjects[h] = true;
+    if not isfunction(IsObjectiveOn) then
+        for h in ObjectiveObjects() do
+            _ObjectiveObjects[h] = true;
+        end
     end
 
     for k,v in pairs(data) do
         local newGameObject = GameObject.FromHandle(k);
         newGameObject.addonData = v;
 
+        -- IsObjectiveOn Memo
         local objectiveData = _ObjectiveObjects[k];
         if objectiveData ~= nil then
-            newGameObject.unsaved = { _IsObjective = true };
+            newGameObject.cache_memo = { IsObjectiveOn = true };
             _ObjectiveObjects[k] = nil; -- does this speed things up or slow them down?
         end
     end
@@ -850,8 +849,10 @@ function GameObject.SetObjectiveOn(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOn(self:GetHandle());
 
-    self.cache_memo = unsaved(self.cache_memo)
-    self.cache_memo._IsObjective = true;
+    if not isfunction(IsObjectiveOn) then
+        self.cache_memo = unsaved(self.cache_memo)
+        self.cache_memo.IsObjectiveOn = true;
+    end
 end
 
 --- Sets the game object back to normal.
@@ -860,18 +861,24 @@ function GameObject.SetObjectiveOff(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOff(self:GetHandle());
 
-    self.cache_memo = unsaved(self.cache_memo)
-    self.cache_memo._IsObjective = nil; -- if a function to check this is implemented, use it instead
+    if not isfunction(IsObjectIsObjectiveOnive) then
+        self.cache_memo = unsaved(self.cache_memo)
+        self.cache_memo.IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
+    end
 end
 
 --- If the game object an objective?
 -- @tparam GameObject self GameObject instance
 -- @treturn bool true if the game object is an objective
-function GameObject.IsObjective(self)
+function GameObject.IsObjectiveOn(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
 
-    if not self.cache_memo then return false; end
-    return self.cache_memo._IsObjective ~= nil; -- if a function to check this is implemented, use it instead
+    if isfunction(IsObjectiveOn) then
+        return IsObjectiveOn(self:GetHandle());
+    else
+        if not self.cache_memo then return false; end
+        return self.cache_memo.IsObjectiveOn ~= nil; -- if a function to check this is implemented, use it instead
+    end
 end
 
 --- Sets the game object's visible name.
@@ -1021,14 +1028,13 @@ hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_Gam
     -- this could have been done where the hook was called, but it's here to act as an example
 
     -- cleanup data that shouldn't have been swapped since it's tied to game state
-    -- @todo if game gives accessor for this, just disable this section
-    local ObjectiveA = objectA.cache_memo and objectA.cache_memo._IsObjective or nil;
-    local ObjectiveB = objectB.cache_memo and objectB.cache_memo._IsObjective or nil;
-    objectA.cache_memo = unsaved(objectA.cache_memo);
-    objectB.cache_memo = unsaved(objectB.cache_memo);
-    objectA.cache_memo._IsObjective = ObjectiveB; -- if a function to check this is implemented, use it instead
-    objectB.cache_memo._IsObjective = ObjectiveA; -- if a function to check this is implemented, use it instead
-
+    if not isfunction(IsObjectiveOn) then
+        objectA.cache_memo = unsaved(objectA.cache_memo);
+        objectB.cache_memo = unsaved(objectB.cache_memo);
+        local ObjectiveA = objectA.cache_memo.IsObjectiveOn;
+        objectA.cache_memo.IsObjectiveOn = objectB.cache_memo.IsObjectiveOn;
+        objectB.cache_memo.IsObjectiveOn = ObjectiveA;
+    end
 end, config.get("hook_priority.GameObject_SwapObjectReferences.GameObject"));
 
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)

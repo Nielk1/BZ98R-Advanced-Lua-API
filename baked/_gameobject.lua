@@ -929,6 +929,57 @@ function GameObject.GetClassSig(self)
     return GetClassSig(self:GetHandle());
 end
 
+--- Swap all GameObject references to another GameObject.
+-- This is possible because all functions that return GameObjects ensure they use a common reference.
+-- This updates the object inside that reference effectively swapping all references between the two object.
+-- It really is a scary operation.
+-- @tparam GameObject self GameObject instance
+-- @tparam GameObject object GameObject to replace with
+function GameObject.SwapObjectReferences(self, object)
+    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not isgameobject(object) then error("Parameter object must be GameObject instance."); end
+
+    local ownHandle = self:GetHandle();
+    local newHandle = object:GetHandle();
+    
+    if ownHandle == newHandle then return end -- no need to replace with self
+
+    -- because these 2 tables are shared references all over the code, we are going to do absolute black magic
+    -- we are going to swap the full contents of the inside of both with each other
+
+    -- move old object metadata to new handle
+    GameObjectWeakList[newHandle] = self; 
+    GameObjectWeakList[ownHandle] = object;
+
+    local ownIsDead = GameObjectDead[ownHandle] and true or false;
+    local newIsDead = GameObjectDead[newHandle] and true or false;
+
+    local ownIsAltered = GameObjectAltered[ownHandle] and true or false;
+    local newIsAltered = GameObjectAltered[newHandle] and true or false;
+
+    -- this feels wrong, but I'm pretty sure it's correct
+    GameObjectDead[newHandle] = ownIsDead and self or nil;
+    GameObjectDead[ownHandle] = newIsDead and object or nil;
+
+    -- if we have custom data, stuff us in the new tracking table, else nil
+    GameObjectAltered[newHandle] = ownIsAltered and self or nil;
+    GameObjectAltered[ownHandle] = newIsAltered and object or nil;
+
+    self.id = newHandle; -- update self to new handle
+    object.id = ownHandle; -- update self to new handle
+
+    local ownAddon = rawget(self, "addonData");
+    local newAddon = rawget(object, "addonData");
+    rawset(object, "addonData", ownAddon);
+    rawset(self, "addonData", newAddon);
+
+    -- @todo: consider firing an event, though the event wouldn't be very useful as the original game object is gone
+end
+
+
+
+
+
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();
     debugprint('Decaying object ' .. tostring(objectId));

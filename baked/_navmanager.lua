@@ -29,23 +29,37 @@ local _navmanager = {};
 -- While the nav list may appear an array, is is also a table with nav indexes as values.
 local NavCollection = {};
 
-function _navmanager.BuildImportantNav(odf, team, path, point)
+local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
+
+--- Build an important nav and add it to the collection.
+-- Important navs will push non-important navs out of the way in the list.
+-- @tparam string odf ODF of the nav to build
+-- @tparam number team Team number of the nav to build
+-- @param location vector position, matrix transform, or string path name to build the nav or nav GameObject to clone and delete
+-- @tparam[opt] string point Path point number for the nav to build on if using a path
+-- @treturn GameObject The nav object that was built
+-- @treturn number The index of the nav in the NavCollection for the team
+function _navmanager.BuildImportantNav(odf, team, location, point)
+    -- @todo check params h ere, don't allow GameObject on location here, that's internal only
+    return BuildImportantNavInternal(odf, team, location, point);
+end
+function BuildImportantNavInternal(odf, team, location, point)
     -- make room for the nav
-    local oldNav = nil;
+    local shuffledOutNav = nil;
     if NavCollection[team] then
         for i = 1, #NavCollection[team] + 1 do
-            oldNav = NavCollection[team][i];
-            if not oldNav then
+            shuffledOutNav = NavCollection[team][i];
+            if not shuffledOutNav then
                 debugprint("\27[34mGap Found ["..i.."]\27[0m");
                 break; -- we've got a gap, so do nothing
             end
 
             -- change nav team temporarily
             -- @todo: preserve target data
-            debugprint(table.show(oldNav.NavManager));
-            if not oldNav.NavManager.important then
+            debugprint(table.show(shuffledOutNav.NavManager));
+            if not shuffledOutNav.NavManager.important then
                 debugprint("\27[34mNon-critical Nav Found ["..i.."]\27[0m");
-                oldNav:SetTeamNum(0);
+                shuffledOutNav:SetTeamNum(0);
                 NavCollection[team][i] = nil;
                 break;
             else
@@ -55,38 +69,83 @@ function _navmanager.BuildImportantNav(odf, team, path, point)
     end
 
     -- build the nav
-    local nav = BuildGameObject(odf or "apcamr", team, path, point);
+    local sourceNav = nil;
+    local preservedNavData = nil;
+    if isgameobject(location) then
+        -- clone the nav and remove the old one
+        sourceNav = location;
+        location = location:GetTransform();
+        sourceNav:SetTeamNum(0); -- make room for the new nav
+        preservedNavData = sourceNav.NavManager;
+        NavCollection[preservedNavData.team][preservedNavData.index] = nil;
+        DisableAutomaticNavAdding = true; -- doing an object swap, so we are doing a delayed insert
+    end
+    local nav = BuildGameObject(odf or "apcamr", team, location, point);
     -- AddObject hook fires here, not sure about network though
-    nav.NavManager.important = true;
+    if sourceNav then
+        DisableAutomaticNavAdding = false;
+
+        nav:SetObjectiveName(sourceNav:GetObjectiveName());
+        nav:SetMaxHealth(sourceNav:GetMaxHealth());
+        nav:SetCurHealth(sourceNav:GetCurHealth());
+
+        if sourceNav:IsObjectiveOn() then
+            nav:SetObjectiveOn();
+        end
+
+        -- @todo make this multi-team logic
+        if GetUserTarget() == sourceNav:GetHandle() then
+            SetUserTarget(nav:GetHandle());
+        end
+
+        nav:SwapObjectReferences(sourceNav);
+        AddNavToCollection(sourceNav); -- now that we swapped the refs, add the new nav, via the old ref, back in
+        sourceNav.NavManager.important = true;
+
+        -- remove the old nav
+        nav.NavManager = nil; -- remove our data so RemoveObject doesn't cause issues with the data
+        nav:RemoveObject(); -- this is now the old nav, even though it's in the new reference
+
+        nav = sourceNav;
+    else
+        nav.NavManager.important = true;
+    end
 
     -- restore old navs, this will probably lose gaps but we're in hell anyway
     --while next(OldNavs) do
-    while oldNav do
+    while shuffledOutNav do
         --debugprint("\27[34Nav Shuffle Inserting ["..tostring(oldNav.NavManager.index).."]\27[0m");
-        for i = oldNav.NavManager.index + 1, #NavCollection[team] + 1 do
+        for i = shuffledOutNav.NavManager.index + 1, #NavCollection[team] + 1 do
             --debugprint("\27[34Nav Shuffle Testing ["..tostring(oldNav.NavManager.index).."]\27[0m");
             local currentNav = NavCollection[team][i];
             if not currentNav then
                 -- open spot found, restore nav
                 --debugprint("\27[34mNav Restored ["..tostring(oldNav.NavManager.index).."]>["..i.."]\27[0m");
-                
-                local newNav = BuildGameObject(oldNav:GetOdf(), team, oldNav:GetTransform());
-                newNav:SetObjectiveName(oldNav:GetObjectiveName());
-                newNav:SetMaxHealth(oldNav:GetMaxHealth());
-                newNav:SetCurHealth(oldNav:GetCurHealth());
 
-                if oldNav:IsObjectiveOn() then
+                DisableAutomaticNavAdding = true; -- ensure we don't add the new nav to the collection yet
+                local newNav = BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
+                DisableAutomaticNavAdding = false;
+
+                newNav:SetObjectiveName(shuffledOutNav:GetObjectiveName());
+                newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
+                newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
+
+                if shuffledOutNav:IsObjectiveOn() then
                     newNav:SetObjectiveOn();
                 end
 
                 -- @todo make this multi-team logic
-                if GetUserTarget() == oldNav:GetHandle() then
+                if GetUserTarget() == shuffledOutNav:GetHandle() then
                     SetUserTarget(newNav:GetHandle());
                 end
 
-                oldNav.NavManager = nil;
-                oldNav:RemoveObject();
-                oldNav = nil; -- no more old navs to restore
+                newNav:SwapObjectReferences(shuffledOutNav); -- all references pointing to the old nav object now point to the new one
+                AddNavToCollection(shuffledOutNav); -- now that we swapped the refs, add the new nav, via the old ref, back in
+
+                newNav.NavManager = nil; -- remove our data so RemoveObject doesn't cause issues with the data
+                newNav:RemoveObject(); -- this is now the old nav, even though it's in the new reference
+                shuffledOutNav = nil; -- no more old navs to restore
+
                 break;
             else
                 if not currentNav.NavManager.important then
@@ -94,24 +153,30 @@ function _navmanager.BuildImportantNav(odf, team, path, point)
                     currentNav:SetTeamNum(0); -- make room
                     NavCollection[team][i] = nil;
 
-                    -- new nav clone
-                    local newNav = BuildGameObject(oldNav:GetOdf(), team, oldNav:GetTransform());
-                    newNav:SetObjectiveName(oldNav:GetObjectiveName());
-                    newNav:SetMaxHealth(oldNav:GetMaxHealth());
-                    newNav:SetCurHealth(oldNav:GetCurHealth());
+                    DisableAutomaticNavAdding = true; -- ensure we don't add the new nav to the collection yet
+                    local newNav = BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
+                    DisableAutomaticNavAdding = false;
 
-                    if oldNav:IsObjectiveOn() then
+                    newNav:SetObjectiveName(shuffledOutNav:GetObjectiveName());
+                    newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
+                    newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
+
+                    if shuffledOutNav:IsObjectiveOn() then
                         newNav:SetObjectiveOn();
                     end
 
                     -- @todo make this multi-team logic
-                    if GetUserTarget() == oldNav:GetHandle() then
+                    if GetUserTarget() == shuffledOutNav:GetHandle() then
                         SetUserTarget(newNav:GetHandle());
                     end
 
-                    oldNav.NavManager = nil;
-                    oldNav:RemoveObject();
-                    oldNav = currentNav;
+                    newNav:SwapObjectReferences(shuffledOutNav); -- all references pointing to the old nav object now point to the new one
+                    AddNavToCollection(shuffledOutNav); -- now that we swapped the refs, add the new nav, via the old ref, back in
+
+                    newNav.NavManager = nil; -- remove our data so RemoveObject doesn't cause issues with the data
+                    newNav:RemoveObject(); -- this is now the old nav, even though it's in the new reference
+                    shuffledOutNav = currentNav;
+
                     break; -- start over again until old list is empty or we fail to fix anything
                 --else
                 --    debugprint("\27[34mNav Not Restored ["..tostring(oldNav.NavManager.index).."]>["..i.."]\27[0m");
@@ -122,7 +187,50 @@ function _navmanager.BuildImportantNav(odf, team, path, point)
 
     --debugprint("\27[34m----TEST----\27[0m");
     --PrintNavCollection(debugprint);
-    return nav;
+    return nav, nav.NavManager.index;
+end
+
+
+--- Move important navs up in the list.
+-- This will move all important navs to the top of the list, pushing unimportant navs down.
+-- This works by recreating navs so be sure to re-grab your navs.
+-- @tparam number team Team number of the nav to move
+function _navmanager.MoveImportantNavsUp(team)
+    debugprint("\27[35mMoveImportantNavsUp("..tostring(team)..")\27[0m");
+    if not NavCollection[team] then return; end
+    debugprint("\27[35mtest\27[0m");
+
+    local foundGapOrUnimportant = false;
+    -- loop all navs in the team using pairs
+    local MaxKey = 0;
+    for k, _ in pairs(NavCollection[team]) do
+        if k > MaxKey then
+            MaxKey = k;
+        end
+    end
+    for i = 1, MaxKey do
+        local nav = NavCollection[team][i];
+        debugprint("\27[35mi = "..tostring(i).." nav = "..tostring(nav).."\27[0m");
+        if foundGapOrUnimportant then
+            debugprint("\27[35mPostgap Check\27[0m");
+            if nav and nav.NavManager and nav.NavManager.important then
+                debugprint("\27[35mIMPORTANT\27[0m");
+                _navmanager.BuildImportantNav(nav:GetOdf(), team, nav);
+            end
+        elseif not nav or not nav.NavManager.important then
+            debugprint("\27[35mGAP FOUND\27[0m");
+            foundGapOrUnimportant = true;
+        end
+    end
+end
+
+--- Get the nav for a team and index.
+-- @tparam number team Team number of the nav to get
+-- @tparam number index Index of the nav to get
+-- @treturn GameObject The nav object at the specified index for the team
+function _navmanager.GetNav(team, index)
+    if not NavCollection[team] then return nil; end
+    return NavCollection[team][index];
 end
 
 function AddNavToCollection(nav)
@@ -180,7 +288,7 @@ end
 -- @section
 
 hook.Add("CreateObject", "_navmanager_CreateObject", function(object)
-    if object:GetClassSig() == "CPOD" then
+    if not DisableAutomaticNavAdding and object:GetClassSig() == "CPOD" then
         AddNavToCollection(object);
     end
 end, config.get("hook_priority.CreateObject.NavManager"));

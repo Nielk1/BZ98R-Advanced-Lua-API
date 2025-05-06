@@ -1022,12 +1022,12 @@ hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_Gam
 
     -- cleanup data that shouldn't have been swapped since it's tied to game state
     -- @todo if game gives accessor for this, just disable this section
-    local ObjectiveA = objectA.unsaved and objectA.unsaved._IsObjective or nil;
-    local ObjectiveB = objectB.unsaved and objectB.unsaved._IsObjective or nil;
-    if not objectA.unsaved then objectA.unsaved = {}; end
-    if not objectB.unsaved then objectB.unsaved = {}; end
-    objectA.unsaved._IsObjective = ObjectiveB;
-    objectB.unsaved._IsObjective = ObjectiveA;
+    local ObjectiveA = objectA.cache_memo and objectA.cache_memo._IsObjective or nil;
+    local ObjectiveB = objectB.cache_memo and objectB.cache_memo._IsObjective or nil;
+    objectA.cache_memo = unsaved(objectA.cache_memo);
+    objectB.cache_memo = unsaved(objectB.cache_memo);
+    objectA.cache_memo._IsObjective = ObjectiveB; -- if a function to check this is implemented, use it instead
+    objectB.cache_memo._IsObjective = ObjectiveA; -- if a function to check this is implemented, use it instead
 
 end, config.get("hook_priority.GameObject_SwapObjectReferences.GameObject"));
 

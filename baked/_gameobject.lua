@@ -591,7 +591,7 @@ end
 -- @treturn bool
 function GameObject.IsAlive(self)
     if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    return IsAlive2(self:GetHandle());
+    return IsAlive(self:GetHandle());
 end
 
 --- Is the GameObject alive and piloted?
@@ -836,6 +836,29 @@ function GameObject.SetPerceivedTeam(self, team)
     if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
     SetPerceivedTeam(self:GetHandle(), team);
+end
+
+-------------------------------------------------------------------------------
+-- Pilot Class
+-------------------------------------------------------------------------------
+-- @section
+-- These functions get and set vehicle pilot class.
+
+--- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
+-- @tparam handle h
+-- @tparam string odfname
+function GameObject.SetPilotClass(h, odfname)
+    if not _gameobject.isgameobject(h) then error("Parameter h must be GameObject instance."); end
+    if not utility.isstring(odfname) and odfname ~= nil then error("Parameter odfname must be a string or nil."); end
+    SetPilotClass(h:GetHandle(), odfname);
+end
+
+--- Returns the odf name of the vehicle's pilot class. Returns nil if none exists.
+-- @tparam handle h
+-- @treturn string
+function GameObject.GetPilotClass(h)
+    if not _gameobject.isgameobject(h) then error("Parameter h must be GameObject instance."); end
+    return GetPilotClass(h:GetHandle());
 end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------

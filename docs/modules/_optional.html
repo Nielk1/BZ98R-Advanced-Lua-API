@@ -30,6 +30,10 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -37,11 +41,11 @@
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
-  <li><strong>_customsavetype</strong></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
-  <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><strong>_optional</strong></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
@@ -56,17 +60,18 @@
 
 <div id="content">
 
-<h1>Module <code>_customsavetype</code></h1>
-<p>BZCC LUA Extended API CustomSaveType.</p>
+<h1>Module <code>_optional</code></h1>
+<p>BZCC LUA Extended API Optional loader.</p>
 <p>
 
- Crude custom type to make data not save/load exploiting the custom type system.
+ Load a lua module optionally.
  </p>
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">local customsavetype = require(&quot;_customsavetype&quot;);
+        <pre class="example">local optional = require(&quot;_optional&quot;);
+local _, missingMod1 = optional(&quot;_missing&quot;);
 
-customsavetype.Register(ObjectDef);
+local _, missingMod2 = require(&quot;_optional&quot;)(&quot;_missing&quot;);
 </pre>
     </ul>
     <h3>Info:</h3>
@@ -75,11 +80,56 @@ customsavetype.Register(ObjectDef);
     </ul>
 
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#__call">__call (table, moduleName)</a></td>
+	<td class="summary">__call</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "__call"></a>
+    <strong>__call (table, moduleName)</strong>
+    </dt>
+    <dd>
+    __call
+ Attempt to load a module, if it fails return false and error, if succesful return true and the module.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">table</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         The module table itself.
+        </li>
+        <li><span class="parameter">moduleName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Module name to load.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">boolean</span></span>
+        success True if the module loaded successfully, false if it failed.</li>
+        <li>
+        The module return value or nil if failed</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->

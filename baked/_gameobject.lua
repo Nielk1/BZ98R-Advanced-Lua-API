@@ -87,7 +87,7 @@ GameObject.__type = "GameObject";
 --- Create new GameObject Intance.
 -- @tparam handle handle Handle from BZ98R
 -- @treturn GameObject
-function GameObject.FromHandle(handle)
+function _gameobject.FromHandle(handle)
     local objectId = handle;--string.sub(tostring(handle),4);
     if GameObjectWeakList[objectId] ~= nil then
         return GameObjectWeakList[objectId];
@@ -117,7 +117,7 @@ end
 -- INTERNAL USE.
 -- @param id Handle
 function GameObject.Load(id)
-    return GameObject.FromHandle(id);
+    return _gameobject.FromHandle(id);
 end
 
 --- BulkSave event function.
@@ -154,7 +154,7 @@ function GameObject.BulkLoad(data,dataDead)
     end
 
     for k,v in pairs(data) do
-        local newGameObject = GameObject.FromHandle(k);
+        local newGameObject = _gameobject.FromHandle(k);
         newGameObject.addonData = v;
 
         -- IsObjectiveOn Memo
@@ -165,7 +165,7 @@ function GameObject.BulkLoad(data,dataDead)
         end
     end
     for k,v in pairs(dataDead) do
-        local newGameObject = GameObject.FromHandle(v); -- this will be either a new GameObject or an existing one from the above addon data filling loop
+        local newGameObject = _gameobject.FromHandle(v); -- this will be either a new GameObject or an existing one from the above addon data filling loop
         GameObjectDead[v] = newGameObject;
     end
 end
@@ -204,7 +204,7 @@ function _gameobject.BuildGameObject(odf, team, pos, point)
         handle = BuildObject(odf, team, pos);
     end
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Remove GameObject from world.
@@ -221,7 +221,7 @@ function _gameobject.GetPlayerGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetPlayerHandle(team);
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Get Recycler GameObject of team.
@@ -231,7 +231,7 @@ function _gameobject.GetRecyclerGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetRecyclerHandle(team);
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Get Factory GameObject of team.
@@ -241,7 +241,7 @@ function _gameobject.GetFactoryGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetFactoryHandle(team);
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Get Armory GameObject of team.
@@ -251,7 +251,7 @@ function _gameobject.GetArmoryGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetArmoryHandle(team);
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Get Factory GameObject of team.
@@ -261,7 +261,7 @@ function _gameobject.GetConstructorGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetConstructorHandle(team);
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Get GameObject by Label.
@@ -270,7 +270,7 @@ end
 function _gameobject.GetGameObject(key)
     local handle = GetHandle(key);
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -643,7 +643,7 @@ function GameObject.GetCargo(self)
     if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     local handle = GetCargo(self:GetHandle());
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- What tug GameObject is tugging this if any?
@@ -653,7 +653,7 @@ function GameObject.GetTug(self)
     if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     local handle = GetTug(self:GetHandle());
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 --- Has the GameObject hopped out of a vehicle? What vehicle?
@@ -663,7 +663,7 @@ function GameObject.HoppedOutOf(self)
     if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     local handle = HoppedOutOf(self:GetHandle());
     if handle == nil then return nil end;
-    return GameObject.FromHandle(handle);
+    return _gameobject.FromHandle(handle);
 end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------

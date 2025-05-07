@@ -193,9 +193,100 @@ function GetHandle(label) end
 -- @tparam handle h
 -- @function GetClassId
 
---- This is a global table that converts between class identifier numbers and class identifier names. For example, ClassId.SCRAP or ClassId["SCRAP"] returns the class identifier number (7) for the Scrap class; ClassId[7] returns the class identifier name ("SCRAP") for class identifier number 7. For maintainability, always use this table instead of raw class identifier numbers.
--- Available class identifiers: NONE, HELICOPTER, STRUCTURE1, POWERUP, PERSON, SIGN, VEHICLE, SCRAP, BRIDGE, FLOOR, STRUCTURE2, SCROUNGE, SPINNER, HEADLIGHT_MASK, EYEPOINT, COM, WEAPON, ORDNANCE, EXPLOSION, CHUNK, SORT_OBJECT, NONCOLLIDABLE, VEHICLE_GEOMETRY, STRUCTURE_GEOMETRY, WEAPON_GEOMETRY, ORDNANCE_GEOMETRY, TURRET_GEOMETRY, ROTOR_GEOMETRY, NACELLE_GEOMETRY, FIN_GEOMETRY, COCKPIT_GEOMETRY, WEAPON_HARDPOINT, CANNON_HARDPOINT, ROCKET_HARDPOINT, MORTAR_HARDPOINT, SPECIAL_HARDPOINT, FLAME_EMITTER, SMOKE_EMITTER, DUST_EMITTER, PARKING_LOT
+--- This is a global table that converts between class identifier numbers and class identifier names.
+-- Many of these values likely never appear in game and are leftover from Interstate '76
 -- @table ClassId
+ClassId = {
+    NONE = 0, -- 0
+
+    HELICOPTER = 1, -- 1
+    STRUCTURE1 = 2, -- 2 (Wooden Structures)
+    POWERUP = 3, -- 3
+    PERSON = 4, -- 4
+    SIGN = 5, -- 5
+    VEHICLE = 6, -- 6
+    SCRAP = 7, -- 7
+    BRIDGE = 8, -- 8 (A structure which can contain the floor)
+    FLOOR = 9, -- 9 (The floor in a bridge)
+    STRUCTURE2 = 10, -- 10 (Metal Structures)
+    SCROUNGE = 11, -- 11
+    SPINNER = 15, -- 15
+
+    HEADLIGHT_MASK = 38, -- 38
+
+    EYEPOINT = 40, -- 40
+    COM = 42, -- 42
+
+    WEAPON = 50, -- 50
+    ORDNANCE = 51, -- 51
+    EXPLOSION = 52, -- 52
+    CHUNK = 53, -- 53
+    SORT_OBJECT = 54, -- 54
+    NONCOLLIDABLE = 55, -- 55
+
+    VEHICLE_GEOMETRY = 60, -- 60
+    STRUCTURE_GEOMETRY = 61, -- 61
+    WEAPON_GEOMETRY = 63, -- 63
+    ORDNANCE_GEOMETRY = 64, -- 64
+    TURRET_GEOMETRY = 65, -- 65
+    ROTOR_GEOMETRY = 66, -- 66
+    NACELLE_GEOMETRY = 67, -- 67
+    FIN_GEOMETRY = 68, -- 68
+    COCKPIT_GEOMETRY = 69, -- 69
+
+    WEAPON_HARDPOINT = 70, -- 70
+    CANNON_HARDPOINT = 71, -- 71
+    ROCKET_HARDPOINT = 72, -- 72
+    MORTAR_HARDPOINT = 73, -- 73
+    SPECIAL_HARDPOINT = 74, -- 74
+
+    FLAME_EMITTER = 75, -- 75
+    SMOKE_EMITTER = 76, -- 76
+    DUST_EMITTER = 77, -- 77
+
+    PARKING_LOT = 81, -- 81
+
+    [0] = "NONE", -- NONE
+    [1] = "HELICOPTER", -- HELICOPTER
+    [2] = "STRUCTURE1", -- STRUCTURE1
+    [3] = "POWERUP", -- POWERUP
+    [4] = "PERSON", -- PERSON
+    [5] = "SIGN", -- SIGN
+    [6] = "VEHICLE", -- VEHICLE
+    [7] = "SCRAP", -- SCRAP
+    [8] = "BRIDGE", -- BRIDGE
+    [9] = "FLOOR", -- FLOOR
+    [10] = "STRUCTURE2", -- STRUCTURE2
+    [11] = "SCROUNGE", -- SCROUNGE
+    [15] = "SPINNER", -- SPINNER
+    [38] = "HEADLIGHT_MASK", -- HEADLIGHT_MASK
+    [40] = "EYEPOINT", -- EYEPOINT
+    [42] = "COM", -- COM
+    [50] = "WEAPON", -- WEAPON
+    [51] = "ORDNANCE", -- ORDNANCE
+    [52] = "EXPLOSION", -- EXPLOSION
+    [53] = "CHUNK", -- CHUNK
+    [54] = "SORT_OBJECT", -- SORT_OBJECT
+    [55] = "NONCOLLIDABLE", -- NONCOLLIDABLE
+    [60] = "VEHICLE_GEOMETRY", -- VEHICLE_GEOMETRY
+    [61] = "STRUCTURE_GEOMETRY", -- STRUCTURE_GEOMETRY
+    [63] = "WEAPON_GEOMETRY", -- WEAPON_GEOMETRY
+    [64] = "ORDNANCE_GEOMETRY", -- ORDNANCE_GEOMETRY
+    [65] = "TURRET_GEOMETRY", -- TURRET_GEOMETRY
+    [66] = "ROTOR_GEOMETRY", -- ROTOR_GEOMETRY
+    [67] = "NACELLE_GEOMETRY", -- NACELLE_GEOMETRY
+    [68] = "FIN_GEOMETRY", -- FIN_GEOMETRY
+    [69] = "COCKPIT_GEOMETRY", -- COCKPIT_GEOMETRY
+    [70] = "WEAPON_HARDPOINT", -- WEAPON_HARDPOINT
+    [71] = "CANNON_HARDPOINT", -- CANNON_HARDPOINT
+    [72] = "ROCKET_HARDPOINT", -- ROCKET_HARDPOINT
+    [73] = "MORTAR_HARDPOINT", -- MORTAR_HARDPOINT
+    [74] = "SPECIAL_HARDPOINT", -- SPECIAL_HARDPOINT
+    [75] = "FLAME_EMITTER", -- FLAME_EMITTER
+    [76] = "SMOKE_EMITTER", -- SMOKE_EMITTER
+    [77] = "DUST_EMITTER", -- DUST_EMITTER
+    [81] = "PARKING_LOT", -- PARKING_LOT
+}
 
 --- Returns the one-letter nation code of the game object (e.g. "a" for American, "b" for Black Dog, "c" for Chinese, and "s" for Soviet).
 -- The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".

@@ -82,12 +82,18 @@ end
 -- <pre>
 -- DeleteObject                   .GameObject   = -9999
 -- DeleteObject                   .NavManager   =  4999
+-- DeleteObject                   .Tracker      =  4999
 -- ----------------------------------------------------
 -- CreateObject                   .NavManager   =  4999
+-- CreateObject                   .Tracker      =  4999
 -- ----------------------------------------------------
+-- Start                          .Tracker      =  4999
+-- ----------------------------------------------------
+-- Update                         .Tracker      =  4999
 -- Update                         .StateMachine =  8999
 -- Update                         .GameObject   =  9999
 -- ----------------------------------------------------
+-- GameObject_SwapObjectReferences.Tracker      =  8999</pre>
 -- GameObject_SwapObjectReferences.GameObject   =  9999</pre>
 -- @field config.hook_priority
 -- @table config.hook_priority
@@ -95,15 +101,23 @@ config.hook_priority = {
     DeleteObject = {
         GameObject = -9999,
         NavManager = 4999,
+        Tracker = 4999,
     },
     CreateObject = {
         NavManager = 4999,
+        Tracker = 4999,
+    },
+    Start = {
+        NavManager = 4999,
+        Tracker = 4999,
     },
     Update = {
+        Tracker = 4999,
         StateMachine = 8999,
         GameObject = 9999,
     },
     GameObject_SwapObjectReferences = {
+        Tracker = 8999,
         GameObject = 9999,
     },
 }

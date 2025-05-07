@@ -94,6 +94,7 @@
   <li><strong>ScriptUtils</strong></li>
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
@@ -102,7 +103,9 @@
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
   <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
 </ul>
 
 </div>
@@ -2330,10 +2333,253 @@
     <strong>ClassId</strong>
     </dt>
     <dd>
-    This is a global table that converts between class identifier numbers and class identifier names.  For example, ClassId.SCRAP or ClassId["SCRAP"] returns the class identifier number (7) for the Scrap class; ClassId[7] returns the class identifier name ("SCRAP") for class identifier number 7. For maintainability, always use this table instead of raw class identifier numbers.
- Available class identifiers: NONE, HELICOPTER, STRUCTURE1, POWERUP, PERSON, SIGN, VEHICLE, SCRAP, BRIDGE, FLOOR, STRUCTURE2, SCROUNGE, SPINNER, HEADLIGHT_MASK, EYEPOINT, COM, WEAPON, ORDNANCE, EXPLOSION, CHUNK, SORT_OBJECT, NONCOLLIDABLE, VEHICLE_GEOMETRY, STRUCTURE_GEOMETRY, WEAPON_GEOMETRY, ORDNANCE_GEOMETRY, TURRET_GEOMETRY, ROTOR_GEOMETRY, NACELLE_GEOMETRY, FIN_GEOMETRY, COCKPIT_GEOMETRY, WEAPON_HARDPOINT, CANNON_HARDPOINT, ROCKET_HARDPOINT, MORTAR_HARDPOINT, SPECIAL_HARDPOINT, FLAME_EMITTER, SMOKE_EMITTER, DUST_EMITTER, PARKING_LOT
+    This is a global table that converts between class identifier numbers and class identifier names.
+ Many of these values likely never appear in game and are leftover from Interstate '76
 
 
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">NONE</span>
+        0
+        </li>
+        <li><span class="parameter">HELICOPTER</span>
+        1
+        </li>
+        <li><span class="parameter">STRUCTURE1</span>
+        2 (Wooden Structures)
+        </li>
+        <li><span class="parameter">POWERUP</span>
+        3
+        </li>
+        <li><span class="parameter">PERSON</span>
+        4
+        </li>
+        <li><span class="parameter">SIGN</span>
+        5
+        </li>
+        <li><span class="parameter">VEHICLE</span>
+        6
+        </li>
+        <li><span class="parameter">SCRAP</span>
+        7
+        </li>
+        <li><span class="parameter">BRIDGE</span>
+        8 (A structure which can contain the floor)
+        </li>
+        <li><span class="parameter">FLOOR</span>
+        9 (The floor in a bridge)
+        </li>
+        <li><span class="parameter">STRUCTURE2</span>
+        10 (Metal Structures)
+        </li>
+        <li><span class="parameter">SCROUNGE</span>
+        11
+        </li>
+        <li><span class="parameter">SPINNER</span>
+        15
+        </li>
+        <li><span class="parameter">HEADLIGHT_MASK</span>
+        38
+        </li>
+        <li><span class="parameter">EYEPOINT</span>
+        40
+        </li>
+        <li><span class="parameter">COM</span>
+        42
+        </li>
+        <li><span class="parameter">WEAPON</span>
+        50
+        </li>
+        <li><span class="parameter">ORDNANCE</span>
+        51
+        </li>
+        <li><span class="parameter">EXPLOSION</span>
+        52
+        </li>
+        <li><span class="parameter">CHUNK</span>
+        53
+        </li>
+        <li><span class="parameter">SORT_OBJECT</span>
+        54
+        </li>
+        <li><span class="parameter">NONCOLLIDABLE</span>
+        55
+        </li>
+        <li><span class="parameter">VEHICLE_GEOMETRY</span>
+        60
+        </li>
+        <li><span class="parameter">STRUCTURE_GEOMETRY</span>
+        61
+        </li>
+        <li><span class="parameter">WEAPON_GEOMETRY</span>
+        63
+        </li>
+        <li><span class="parameter">ORDNANCE_GEOMETRY</span>
+        64
+        </li>
+        <li><span class="parameter">TURRET_GEOMETRY</span>
+        65
+        </li>
+        <li><span class="parameter">ROTOR_GEOMETRY</span>
+        66
+        </li>
+        <li><span class="parameter">NACELLE_GEOMETRY</span>
+        67
+        </li>
+        <li><span class="parameter">FIN_GEOMETRY</span>
+        68
+        </li>
+        <li><span class="parameter">COCKPIT_GEOMETRY</span>
+        69
+        </li>
+        <li><span class="parameter">WEAPON_HARDPOINT</span>
+        70
+        </li>
+        <li><span class="parameter">CANNON_HARDPOINT</span>
+        71
+        </li>
+        <li><span class="parameter">ROCKET_HARDPOINT</span>
+        72
+        </li>
+        <li><span class="parameter">MORTAR_HARDPOINT</span>
+        73
+        </li>
+        <li><span class="parameter">SPECIAL_HARDPOINT</span>
+        74
+        </li>
+        <li><span class="parameter">FLAME_EMITTER</span>
+        75
+        </li>
+        <li><span class="parameter">SMOKE_EMITTER</span>
+        76
+        </li>
+        <li><span class="parameter">DUST_EMITTER</span>
+        77
+        </li>
+        <li><span class="parameter">PARKING_LOT</span>
+        81
+        </li>
+        <li><span class="parameter">[0]</span>
+        NONE
+        </li>
+        <li><span class="parameter">[1]</span>
+        HELICOPTER
+        </li>
+        <li><span class="parameter">[2]</span>
+        STRUCTURE1
+        </li>
+        <li><span class="parameter">[3]</span>
+        POWERUP
+        </li>
+        <li><span class="parameter">[4]</span>
+        PERSON
+        </li>
+        <li><span class="parameter">[5]</span>
+        SIGN
+        </li>
+        <li><span class="parameter">[6]</span>
+        VEHICLE
+        </li>
+        <li><span class="parameter">[7]</span>
+        SCRAP
+        </li>
+        <li><span class="parameter">[8]</span>
+        BRIDGE
+        </li>
+        <li><span class="parameter">[9]</span>
+        FLOOR
+        </li>
+        <li><span class="parameter">[10]</span>
+        STRUCTURE2
+        </li>
+        <li><span class="parameter">[11]</span>
+        SCROUNGE
+        </li>
+        <li><span class="parameter">[15]</span>
+        SPINNER
+        </li>
+        <li><span class="parameter">[38]</span>
+        HEADLIGHT_MASK
+        </li>
+        <li><span class="parameter">[40]</span>
+        EYEPOINT
+        </li>
+        <li><span class="parameter">[42]</span>
+        COM
+        </li>
+        <li><span class="parameter">[50]</span>
+        WEAPON
+        </li>
+        <li><span class="parameter">[51]</span>
+        ORDNANCE
+        </li>
+        <li><span class="parameter">[52]</span>
+        EXPLOSION
+        </li>
+        <li><span class="parameter">[53]</span>
+        CHUNK
+        </li>
+        <li><span class="parameter">[54]</span>
+        SORT_OBJECT
+        </li>
+        <li><span class="parameter">[55]</span>
+        NONCOLLIDABLE
+        </li>
+        <li><span class="parameter">[60]</span>
+        VEHICLE_GEOMETRY
+        </li>
+        <li><span class="parameter">[61]</span>
+        STRUCTURE_GEOMETRY
+        </li>
+        <li><span class="parameter">[63]</span>
+        WEAPON_GEOMETRY
+        </li>
+        <li><span class="parameter">[64]</span>
+        ORDNANCE_GEOMETRY
+        </li>
+        <li><span class="parameter">[65]</span>
+        TURRET_GEOMETRY
+        </li>
+        <li><span class="parameter">[66]</span>
+        ROTOR_GEOMETRY
+        </li>
+        <li><span class="parameter">[67]</span>
+        NACELLE_GEOMETRY
+        </li>
+        <li><span class="parameter">[68]</span>
+        FIN_GEOMETRY
+        </li>
+        <li><span class="parameter">[69]</span>
+        COCKPIT_GEOMETRY
+        </li>
+        <li><span class="parameter">[70]</span>
+        WEAPON_HARDPOINT
+        </li>
+        <li><span class="parameter">[71]</span>
+        CANNON_HARDPOINT
+        </li>
+        <li><span class="parameter">[72]</span>
+        ROCKET_HARDPOINT
+        </li>
+        <li><span class="parameter">[73]</span>
+        MORTAR_HARDPOINT
+        </li>
+        <li><span class="parameter">[74]</span>
+        SPECIAL_HARDPOINT
+        </li>
+        <li><span class="parameter">[75]</span>
+        FLAME_EMITTER
+        </li>
+        <li><span class="parameter">[76]</span>
+        SMOKE_EMITTER
+        </li>
+        <li><span class="parameter">[77]</span>
+        DUST_EMITTER
+        </li>
+        <li><span class="parameter">[81]</span>
+        PARKING_LOT
+        </li>
+    </ul>
 
 
 
@@ -5999,7 +6245,7 @@
         </li>
         <li><span class="parameter">control</span>
             <span class="types"><span class="type">boolean</span></span>
-
+        , defaults to true
          (<em>optional</em>)
         </li>
     </ul>
@@ -6826,9 +7072,185 @@
     </dt>
     <dd>
     This is a global table that converts between command numbers and command names.  For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
- Available commands: NONE, SELECT, STOP, GO, ATTACK, FOLLOW, FORMATION, PICKUP, DROPOFF, NO_DROPOFF, GET_REPAIR, GET_RELOAD, GET_WEAPON, GET_CAMERA, GET_BOMB, DEFEND, GO_TO_GEYSER, RESCUE, RECYCLE, SCAVENGE, HUNT, BUILD, PATROL, STAGE, SEND, GET_IN, LAY_MINES, CLOAK [2.1+], DECLOAK [2.1+].
 
 
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">NONE</span>
+        0
+        </li>
+        <li><span class="parameter">SELECT</span>
+        1
+        </li>
+        <li><span class="parameter">STOP</span>
+        2
+        </li>
+        <li><span class="parameter">GO</span>
+        3
+        </li>
+        <li><span class="parameter">ATTACK</span>
+        4
+        </li>
+        <li><span class="parameter">FOLLOW</span>
+        5
+        </li>
+        <li><span class="parameter">FORMATION</span>
+        6
+        </li>
+        <li><span class="parameter">PICKUP</span>
+        7
+        </li>
+        <li><span class="parameter">DROPOFF</span>
+        8
+        </li>
+        <li><span class="parameter">NO_DROPOFF</span>
+        9
+        </li>
+        <li><span class="parameter">GET_REPAIR</span>
+        10
+        </li>
+        <li><span class="parameter">GET_RELOAD</span>
+        11
+        </li>
+        <li><span class="parameter">GET_WEAPON</span>
+        12
+        </li>
+        <li><span class="parameter">GET_CAMERA</span>
+        13
+        </li>
+        <li><span class="parameter">GET_BOMB</span>
+        14
+        </li>
+        <li><span class="parameter">DEFEND</span>
+        15
+        </li>
+        <li><span class="parameter">GO_TO_GEYSER</span>
+        16
+        </li>
+        <li><span class="parameter">RESCUE</span>
+        17
+        </li>
+        <li><span class="parameter">RECYCLE</span>
+        18
+        </li>
+        <li><span class="parameter">SCAVENGE</span>
+        19
+        </li>
+        <li><span class="parameter">HUNT</span>
+        20
+        </li>
+        <li><span class="parameter">BUILD</span>
+        21
+        </li>
+        <li><span class="parameter">PATROL</span>
+        22
+        </li>
+        <li><span class="parameter">STAGE</span>
+        23
+        </li>
+        <li><span class="parameter">SEND</span>
+        24
+        </li>
+        <li><span class="parameter">GET_IN</span>
+        25
+        </li>
+        <li><span class="parameter">LAY_MINES</span>
+        26
+        </li>
+        <li><span class="parameter">CLOAK</span>
+        27 [2.1+]
+        </li>
+        <li><span class="parameter">DECLOAK</span>
+        28 [2.1+]
+        </li>
+        <li><span class="parameter">[0]</span>
+        NONE
+        </li>
+        <li><span class="parameter">[1]</span>
+        SELECT
+        </li>
+        <li><span class="parameter">[2]</span>
+        STOP
+        </li>
+        <li><span class="parameter">[3]</span>
+        GO
+        </li>
+        <li><span class="parameter">[4]</span>
+        ATTACK
+        </li>
+        <li><span class="parameter">[5]</span>
+        FOLLOW
+        </li>
+        <li><span class="parameter">[6]</span>
+        FORMATION
+        </li>
+        <li><span class="parameter">[7]</span>
+        PICKUP
+        </li>
+        <li><span class="parameter">[8]</span>
+        DROPOFF
+        </li>
+        <li><span class="parameter">[9]</span>
+        NO_DROPOFF
+        </li>
+        <li><span class="parameter">[10]</span>
+        GET_REPAIR
+        </li>
+        <li><span class="parameter">[11]</span>
+        GET_RELOAD
+        </li>
+        <li><span class="parameter">[12]</span>
+        GET_WEAPON
+        </li>
+        <li><span class="parameter">[13]</span>
+        GET_CAMERA
+        </li>
+        <li><span class="parameter">[14]</span>
+        GET_BOMB
+        </li>
+        <li><span class="parameter">[15]</span>
+        DEFEND
+        </li>
+        <li><span class="parameter">[16]</span>
+        GO_TO_GEYSER
+        </li>
+        <li><span class="parameter">[17]</span>
+        RESCUE
+        </li>
+        <li><span class="parameter">[18]</span>
+        RECYCLE
+        </li>
+        <li><span class="parameter">[19]</span>
+        SCAVENGE
+        </li>
+        <li><span class="parameter">[20]</span>
+        HUNT
+        </li>
+        <li><span class="parameter">[21]</span>
+        BUILD
+        </li>
+        <li><span class="parameter">[22]</span>
+        PATROL
+        </li>
+        <li><span class="parameter">[23]</span>
+        STAGE
+        </li>
+        <li><span class="parameter">[24]</span>
+        SEND
+        </li>
+        <li><span class="parameter">[25]</span>
+        GET_IN
+        </li>
+        <li><span class="parameter">[26]</span>
+        LAY_MINES
+        </li>
+        <li><span class="parameter">[27]</span>
+        CLOAK [2.1+]
+        </li>
+        <li><span class="parameter">[28]</span>
+        DECLOAK [2.1+]
+        </li>
+    </ul>
 
 
 
@@ -11064,7 +11486,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-06 08:48:55 </i>
+<i style="float:right;">Last updated 2025-05-07 05:07:41 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

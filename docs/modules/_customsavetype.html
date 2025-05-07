@@ -37,11 +37,11 @@
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
-  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><strong>_customsavetype</strong></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
-  <li><strong>_printfix</strong></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
@@ -55,12 +55,19 @@
 
 <div id="content">
 
-<h1>Module <code>_printfix</code></h1>
-<p>BZ98R LUA Extended API Print Fix.</p>
+<h1>Module <code>_customsavetype</code></h1>
+<p>BZCC LUA Extended API CustomSaveType.</p>
 <p>
 
- Hot-patches print to decorate output for finding in the mess of a log file.
+ Crude custom type to make data not save/load exploiting the custom type system.
  </p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local customsavetype = require(&quot;_customsavetype&quot;);
+
+customsavetype.Register(ObjectDef);
+</pre>
+    </ul>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: John "Nielk1" Klein</li>

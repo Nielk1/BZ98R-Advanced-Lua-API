@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_stateset.html">_stateset</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><strong>_tracker</strong></li>
+  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_tracker</code></h1>
+<p>BZ98R LUA Extended API Tracker.</p>
+<p>
+
+ Manage navs
+
+ Dependencies: <a href="../modules/_config.html#">_config</a>, <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_gameobject.html#">_gameobject</a>, <a href="../modules/_table_show.html#">_table_show</a></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local tracker = require(&quot;_tracker&quot;);
+
+-- if no filters are set all objects will be tracked
+tracker.setFilterTeam(1, true);
+tracker.setFilterClass(&quot;TANK&quot;, true);
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#countByClassSig">countByClassSig (sig[, team])</a></td>
+	<td class="summary">Count object by ClassSig</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#countByClassName">countByClassName (classname[, team])</a></td>
+	<td class="summary">Count object by ClassName</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#countByOdf">countByOdf (odf[, team])</a></td>
+	<td class="summary">Count object by class</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setFilterTeam">setFilterTeam (team[, enabled])</a></td>
+	<td class="summary">Enable tracking for a team.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setFilterClass">setFilterClass (class[, enabled])</a></td>
+	<td class="summary">Enable tracking for a class.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setFilterOdf">setFilterOdf (odf[, enabled])</a></td>
+	<td class="summary">Enable tracking for an odf.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "countByClassSig"></a>
+    <strong>countByClassSig (sig[, team])</strong>
+    </dt>
+    <dd>
+    Count object by ClassSig
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sig</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ClassSig name to count.
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number to count for.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "countByClassName"></a>
+    <strong>countByClassName (classname[, team])</strong>
+    </dt>
+    <dd>
+    Count object by ClassName
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">classname</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ClassName name to count.
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number to count for.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "countByOdf"></a>
+    <strong>countByOdf (odf[, team])</strong>
+    </dt>
+    <dd>
+    Count object by class
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Odf name to count.
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number to count for.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setFilterTeam"></a>
+    <strong>setFilterTeam (team[, enabled])</strong>
+    </dt>
+    <dd>
+    Enable tracking for a team.
+ Note that items that no longer fit the filter will remain in the tracker.
+ Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number to track.
+        </li>
+        <li><span class="parameter">enabled</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Enable or disable tracking for the team. Defaults to true.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setFilterClass"></a>
+    <strong>setFilterClass (class[, enabled])</strong>
+    </dt>
+    <dd>
+    Enable tracking for a class.
+ Note that items that no longer fit the filter will remain in the tracker.
+ Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
+ Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">class</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Class name to track.
+        </li>
+        <li><span class="parameter">enabled</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Enable or disable tracking for the class. Defaults to true.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setFilterOdf"></a>
+    <strong>setFilterOdf (odf[, enabled])</strong>
+    </dt>
+    <dd>
+    Enable tracking for an odf.
+ Note that items that no longer fit the filter will remain in the tracker.
+ Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
+ Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Odf name to track.
+        </li>
+        <li><span class="parameter">enabled</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Enable or disable tracking for the odf. Defaults to true.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-05-07 05:07:41 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

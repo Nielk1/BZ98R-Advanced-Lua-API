@@ -8,6 +8,7 @@
 -- @author John "Nielk1" Klein
 
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+SetLabel = SetLabel or SettLabel; -- BZ1.5 compatibility
 
 local debugprint = debugprint or function() end;
 local traceprint = traceprint or function() end;
@@ -366,7 +367,7 @@ function Start()
     debugprint("_api::Start()");
     
     for h in AllObjects() do
-        hook.CallAllNoReturn( "CreateObject", GameObject.FromHandle(h), true );
+        hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h), true );
     end
 
     hook.CallAllNoReturn( "Start" );
@@ -391,7 +392,7 @@ end
 -- @local
 function CreateObject(h)
     traceprint("_api::CreateObject(" .. tostring(h) .. ")");
-    hook.CallAllNoReturn( "CreateObject", GameObject.FromHandle(h) );
+    hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h) );
     traceprint("_api::/CreateObject");
 end
 
@@ -402,7 +403,7 @@ end
 -- @local
 function AddObject(h)
     traceprint("_api::AddObject(" .. tostring(h) .. ")");
-    hook.CallAllNoReturn( "AddObject", GameObject.FromHandle(h) );
+    hook.CallAllNoReturn( "AddObject", gameobject.FromHandle(h) );
     traceprint("_api::/AddObject");
 end
 
@@ -413,7 +414,7 @@ end
 -- @local
 function DeleteObject(h)
     traceprint("_api::DeleteObject(" .. tostring(h) .. ")");
-    hook.CallAllNoReturn( "DeleteObject", GameObject.FromHandle(h) );
+    hook.CallAllNoReturn( "DeleteObject", gameobject.FromHandle(h) );
     traceprint("_api::/DeleteObject");
 end
 

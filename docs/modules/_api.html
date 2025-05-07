@@ -33,7 +33,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Events">Events</a></li>
-<li><a href="#Utility_Functions">Utility Functions </a></li>
 </ul>
 
 
@@ -42,6 +41,7 @@
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><strong>_api</strong></li>
   <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
@@ -50,7 +50,9 @@
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
   <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
 </ul>
 
 </div>
@@ -62,7 +64,7 @@
 <p>
 <p> This API creates a full OOP wrapper and replacement the mission
  functions with an event based system for easier expansion.
-<p> Dependencies: <a href="../modules/_hook.html#">_hook</a></p>
+<p> Dependencies: <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_gameobject.html#">_gameobject</a>, <a href="../modules/_customsavetype.html#">_customsavetype</a></p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: John "Nielk1" Klein</li>
@@ -124,33 +126,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#Command">Command</a></td>
 	<td class="summary">Called for any in-game chat command that was not handled by the system, allowing script-defined commands.</td>
-	</tr>
-</table>
-<h2><a href="#Utility_Functions">Utility Functions </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#isfunction">isfunction (object)</a></td>
-	<td class="summary">Is this object a function?</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#istable">istable (object)</a></td>
-	<td class="summary">Is this object a table?</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#isstring">isstring (object)</a></td>
-	<td class="summary">Is this object a string?</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#isboolean">isboolean (object)</a></td>
-	<td class="summary">Is this object a boolean?</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#isnumber">isnumber (object)</a></td>
-	<td class="summary">Is this object a number?</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#isinteger">isinteger (object)</a></td>
-	<td class="summary">Is this object an integer?</td>
 	</tr>
 </table>
 
@@ -572,173 +547,13 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Utility_Functions"></a>Utility Functions </h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "isfunction"></a>
-    <strong>isfunction (object)</strong>
-    </dt>
-    <dd>
-    Is this object a function?
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">object</span>
-         Object in question
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "istable"></a>
-    <strong>istable (object)</strong>
-    </dt>
-    <dd>
-    Is this object a table?
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">object</span>
-         Object in question
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "isstring"></a>
-    <strong>isstring (object)</strong>
-    </dt>
-    <dd>
-    Is this object a string?
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">object</span>
-         Object in question
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "isboolean"></a>
-    <strong>isboolean (object)</strong>
-    </dt>
-    <dd>
-    Is this object a boolean?
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">object</span>
-         Object in question
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "isnumber"></a>
-    <strong>isnumber (object)</strong>
-    </dt>
-    <dd>
-    Is this object a number?
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">object</span>
-         Object in question
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "isinteger"></a>
-    <strong>isinteger (object)</strong>
-    </dt>
-    <dd>
-    Is this object an integer?
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">object</span>
-         Object in question
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">bool</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-06 08:48:55 </i>
+<i style="float:right;">Last updated 2025-05-07 05:07:41 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

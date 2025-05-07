@@ -3,7 +3,7 @@
 -- This API creates a full OOP wrapper and replacement the mission
 -- functions with an event based system for easier expansion.
 --
--- Dependencies: @{_hook}
+-- Dependencies: @{_utility}, @{_hook}, @{_gameobject}, @{_customsavetype}
 -- @module _api
 -- @author John "Nielk1" Klein
 
@@ -14,7 +14,10 @@ local traceprint = traceprint or function() end;
 
 debugprint("_api Loading");
 
+local utility = require("_utility");
 local hook = require("_hook");
+local gameobject = require("_gameobject");
+local customsavetype = require("_customsavetype");
 
 --- Called when saving state to a save game file, allowing the script to preserve its state.
 --
@@ -181,53 +184,7 @@ local hook = require("_hook");
 
 
 
--------------------------------------------------------------------------------
--- Utility Functions
--------------------------------------------------------------------------------
--- @section
 
---- Is this object a function?
--- @param object Object in question
--- @treturn bool
-function isfunction(object)
-  return (type(object) == "function");
-end
-
---- Is this object a table?
--- @param object Object in question
--- @treturn bool
-function istable(object)
-  return (type(object) == 'table');
-end
-
---- Is this object a string?
--- @param object Object in question
--- @treturn bool
-function isstring(object)
-  return (type(object) == "string");
-end
-
---- Is this object a boolean?
--- @param object Object in question
--- @treturn bool
-function isboolean(object)
-  return (type(object) == "boolean");
-end
-
---- Is this object a number?
--- @param object Object in question
--- @treturn bool
-function isnumber(object)
-  return (type(object) == "number");
-end
-
---- Is this object an integer?
--- @param object Object in question
--- @treturn bool
-function isinteger(object)
-  if not isnumber(object) then return false end;
-  return object == math.floor(object);
-end
 
 -------------------------------------------------------------------------------
 -- Enums
@@ -241,64 +198,27 @@ end
 -------------------------------------------------------------------------------
 -- @section
 
-local CustomSavableTypes = {};
 local CustomTypeMap = nil; -- maps name to ID number
 
 local _api = {};
 
-function _api.RegisterCustomSavableType(obj)
-    if obj == nil or obj.__type == nil then error("Custom type malformed, no __type"); end
-    local typeT = {};
-    if obj.Save ~= nil then
-        typeT.Save = obj.Save;
-    --else
-    --    typeT.Save = function() end
-    end
-    if obj.Load ~= nil then
-        typeT.Load = obj.Load;
-    --else
-    --    typeT.Load = function() end
-    end
-    if obj.PostLoad ~= nil then
-        typeT.PostLoad = obj.PostLoad;
-    --else
-    --    typeT.PostLoad = function() end
-    end
-    if obj.BulkSave ~= nil then
-        typeT.BulkSave = obj.BulkSave;
-    --else
-    --    typeT.BulkSave = function() end
-    end
-    if obj.BulkLoad ~= nil then
-        typeT.BulkLoad = obj.BulkLoad;
-    --else
-    --    typeT.BulkLoad = function() end
-    end
-    if obj.BulkPostLoad ~= nil then
-        typeT.BulkPostLoad = obj.BulkPostLoad;
-    --else
-    --    typeT.BulkPostLoad = function() end
-    end
-    typeT.TypeName = obj.__type;
-    CustomSavableTypes[obj.__type] = typeT;
-end
 
 function SimplifyForSave(...)
     local output = {}; -- output array
     local count = select ("#", ...); -- get count of params
     for k = 1,count,1 do  -- loop params via count
         local v = select(k,...); -- get Kth Parameter, store in v
-        if istable(v) then -- it's a table, start special logic
+        if utility.istable(v) then -- it's a table, start special logic
             if v.__nosave == true then
                 --debugprint("Skipping save of " .. v.__type .. " (marked as unsavable)");
             else
-                if CustomSavableTypes[v.__type] ~= nil then
+                if customsavetype.CustomSavableTypes[v.__type] ~= nil then
                     local specialTypeTable = {};
                     local typeIndex = CustomTypeMap[v.__type];
                     debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
                     specialTypeTable["*custom_type"] = typeIndex;
-                    if CustomSavableTypes[v.__type].Save ~= nil then
-                        specialTypeTable["*data"] = {CustomSavableTypes[v.__type].Save(v)};
+                    if customsavetype.CustomSavableTypes[v.__type].Save ~= nil then
+                        specialTypeTable["*data"] = {customsavetype.CustomSavableTypes[v.__type].Save(v)};
                     end
                     table.insert(output, specialTypeTable);
                 else
@@ -321,10 +241,10 @@ function DeSimplifyForLoad(...)
     local count = select ("#", ...); -- get count of params
     for k = 1,count,1 do  -- loop params via count
         local v = select(k,...); -- get Kth Parameter, store in v
-        if istable(v) then -- it's a table, start special logic
+        if utility.istable(v) then -- it's a table, start special logic
             if v["*custom_type"] ~= nil then
                 local typeName = CustomTypeMap[v["*custom_type"]];
-                local typeObj = CustomSavableTypes[typeName];
+                local typeObj = customsavetype.CustomSavableTypes[typeName];
                 if typeObj.Load ~= nil then
                     if v["*data"] ~= nil then
                         table.insert(output, typeObj.Load(table.unpack(v["*data"])));
@@ -365,7 +285,7 @@ function Save()
     debugprint("Saving custom types map");
     local CustomSavableTypesCounter = 1;
     local CustomSavableTypeTmpTable = {};
-    for k,v in pairs(CustomSavableTypes) do
+    for k,v in pairs(customsavetype.CustomSavableTypes) do
         CustomSavableTypeTmpTable[CustomSavableTypesCounter] = k;
         CustomTypeMap[k] = CustomSavableTypesCounter;
         debugprint("[" .. CustomSavableTypesCounter .. "] = " .. k);
@@ -377,8 +297,8 @@ function Save()
     debugprint("Saving custom types");
     local CustomSavableTypeDataTmpTable = {};
     for idNum,name in ipairs(CustomSavableTypeTmpTable) do
-        local entry = CustomSavableTypes[name];
-        if entry.BulkSave ~= nil and isfunction(entry.BulkSave) then
+        local entry = customsavetype.CustomSavableTypes[name];
+        if entry.BulkSave ~= nil and utility.isfunction(entry.BulkSave) then
             debugprint("Saved " .. entry.TypeName);
             CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.BulkSave())};
         else
@@ -426,8 +346,8 @@ function Load(...)
     
     traceprint("Loading custom types data");
     for idNum,data in ipairs(args.CustomSavableTypeData) do
-        local entry = CustomSavableTypes[CustomTypeMap[idNum]];
-        if entry.BulkLoad ~= nil and isfunction(entry.BulkLoad) then
+        local entry = customsavetype.CustomSavableTypes[CustomTypeMap[idNum]];
+        if entry.BulkLoad ~= nil and utility.isfunction(entry.BulkLoad) then
             traceprint("Loaded " .. entry.TypeName);
             entry.BulkLoad(DeSimplifyForLoad(table.unpack(data)));
         end

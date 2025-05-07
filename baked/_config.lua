@@ -3,6 +3,7 @@
 -- Constants used to configure the API's system.
 -- Note that reading any non-table value other than "locked" will lock the config table.
 -- 
+-- Dependencies: @{_table_show}
 -- @module _config
 -- @author John "Nielk1" Klein
 -- @usage local config = require("_config");

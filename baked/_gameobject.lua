@@ -2,7 +2,7 @@
 -- 
 -- GameObject wrapper functions.
 -- 
--- Dependencies: @{_api}, @{_hook}
+-- Dependencies: @{_utility}, @{_config}, @{_hook}, @{_unsaved}, @{_customsavetype}
 -- @module _gameobject
 -- @author John "Nielk1" Klein
 
@@ -10,10 +10,11 @@ local debugprint = debugprint or function() end;
 
 debugprint("_gameobject Loading");
 
+local utility = require("_utility");
 local config = require("_config");
-local _api = require("_api");
 local hook = require("_hook");
 local unsaved = require("_unsaved");
+local customsavetype = require("_customsavetype");
 
 --- GameObject references swapped.
 -- The GameObject's references have been swapped.
@@ -145,7 +146,7 @@ end
 -- @param dataDead Dead object data
 function GameObject.BulkLoad(data,dataDead)
     local _ObjectiveObjects = {};
-    if not isfunction(IsObjectiveOn) then
+    if not utility.isfunction(IsObjectiveOn) then
         for h in ObjectiveObjects() do
             _ObjectiveObjects[h] = true;
         end
@@ -216,7 +217,7 @@ end
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
 function GetPlayerGameObject(team)
-    if team ~= nil and not isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetPlayerHandle(team);
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -226,7 +227,7 @@ end
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
 function GetRecyclerGameObject(team)
-    if team ~= nil and not isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetRecyclerHandle(team);
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -236,7 +237,7 @@ end
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
 function GetFactoryGameObject(team)
-    if team ~= nil and not isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetFactoryHandle(team);
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -246,7 +247,7 @@ end
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
 function GetArmoryGameObject(team)
-    if team ~= nil and not isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetArmoryHandle(team);
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -256,7 +257,7 @@ end
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
 function GetConstructorGameObject(team)
-    if team ~= nil and not isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetConstructorHandle(team);
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -675,7 +676,7 @@ end
 -- @param amt damage amount
 function GameObject.Damage(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     Damage(self:GetHandle(), amt);
 end
 
@@ -709,7 +710,7 @@ end
 -- @param amt health amount
 function GameObject.SetCurHealth(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetCurHealth(self:GetHandle(), amt);
 end
 
@@ -718,7 +719,7 @@ end
 -- @param amt health amount
 function GameObject.SetMaxHealth(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetMaxHealth(self:GetHandle(), amt);
 end
 
@@ -727,7 +728,7 @@ end
 -- @param amt health amount
 function GameObject.AddHealth(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     AddHealth(self:GetHandle(), amt);
 end
 
@@ -767,7 +768,7 @@ end
 -- @param amt ammo amount
 function GameObject.SetCurAmmo(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetCurAmmo(self:GetHandle(), amt);
 end
 
@@ -776,7 +777,7 @@ end
 -- @param amt ammo amount
 function GameObject.SetMaxAmmo(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetMaxAmmo(self:GetHandle(), amt);
 end
 
@@ -785,7 +786,7 @@ end
 -- @param amt ammo amount
 function GameObject.AddAmmo(self, amt)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(amt) then error("Parameter amt must be number."); end
+    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     AddAmmo(self:GetHandle(), amt);
 end
 
@@ -815,7 +816,7 @@ end
 -- @tparam int team new team number
 function GameObject.SetTeamNum(self, team)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(team) then error("Parameter amt must be number."); end
+    if not utility.isnumber(team) then error("Parameter amt must be number."); end
     SetTeamNum(self:GetHandle(), team);
 end
 
@@ -832,7 +833,7 @@ end
 -- @tparam int team new team number
 function GameObject.SetPerceivedTeam(self, team)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isnumber(team) then error("Parameter amt must be number."); end
+    if not utility.isnumber(team) then error("Parameter amt must be number."); end
     SetPerceivedTeam(self:GetHandle(), team);
 end
 
@@ -849,7 +850,7 @@ function GameObject.SetObjectiveOn(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOn(self:GetHandle());
 
-    if not isfunction(IsObjectiveOn) then
+    if not utility.isfunction(IsObjectiveOn) then
         self.cache_memo = unsaved(self.cache_memo)
         self.cache_memo.IsObjectiveOn = true;
     end
@@ -861,7 +862,7 @@ function GameObject.SetObjectiveOff(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOff(self:GetHandle());
 
-    if not isfunction(IsObjectIsObjectiveOnive) then
+    if not utility.isfunction(IsObjectIsObjectiveOnive) then
         self.cache_memo = unsaved(self.cache_memo)
         self.cache_memo.IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
     end
@@ -873,7 +874,7 @@ end
 function GameObject.IsObjectiveOn(self)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
 
-    if isfunction(IsObjectiveOn) then
+    if utility.isfunction(IsObjectiveOn) then
         return IsObjectiveOn(self:GetHandle());
     else
         if not self.cache_memo then return false; end
@@ -894,7 +895,7 @@ end
 -- @tparam string name Name of the objective
 function GameObject.SetObjectiveName(self, name)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isstring(name) then error("Parameter name must be a string."); end
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
     SetObjectiveName(self:GetHandle(), name);
 end
 
@@ -905,7 +906,7 @@ end
 -- @see GameObject.SetObjectiveName
 function GameObject.SetName(self, name)
     if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isstring(name) then error("Parameter name must be a string."); end
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
     SetName(self:GetHandle(), name);
 end
 
@@ -921,7 +922,7 @@ end
 -- @usage enemy1:IsOdf("svturr")
 function GameObject.IsOdf(self, odf)
   if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-  if not isstring(odf) then error("Parameter odf must be a string."); end
+  if not utility.isstring(odf) then error("Parameter odf must be a string."); end
   IsOdf(self:GetHandle(), odf);
 end
 
@@ -954,7 +955,7 @@ end
 -- @usage enemy1:SetLabel("special_object_7")
 function GameObject.SetLabel(self, label)
   if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-  if not isstring(label) then error("Parameter label must be a string."); end
+  if not utility.isstring(label) then error("Parameter label must be a string."); end
   SetLabel(self:GetHandle(),label);
 end
 
@@ -1028,7 +1029,7 @@ hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_Gam
     -- this could have been done where the hook was called, but it's here to act as an example
 
     -- cleanup data that shouldn't have been swapped since it's tied to game state
-    if not isfunction(IsObjectiveOn) then
+    if not utility.isfunction(IsObjectiveOn) then
         objectA.cache_memo = unsaved(objectA.cache_memo);
         objectB.cache_memo = unsaved(objectB.cache_memo);
         local ObjectiveA = objectA.cache_memo.IsObjectiveOn;
@@ -1051,7 +1052,7 @@ hook.Add("Update", "GameObject_Update", function(dtime)
     end
 end, config.get("hook_priority.Update.GameObject"));
 
-_api.RegisterCustomSavableType(GameObject);
+customsavetype.Register(GameObject);
 
 debugprint("_gameobject Loaded");
 

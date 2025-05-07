@@ -2,7 +2,7 @@
 -- 
 -- Manage navs
 -- 
--- Dependencies: @{_api}, @{_hook}
+-- Dependencies: @{_config}, @{_gameobject}, @{_api}, @{_hook}
 -- @module _navmanager
 -- @author John "Nielk1" Klein
 -- @usage local navmanager = require("_navmanager");
@@ -17,7 +17,7 @@ local debugprint = debugprint or function() end;
 debugprint("_navmanager Loading");
 
 local config = require("_config");
-require("_gameobject");
+local gameobject = require("_gameobject");
 local _api = require("_api");
 local hook = require("_hook");
 

@@ -2,7 +2,7 @@
 -- 
 -- State Machine and State Machine Iterator for serial event sequences across game turns.
 -- 
--- Dependencies: @{_api}, @{_hook}
+-- Dependencies: @{_utility}, @{_config}, @{_api}, @{_hook}, @{_customsavetype}
 -- @module _statemachine
 -- @author John "Nielk1" Klein
 -- @usage local statemachine = require("_statemachine");
@@ -78,9 +78,11 @@ debugprint("_statemachine Loading");
 
 --require("_table_show");
 
+local utility = require("_utility");
 local config = require("_config");
 local _api = require("_api");
 local hook = require("_hook");
+local customsavetype = require("_customsavetype");
 
 local _statemachine = {};
 _statemachine.game_time = 0;
@@ -132,7 +134,7 @@ local CreateStateMachineIter = function(name, timer, target_time, state_key, val
   self.target_time = target_time;
   self.state_key = state_key;
   
-  if istable(values) then
+  if utility.istable(values) then
     for k, v in pairs( values ) do 
       self[k] = v;
     end
@@ -150,11 +152,11 @@ function StateMachineIter.run(self, ...)
     local machine = _statemachine.Machines[self.template];
     if machine == nil then return false; end
 
-    if isfunction(machine[self.state_key]) then
+    if utility.isfunction(machine[self.state_key]) then
         return true, machine[self.state_key](self, ...);
     end
-    if istable(machine[self.state_key]) then
-        if isfunction(machine[self.state_key].f) then
+    if utility.istable(machine[self.state_key]) then
+        if utility.isfunction(machine[self.state_key].f) then
             --print("StateMachineIter state '"..self.state_key.."' is "..type(machine[self.state_key].f).." '"..table.show(machine[self.state_key].p).."'");
             return true, machine[self.state_key].f(self, machine[self.state_key].p, ...);
         end
@@ -218,7 +220,7 @@ end
 -- @tparam StateMachineIter self StateMachineIter instance
 -- @tparam string key State to switch to (will also accept state index if the StateMachineIter is ordered)
 function StateMachineIter.switch(self, key)
-    if isinteger(key) then
+    if utility.isinteger(key) then
         local flags = _statemachine.MachineFlags[ self.template ];
         if flags ~= nil and flags.is_ordered and flags.index_to_name ~= nil then
             -- we are an ordered state machine AND don't use numeric indexes
@@ -238,7 +240,7 @@ end
 -- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
 -- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
 function _statemachine.Create( name, ... )
-    if not isstring(name) then error("Parameter name must be a string."); end
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
     
     debugprint("Creating StateMachineIter Template '"..name.."'");
 
@@ -252,14 +254,14 @@ function _statemachine.Create( name, ... )
     local has_any_named = false;
     local super_states = {};
     for _, v in ipairs({...}) do
-        if isfunction(v) then
+        if utility.isfunction(v) then
             -- we are a bare function, so we are ordered but have no name
             -- func
             table.insert(super_states, {v}); -- wrap the state into an array of 1
-        elseif istable(v) then
+        elseif utility.istable(v) then
             -- we have a table, it could be an array, a map, or a special state function like sleep
             -- { ... }
-            if isfunction(v.f) and istable(v.p) then
+            if utility.isfunction(v.f) and utility.istable(v.p) then
                 -- this is a special state function like sleep, so we are ordered but have no name
                 -- { f = func, p = { ... } } -- special state function
                 table.insert(super_states, {v}); -- wrap the state into an array of 1
@@ -269,11 +271,11 @@ function _statemachine.Create( name, ... )
 
                 if #v == 1 then
                     -- only one item
-                    if isfunction(v[1]) then
+                    if utility.isfunction(v[1]) then
                         -- function wrapped in a state descriptor that lacks a name
                         -- { func }
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
-                    elseif isfunction(v[1].f) and istable(v[1].p) then
+                    elseif utility.isfunction(v[1].f) and utility.istable(v[1].p) then
                         -- special state function wrapped in a state descriptor that lacks a name
                         -- { { f = func, p = { ... } } } -- special state function
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
@@ -287,7 +289,7 @@ function _statemachine.Create( name, ... )
                         -- actually the name is nil, so nevermind
                         -- { nil, ? }
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
-                    elseif isstring(v[1]) then
+                    elseif utility.isstring(v[1]) then
                         -- the first item is a string so we are a named state descriptor
                         -- { "name", ? }
                         has_any_named = true;
@@ -300,7 +302,7 @@ function _statemachine.Create( name, ... )
                         -- double check if we have any named state descriptors in this array of state descriptors
                         if not has_any_named then
                             for _, v2 in ipairs(v) do
-                                if isstring(v2[1]) then
+                                if utility.isstring(v2[1]) then
                                     has_any_named = true;
                                     break;
                                 end
@@ -315,7 +317,7 @@ function _statemachine.Create( name, ... )
                     -- double check if we have any named state descriptors in this array of state descriptors
                     if not has_any_named then
                         for _, v2 in ipairs(v) do
-                            if isstring(v2[1]) then
+                            if utility.isstring(v2[1]) then
                                 has_any_named = true;
                                 break;
                             end
@@ -358,26 +360,26 @@ function _statemachine.Create( name, ... )
                 local state_name = nil;
                 local state_func = nil;
 
-                if istable(v) then
+                if utility.istable(v) then
                     state_name = v[1]; -- first item
                     state_func = v[2]; -- second item
 
                     -- if state_func isn't set and the state_name isn't a string, move it over to state_func
-                    if state_func == nil and state_name ~= nil and not isstring(state_name) then
+                    if state_func == nil and state_name ~= nil and not utility.isstring(state_name) then
                         state_func = state_name
                         state_name = nil;
                     end
 
                     if state_func == nil and state_name == nil then
                         -- we might have a rich state descriptor here
-                        if isfunction(v.f) and istable(v.p) then
+                        if utility.isfunction(v.f) and utility.istable(v.p) then
                             state_func = v
                             state_name = nil; -- no name since we got
                         else
                             error("StateMachineIter state must be n array of state descriptors");
                         end
                     end
-                elseif isfunction(v) then
+                elseif utility.isfunction(v) then
                     state_name = nil; -- no name since we got a bare function
                     state_func = v;
                 end
@@ -406,7 +408,7 @@ function _statemachine.Create( name, ... )
         else
             -- we're in a table so just stuff them into the state collection
             for state_name, state_func in pairs(states) do
-                if not isstring(state_name) then
+                if not utility.isstring(state_name) then
                     error("StateMachineIter state must be a map of state descriptors");
                 end
 
@@ -440,8 +442,8 @@ end
 -- @param state_key Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
 -- @tparam table init Initial data
 function _statemachine.Start( name, state_key, init )
-    if not isstring(name) then error("Parameter name must be a string."); end
-    if init ~= nil and not istable(init) then error("Parameter init must be table or nil."); end
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
+    if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
     if (_statemachine.Machines[ name ] == nil) then error('StateMachineIter Template "' .. name .. '" not found.'); end
 
     if state_key == nil then
@@ -467,9 +469,9 @@ end
 -- @tparam string next_state Next state when timer hits zero
 -- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next state name
 function _statemachine.SleepCalls( calls, next_state, early_exit )
-    if not isinteger(calls) then error("Parameter calls must be an integer."); end
-    if not isstring(next_state) then error("Parameter next_state must be a string."); end
-    if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
+    if not utility.isinteger(calls) then error("Parameter calls must be an integer."); end
+    if not utility.isstring(next_state) then error("Parameter next_state must be a string."); end
+    if early_exit ~= nil and not utility.isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
     return { f = function(state, params, ...)
         local calls = params[1];
@@ -478,7 +480,7 @@ function _statemachine.SleepCalls( calls, next_state, early_exit )
         if early_exit ~= nil then
             local early_exit_result = early_exit(state, ...);
             if (early_exit_result) then
-                if isstring(early_exit_result) then
+                if utility.isstring(early_exit_result) then
                     state:switch(early_exit_result);
                 else
                     state:switch(next_state);
@@ -524,9 +526,9 @@ end
 -- @tparam string next_state Next state when timer hits zero
 -- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next state name
 function _statemachine.SleepSeconds(seconds, next_state, early_exit )
-    if not isnumber(seconds) then error("Parameter seconds must be a number."); end
-    if next_state ~= nil and not isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
-    if early_exit ~= nil and not isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
+    if not utility.isnumber(seconds) then error("Parameter seconds must be a number."); end
+    if next_state ~= nil and not utility.isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
+    if early_exit ~= nil and not utility.isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
     return { f = function(state, params, ...)
         local seconds = params[1];
@@ -540,7 +542,7 @@ function _statemachine.SleepSeconds(seconds, next_state, early_exit )
         if early_exit ~= nil then
             local early_exit_result = early_exit(state, ...);
             if (early_exit_result) then
-                if isstring(early_exit_result) then
+                if utility.isstring(early_exit_result) then
                     state:switch(early_exit_result);
                 else
                     state:switch(next_state);
@@ -593,7 +595,7 @@ hook.Add("Update", "_statemachine_Update", function(dtime, ttime)
     _statemachine.game_time = ttime;
 end, config.get("hook_priority.Update.StateMachine"));
 
-_api.RegisterCustomSavableType(StateMachineIter);
+customsavetype.Register(StateMachineIter);
 
 debugprint("_statemachine Loaded");
 

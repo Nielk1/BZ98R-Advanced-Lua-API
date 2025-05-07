@@ -5,7 +5,7 @@
 -- If you want to do something more complex, use the hook module instead.
 -- Like most similar constructs State Set Runners have internal data storage and can be saved and loaded.
 -- 
--- Dependencies: @{_api}, @{_hook}
+-- Dependencies: @{_utility}, @{_hook}, @{_customsavetype}
 -- @module _stateset
 -- @author John "Nielk1" Klein
 -- @usage local stateset = require("_stateset");
@@ -36,8 +36,9 @@ local debugprint = debugprint or function() end;
 
 debugprint("_stateset Loading");
 
-local _api = require("_api");
+local utility = require("_utility");
 local hook = require("_hook");
+local customsavetype = require("_customsavetype");
 
 local _stateset = {};
 
@@ -102,7 +103,7 @@ local CreateStateSetRunner = function(name, values)
   self.template = name;
   self.active_states = {};
   
-  if istable(values) then
+  if utility.istable(values) then
     for k, v in pairs( values ) do
       self[k] = v;
     end
@@ -120,11 +121,11 @@ function StateSetRunner.run(self, ...)
 
     local foundState = false;
     local sets = _stateset.Sets[ self.template ];
-    if not istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
+    if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     for name,v in pairs(self.active_states) do
         if v then
             local state = sets[name].f;
-            if isfunction(state) then
+            if utility.isfunction(state) then
                 foundState = foundState or state(self, ...);
             elseif isstatemachineiter(state) then
                 foundState = foundState or state:run(self, ...);
@@ -141,9 +142,9 @@ end
 -- @treturn StateSetRunner For function chaining
 function StateSetRunner.on(self, name)
     if not isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
-    if not isstring(name) then error("Parameter name must be string."); end
+    if not utility.isstring(name) then error("Parameter name must be string."); end
     local sets = _stateset.Sets[ self.template ];
-    if not istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
+    if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
     if state.p then
@@ -166,9 +167,9 @@ end
 -- @treturn StateSetRunner For function chaining
 function StateSetRunner.off(self, name, force)
     if not isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
-    if not isstring(name) then error("Parameter name must be string."); end
+    if not utility.isstring(name) then error("Parameter name must be string."); end
     local sets = _stateset.Sets[ self.template ];
-    if not istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
+    if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
     if state.p and not force then
@@ -188,7 +189,7 @@ end
 -- @tparam string name Name of the StateSetRunner Template
 -- @treturn StateSet StateSet for calling Add and AddPermit, can not be saved.
 function _stateset.Create( name )
-    if not isstring(name) then error("Parameter name must be a string."); end
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
 
     debugprint("Create StateSetRunner Template '"..name.."'.", _stateset.Sets[name] ~= nil);
     
@@ -206,8 +207,8 @@ end
 -- @tparam string name Name of the StateSetRunner Template
 -- @tparam table init Initial data
 function _stateset.Start( name, init )
-    if not isstring(name) then error("Parameter name must be a string."); end
-    if init ~= nil and not istable(init) then error("Parameter init must be table or nil."); end
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
+    if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
     if (_stateset.Sets[ name ] == nil) then error('StateSetRunner Template "' .. name .. '" not found.'); end
 
     return CreateStateSetRunner(name, init);
@@ -235,7 +236,7 @@ function StateSetRunner.Load(data)
     return CreateStateSetRunner(data.template, data.timer, data.target_time, data.state_index, data.addonData);
 end
 
-_api.RegisterCustomSavableType(StateSetRunner);
+customsavetype.Register(StateSetRunner);
 
 debugprint("_stateset Loaded");
 

@@ -2,7 +2,6 @@
 -- 
 -- Crude custom type to make data not save/load exploiting the custom type system.
 -- 
--- Dependencies: @{_api}, @{_hook}
 -- @module _unsaved
 -- @author John "Nielk1" Klein
 -- @alias unsaved
@@ -13,8 +12,6 @@
 local debugprint = debugprint or function() end;
 
 debugprint("_unsaved Loading");
-
-local _api = require("_api");
 
 local unsaved_module = {};
 local unsaved_module_meta = {};
@@ -56,8 +53,6 @@ unsaved_module = setmetatable(unsaved_module, unsaved_module_meta);
 -- MapData - Core
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- @section
-
---_api.RegisterCustomSavableType(unsaved_meta);
 
 debugprint("_unsaved Loaded");
 

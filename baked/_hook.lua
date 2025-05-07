@@ -2,6 +2,7 @@
 -- 
 -- Event hook for event observer pattern.
 -- 
+-- Dependencies: @{_utility}
 -- @module _hook
 -- @author John "Nielk1" Klein
 -- @usage local hook = require("_hook");
@@ -46,6 +47,8 @@ table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 local debugprint = debugprint or function() end;
 
 debugprint("_hook Loading");
+
+local utility = require("_utility");
 
 local hook = {};
 
@@ -125,10 +128,10 @@ end
 -- @tparam function func Function to be executed
 -- @tparam[opt=0] number priority Higher numbers are higher priority
 function hook.Add( event, identifier, func, priority )
-    if not isstring(event) then error("Parameter event must be a string."); end
-    if not isstring(identifier) then error("Parameter identifier must be a string."); end
-    if not isfunction(func) then error("Parameter func must be a function."); end
-    if priority == nil or not isnumber(priority) then priority = 0; end
+    if not utility.isstring(event) then error("Parameter event must be a string."); end
+    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.isfunction(func) then error("Parameter func must be a function."); end
+    if priority == nil or not utility.isnumber(priority) then priority = 0; end
 
     priority = (_api_hook_priority_override and _api_hook_priority_override[event]) and _api_hook_priority_override[event][identifier] or priority;
 
@@ -164,8 +167,8 @@ end
 -- @tparam string event Event to be hooked
 -- @tparam string identifier Identifier for this hook observer
 function hook.Remove( event, name )
-    if not isstring(event) then error("Parameter event must be a string."); end
-    if not isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.isstring(event) then error("Parameter event must be a string."); end
+    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
 
     if (hook.HookLookup[ event ][ identifier ] ~= nil) then
         -- deal with existing hook before replacing it?
@@ -189,10 +192,10 @@ end
 -- @tparam[opt] function save Function to be executed for Save
 -- @tparam[opt] function load Function to be executed for Load
 function hook.AddSaveLoad( identifier, save, load )
-    if not isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if save == nil and load == nil then error("At least one of Parameters save or load must be supplied."); end
-    if save ~= nil and not isfunction(save) then error("Parameter save must be a function."); end
-    if load ~= nil and not isfunction(load) then error("Parameter load must be a function."); end
+    if save ~= nil and not utility.isfunction(save) then error("Parameter save must be a function."); end
+    if load ~= nil and not utility.isfunction(load) then error("Parameter load must be a function."); end
     
     if (hook.SaveLoadHooks[ identifier ] == nil) then
         hook.SaveLoadHooks[identifier ] = {};
@@ -207,7 +210,7 @@ end
 --- Removes the Save and Load hooks with the given identifier.
 -- @tparam string identifier Identifier for this hook observer
 function hook.RemoveSaveLoad( identifier )
-    if not isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if ( not hook.SaveLoadHooks[ identifier ] ) then return; end
     hook.SaveLoadHooks[ identifier ] = nil;
     
@@ -219,7 +222,7 @@ function hook.CallSave()
     if ( hook.SaveLoadHooks ~= nil ) then
         local ret = {};
         for k, v in pairs( hook.SaveLoadHooks ) do 
-            if v.Save ~= nil and isfunction(v.Save) then
+            if v.Save ~= nil and utility.isfunction(v.Save) then
                 ret[k] = {v.Save()};
             else
                 ret[k] = {};
@@ -235,7 +238,7 @@ function hook.CallLoad(SaveData)
     if ( hook.SaveLoadHooks ~= nil ) then
         local ret = {};
         for k, v in pairs( hook.SaveLoadHooks ) do
-            if v.Load ~= nil and isfunction(v.Load) then
+            if v.Load ~= nil and utility.isfunction(v.Load) then
                 v.Load(table.unpack(SaveData[k]));
             end
         end

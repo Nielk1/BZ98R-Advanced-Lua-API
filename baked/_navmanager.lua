@@ -71,7 +71,7 @@ function BuildImportantNavInternal(odf, team, location, point)
     -- build the nav
     local sourceNav = nil;
     local preservedNavData = nil;
-    if isgameobject(location) then
+    if gameobject.isgameobject(location) then
         -- clone the nav and remove the old one
         sourceNav = location;
         location = location:GetTransform();
@@ -80,7 +80,7 @@ function BuildImportantNavInternal(odf, team, location, point)
         NavCollection[preservedNavData.team][preservedNavData.index] = nil;
         DisableAutomaticNavAdding = true; -- doing an object swap, so we are doing a delayed insert
     end
-    local nav = BuildGameObject(odf or "apcamr", team, location, point);
+    local nav = gameobject.BuildGameObject(odf or "apcamr", team, location, point);
     -- AddObject hook fires here, not sure about network though
     if sourceNav then
         DisableAutomaticNavAdding = false;
@@ -123,7 +123,7 @@ function BuildImportantNavInternal(odf, team, location, point)
                 --debugprint("\27[34mNav Restored ["..tostring(oldNav.NavManager.index).."]>["..i.."]\27[0m");
 
                 DisableAutomaticNavAdding = true; -- ensure we don't add the new nav to the collection yet
-                local newNav = BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
+                local newNav = gameobject.BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
                 DisableAutomaticNavAdding = false;
 
                 newNav:SetObjectiveName(shuffledOutNav:GetObjectiveName());
@@ -154,7 +154,7 @@ function BuildImportantNavInternal(odf, team, location, point)
                     NavCollection[team][i] = nil;
 
                     DisableAutomaticNavAdding = true; -- ensure we don't add the new nav to the collection yet
-                    local newNav = BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
+                    local newNav = gameobject.BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
                     DisableAutomaticNavAdding = false;
 
                     newNav:SetObjectiveName(shuffledOutNav:GetObjectiveName());

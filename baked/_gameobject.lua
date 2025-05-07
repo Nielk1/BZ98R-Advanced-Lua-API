@@ -29,11 +29,12 @@ local customsavetype = require("_customsavetype");
 -- @tparam GameObject B GameObject instance
 -- @see _hook.Add
 
+local _gameobject = {};
 
 --- Is this object an instance of GameObject?
 -- @param object Object in question
 -- @treturn bool
-function isgameobject(object)
+function _gameobject.isgameobject(object)
     return (type(object) == "table" and object.__type == "GameObject");
 end
 
@@ -193,11 +194,11 @@ end
 -- @tparam string pos Pathpoint Name
 -- @tparam[opt] integer point index
 -- @treturn GameObject Newly built GameObject
-function BuildGameObject(odf, team, pos, point)
+function _gameobject.BuildGameObject(odf, team, pos, point)
     local handle = nil;
     if (point ~= nil) then
         handle = BuildObject(odf, team, pos, point);
-    elseif isgameobject(pos) then
+    elseif _gameobject.isgameobject(pos) then
         handle = BuildObject(odf, team, pos:GetHandle());
     else
         handle = BuildObject(odf, team, pos);
@@ -209,14 +210,14 @@ end
 --- Remove GameObject from world.
 -- @tparam GameObject self GameObject instance
 function GameObject.RemoveObject(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     RemoveObject(self:GetHandle());
 end
 
 --- Get Player GameObject of team.
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
-function GetPlayerGameObject(team)
+function _gameobject.GetPlayerGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetPlayerHandle(team);
     if handle == nil then return nil end;
@@ -226,7 +227,7 @@ end
 --- Get Recycler GameObject of team.
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
-function GetRecyclerGameObject(team)
+function _gameobject.GetRecyclerGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetRecyclerHandle(team);
     if handle == nil then return nil end;
@@ -236,7 +237,7 @@ end
 --- Get Factory GameObject of team.
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
-function GetFactoryGameObject(team)
+function _gameobject.GetFactoryGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetFactoryHandle(team);
     if handle == nil then return nil end;
@@ -246,7 +247,7 @@ end
 --- Get Armory GameObject of team.
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
-function GetArmoryGameObject(team)
+function _gameobject.GetArmoryGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetArmoryHandle(team);
     if handle == nil then return nil end;
@@ -256,7 +257,7 @@ end
 --- Get Factory GameObject of team.
 -- @tparam[opt] int team Team number of player
 -- @treturn GameObject GameObject of player or nil
-function GetConstructorGameObject(team)
+function _gameobject.GetConstructorGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     local handle = GetConstructorHandle(team);
     if handle == nil then return nil end;
@@ -266,7 +267,7 @@ end
 --- Get GameObject by Label.
 -- @param key Label
 -- @treturn GameObject GameObject with Label or nil if none found
-function GetGameObject(key)
+function _gameobject.GetGameObject(key)
     local handle = GetHandle(key);
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -282,8 +283,8 @@ end
 -- @tparam GameObject target Target GameObject
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Attack(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         Attack(self:GetHandle(), target:GetHandle(), priority);
     else
         Attack(self:GetHandle(), target, priority);
@@ -316,8 +317,8 @@ end
 -- @tparam[opt] int priority Order priority, >0 removes user control
 
 function GameObject.Goto(self, target, priority, extra)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         Goto(self:GetHandle(), target:GetHandle(), priority);
     else
         Goto(self:GetHandle(), target, priority);
@@ -329,8 +330,8 @@ end
 -- @param target Target Vector, Matrix, or Path name
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Mine(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         Mine(self:GetHandle(), target:GetHandle(), priority);
     else
         Mine(self:GetHandle(), target, priority);
@@ -342,8 +343,8 @@ end
 -- @param target Target GameObject instance
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Follow(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         Follow(self:GetHandle(), target:GetHandle(), priority);
     else
         Follow(self:GetHandle(), target, priority);
@@ -354,8 +355,8 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param target Target GameObject instance
 function GameObject.Follow(self, target)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isgameobject(target) then error("Parameter target must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(target) then error("Parameter target must be GameObject instance."); end
     IsFollowing(self:GetHandle(), target:GetHandle());
 end
 
@@ -363,7 +364,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Defend(self, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     Defend(self:GetHandle(), priority);
 end
 
@@ -372,9 +373,9 @@ end
 -- @param target Target GameObject instance
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Defend2(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    --if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(target) then error("Parameter target must be GameObject instance."); end
+    --if _gameobject.isgameobject(target) then
         Defend2(self:GetHandle(), target:GetHandle(), priority);
     --else
     --    Defend2(self:GetHandle(), target, priority);
@@ -385,7 +386,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Stop(self, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     Stop(self:GetHandle(), priority);
 end
 
@@ -394,8 +395,8 @@ end
 -- @param target Target Path name
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Patrol(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         Patrol(self:GetHandle(), target:GetHandle(), priority);
     else
         Patrol(self:GetHandle(), target, priority);
@@ -407,8 +408,8 @@ end
 -- @param target Target GameObject or Path name
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Retreat(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         Retreat(self:GetHandle(), target:GetHandle(), priority);
     else
         Retreat(self:GetHandle(), target, priority)
@@ -420,9 +421,9 @@ end
 -- @tparam GameObject target Target GameObject
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.GetIn(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isgameobject(self) then error("Parameter target must be GameObject instance."); end
-    --if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter target must be GameObject instance."); end
+    --if _gameobject.isgameobject(target) then
         GetIn(self:GetHandle(), target:GetHandle(), priority);
     --else
     --    GetIn(self:GetHandle(), target, priority)
@@ -434,9 +435,9 @@ end
 -- @tparam GameObject target Target GameObject
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Pickup(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    --if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(target) then error("Parameter target must be GameObject instance."); end
+    --if _gameobject.isgameobject(target) then
         Pickup(self:GetHandle(), target:GetHandle(), priority);
     --else
     --    Pickup(self:GetHandle(), target, priority)
@@ -448,7 +449,7 @@ end
 -- @param target Target vector, matrix, or path name
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Dropoff(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     Dropoff(self:GetHandle(), target, priority)
 end
 
@@ -458,7 +459,7 @@ end
 -- @tparam string odf Object Definition
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Build(self, odf, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     Build(self:GetHandle(), target, priority)
 end
 
@@ -468,8 +469,8 @@ end
 -- @tparam GameObject target Target GameObject instance, vector, matrix, or path name
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.BuildAt(self, odf, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if _gameobject.isgameobject(target) then
         BuildAt(self:GetHandle(), odf, target:GetHandle(), priority);
     else
         BuildAt(self:GetHandle(), odf, target, priority)
@@ -481,9 +482,9 @@ end
 -- @param target Target GameObject instance
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Formation(self, target, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    --if isgameobject(target) then
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(target) then error("Parameter target must be GameObject instance."); end
+    --if _gameobject.isgameobject(target) then
         Formation(self:GetHandle(), target:GetHandle(), priority);
     --else
     --    Formation(self:GetHandle(), target, priority);
@@ -494,7 +495,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam int priority Order priority, >0 removes user control
 function GameObject.Hunt(self, priority)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     Hunt(self:GetHandle(), priority);
 end
 
@@ -507,7 +508,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn Vector
 function GameObject.GetPosition(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetPosition(self:GetHandle());
 end
 
@@ -515,7 +516,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn Vector
 function GameObject.GetFront(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetFront(self:GetHandle());
 end
 
@@ -524,7 +525,7 @@ end
 -- @param position Vector position, Matrix position, or path name
 -- @tparam[opt] int point Index of the path point in the path (optional)
 function GameObject.SetPosition(self, position, point)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if point ~= nil then
         SetPosition(self:GetHandle(), position, point);
     else
@@ -536,7 +537,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn Matrix
 function GameObject.GetTransform(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetTransform(self:GetHandle());
 end
 
@@ -544,7 +545,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam Matrix transform transform matrix
 function GameObject.SetTransform(self, transform)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetTransform(self:GetHandle(), transform);
 end
 
@@ -552,7 +553,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn Vector Vector, (0,0,0) if the handle is invalid or isn't movable.
 function GameObject.GetVelocity(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetVelocity(self:GetHandle());
 end
 
@@ -560,7 +561,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam Vector vel Vector velocity
 function GameObject.SetVelocity(self, vel)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetVelocity(self:GetHandle(), vel);
 end
 
@@ -568,7 +569,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn Vector Vector, (0,0,0) if the handle is invalid or isn't movable.
 function GameObject.GetOmega(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetOmega(self:GetHandle());
 end
 
@@ -576,7 +577,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param omega
 function GameObject.SetOmega(self, omega)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetOmega(self:GetHandle(),omega);
 end
 
@@ -589,7 +590,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsAlive(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return IsAlive2(self:GetHandle());
 end
 
@@ -598,7 +599,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsAliveAndPilot(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return IsAliveAndPilot(self:GetHandle());
 end
 
@@ -606,7 +607,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsCraft(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return IsCraft(self:GetHandle());
 end
 
@@ -614,7 +615,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsPerson(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return IsPerson(self:GetHandle());
 end
 
@@ -623,7 +624,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsBuilding(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return IsBuilding(self:GetHandle());
 end
 
@@ -631,7 +632,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.HasCargo(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     HasCargo(self:GetHandle());
 end
 
@@ -639,7 +640,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn GameObject GameObject of the GameObject carried by the GameObject, or nil
 function GameObject.GetCargo(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     local handle = GetCargo(self:GetHandle());
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -649,7 +650,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn GameObject GameObject of the tug carrying the GameObject, or nil
 function GameObject.GetTug(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     local handle = GetTug(self:GetHandle());
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -659,7 +660,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn GameObject GameObject of the vehicle that the pilot most recently hopped out of, or nil
 function GameObject.HoppedOutOf(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     local handle = HoppedOutOf(self:GetHandle());
     if handle == nil then return nil end;
     return GameObject.FromHandle(handle);
@@ -675,7 +676,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt damage amount
 function GameObject.Damage(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     Damage(self:GetHandle(), amt);
 end
@@ -685,7 +686,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @return number health ratio
 function GameObject.GetHealth(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetHealth(self:GetHandle());
 end
 
@@ -693,7 +694,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @return number current health or nil
 function GameObject.GetCurHealth(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetCurHealth(self:GetHandle());
 end
 
@@ -701,7 +702,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @return number max health or nil
 function GameObject.GetMaxHealth(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetMaxHealth(self:GetHandle());
 end
 
@@ -709,7 +710,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt health amount
 function GameObject.SetCurHealth(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetCurHealth(self:GetHandle(), amt);
 end
@@ -718,7 +719,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt health amount
 function GameObject.SetMaxHealth(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetMaxHealth(self:GetHandle(), amt);
 end
@@ -727,7 +728,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt health amount
 function GameObject.AddHealth(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     AddHealth(self:GetHandle(), amt);
 end
@@ -735,7 +736,7 @@ end
 --- GiveMaxHealth
 -- @tparam GameObject self GameObject instance
 function GameObject.GiveMaxHealth(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     GiveMaxHealth(self:GetHandle());
 end
 
@@ -743,7 +744,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @return number ammo ratio
 function GameObject.GetAmmo(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetAmmo(self:GetHandle());
 end
 
@@ -751,7 +752,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @return number current ammo or nil
 function GameObject.GetCurAmmo(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetCurAmmo(self:GetHandle());
 end
 
@@ -759,7 +760,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @return number max ammo or nil
 function GameObject.GetMaxAmmo(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetMaxAmmo(self:GetHandle());
 end
 
@@ -767,7 +768,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt ammo amount
 function GameObject.SetCurAmmo(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetCurAmmo(self:GetHandle(), amt);
 end
@@ -776,7 +777,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt ammo amount
 function GameObject.SetMaxAmmo(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     SetMaxAmmo(self:GetHandle(), amt);
 end
@@ -785,7 +786,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @param amt ammo amount
 function GameObject.AddAmmo(self, amt)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(amt) then error("Parameter amt must be number."); end
     AddAmmo(self:GetHandle(), amt);
 end
@@ -793,7 +794,7 @@ end
 --- GiveMaxAmmo
 -- @tparam GameObject self GameObject instance
 function GameObject.GiveMaxAmmo(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     GiveMaxAmmo(self:GetHandle());
 end
 
@@ -807,7 +808,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn int Team number
 function GameObject.GetTeamNum(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetTeamNum(self:GetHandle());
 end
 
@@ -815,7 +816,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam int team new team number
 function GameObject.SetTeamNum(self, team)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
     SetTeamNum(self:GetHandle(), team);
 end
@@ -824,7 +825,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn int Team number
 function GameObject.GetPerceivedTeam(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetPerceivedTeam(self:GetHandle());
 end
 
@@ -832,7 +833,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam int team new team number
 function GameObject.SetPerceivedTeam(self, team)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
     SetPerceivedTeam(self:GetHandle(), team);
 end
@@ -847,7 +848,7 @@ end
 --- Sets the game object as an objective to all teams.
 -- @tparam GameObject self GameObject instance
 function GameObject.SetObjectiveOn(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOn(self:GetHandle());
 
     if not utility.isfunction(IsObjectiveOn) then
@@ -859,7 +860,7 @@ end
 --- Sets the game object back to normal.
 -- @tparam GameObject self GameObject instance
 function GameObject.SetObjectiveOff(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     SetObjectiveOff(self:GetHandle());
 
     if not utility.isfunction(IsObjectIsObjectiveOnive) then
@@ -872,7 +873,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn bool true if the game object is an objective
 function GameObject.IsObjectiveOn(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
 
     if utility.isfunction(IsObjectiveOn) then
         return IsObjectiveOn(self:GetHandle());
@@ -886,7 +887,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn string Name of the objective/object
 function GameObject.GetObjectiveName(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetObjectiveName(self:GetHandle());
 end
 
@@ -894,7 +895,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam string name Name of the objective
 function GameObject.SetObjectiveName(self, name)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     SetObjectiveName(self:GetHandle(), name);
 end
@@ -905,7 +906,7 @@ end
 -- @tparam string name Name of the objective
 -- @see GameObject.SetObjectiveName
 function GameObject.SetName(self, name)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     SetName(self:GetHandle(), name);
 end
@@ -921,7 +922,7 @@ end
 -- @tparam string odf ODF filename
 -- @usage enemy1:IsOdf("svturr")
 function GameObject.IsOdf(self, odf)
-  if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+  if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
   if not utility.isstring(odf) then error("Parameter odf must be a string."); end
   IsOdf(self:GetHandle(), odf);
 end
@@ -929,7 +930,7 @@ end
 --- Get odf of GameObject
 -- @tparam GameObject self GameObject instance
 function GameObject.GetOdf(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetOdf(self:GetHandle());
 end
 
@@ -937,7 +938,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn string character identifier for race
 function GameObject.GetBase(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetBase(self:GetHandle());
 end
 
@@ -945,7 +946,7 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn string Label name string
 function GameObject.GetLabel(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetLabel(self:GetHandle());
 end
 
@@ -954,7 +955,7 @@ end
 -- @tparam string label Label
 -- @usage enemy1:SetLabel("special_object_7")
 function GameObject.SetLabel(self, label)
-  if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+  if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
   if not utility.isstring(label) then error("Parameter label must be a string."); end
   SetLabel(self:GetHandle(),label);
 end
@@ -963,14 +964,14 @@ end
 -- @tparam GameObject self GameObject instance
 -- @treturn string character identifier for race
 function GameObject.GetNation(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetNation(self:GetHandle());
 end
 
 --- Get ClassSig of GameObject
 -- @tparam GameObject self GameObject instance
 function GameObject.GetClassSig(self)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     return GetClassSig(self:GetHandle());
 end
 
@@ -984,8 +985,8 @@ end
 -- @tparam GameObject self GameObject instance
 -- @tparam GameObject object GameObject to replace with
 function GameObject.SwapObjectReferences(self, object)
-    if not isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not isgameobject(object) then error("Parameter object must be GameObject instance."); end
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not _gameobject.isgameobject(object) then error("Parameter object must be GameObject instance."); end
 
     local ownHandle = self:GetHandle();
     local newHandle = object:GetHandle();
@@ -1056,4 +1057,4 @@ customsavetype.Register(GameObject);
 
 debugprint("_gameobject Loaded");
 
---return _gameobject;
+return _gameobject;

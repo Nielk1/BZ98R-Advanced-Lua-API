@@ -874,6 +874,7 @@ function GetPlayerHandle(team) end
 -- @tparam integer team
 -- @tparam integer count
 -- @function AddPilot
+function AddPilot(team, count) end
 
 --- Sets the team's pilot count, clamped between zero and maximum count.
 -- Returns the new pilot count.
@@ -881,6 +882,7 @@ function GetPlayerHandle(team) end
 -- @tparam integer team
 -- @tparam integer count
 -- @function SetPilot
+function SetPilot(team, count) end
 
 --- Returns the team's pilot count.
 -- @treturn integer
@@ -918,6 +920,7 @@ function GetPlayerHandle(team) end
 -- @tparam integer team
 -- @tparam integer count
 -- @function AddScrap
+function AddScrap(team, count) end
 
 --- Sets the team's scrap count, clamped between zero and maximum count.
 -- Returns the new scrap count.
@@ -925,6 +928,7 @@ function GetPlayerHandle(team) end
 -- @tparam integer team
 -- @tparam integer count
 -- @function SetScrap
+function SetScrap(team, count) end
 
 --- Returns the team's scrap count.
 -- @treturn integer
@@ -1059,8 +1063,9 @@ function GetTime() end
 --- Enables (or disables) strategic AI control for a given team. As of version 1.5.2.7, mission scripts must enable AI control for any team that intends to use an AIP.
 -- IMPORTANT SAFETY TIP: only call this function from the "root" of the Lua mission script! The strategic AI gets set up shortly afterward and attempting to use SetAIControl later will crash the game.
 -- @tparam integer team
--- @tparam[opt] boolean control
+-- @tparam[opt] boolean control, defaults to true
 -- @function SetAIControl
+function SetAIControl(team, control) end
 
 --- Returns true if a given team is AI controlled. Returns false otherwise.
 -- Unlike SetAIControl, this function may be called at any time.
@@ -1278,8 +1283,67 @@ function FailMission(time, filename) end
 -- These functions send commands to units or query their command state.
 
 --- This is a global table that converts between command numbers and command names. For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
--- Available commands: NONE, SELECT, STOP, GO, ATTACK, FOLLOW, FORMATION, PICKUP, DROPOFF, NO_DROPOFF, GET_REPAIR, GET_RELOAD, GET_WEAPON, GET_CAMERA, GET_BOMB, DEFEND, GO_TO_GEYSER, RESCUE, RECYCLE, SCAVENGE, HUNT, BUILD, PATROL, STAGE, SEND, GET_IN, LAY_MINES, CLOAK [2.1+], DECLOAK [2.1+].
 -- @table AiCommand
+AiCommand = {
+    NONE = 0, -- 0
+    SELECT = 1, -- 1
+    STOP = 2, -- 2
+    GO = 3, -- 3
+    ATTACK = 4, -- 4
+    FOLLOW = 5, -- 5
+    FORMATION = 6, -- 6
+    PICKUP = 7, -- 7
+    DROPOFF = 8, -- 8
+    NO_DROPOFF = 9, -- 9
+    GET_REPAIR = 10, -- 10
+    GET_RELOAD = 11, -- 11
+    GET_WEAPON = 12, -- 12
+    GET_CAMERA = 13, -- 13
+    GET_BOMB = 14, -- 14
+    DEFEND = 15, -- 15
+    GO_TO_GEYSER = 16, -- 16
+    RESCUE = 17, -- 17
+    RECYCLE = 18, -- 18
+    SCAVENGE = 19, -- 19
+    HUNT = 20, -- 20
+    BUILD = 21, -- 21
+    PATROL = 22, -- 22
+    STAGE = 23, -- 23
+    SEND = 24, -- 24
+    GET_IN = 25, -- 25
+    LAY_MINES = 26, -- 26
+    CLOAK = 27, -- 27 [2.1+]
+    DECLOAK = 28, -- 28 [2.1+]
+    [0] = "NONE", -- NONE
+    [1] = "SELECT", -- SELECT
+    [2] = "STOP", -- STOP
+    [3] = "GO", -- GO
+    [4] = "ATTACK", -- ATTACK
+    [5] = "FOLLOW", -- FOLLOW
+    [6] = "FORMATION", -- FORMATION
+    [7] = "PICKUP", -- PICKUP
+    [8] = "DROPOFF", -- DROPOFF
+    [9] = "NO_DROPOFF", -- NO_DROPOFF
+    [10] = "GET_REPAIR", -- GET_REPAIR
+    [11] = "GET_RELOAD", -- GET_RELOAD
+    [12] = "GET_WEAPON", -- GET_WEAPON
+    [13] = "GET_CAMERA", -- GET_CAMERA
+    [14] = "GET_BOMB", -- GET_BOMB
+    [15] = "DEFEND", -- DEFEND
+    [16] = "GO_TO_GEYSER", -- GO_TO_GEYSER
+    [17] = "RESCUE", -- RESCUE
+    [18] = "RECYCLE", -- RECYCLE
+    [19] = "SCAVENGE", -- SCAVENGE
+    [20] = "HUNT", -- HUNT
+    [21] = "BUILD", -- BUILD
+    [22] = "PATROL", -- PATROL
+    [23] = "STAGE", -- STAGE
+    [24] = "SEND", -- SEND
+    [25] = "GET_IN", -- GET_IN
+    [26] = "LAY_MINES", -- LAY_MINES
+    [27] = "CLOAK", -- CLOAK [2.1+]
+    [28] = "DECLOAK", -- DECLOAK [2.1+]
+}
 
 --- Returns true if the game object can be commanded. Returns false otherwise.
 -- @treturn boolean

@@ -6,9 +6,11 @@
 -- @author John "Nielk1" Klein
 -- @alias _optional
 -- @usage local optional = require("_optional");
--- local _, missingMod1 = optional("_missing");
+-- local missingSuccess, missingMod = optional("_missing");
+-- missingMod = missingSuccess and missingMod or nil;
 -- 
--- local _, missingMod2 = require("_optional")("_missing");
+-- local missing2Success, missingMod2 = require("_optional")("_missing2");
+-- missingMod2 = missing2Success and missingMod2 or nil;
 
 
 local debugprint = debugprint or function() end;

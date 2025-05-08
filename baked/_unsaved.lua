@@ -9,7 +9,7 @@
 -- 
 -- data.unsavable = unsaved(data.unsavable);
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_unsaved Loading");
 

@@ -9,7 +9,7 @@
 -- 
 -- customsavetype.Register(ObjectDef);
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_customsavetype Loading");
 

@@ -9,7 +9,7 @@
 -- 
 -- utility.Register(ObjectDef);
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_utility Loading");
 
@@ -180,6 +180,29 @@ function utility_module.shallowCopy(original)
         copy[k] = v
     end
     return copy
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Utility - Iterator Operations
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- @section
+
+--- Convert an iterator to an array.
+-- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
+-- @param iterator The iterator to convert
+-- @return An array containing the values from the iterator
+function IteratorToArray(iterator)
+    local array = {}
+    for index, value in iterator do
+        if type(index) == "number" and index > 0 and math.floor(index) == index then
+            -- Use the index directly if it's a positive integer
+            array[index] = value
+        else
+            -- Fallback to table.insert for non-array-like indexes
+            table.insert(array, value)
+        end
+    end
+    return array
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------

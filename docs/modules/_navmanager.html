@@ -32,7 +32,9 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Events">Events</a></li>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
 </ul>
 
 
@@ -66,12 +68,12 @@
 
  Manage navs
 
- Dependencies: <a href="../modules/_config.html#">_config</a>, <a href="../modules/_gameobject.html#">_gameobject</a>, <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
+ Dependencies: <a href="../modules/_config.html#">_config</a>, <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_gameobject.html#">_gameobject</a>, <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a></p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local navmanager = require(&quot;_navmanager&quot;);
 
-
+navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstChronologicalToGap);
 
 </pre>
     </ul>
@@ -81,19 +83,49 @@
     </ul>
 
 
+<h2><a href="#Events">Events</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#NavManager:NavSwap">NavManager:NavSwap</a></td>
+	<td class="summary">Nav GameObjects swapped.</td>
+	</tr>
+</table>
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BuildImportantNav">BuildImportantNav (odf, team, location[, point])</a></td>
+	<td class="name" nowrap><a href="#BuildImportantNav">BuildImportantNav (odf, team, position)</a></td>
 	<td class="summary">Build an important nav and add it to the collection.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#MoveImportantNavsUp">MoveImportantNavsUp (team)</a></td>
-	<td class="summary">Move important navs up in the list.</td>
+	<td class="name" nowrap><a href="#BuildImportantNav">BuildImportantNav (odf, team, transform)</a></td>
+	<td class="summary">Build an important nav and add it to the collection.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetNav">GetNav (team, index)</a></td>
-	<td class="summary">Get the nav for a team and index.</td>
+	<td class="name" nowrap><a href="#BuildImportantNav">BuildImportantNav (odf, team, path[, point])</a></td>
+	<td class="summary">Build an important nav and add it to the collection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetCompactionStrategy">SetCompactionStrategy (strategy)</a></td>
+	<td class="summary">Set the compaction strategy for navs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetCompactionStrategy">SetCompactionStrategy (strategy)</a></td>
+	<td class="summary">Set the compaction strategy for navs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetCompactionStrategy">GetCompactionStrategy ()</a></td>
+	<td class="summary">Get the current compaction strategy for navs.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AllNavGameObjects">AllNavGameObjects (team[, include_overflow])</a></td>
+	<td class="summary">Enumerates all navs for a team.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CompactionStrategy">CompactionStrategy</a></td>
+	<td class="summary">What to do when empty slots exist and excess navs exist</td>
 	</tr>
 </table>
 
@@ -101,12 +133,49 @@
 <br/>
 
 
+    <h2 class="section-header "><a name="Events"></a>Events</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "NavManager:NavSwap"></a>
+    <strong>NavManager:NavSwap</strong>
+    </dt>
+    <dd>
+    Nav GameObjects swapped.
+ The old nav will be deleted after this event is called.
+ This event allows for scripts to replace their nav references or copy over custom data.
+<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">old</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         GameObject instance
+        </li>
+        <li><span class="parameter">new</span>
+            <span class="types"><span class="type">GameObject</span></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+    </ul>
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
     <dt>
     <a name = "BuildImportantNav"></a>
-    <strong>BuildImportantNav (odf, team, location[, point])</strong>
+    <strong>BuildImportantNav (odf, team, position)</strong>
     </dt>
     <dd>
     Build an important nav and add it to the collection.
@@ -117,18 +186,187 @@
     <ul>
         <li><span class="parameter">odf</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         ODF of the nav to build
+         ODF of the nav to build, if nil uses the default nav ODF
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">number</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number of the nav to build
         </li>
-        <li><span class="parameter">location</span>
-         vector position, matrix transform, or string path name to build the nav or nav GameObject to clone and delete
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">vector</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">GameObject</span></span>
+        The nav object that was built
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BuildImportantNav"></a>
+    <strong>BuildImportantNav (odf, team, transform)</strong>
+    </dt>
+    <dd>
+    Build an important nav and add it to the collection.
+ Important navs will push non-important navs out of the way in the list.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF of the nav to build, if nil uses the default nav ODF
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number of the nav to build
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><span class="type">matrix</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">GameObject</span></span>
+        The nav object that was built
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BuildImportantNav"></a>
+    <strong>BuildImportantNav (odf, team, path[, point])</strong>
+    </dt>
+    <dd>
+    Build an important nav and add it to the collection.
+ Important navs will push non-important navs out of the way in the list.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF of the nav to build, if nil uses the default nav ODF
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number of the nav to build
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         path name to build the nav
         </li>
         <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         Path point number
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">GameObject</span></span>
+        The nav object that was built
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetCompactionStrategy"></a>
+    <strong>SetCompactionStrategy (strategy)</strong>
+    </dt>
+    <dd>
+    Set the compaction strategy for navs.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">strategy</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Path point number for the nav to build on if using a path
+         The strategy to use. See <a href="../modules/_navmanager.html#CompactionStrategy">_navmanager.CompactionStrategy</a> for options.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetCompactionStrategy"></a>
+    <strong>SetCompactionStrategy (strategy)</strong>
+    </dt>
+    <dd>
+    Set the compaction strategy for navs.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">strategy</span>
+            <span class="types"><span class="type">integer</span></span>
+         The strategy to use. See <a href="../modules/_navmanager.html#CompactionStrategy">_navmanager.CompactionStrategy</a> for options.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetCompactionStrategy"></a>
+    <strong>GetCompactionStrategy ()</strong>
+    </dt>
+    <dd>
+    Get the current compaction strategy for navs.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        The current compaction strategy. See <a href="../modules/_navmanager.html#CompactionStrategy">_navmanager.CompactionStrategy</a> for options.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AllNavGameObjects"></a>
+    <strong>AllNavGameObjects (team[, include_overflow])</strong>
+    </dt>
+    <dd>
+    Enumerates all navs for a team.
+ At least 10 indexes will be iterated, even if there are no navs in those slots.
+ Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">integer</span></span>
+         Team number to enumerate
+        </li>
+        <li><span class="parameter">include_overflow</span>
+            <span class="types"><span class="type">bool</span></span>
+         If true "Overflow Navs" will be included in the enumeration after the initial 10.
          (<em>optional</em>)
         </li>
     </ul>
@@ -136,66 +374,58 @@
     <h3>Returns:</h3>
     <ol>
         <li>
-           <span class="types"><span class="type">GameObject</span></span>
-        The nav object that was built</li>
+           <span class="types"><span class="type">integer</span></span>
+        index The index of the nav in the enumeration</li>
         <li>
-           <span class="types"><span class="type">number</span></span>
-        The index of the nav in the NavCollection for the team</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "MoveImportantNavsUp"></a>
-    <strong>MoveImportantNavsUp (team)</strong>
-    </dt>
-    <dd>
-    Move important navs up in the list.
- This will move all important navs to the top of the list, pushing unimportant navs down.
- This works by recreating navs so be sure to re-grab your navs.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">number</span></span>
-         Team number of the nav to move
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNav"></a>
-    <strong>GetNav (team, index)</strong>
-    </dt>
-    <dd>
-    Get the nav for a team and index.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">number</span></span>
-         Team number of the nav to get
-        </li>
-        <li><span class="parameter">index</span>
-            <span class="types"><span class="type">number</span></span>
-         Index of the nav to get
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
            <span class="types"><span class="type">GameObject</span></span>
-        The nav object at the specified index for the team
+        nav The nav object at the index</li>
     </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">for</span> i, nav <span class="keyword">in</span> navmanager.AllNavGameObjects(<span class="number">1</span>, <span class="keyword">true</span>) <span class="keyword">do</span>
+    <span class="global">print</span>(<span class="string">"Nav "</span> .. i .. <span class="string">": "</span> .. <span class="global">tostring</span>(nav));
+<span class="keyword">end</span></pre></li>
+        <li><pre class="example"><span class="keyword">local</span> active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(<span class="number">1</span>));</pre></li>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CompactionStrategy"></a>
+    <strong>CompactionStrategy</strong>
+    </dt>
+    <dd>
+    What to do when empty slots exist and excess navs exist
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">DoNothing</span>
+        Do nothing, leave excess navs in overflow
+        </li>
+        <li><span class="parameter">ChronologicalToGap</span>
+        Excess navs inserted into gaps in order of creation
+        </li>
+        <li><span class="parameter">ImportantFirstToGap</span>
+        Excess navs inserted into gaps in order of importance, then creation
+        </li>
+        <li><span class="parameter">[1]</span>
+        DoNothing
+        </li>
+        <li><span class="parameter">[2]</span>
+        ChronologicalToGap
+        </li>
+        <li><span class="parameter">[3]</span>
+        ImportantFirstChronologicalToGap
+        </li>
+    </ul>
+
 
 
 
@@ -208,7 +438,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-07 13:46:59 </i>
+<i style="float:right;">Last updated 2025-05-08 17:09:10 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

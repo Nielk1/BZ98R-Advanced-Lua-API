@@ -5291,10 +5291,180 @@
     </dt>
     <dd>
     This is a global table that converts between team slot numbers and team slot names.  For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
- Available slots: UNDEFINED, PLAYER, RECYCLER, FACTORY, ARMORY, CONSTRUCT,MIN_OFFENSE, MAX_OFFENSE, MIN_DEFENSE, MAX_DEFENSE, MIN_UTILITY, MAX_UTILITY,MIN_BEACON, MAX_BEACON, MIN_POWER, MAX_POWER, MIN_COMM, MAX_COMM, MIN_REPAIR, MAX_REPAIR, MIN_SUPPLY, MAX_SUPPLY, MIN_SILO, MAX_SILO,MIN_BARRACKS, MAX_BARRACKS, MIN_GUNTOWER, MAX_GUNTOWER.
  Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
 
 
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">UNDEFINED</span>
+        1
+        </li>
+        <li><span class="parameter">PLAYER</span>
+        0
+        </li>
+        <li><span class="parameter">RECYCLER</span>
+        1
+        </li>
+        <li><span class="parameter">FACTORY</span>
+        2
+        </li>
+        <li><span class="parameter">ARMORY</span>
+        3
+        </li>
+        <li><span class="parameter">CONSTRUCT</span>
+        4
+        </li>
+        <li><span class="parameter">MIN_OFFENSE</span>
+        5
+        </li>
+        <li><span class="parameter">MAX_OFFENSE</span>
+        14
+        </li>
+        <li><span class="parameter">MIN_DEFENSE</span>
+        15
+        </li>
+        <li><span class="parameter">MAX_DEFENSE</span>
+        24
+        </li>
+        <li><span class="parameter">MIN_UTILITY</span>
+        25
+        </li>
+        <li><span class="parameter">MAX_UTILITY</span>
+        34
+        </li>
+        <li><span class="parameter">MIN_BEACON</span>
+        35
+        </li>
+        <li><span class="parameter">MAX_BEACON</span>
+        44
+        </li>
+        <li><span class="parameter">MIN_POWER</span>
+        45
+        </li>
+        <li><span class="parameter">MAX_POWER</span>
+        54
+        </li>
+        <li><span class="parameter">MIN_COMM</span>
+        55
+        </li>
+        <li><span class="parameter">MAX_COMM</span>
+        59
+        </li>
+        <li><span class="parameter">MIN_REPAIR</span>
+        60
+        </li>
+        <li><span class="parameter">MAX_REPAIR</span>
+        64
+        </li>
+        <li><span class="parameter">MIN_SUPPLY</span>
+        65
+        </li>
+        <li><span class="parameter">MAX_SUPPLY</span>
+        69
+        </li>
+        <li><span class="parameter">MIN_SILO</span>
+        70
+        </li>
+        <li><span class="parameter">MAX_SILO</span>
+        74
+        </li>
+        <li><span class="parameter">MIN_BARRACKS</span>
+        75
+        </li>
+        <li><span class="parameter">MAX_BARRACKS</span>
+        79
+        </li>
+        <li><span class="parameter">MIN_GUNTOWER</span>
+        80
+        </li>
+        <li><span class="parameter">MAX_GUNTOWER</span>
+        89
+        </li>
+        <li><span class="parameter">[-]</span>
+        UNDEFINED
+        </li>
+        <li><span class="parameter">[0]</span>
+        PLAYER
+        </li>
+        <li><span class="parameter">[1]</span>
+        RECYCLER
+        </li>
+        <li><span class="parameter">[2]</span>
+        FACTORY
+        </li>
+        <li><span class="parameter">[3]</span>
+        ARMORY
+        </li>
+        <li><span class="parameter">[4]</span>
+        CONSTRUCT
+        </li>
+        <li><span class="parameter">[5]</span>
+        MIN_OFFENSE
+        </li>
+        <li><span class="parameter">[14]</span>
+        MAX_OFFENSE
+        </li>
+        <li><span class="parameter">[15]</span>
+        MIN_DEFENSE
+        </li>
+        <li><span class="parameter">[24]</span>
+        MAX_DEFENSE
+        </li>
+        <li><span class="parameter">[25]</span>
+        MIN_UTILITY
+        </li>
+        <li><span class="parameter">[34]</span>
+        MAX_UTILITY
+        </li>
+        <li><span class="parameter">[35]</span>
+        MIN_BEACON
+        </li>
+        <li><span class="parameter">[44]</span>
+        MAX_BEACON
+        </li>
+        <li><span class="parameter">[45]</span>
+        MIN_POWER
+        </li>
+        <li><span class="parameter">[54]</span>
+        MAX_POWER
+        </li>
+        <li><span class="parameter">[55]</span>
+        MIN_COMM
+        </li>
+        <li><span class="parameter">[59]</span>
+        MAX_COMM
+        </li>
+        <li><span class="parameter">[60]</span>
+        MIN_REPAIR
+        </li>
+        <li><span class="parameter">[64]</span>
+        MAX_REPAIR
+        </li>
+        <li><span class="parameter">[65]</span>
+        MIN_SUPPLY
+        </li>
+        <li><span class="parameter">[69]</span>
+        MAX_SUPPLY
+        </li>
+        <li><span class="parameter">[70]</span>
+        MIN_SILO
+        </li>
+        <li><span class="parameter">[74]</span>
+        MAX_SILO
+        </li>
+        <li><span class="parameter">[75]</span>
+        MIN_BARRACKS
+        </li>
+        <li><span class="parameter">[79]</span>
+        MAX_BARRACKS
+        </li>
+        <li><span class="parameter">[80]</span>
+        MIN_GUNTOWER
+        </li>
+        <li><span class="parameter">[89]</span>
+        MAX_GUNTOWER
+        </li>
+    </ul>
 
 
 
@@ -11487,7 +11657,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-07 13:46:59 </i>
+<i style="float:right;">Last updated 2025-05-08 17:09:10 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

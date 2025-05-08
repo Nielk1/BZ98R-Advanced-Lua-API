@@ -10,8 +10,8 @@
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 SetLabel = SetLabel or SettLabel; -- BZ1.5 compatibility
 
-local debugprint = debugprint or function() end;
-local traceprint = traceprint or function() end;
+local debugprint = debugprint or function(...) end;
+local traceprint = traceprint or function(...) end;
 
 debugprint("_api Loading");
 

@@ -148,6 +148,7 @@ function GetHandle(label) end
 --- Removes the game object with the given handle.
 -- @tparam handle h
 -- @function RemoveObject
+function RemoveObject(h) end
 
 --- Returns true if the game object's odf name matches the given odf name. Returns false otherwise.
 -- @treturn boolean
@@ -911,9 +912,75 @@ function GetDistance(h1, location) end
 -- These functions look up game objects in team slots.
 
 --- This is a global table that converts between team slot numbers and team slot names. For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
--- Available slots: UNDEFINED, PLAYER, RECYCLER, FACTORY, ARMORY, CONSTRUCT,MIN_OFFENSE, MAX_OFFENSE, MIN_DEFENSE, MAX_DEFENSE, MIN_UTILITY, MAX_UTILITY,MIN_BEACON, MAX_BEACON, MIN_POWER, MAX_POWER, MIN_COMM, MAX_COMM, MIN_REPAIR, MAX_REPAIR, MIN_SUPPLY, MAX_SUPPLY, MIN_SILO, MAX_SILO,MIN_BARRACKS, MAX_BARRACKS, MIN_GUNTOWER, MAX_GUNTOWER.
 -- Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
 -- @table TeamSlot
+TeamSlot = {
+    UNDEFINED = -1, -- -1
+    PLAYER = 0, -- 0
+
+    RECYCLER = 1, -- 1
+    FACTORY = 2, -- 2
+    ARMORY = 3, -- 3
+    CONSTRUCT = 4, -- 4
+
+    MIN_OFFENSE = 5, -- 5
+    MAX_OFFENSE = 14, -- 14
+    MIN_DEFENSE = 15, -- 15
+    MAX_DEFENSE = 24, -- 24
+    MIN_UTILITY = 25, -- 25
+    MAX_UTILITY = 34, -- 34
+
+    MIN_BEACON = 35, -- 35
+    MAX_BEACON = 44, -- 44
+
+    MIN_POWER = 45, -- 45
+    MAX_POWER = 54, -- 54
+    MIN_COMM = 55, -- 55
+    MAX_COMM = 59, -- 59
+    MIN_REPAIR = 60, -- 60
+    MAX_REPAIR = 64, -- 64
+    MIN_SUPPLY = 65, -- 65
+    MAX_SUPPLY = 69, -- 69
+    MIN_SILO = 70, -- 70
+    MAX_SILO = 74, -- 74
+    MIN_BARRACKS = 75, -- 75
+    MAX_BARRACKS = 79, -- 79
+    MIN_GUNTOWER = 80, -- 80
+    MAX_GUNTOWER = 89, -- 89
+
+    [-1] = "UNDEFINED", -- UNDEFINED
+    [0] = "PLAYER", -- PLAYER
+
+    [1] = "RECYCLER", -- RECYCLER
+    [2] = "FACTORY", -- FACTORY
+    [3] = "ARMORY", -- ARMORY
+    [4] = "CONSTRUCT", -- CONSTRUCT
+
+    [5] = "MIN_OFFENSE", -- MIN_OFFENSE
+    [14] = "MAX_OFFENSE", -- MAX_OFFENSE
+    [15] = "MIN_DEFENSE", -- MIN_DEFENSE
+    [24] = "MAX_DEFENSE", -- MAX_DEFENSE
+    [25] = "MIN_UTILITY", -- MIN_UTILITY
+    [34] = "MAX_UTILITY", -- MAX_UTILITY
+
+    [35] = "MIN_BEACON", -- MIN_BEACON
+    [44] = "MAX_BEACON", -- MAX_BEACON
+
+    [45] = "MIN_POWER", -- MIN_POWER
+    [54] = "MAX_POWER", -- MAX_POWER
+    [55] = "MIN_COMM", -- MIN_COMM
+    [59] = "MAX_COMM", -- MAX_COMM
+    [60] = "MIN_REPAIR", -- MIN_REPAIR
+    [64] = "MAX_REPAIR", -- MAX_REPAIR
+    [65] = "MIN_SUPPLY", -- MIN_SUPPLY
+    [69] = "MAX_SUPPLY", -- MAX_SUPPLY
+    [70] = "MIN_SILO", -- MIN_SILO
+    [74] = "MAX_SILO", -- MAX_SILO
+    [75] = "MIN_BARRACKS", -- MIN_BARRACKS
+    [79] = "MAX_BARRACKS", -- MAX_BARRACKS
+    [80] = "MIN_GUNTOWER", -- MIN_GUNTOWER
+    [89] = "MAX_GUNTOWER", -- MAX_GUNTOWER
+}
 
 --- Get the game object in the specified team slot.
 -- It uses the local player team if no team is given.
@@ -921,6 +988,7 @@ function GetDistance(h1, location) end
 -- @tparam integer slot
 -- @tparam[opt] integer team
 -- @function GetTeamSlot
+function GetTeamSlot(slot, team) end
 
 --- Returns the game object controlled by the player on the given team. Returns nil if none exists.
 -- It uses the local player team if no team is given.

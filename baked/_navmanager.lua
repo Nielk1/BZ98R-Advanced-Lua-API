@@ -2,284 +2,146 @@
 -- 
 -- Manage navs
 -- 
--- Dependencies: @{_config}, @{_gameobject}, @{_api}, @{_hook}
+-- Dependencies: @{_config}, @{_utility}, @{_gameobject}, @{_api}, @{_hook}
 -- @module _navmanager
 -- @author John "Nielk1" Klein
 -- @usage local navmanager = require("_navmanager");
 -- 
--- 
+-- navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstChronologicalToGap);
 -- 
 -- @todo Determine if network handling is needed.
 -- @todo Look into soft-loading native module that gives nav data access.
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_navmanager Loading");
 
 local config = require("_config");
+local utility = require("_utility");
 local gameobject = require("_gameobject");
 local _api = require("_api");
 local hook = require("_hook");
 
+--- Nav GameObjects swapped.
+-- The old nav will be deleted after this event is called.
+-- This event allows for scripts to replace their nav references or copy over custom data.
+--
+-- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
+--
+-- @event NavManager:NavSwap
+-- @tparam GameObject old GameObject instance
+-- @tparam GameObject new GameObject instance
+-- @see _hook.Add
+
 local _navmanager = {};
 
---- Nav Collection
--- One entry per team, maintains a list of navs for that team.
--- While this may appear as an array, it is actually a table with team numbers as keys.
--- While the nav list may appear an array, is is also a table with nav indexes as values.
-local NavCollection = {};
+local PendingNavs = {};
+local PendingNavsMemo = {};
+local PendingDirty = false;
+local OverflowNavs = {};
 
 local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
 
 --- Build an important nav and add it to the collection.
 -- Important navs will push non-important navs out of the way in the list.
--- @tparam string odf ODF of the nav to build
--- @tparam number team Team number of the nav to build
--- @param location vector position, matrix transform, or string path name to build the nav or nav GameObject to clone and delete
--- @tparam[opt] string point Path point number for the nav to build on if using a path
+-- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
+-- @tparam integer team Team number of the nav to build
+-- @tparam vector position
 -- @treturn GameObject The nav object that was built
--- @treturn number The index of the nav in the NavCollection for the team
+-- @function _navmanager.BuildImportantNav
+
+--- Build an important nav and add it to the collection.
+-- Important navs will push non-important navs out of the way in the list.
+-- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
+-- @tparam integer team Team number of the nav to build
+-- @tparam matrix transform
+-- @treturn GameObject The nav object that was built
+-- @function _navmanager.BuildImportantNav
+
+--- Build an important nav and add it to the collection.
+-- Important navs will push non-important navs out of the way in the list.
+-- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
+-- @tparam integer team Team number of the nav to build
+-- @tparam string path path name to build the nav
+-- @tparam[opt] integer point Path point number
+-- @treturn GameObject The nav object that was built
+-- @function _navmanager.BuildImportantNav
+
 function _navmanager.BuildImportantNav(odf, team, location, point)
     -- @todo check params h ere, don't allow GameObject on location here, that's internal only
-    return BuildImportantNavInternal(odf, team, location, point);
-end
-function BuildImportantNavInternal(odf, team, location, point)
-    -- make room for the nav
-    local shuffledOutNav = nil;
-    if NavCollection[team] then
-        for i = 1, #NavCollection[team] + 1 do
-            shuffledOutNav = NavCollection[team][i];
-            if not shuffledOutNav then
-                --debugprint("\27[34mGap Found ["..i.."]\27[0m");
-                break; -- we've got a gap, so do nothing
-            end
+    --return BuildImportantNavInternal(odf, team, location, point);
 
-            -- change nav team temporarily
-            -- @todo: preserve target data
-            --debugprint(table.show(shuffledOutNav.NavManager));
-            if not shuffledOutNav.NavManager.important then
-                --debugprint("\27[34mNon-critical Nav Found ["..i.."]\27[0m");
-                shuffledOutNav:SetTeamNum(0);
-                NavCollection[team][i] = nil;
-                break;
-            --else
-            --    debugprint("\27[34mCritical Nav Found ["..i.."]\27[0m");
-            end
-        end
-    end
-
-    -- build the nav
-    local sourceNav = nil;
-    local preservedNavData = nil;
-    if gameobject.isgameobject(location) then
-        -- clone the nav and remove the old one
-        sourceNav = location;
-        location = location:GetTransform();
-        sourceNav:SetTeamNum(0); -- make room for the new nav
-        preservedNavData = sourceNav.NavManager;
-        NavCollection[preservedNavData.team][preservedNavData.index] = nil;
-        DisableAutomaticNavAdding = true; -- doing an object swap, so we are doing a delayed insert
-    end
     local nav = gameobject.BuildGameObject(odf or "apcamr", team, location, point);
-    -- AddObject hook fires here, not sure about network though
-    if sourceNav then
-        DisableAutomaticNavAdding = false;
 
-        nav:SetObjectiveName(sourceNav:GetObjectiveName());
-        nav:SetMaxHealth(sourceNav:GetMaxHealth());
-        nav:SetCurHealth(sourceNav:GetCurHealth());
+    nav.NavManager = { important = true; }
 
-        if sourceNav:IsObjectiveOn() then
-            nav:SetObjectiveOn();
-        end
-
-        -- @todo make this multi-team logic
-        if GetUserTarget() == sourceNav:GetHandle() then
-            SetUserTarget(nav:GetHandle());
-        end
-
-        nav:SwapObjectReferences(sourceNav);
-        AddNavToCollection(sourceNav); -- now that we swapped the refs, add the new nav, via the old ref, back in
-        sourceNav.NavManager.important = true;
-
-        -- remove the old nav
-        nav.NavManager = nil; -- remove our data so RemoveObject doesn't cause issues with the data
-        nav:RemoveObject(); -- this is now the old nav, even though it's in the new reference
-
-        nav = sourceNav;
-    else
-        nav.NavManager.important = true;
+    -- this probably never needs to run
+    if PendingNavsMemo[nav] then
+        table.insert(PendingNavs, nav);
+        PendingNavsMemo[nav] = true;
+        PendingDirty = true;
     end
 
-    -- restore old navs, this will probably lose gaps but we're in hell anyway
-    --while next(OldNavs) do
-    while shuffledOutNav do
-        --debugprint("\27[34Nav Shuffle Inserting ["..tostring(oldNav.NavManager.index).."]\27[0m");
-        for i = shuffledOutNav.NavManager.index + 1, #NavCollection[team] + 1 do
-            --debugprint("\27[34Nav Shuffle Testing ["..tostring(oldNav.NavManager.index).."]\27[0m");
-            local currentNav = NavCollection[team][i];
-            if not currentNav then
-                -- open spot found, restore nav
-                --debugprint("\27[34mNav Restored ["..tostring(oldNav.NavManager.index).."]>["..i.."]\27[0m");
-
-                DisableAutomaticNavAdding = true; -- ensure we don't add the new nav to the collection yet
-                local newNav = gameobject.BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
-                DisableAutomaticNavAdding = false;
-
-                newNav:SetObjectiveName(shuffledOutNav:GetObjectiveName());
-                newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
-                newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
-
-                if shuffledOutNav:IsObjectiveOn() then
-                    newNav:SetObjectiveOn();
-                end
-
-                -- @todo make this multi-team logic
-                if GetUserTarget() == shuffledOutNav:GetHandle() then
-                    SetUserTarget(newNav:GetHandle());
-                end
-
-                newNav:SwapObjectReferences(shuffledOutNav); -- all references pointing to the old nav object now point to the new one
-                AddNavToCollection(shuffledOutNav); -- now that we swapped the refs, add the new nav, via the old ref, back in
-
-                newNav.NavManager = nil; -- remove our data so RemoveObject doesn't cause issues with the data
-                newNav:RemoveObject(); -- this is now the old nav, even though it's in the new reference
-                shuffledOutNav = nil; -- no more old navs to restore
-
-                break;
-            else
-                if not currentNav.NavManager.important then
-                    --debugprint("\27[34mNav Bumped ["..tostring(oldNav.NavManager.index).."]>["..i.."]\27[0m");
-                    currentNav:SetTeamNum(0); -- make room
-                    NavCollection[team][i] = nil;
-
-                    DisableAutomaticNavAdding = true; -- ensure we don't add the new nav to the collection yet
-                    local newNav = gameobject.BuildGameObject(shuffledOutNav:GetOdf(), team, shuffledOutNav:GetTransform());
-                    DisableAutomaticNavAdding = false;
-
-                    newNav:SetObjectiveName(shuffledOutNav:GetObjectiveName());
-                    newNav:SetMaxHealth(shuffledOutNav:GetMaxHealth());
-                    newNav:SetCurHealth(shuffledOutNav:GetCurHealth());
-
-                    if shuffledOutNav:IsObjectiveOn() then
-                        newNav:SetObjectiveOn();
-                    end
-
-                    -- @todo make this multi-team logic
-                    if GetUserTarget() == shuffledOutNav:GetHandle() then
-                        SetUserTarget(newNav:GetHandle());
-                    end
-
-                    newNav:SwapObjectReferences(shuffledOutNav); -- all references pointing to the old nav object now point to the new one
-                    AddNavToCollection(shuffledOutNav); -- now that we swapped the refs, add the new nav, via the old ref, back in
-
-                    newNav.NavManager = nil; -- remove our data so RemoveObject doesn't cause issues with the data
-                    newNav:RemoveObject(); -- this is now the old nav, even though it's in the new reference
-                    shuffledOutNav = currentNav;
-
-                    break; -- start over again until old list is empty or we fail to fix anything
-                --else
-                --    debugprint("\27[34mNav Not Restored ["..tostring(oldNav.NavManager.index).."]>["..i.."]\27[0m");
-                end
-            end
-        end
-    end
-
-    --debugprint("\27[34m----TEST----\27[0m");
-    --PrintNavCollection(debugprint);
-    return nav, nav.NavManager.index;
+    return nav;
 end
 
+--- What to do when empty slots exist and excess navs exist
+-- @table _navmanager.CompactionStrategy
+_navmanager.CompactionStrategy = {
+    DoNothing = 1, -- Do nothing, leave excess navs in overflow
+    ChronologicalToGap = 2, -- Excess navs inserted into gaps in order of creation
+    ImportantFirstToGap = 3, -- Excess navs inserted into gaps in order of importance, then creation
 
---- Move important navs up in the list.
--- This will move all important navs to the top of the list, pushing unimportant navs down.
--- This works by recreating navs so be sure to re-grab your navs.
--- @tparam number team Team number of the nav to move
-function _navmanager.MoveImportantNavsUp(team)
-    debugprint("\27[35mMoveImportantNavsUp("..tostring(team)..")\27[0m");
-    if not NavCollection[team] then return; end
-    debugprint("\27[35mtest\27[0m");
+    [1] = "DoNothing", -- DoNothing
+    [2] = "ChronologicalToGap", -- ChronologicalToGap
+    [3] = "ImportantFirstChronologicalToGap", -- ImportantFirstChronologicalToGap
+}
 
-    local foundGapOrUnimportant = false;
-    -- loop all navs in the team using pairs
-    local MaxKey = 0;
-    for k, _ in pairs(NavCollection[team]) do
-        if k > MaxKey then
-            MaxKey = k;
-        end
+local CompactMode = _navmanager.CompactionStrategy.DoNothing; -- default to chronological
+
+--- Set the compaction strategy for navs.
+-- @tparam string strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+-- @function _navmanager.SetCompactionStrategy
+
+--- Set the compaction strategy for navs.
+-- @tparam integer strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+-- @function _navmanager.SetCompactionStrategy
+function _navmanager.SetCompactionStrategy(strategy)
+    local strat = strategy;
+    if utility.isstring(strategy) then
+        strat = _navmanager.CompactionStrategy[strategy];
     end
-    for i = 1, MaxKey do
-        local nav = NavCollection[team][i];
-        debugprint("\27[35mi = "..tostring(i).." nav = "..tostring(nav).."\27[0m");
-        if foundGapOrUnimportant then
-            debugprint("\27[35mPostgap Check\27[0m");
-            if nav and nav.NavManager and nav.NavManager.important then
-                debugprint("\27[35mIMPORTANT\27[0m");
-                _navmanager.BuildImportantNav(nav:GetOdf(), team, nav);
-            end
-        elseif not nav or not nav.NavManager.important then
-            debugprint("\27[35mGAP FOUND\27[0m");
-            foundGapOrUnimportant = true;
-        end
-    end
+    if _navmanager.CompactionStrategy[strat] == nil then error("Invalid compaction strategy: " .. tostring(strategy)); end
+    CompactMode = strat;
 end
 
---- Get the nav for a team and index.
--- @tparam number team Team number of the nav to get
--- @tparam number index Index of the nav to get
--- @treturn GameObject The nav object at the specified index for the team
-function _navmanager.GetNav(team, index)
-    if not NavCollection[team] then return nil; end
-    return NavCollection[team][index];
+--- Get the current compaction strategy for navs.
+-- @treturn integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
+function _navmanager.GetCompactionStrategy()
+    return CompactMode;
 end
 
-function AddNavToCollection(nav)
-    if nav.NavManager ~= nil then
-        debugprint("Nav already in collection for team "..tostring(nav.NavManager.team)..".", nav:GetHandle());
-        return;
+--- Enumerates all navs for a team.
+-- At least 10 indexes will be iterated, even if there are no navs in those slots.
+-- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
+-- @tparam integer team Team number to enumerate
+-- @tparam[opt] bool include_overflow If true "Overflow Navs" will be included in the enumeration after the initial 10.
+-- @treturn integer index The index of the nav in the enumeration
+-- @treturn GameObject nav The nav object at the index
+-- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
+--     print("Nav " .. i .. ": " .. tostring(nav));
+-- end
+-- @usage local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
+function _navmanager.AllNavGameObjects(team, include_overflow)
+    for slot = TeamSlot.MIN_BEACON, TeamSlot.MAX_BEACON do
+        return (slot - TeamSlot.MIN_BEACON + 1), gameobject.GetTeamSlot(slot, team);
     end
-
-    local team = nav:GetTeamNum();
-    if not NavCollection[team] then
-        NavCollection[team] = {};
-    end
-
-    -- Find the first gap in the table
-    local inserted = false
-    for i = 1, #NavCollection[team] + 1 do
-        if not NavCollection[team][i] or NavCollection[team][i] == nav then
-            NavCollection[team][i] = nav
-            nav.NavManager = { team = team, index = i };
-            inserted = true;
-            break;
+    if includeOverflow and OverflowNavs[team] then
+        for i = 1, #OverflowNavs[team] do
+            return (10 + i), OverflowNavs[team][i];
         end
     end
-
-    -- If no gaps were found, append to the end (fallback)
-    if not inserted then
-        table.insert(NavCollection[team], nav)
-        nav.NavManager = { team = team, index = #NavCollection[team] };
-    end
-
-    debugprint("Add nav to collection for team "..tostring(team)..".", nav:GetHandle());
-    
-    PrintNavCollection(debugprint)
-end
-
-function RemoveNavFromCollection(nav)
-    NavCollection[nav.NavManager.team][nav.NavManager.index] = nil;
-
-    debugprint("Remove nav from collection for team "..tostring(nav.NavManager.team)..".", nav:GetHandle());
-    
-    PrintNavCollection(debugprint)
-end
-
-function PrintNavCollection(func)
-    for team, list in pairs(NavCollection) do
-        for i, nav in pairs(list) do
-            func("NavCollection["..team.."]["..i.."] = <"..tostring(nav:GetHandle()).."> ["..nav:GetOdf().."] "..nav:GetObjectiveName().." "..tostring(nav._IsObjective or 'false').." "..tostring(nav:IsObjectiveOn()));
-        end
-    end
+    return nil; -- End of iteration
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -287,17 +149,211 @@ end
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- @section
 
-hook.Add("CreateObject", "_navmanager_CreateObject", function(object)
+hook.Add("CreateObject", "_navmanager_CreateObject", function(object, isMapObject)
     if not DisableAutomaticNavAdding and object:GetClassSig() == "CPOD" then
-        AddNavToCollection(object);
+        local team = object:GetTeamNum();
+        if team == 0 then
+            return; -- don't add to collection if team is 0, though this might change?
+        end
+        if object.NavManager == nil then
+            object.NavManager = { important = false; };
+        end
+        if PendingNavsMemo[object] then
+            if PendingNavs[team] == nil then
+                PendingNavs[team] = {};
+            end
+            table.insert(PendingNavs[team], object);
+            PendingNavsMemo[object] = true;
+            PendingDirty = true;
+        end
     end
 end, config.get("hook_priority.CreateObject.NavManager"));
 hook.Add("DeleteObject", "_navmanager_DeleteObject", function(object)
     -- we can't get the signiture by this point so we have to use saved data
     if object.NavManager ~= nil then
-        RemoveNavFromCollection(object);
+        PendingDirty = true;
     end
 end, config.get("hook_priority.DeleteObject.NavManager"));
+hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
+    if PendingDirty then
+        DisableAutomaticNavAdding = true;
+        NavSwapPairs = {}; -- old navs paired with thier new navs
+        for team = 1, 15 do
+            -- grab the known overflow and pending navs for this team
+            local PendingNavsForTeam = {};
+            if OverflowNavs[team] then
+                for i = 1, #OverflowNavs[team] do
+                    local nav = OverflowNavs[team][i];
+                    if nav then
+                        PendingNavsMemo[nav] = true; -- add to memo so we can remove it from the pending list later
+                    end
+                end
+            end
+            for i = 1, #PendingNavs[team] do
+                local nav = PendingNavs[team];
+                if nav then
+                    table.insert(PendingNavsForTeam, nav);
+                end
+            end
+
+            local CountOpenSlots = 0;
+            local OpenSlotList = {};
+            -- quickscan actual navs to remove them from pending list
+            for slot = TeamSlot.MIN_BEACON, TeamSlot.MAX_BEACON do
+                local existingNav = gameobject.GetTeamSlot(slot, team);
+                if existingNav then
+                    PendingNavsMemo[existingNav] = nil;
+                else
+                    table.insert(OpenSlotList, slot);
+                    CountOpenSlots = CountOpenSlots + 1; -- count open slots
+                end
+            end
+
+            local NewNavOverflow = {};
+
+            -- for now we're hard coding this, but it will be the strategy by which overflow navs are moved into open slots
+            if CountOpenSlots > 0 then
+                if CompactMode == _navmanager.CompactionStrategy.DoNothing then
+                    NewNavOverflow = PendingNavsForTeam; -- we are set to do nothing, so we just leave the navs in overflow and make sure the new pendings are added too
+                elseif CompactMode == _navmanager.CompactionStrategy.ChronologicalToGap then
+                    -- chronological, so we just add the navs in order
+                    local SlotListIndex = 1;
+                    for i = 1, #PendingNavsForTeam do
+                        local nav = PendingNavsForTeam[i];
+                        if nav then
+                            if CountOpenSlots > 0 then -- should be impossible to fail this but whatever
+                                if utility.isfunction(nav.SetTeamSlot) then
+                                    nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
+                                    SlotListIndex = SlotListIndex + 1;
+                                else
+                                    -- build a new nav in the now open slot
+                                    local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                                            
+                                    -- sync properties
+                                    newNav:SetObjectiveName(nav:GetObjectiveName());
+                                    newNav:SetMaxHealth(nav:GetMaxHealth());
+                                    newNav:SetCurHealth(nav:GetCurHealth());
+                                    -- @todo if we get teamwise targets, handle it here
+                                    if nav:IsObjectiveOn() then
+                                        newNav:SetObjectiveOn();
+                                        nav.SetObjectiveOff();
+                                    end
+                                    -- @todo make this multi-team logic
+                                    if GetUserTarget() == nav:GetHandle() then
+                                        SetUserTarget(newNav:GetHandle());
+                                    end
+
+                                    table.insert(NavSwapPairs, { nav, newNav });
+                                end
+                                CountOpenSlots = CountOpenSlots - 1;
+                            else
+                                -- no more open slots, so we need to overflow the navs
+                                table.insert(NewNavOverflow, nav);
+                            end
+                        end
+                    end
+                elseif CompactMode == _navmanager.CompactionStrategy.ImportantFirstToGap then
+                    -- important first, so we add the important navs first, then the normal navs
+
+                    -- temporary holding for overflow navs left over after first insert pass
+                    local PendingNavsForTeamAfterFirstPass = {};
+                    local SlotListIndex = 1;
+                    for i = 1, #PendingNavsForTeam do
+                        local nav = PendingNavsForTeam[i];
+                        if nav then
+                            if nav.NavManager and nav.NavManager.important then
+                                if CountOpenSlots > 0 then
+                                    if utility.isfunction(nav.SetTeamSlot) then
+                                        nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
+                                        SlotListIndex = SlotListIndex + 1;
+                                    else
+                                        -- build a new nav in the now open slot
+                                        local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                        
+                                        -- sync properties
+                                        newNav:SetObjectiveName(nav:GetObjectiveName());
+                                        newNav:SetMaxHealth(nav:GetMaxHealth());
+                                        newNav:SetCurHealth(nav:GetCurHealth());
+                                        -- @todo if we get teamwise targets, handle it here
+                                        if nav:IsObjectiveOn() then
+                                            newNav:SetObjectiveOn();
+                                            nav.SetObjectiveOff();
+                                        end
+                                        -- @todo make this multi-team logic
+                                        if GetUserTarget() == nav:GetHandle() then
+                                            SetUserTarget(newNav:GetHandle());
+                                        end
+
+                                        table.insert(NavSwapPairs, { nav, newNav });
+                                    end
+                                    CountOpenSlots = CountOpenSlots - 1;
+                                else
+                                    -- no more open slots, so we need to overflow the navs
+                                    table.insert(PendingNavsForTeamAfterFirstPass, nav);
+                                end
+                            else
+                                -- not an important nav, so save it for next loop
+                                table.insert(PendingNavsForTeamAfterFirstPass, nav);
+                            end
+                        end
+                    end
+                    if CountOpenSlots > 0 then
+                        for i = 1, #PendingNavsForTeamAfterFirstPass do
+                            local nav = PendingNavsForTeamAfterFirstPass[i];
+                            if nav then
+                                if CountOpenSlots > 0 then
+                                    if utility.isfunction(nav.SetTeamSlot) then
+                                        nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
+                                        SlotListIndex = SlotListIndex + 1;
+                                    else
+                                        -- build a new nav in the now open slot
+                                        local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                        
+                                        -- sync properties
+                                        newNav:SetObjectiveName(nav:GetObjectiveName());
+                                        newNav:SetMaxHealth(nav:GetMaxHealth());
+                                        newNav:SetCurHealth(nav:GetCurHealth());
+                                        -- @todo if we get teamwise targets, handle it here
+                                        if nav:IsObjectiveOn() then
+                                            newNav:SetObjectiveOn();
+                                            nav.SetObjectiveOff();
+                                        end
+                                        -- @todo make this multi-team logic
+                                        if GetUserTarget() == nav:GetHandle() then
+                                            SetUserTarget(newNav:GetHandle());
+                                        end
+
+                                        table.insert(NavSwapPairs, { nav, newNav });
+                                    end
+                                    CountOpenSlots = CountOpenSlots - 1;
+                                else
+                                    -- no more open slots, so we need to overflow the navs
+                                    table.insert(NewNavOverflow, nav);
+                                end
+                            end
+                        end
+                    else
+                        NewNavOverflow = PendingNavsForTeamAfterFirstPass; -- no open slots, so all navs go into overflow
+                    end
+                end
+            else
+                NewNavOverflow = PendingNavsForTeam; -- no open slots, so all navs go into overflow
+            end
+            
+            OverflowNavs[team] = NewNavOverflow; -- save the overflow navs for the future
+        end
+
+        for i = 1, #NavSwapPairs do
+            local oldNav = NavSwapPairs[i][1];
+            local newNav = NavSwapPairs[i][2];
+            hook.CallAllNoReturn("NavManager:NavSwap", oldNav, newNav); -- call the nav swap hook so scripts can handle reference changes
+            oldNav:RemoveObject(); -- remove the old nav, this will call the delete object hook but we're ignoring those here atm
+        end
+
+        PendingDirty = false;
+        DisableAutomaticNavAdding = false;
+    end
+end, 49999);
 
 hook.AddSaveLoad("_navmanager", function()
     return NavCollection;

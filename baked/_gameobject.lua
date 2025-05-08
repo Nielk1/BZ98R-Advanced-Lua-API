@@ -6,7 +6,7 @@
 -- @module _gameobject
 -- @author John "Nielk1" Klein
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_gameobject Loading");
 
@@ -15,19 +15,6 @@ local config = require("_config");
 local hook = require("_hook");
 local unsaved = require("_unsaved");
 local customsavetype = require("_customsavetype");
-
---- GameObject references swapped.
--- The GameObject's references have been swapped.
--- This means that every single reference to object A and object B are now swapped.
--- An actual swap didn't occur, but instead the data inside the objects was swapped.
--- Because the full data was swapped you may need to fixup some anomalies in the custom stored data.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
---
--- @event GameObject:SwapObjectReferences
--- @tparam GameObject A GameObject instance
--- @tparam GameObject B GameObject instance
--- @see _hook.Add
 
 local _gameobject = {};
 
@@ -41,8 +28,8 @@ end
 local GameObjectMetatable = {};
 GameObjectMetatable.__mode = "v";
 local GameObjectWeakList = setmetatable({}, GameObjectMetatable);
-local GameObjectAltered = {};
-local GameObjectDead = {};
+local GameObjectAltered = {}; -- used to strong-reference hold objects with custom data until they are removed from game world
+--local GameObjectDead = {}; -- used to hold dead objects till next update for cleanup
 
 --- GameObject.
 -- An object containing all functions and data related to a game object.
@@ -133,19 +120,21 @@ function GameObject.BulkSave()
     end
     
     -- store a list of handles that have already died (in theory this should always be empty but it might happen before Update can clean this)
-    local returnDataDead = {};
-    for k,v in pairs(GameObjectDead) do
-        --table.insert(returnDataDead, v:GetHandle());
-        table.insert(returnDataDead, k);
-    end
-    return returnData,returnDataDead;
+    --local returnDataDead = {};
+    --for k,v in pairs(GameObjectDead) do
+    --    --table.insert(returnDataDead, v:GetHandle());
+    --    table.insert(returnDataDead, k);
+    --end
+    --return returnData,returnDataDead;
+    return returnData;
 end
 
 --- BulkLoad event function.
 -- INTERNAL USE.
 -- @param data Object data
--- @param dataDead Dead object data
-function GameObject.BulkLoad(data,dataDead)
+function GameObject.BulkLoad(data)
+-- Xparam dataDead Dead object data
+--function GameObject.BulkLoad(data,dataDead)
     local _ObjectiveObjects = {};
     if not utility.isfunction(IsObjectiveOn) then
         for h in ObjectiveObjects() do
@@ -164,10 +153,10 @@ function GameObject.BulkLoad(data,dataDead)
             _ObjectiveObjects[k] = nil; -- does this speed things up or slow them down?
         end
     end
-    for k,v in pairs(dataDead) do
-        local newGameObject = _gameobject.FromHandle(v); -- this will be either a new GameObject or an existing one from the above addon data filling loop
-        GameObjectDead[v] = newGameObject;
-    end
+    --for k,v in pairs(dataDead) do
+    --    local newGameObject = _gameobject.FromHandle(v); -- this will be either a new GameObject or an existing one from the above addon data filling loop
+    --    GameObjectDead[v] = newGameObject;
+    --end
 end
 
 --- BulkPostLoad event function.
@@ -212,6 +201,18 @@ end
 function GameObject.RemoveObject(self)
     if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     RemoveObject(self:GetHandle());
+end
+
+--- Get the game object in the specified team slot.
+-- @tparam int slot Slot number, see TeamSlot
+-- @see ScriptUtils.TeamSlot
+-- @tparam[opt] int team Team number, 0 to 15
+function _gameobject.GetTeamSlot(slot, team)
+    if not utility.isnumber(slot) then error("Parameter slot must be a number") end
+    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number") end
+    local handle = GetTeamSlot(slot, team);
+    if handle == nil then return nil end;
+    return _gameobject.FromHandle(handle);
 end
 
 --- Get Player GameObject of team.
@@ -586,7 +587,26 @@ end
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- @section
 
+--- Does the GameObject exist in the world?
+-- Returns true if the game object exists.
+-- @tparam GameObject self GameObject instance
+-- @treturn bool
+-- @function GameObject.IsAround
+if utility.isfunction(IsAround) then
+    function GameObject.IsAround(self)
+        if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+
+        return IsAround(self:GetHandle());
+    end
+else
+    function GameObject.IsAround(self)
+        if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+        return not self._IsGone;
+    end
+end
+
 --- Is the GameObject alive and is still pilot controlled?
+-- Returns true if the game object exists and (if the object is a vehicle) controlled. Returns false otherwise.
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsAlive(self)
@@ -595,7 +615,7 @@ function GameObject.IsAlive(self)
 end
 
 --- Is the GameObject alive and piloted?
--- Returns true if the handle passed in is a user's pilot, returns false if dead, no AI pilot, or pilotClass is NULL.
+-- Returns true if the game object exists and (if the object is a vehicle) controlled and piloted. Returns false otherwise.
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
 function GameObject.IsAliveAndPilot(self)
@@ -998,83 +1018,30 @@ function GameObject.GetClassSig(self)
     return GetClassSig(self:GetHandle());
 end
 
---- Swap all GameObject references to another GameObject.
--- This is possible because all functions that return GameObjects ensure they use a common reference.
--- This updates the object inside that reference effectively swapping all references between the two object.
--- It really is a scary operation.
---
--- Triggers "GameObject:SwapObjectReferences" event.
---
--- @tparam GameObject self GameObject instance
--- @tparam GameObject object GameObject to replace with
-function GameObject.SwapObjectReferences(self, object)
-    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not _gameobject.isgameobject(object) then error("Parameter object must be GameObject instance."); end
-
-    local ownHandle = self:GetHandle();
-    local newHandle = object:GetHandle();
-    
-    if ownHandle == newHandle then return end -- no need to replace with self
-
-    -- because these 2 tables are shared references all over the code, we are going to do absolute black magic
-    -- we are going to swap the full contents of the inside of both with each other
-
-    -- move old object metadata to new handle
-    GameObjectWeakList[newHandle] = self; 
-    GameObjectWeakList[ownHandle] = object;
-
-    local ownIsDead = GameObjectDead[ownHandle] and true or false;
-    local newIsDead = GameObjectDead[newHandle] and true or false;
-
-    local ownIsAltered = GameObjectAltered[ownHandle] and true or false;
-    local newIsAltered = GameObjectAltered[newHandle] and true or false;
-
-    -- this feels wrong, but I'm pretty sure it's correct
-    GameObjectDead[newHandle] = ownIsDead and self or nil;
-    GameObjectDead[ownHandle] = newIsDead and object or nil;
-
-    -- if we have custom data, stuff us in the new tracking table, else nil
-    GameObjectAltered[newHandle] = ownIsAltered and self or nil;
-    GameObjectAltered[ownHandle] = newIsAltered and object or nil;
-
-    self.id = newHandle; -- update self to new handle
-    object.id = ownHandle; -- update self to new handle
-
-    local ownAddon = rawget(self, "addonData");
-    local newAddon = rawget(object, "addonData");
-    rawset(object, "addonData", ownAddon);
-    rawset(self, "addonData", newAddon);
-
-    -- Warn listeners that a swap occured, they might need to fix some addonData.
-    hook.CallAllNoReturn("GameObject:SwapObjectReferences", self, object);
+if not utility.isfunction(IsAround) then
+    hook.Add("DeleteObject", "GameObject_DeleteObject_Early", function(object)
+        local objectId = object:GetHandle();
+        object._IsGone = true;
+    end, config.get("hook_priority.DeleteObject.GameObject2"));
 end
-
-hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_GameObject", function(objectA, objectB)
-    -- this could have been done where the hook was called, but it's here to act as an example
-
-    -- cleanup data that shouldn't have been swapped since it's tied to game state
-    if not utility.isfunction(IsObjectiveOn) then
-        objectA.cache_memo = unsaved(objectA.cache_memo);
-        objectB.cache_memo = unsaved(objectB.cache_memo);
-        local ObjectiveA = objectA.cache_memo.IsObjectiveOn;
-        objectA.cache_memo.IsObjectiveOn = objectB.cache_memo.IsObjectiveOn;
-        objectB.cache_memo.IsObjectiveOn = ObjectiveA;
-    end
-end, config.get("hook_priority.GameObject_SwapObjectReferences.GameObject"));
-
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();
-    debugprint('Decaying object ' .. tostring(objectId));
-    GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (handle might be re-used)
+
+    GameObjectAltered[objectId] = nil; -- remove any strong reference for being altered
+
+    -- Alternate method where we delay deletion to next update
+    -- BZ2 needs this because handles can be re-used in an upgrade, so we need to know if this has happened for an UpgradeObject event, but BZ1 doesn't have this.
+    --debugprint('Decaying object ' .. tostring(objectId));
+    --GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (in BZ2 handle might be re-used, in BZ1 we're supporting IsAround hackery)
 end, config.get("hook_priority.DeleteObject.GameObject"));
 
-hook.Add("Update", "GameObject_Update", function(dtime)
-    for k,v in pairs(GameObjectDead) do
-        debugprint('Decayed object ' .. tostring(k));
-        GameObjectAltered[k] = nil; -- remove any strong reference for being altered
-        GameObjectDead[k] = nil; -- remove any strong reference for being dead
-    end
-end, config.get("hook_priority.Update.GameObject"));
+--hook.Add("Update", "GameObject_Update", function(dtime)
+--    for k,v in pairs(GameObjectDead) do
+--        debugprint('Decayed object ' .. tostring(k));
+--        GameObjectAltered[k] = nil; -- remove any strong reference for being altered
+--        GameObjectDead[k] = nil; -- remove any strong reference for being dead
+--    end
+--end, config.get("hook_priority.Update.GameObject"));
 
 customsavetype.Register(GameObject);
 

@@ -13,7 +13,7 @@
 -- missingMod2 = missing2Success and missingMod2 or nil;
 
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("__optional Loading");
 

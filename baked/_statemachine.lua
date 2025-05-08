@@ -72,7 +72,7 @@
 
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_statemachine Loading");
 

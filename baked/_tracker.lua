@@ -12,7 +12,8 @@
 -- tracker.setFilterTeam(1, true);
 -- tracker.setFilterClass("TANK", true);
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
+local traceprint = traceprint or function(...) end;
 
 debugprint("_tracker Loading");
 
@@ -43,19 +44,19 @@ local Current_TrackerData_Filter_Classes = {};
 local Current_TrackerData_Filter_Odfs = {};
 
 local function testprint()
-    debugprint("TrackerData_Class: " .. table.show(TrackerData_Class, "TrackerData_Class"));
-    debugprint("TrackerData_Odf: " .. table.show(TrackerData_Odf, "TrackerData_Odf"));
-    debugprint("TrackerData_CountClass: " .. table.show(TrackerData_CountClass, "TrackerData_CountClass"));
-    debugprint("TrackerData_CountOdf: " .. table.show(TrackerData_CountOdf, "TrackerData_CountOdf"));
-    debugprint("TrackerData_TotalClass: " .. table.show(TrackerData_TotalClass, "TrackerData_TotalClass"));
-    debugprint("TrackerData_TotalOdf: " .. table.show(TrackerData_TotalOdf, "TrackerData_TotalOdf"));
+    traceprint("TrackerData_Class: " .. table.show(TrackerData_Class, "TrackerData_Class"));
+    traceprint("TrackerData_Odf: " .. table.show(TrackerData_Odf, "TrackerData_Odf"));
+    traceprint("TrackerData_CountClass: " .. table.show(TrackerData_CountClass, "TrackerData_CountClass"));
+    traceprint("TrackerData_CountOdf: " .. table.show(TrackerData_CountOdf, "TrackerData_CountOdf"));
+    traceprint("TrackerData_TotalClass: " .. table.show(TrackerData_TotalClass, "TrackerData_TotalClass"));
+    traceprint("TrackerData_TotalOdf: " .. table.show(TrackerData_TotalOdf, "TrackerData_TotalOdf"));
 end
 
 local function CreateObject(object, odf, sig, team)
-    debugprint("CreateObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
+    traceprint("CreateObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
     if next(Current_TrackerData_Filter_Teams) ~= nil and Current_TrackerData_Filter_Teams[team] == nil then
-        debugprint("CreateObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
+        traceprint("CreateObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
         return;
     end
 
@@ -92,7 +93,7 @@ local function CreateObject(object, odf, sig, team)
 end
 
 local function DeleteObject(object, odf, sig, team, remove_from_total)
-    debugprint("DeleteObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
+    traceprint("DeleteObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
     -- Remove the object from the TeamClass and TeamOdf tracking tables
     if TrackerData_Class[team] and TrackerData_Class[team][sig] then

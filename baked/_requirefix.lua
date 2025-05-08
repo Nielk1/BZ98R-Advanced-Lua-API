@@ -6,7 +6,7 @@
 -- @author John "Nielk1" Klein
 -- @usage require("_requirefix").addmod("12345").addmod("67890");
 
-local debugprint = debugprint or function() end;
+local debugprint = debugprint or function(...) end;
 
 debugprint("_requirefix Loading");
 

@@ -32,7 +32,6 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Events">Events</a></li>
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#Tables">Tables</a></li>
 <li><a href="#Pilot_Class">Pilot Class </a></li>
@@ -85,13 +84,6 @@
     </ul>
 
 
-<h2><a href="#Events">Events</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GameObject:SwapObjectReferences">GameObject:SwapObjectReferences</a></td>
-	<td class="summary">GameObject references swapped.</td>
-	</tr>
-</table>
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
@@ -167,7 +159,7 @@
 	<td class="summary">BulkSave event function.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.BulkLoad">GameObject.BulkLoad (data, dataDead)</a></td>
+	<td class="name" nowrap><a href="#GameObject.BulkLoad">GameObject.BulkLoad (data)</a></td>
 	<td class="summary">BulkLoad event function.</td>
 	</tr>
 	<tr>
@@ -188,6 +180,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#GameObject.RemoveObject">GameObject.RemoveObject (self)</a></td>
 	<td class="summary">Remove GameObject from world.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetTeamSlot">GetTeamSlot (slot[, team])</a></td>
+	<td class="summary">Get the game object in the specified team slot.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetPlayerGameObject">GetPlayerGameObject ([team])</a></td>
@@ -339,6 +335,10 @@
 <h2><a href="#Condition_Checks">Condition Checks </a></h2>
 <table class="function_list">
 	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsAround">GameObject.IsAround (self)</a></td>
+	<td class="summary">Does the GameObject exist in the world?</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#GameObject.IsAlive">GameObject.IsAlive (self)</a></td>
 	<td class="summary">Is the GameObject alive and is still pilot controlled?</td>
 	</tr>
@@ -487,55 +487,12 @@
 	<td class="name" nowrap><a href="#GameObject.GetClassSig">GameObject.GetClassSig (self)</a></td>
 	<td class="summary">Get ClassSig of GameObject</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.SwapObjectReferences">GameObject.SwapObjectReferences (self, object)</a></td>
-	<td class="summary">Swap all GameObject references to another GameObject.</td>
-	</tr>
 </table>
 
 <br/>
 <br/>
 
 
-    <h2 class="section-header "><a name="Events"></a>Events</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "GameObject:SwapObjectReferences"></a>
-    <strong>GameObject:SwapObjectReferences</strong>
-    </dt>
-    <dd>
-    GameObject references swapped.
- The GameObject's references have been swapped.
- This means that every single reference to object A and object B are now swapped.
- An actual swap didn't occur, but instead the data inside the objects was swapped.
- Because the full data was swapped you may need to fixup some anomalies in the custom stored data.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">A</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-        <li><span class="parameter">B</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-    </ul>
-
-
-
-    <h3>See also:</h3>
-    <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
-    </ul>
-
-
-</dd>
-</dl>
     <h2 class="section-header "><a name="Functions"></a>Functions</h2>
 
     <dl class="function">
@@ -930,7 +887,7 @@
 </dd>
     <dt>
     <a name = "GameObject.BulkLoad"></a>
-    <strong>GameObject.BulkLoad (data, dataDead)</strong>
+    <strong>GameObject.BulkLoad (data)</strong>
     </dt>
     <dd>
     BulkLoad event function.
@@ -941,9 +898,6 @@
     <ul>
         <li><span class="parameter">data</span>
          Object data
-        </li>
-        <li><span class="parameter">dataDead</span>
-         Dead object data
         </li>
     </ul>
 
@@ -1063,6 +1017,36 @@
 
 
 
+
+
+</dd>
+    <dt>
+    <a name = "GetTeamSlot"></a>
+    <strong>GetTeamSlot (slot[, team])</strong>
+    </dt>
+    <dd>
+    Get the game object in the specified team slot.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">slot</span>
+            <span class="types"><span class="type">int</span></span>
+         Slot number, see TeamSlot
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+         Team number, 0 to 15
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/ScriptUtils.html#TeamSlot">ScriptUtils.TeamSlot</a>
+    </ul>
 
 
 </dd>
@@ -2048,11 +2032,40 @@
 
     <dl class="function">
     <dt>
+    <a name = "GameObject.IsAround"></a>
+    <strong>GameObject.IsAround (self)</strong>
+    </dt>
+    <dd>
+    Does the GameObject exist in the world?
+ Returns true if the game object exists.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "GameObject.IsAlive"></a>
     <strong>GameObject.IsAlive (self)</strong>
     </dt>
     <dd>
     Is the GameObject alive and is still pilot controlled?
+ Returns true if the game object exists and (if the object is a vehicle) controlled. Returns false otherwise.
 
 
     <h3>Parameters:</h3>
@@ -2080,7 +2093,7 @@
     </dt>
     <dd>
     Is the GameObject alive and piloted?
- Returns true if the handle passed in is a user's pilot, returns false if dead, no AI pilot, or pilotClass is NULL.
+ Returns true if the game object exists and (if the object is a vehicle) controlled and piloted. Returns false otherwise.
 
 
     <h3>Parameters:</h3>
@@ -2960,36 +2973,6 @@
 
 
 </dd>
-    <dt>
-    <a name = "GameObject.SwapObjectReferences"></a>
-    <strong>GameObject.SwapObjectReferences (self, object)</strong>
-    </dt>
-    <dd>
-    Swap all GameObject references to another GameObject.
- This is possible because all functions that return GameObjects ensure they use a common reference.
- This updates the object inside that reference effectively swapping all references between the two object.
- It really is a scary operation.
-<p> Triggers "GameObject:SwapObjectReferences" event.
-
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">self</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-        <li><span class="parameter">object</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject to replace with
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
 </dl>
 
 
@@ -2997,7 +2980,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-07 13:46:59 </i>
+<i style="float:right;">Last updated 2025-05-08 17:09:10 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

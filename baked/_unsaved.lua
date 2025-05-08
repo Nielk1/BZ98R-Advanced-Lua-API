@@ -1,4 +1,4 @@
---- BZCC LUA Extended API Unsaved.
+--- BZ98R LUA Extended API Unsaved.
 -- 
 -- Crude custom type to make data not save/load exploiting the custom type system.
 -- 

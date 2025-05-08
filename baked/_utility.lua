@@ -1,4 +1,4 @@
---- BZCC LUA Extended API Utility.
+--- BZ98R LUA Extended API Utility.
 -- 
 -- Crude custom type to make data not save/load exploiting the custom type system.
 -- 

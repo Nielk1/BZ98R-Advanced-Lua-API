@@ -1,4 +1,4 @@
---- BZ98R ScriptUtils Stub
+--- BZ98R ScriptUtils Stub.
 --
 -- Stubs for ScriptUtils LDoc
 --
@@ -299,6 +299,7 @@ ClassId = {
 -- @treturn boolean
 -- @tparam handle h
 -- @function IsValid
+function IsValid(h) end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled. Returns false otherwise.
 -- @treturn boolean
@@ -310,25 +311,32 @@ function IsAlive(h) end
 -- @treturn boolean
 -- @tparam handle h
 -- @function IsAliveAndPilot
+function IsAliveAndPilot(h) end
 
 --- Returns true if the game object exists and is a vehicle. Returns false otherwise.
 -- @treturn boolean
 -- @tparam handle h
 -- @function IsCraft
+function IsCraft(h) end
 
 --- Returns true if the game object exists and is a building. Returns false otherwise.
 -- @treturn boolean
 -- @tparam handle h
 -- @function IsBuilding
+function IsBuilding(h) end
 
 --- Returns true if the game object exists and is a person. Returns false otherwise.
 -- @treturn boolean
 -- @tparam handle h
 -- @function IsPerson
+function IsPerson(h) end
 
 --- Returns true if the game object exists and has less health than the threshold. Returns false otherwise.
 -- @treturn boolean
--- @function IsDamaged ( handle h [, float threshold] )
+-- @tparam handle h
+-- @tparam[opt] float threshold
+-- @function IsDamaged
+function IsDamaged(h, threshold) end
 
 --- Returns true if the game object was recycled by a Construction Rig on the given team.
 -- [2.1+]

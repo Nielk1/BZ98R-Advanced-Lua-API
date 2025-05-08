@@ -588,21 +588,12 @@ end
 -- @section
 
 --- Does the GameObject exist in the world?
--- Returns true if the game object exists.
+-- Returns true if the game object exists. Returns false otherwise.
 -- @tparam GameObject self GameObject instance
 -- @treturn bool
--- @function GameObject.IsAround
-if utility.isfunction(IsAround) then
-    function GameObject.IsAround(self)
-        if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-
-        return IsAround(self:GetHandle());
-    end
-else
-    function GameObject.IsAround(self)
-        if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-        return not self._IsGone;
-    end
+function GameObject.IsValid(self)
+    if not _gameobject.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    return IsValid(self:GetHandle());
 end
 
 --- Is the GameObject alive and is still pilot controlled?
@@ -1018,12 +1009,6 @@ function GameObject.GetClassSig(self)
     return GetClassSig(self:GetHandle());
 end
 
-if not utility.isfunction(IsAround) then
-    hook.Add("DeleteObject", "GameObject_DeleteObject_Early", function(object)
-        local objectId = object:GetHandle();
-        object._IsGone = true;
-    end, config.get("hook_priority.DeleteObject.GameObject2"));
-end
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();
 
@@ -1032,7 +1017,7 @@ hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     -- Alternate method where we delay deletion to next update
     -- BZ2 needs this because handles can be re-used in an upgrade, so we need to know if this has happened for an UpgradeObject event, but BZ1 doesn't have this.
     --debugprint('Decaying object ' .. tostring(objectId));
-    --GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (in BZ2 handle might be re-used, in BZ1 we're supporting IsAround hackery)
+    --GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (in BZ2 handle might be re-used)
 end, config.get("hook_priority.DeleteObject.GameObject"));
 
 --hook.Add("Update", "GameObject_Update", function(dtime)

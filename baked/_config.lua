@@ -83,7 +83,6 @@ end
 -- DeleteObject                   .GameObject   = -9999
 -- DeleteObject                   .NavManager   =  4999
 -- DeleteObject                   .Tracker      =  4999
--- DeleteObject                   .GameObject2  =  9999
 -- ----------------------------------------------------
 -- CreateObject                   .NavManager   =  4999
 -- CreateObject                   .Tracker      =  4999
@@ -102,7 +101,6 @@ config.hook_priority = {
         GameObject = -9999,
         NavManager = 4999,
         Tracker = 4999,
-        GameObject2 = 9999,
     },
     CreateObject = {
         NavManager = 4999,

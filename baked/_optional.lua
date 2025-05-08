@@ -1,4 +1,4 @@
---- BZCC LUA Extended API Optional loader.
+--- BZ98R LUA Extended API Optional loader.
 -- 
 -- Load a lua module optionally.
 -- 

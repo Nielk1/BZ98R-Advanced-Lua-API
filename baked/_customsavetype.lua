@@ -1,4 +1,4 @@
---- BZCC LUA Extended API CustomSaveType.
+--- BZ98R LUA Extended API CustomSaveType.
 -- 
 -- Crude custom type to make data not save/load exploiting the custom type system.
 -- 

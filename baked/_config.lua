@@ -3,8 +3,7 @@
 --- Constants used to configure the API's system.
 --- Note that reading any non-table value other than "locked" will lock the config table.
 ---
---- Dependencies: @{_table_show}
---- @module _config
+--- @module '_config'
 --- @author John "Nielk1" Klein
 --- @usage local config = require("_config");
 --
@@ -12,7 +11,9 @@
 --     config.hook_priority.DeleteObject.GameObject = -99999;
 -- end
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 require("_table_show")
 
@@ -33,71 +34,70 @@ local function resolve_path(tbl, path)
     return current
 end
 
-local config_meta = {};
-config_meta.locked = false;
-config_meta.data = {};
+local M_MT = {};
+M_MT.locked = false;
+M_MT.data = {};
 
-local config = setmetatable({}, config_meta);
+local M = setmetatable({}, M_MT);
 
 local dont_lock = true;
 
-config_meta.__index = function(dtable, key)
+M_MT.__index = function(dtable, key)
     if key == "locked" then
-        return config_meta.locked;
+        return M_MT.locked;
     end
     if key == "get" then
-        return config_meta.get;
+        return M_MT.get;
     end
-    if config_meta.locked then
+    if M_MT.locked then
         error("Config table is locked. No further changes allowed.");
     end
-    return rawget(config_meta.data, key);
+    return rawget(M_MT.data, key);
   end
-config_meta.__newindex = function(dtable, key, value)
-    if config_meta.locked then
+M_MT.__newindex = function(dtable, key, value)
+    if M_MT.locked then
         error("Cannot set key '"..key.."' after config table is locked.");
     end
     if key == "locked" then
         error("Cannot set 'locked' key directly.");
     end
-    rawset(config_meta.data, key, value);
+    rawset(M_MT.data, key, value);
 end
 
 --- Get a value from the config table using a period or colon delimited path.
 --- @param path string The path to the value, e.g. "hook_priority.Update.StateMachine"
 --- @return any The value at the specified path
-function config_meta.get(path)
+--- @function get
+function M_MT.get(path)
     -- Access a value using a period or colon delimited path
-    local value = resolve_path(config_meta.data, path)
-    if value ~= nil and not config_meta.locked then
-        config_meta.locked = true;
+    local value = resolve_path(M_MT.data, path)
+    if value ~= nil and not M_MT.locked then
+        M_MT.locked = true;
         debugprint("Config table is now locked.")
-        debugprint(table.show(config_meta.data, "config"))
+        debugprint(table.show(M_MT.data, "config"))
     end
     return value
 end
 
 --- Priority of hooks
---
--- <pre>
--- DeleteObject                   .GameObject   = -9999
--- DeleteObject                   .NavManager   =  4999
--- DeleteObject                   .Tracker      =  4999
--- ----------------------------------------------------
--- CreateObject                   .NavManager   =  4999
--- CreateObject                   .Tracker      =  4999
--- ----------------------------------------------------
--- Start                          .Tracker      =  4999
--- ----------------------------------------------------
--- Update                         .Tracker      =  4999
--- Update                         .NavManager   =  5999
--- Update                         .StateMachine =  8999
--- ----------------------------------------------------
--- GameObject_SwapObjectReferences.Tracker      =  8999
--- GameObject_SwapObjectReferences.GameObject   =  9999</pre>
--- @field config.hook_priority
--- @table config.hook_priority
-config.hook_priority = {
+---
+--- <pre>
+--- DeleteObject                   .GameObject   = -9999
+--- DeleteObject                   .NavManager   =  4999
+--- DeleteObject                   .Tracker      =  4999
+--- ----------------------------------------------------
+--- CreateObject                   .NavManager   =  4999
+--- CreateObject                   .Tracker      =  4999
+--- ----------------------------------------------------
+--- Start                          .Tracker      =  4999
+--- ----------------------------------------------------
+--- Update                         .Tracker      =  4999
+--- Update                         .NavManager   =  5999
+--- Update                         .StateMachine =  8999
+--- ----------------------------------------------------
+--- GameObject_SwapObjectReferences.Tracker      =  8999
+--- GameObject_SwapObjectReferences.GameObject   =  9999</pre>
+M.hook_priority = {
     DeleteObject = {
         GameObject = -9999,
         NavManager = 4999,
@@ -129,4 +129,4 @@ dont_lock = false;
 
 debugprint("_config Loaded");
 
-return config;
+return M;

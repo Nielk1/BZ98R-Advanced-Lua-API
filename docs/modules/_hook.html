@@ -32,7 +32,7 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_HookResult">Class HookResult </a></li>
 </ul>
 
 
@@ -65,7 +65,7 @@
 <p>BZ98R LUA Extended API Hook.</p>
 <p>
 <p> Event hook for event observer pattern.
-<p> Dependencies: <a href="../modules/_utility.html#">_utility</a></p>
+'</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local hook = require(&quot;_hook&quot;);
@@ -112,52 +112,56 @@ end, 9999)
     </ul>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Class_HookResult">Class HookResult </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#hook.GetTable">hook.GetTable ()</a></td>
+	<td class="name" nowrap><a href="#HookResult:GetTable">HookResult:GetTable ()</a></td>
 	<td class="summary">Table of all hooks.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.isresult">hook.isresult (object)</a></td>
+	<td class="name" nowrap><a href="#HookResult:isresult">HookResult:isresult (object)</a></td>
 	<td class="summary">Is this object an instance of HookResult?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.AbortResult">hook.AbortResult (...)</a></td>
+	<td class="name" nowrap><a href="#HookResult:AbortResult">HookResult:AbortResult (...)</a></td>
 	<td class="summary">Create an Abort HookResult</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.WrapResult">hook.WrapResult (...)</a></td>
+	<td class="name" nowrap><a href="#HookResult:WrapResult">HookResult:WrapResult (...)</a></td>
 	<td class="summary">Create an basic HookResult
-<p> This wraps a return value similarly to <a href="../modules/_hook.html#hook.AbortResult">AbortResult</a> and
+<p> This wraps a return value similarly to `_hook.AbortResult` and
  can be used optionally to wrap return values.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.Add">hook.Add (event, identifier, func[, priority=0])</a></td>
+	<td class="name" nowrap><a href="#HookResult:Add">HookResult:Add (event, identifier, func[, priority])</a></td>
 	<td class="summary">Add a hook to listen to the specified event.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.AddSaveLoad">hook.AddSaveLoad (identifier[, save[, load]])</a></td>
+	<td class="name" nowrap><a href="#HookResult:Remove">HookResult:Remove (event, identifier)</a></td>
+	<td class="summary">Removes the hook with the given identifier.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#HookResult:AddSaveLoad">HookResult:AddSaveLoad (identifier[, save[, load]])</a></td>
 	<td class="summary">Add a hook to listen to the Save and Load event.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.RemoveSaveLoad">hook.RemoveSaveLoad (identifier)</a></td>
+	<td class="name" nowrap><a href="#HookResult:RemoveSaveLoad">HookResult:RemoveSaveLoad (identifier)</a></td>
 	<td class="summary">Removes the Save and Load hooks with the given identifier.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.CallSave">hook.CallSave ()</a></td>
+	<td class="name" nowrap><a href="#HookResult:CallSave">HookResult:CallSave ()</a></td>
 	<td class="summary">Calls hooks associated with Save.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.CallLoad">hook.CallLoad (SaveData)</a></td>
+	<td class="name" nowrap><a href="#HookResult:CallLoad">HookResult:CallLoad ()</a></td>
 	<td class="summary">Calls hooks associated with Load.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.CallAllNoReturn">hook.CallAllNoReturn (event, ...)</a></td>
+	<td class="name" nowrap><a href="#HookResult:CallAllNoReturn">HookResult:CallAllNoReturn (event, ...)</a></td>
 	<td class="summary">Calls hooks associated with the hook name ignoring any return values.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#hook.CallAllPassReturn">hook.CallAllPassReturn (event, ...)</a></td>
+	<td class="name" nowrap><a href="#HookResult:CallAllPassReturn">HookResult:CallAllPassReturn (event, ...)</a></td>
 	<td class="summary">Calls hooks associated with the hook name passing each return to the next.</td>
 	</tr>
 </table>
@@ -166,12 +170,12 @@ end, 9999)
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Class_HookResult"></a>Class HookResult </h2>
 
     <dl class="function">
     <dt>
-    <a name = "hook.GetTable"></a>
-    <strong>hook.GetTable ()</strong>
+    <a name = "HookResult:GetTable"></a>
+    <strong>HookResult:GetTable ()</strong>
     </dt>
     <dd>
     Table of all hooks.
@@ -185,8 +189,8 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.isresult"></a>
-    <strong>hook.isresult (object)</strong>
+    <a name = "HookResult:isresult"></a>
+    <strong>HookResult:isresult (object)</strong>
     </dt>
     <dd>
     Is this object an instance of HookResult?
@@ -203,7 +207,7 @@ end, 9999)
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -212,8 +216,8 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.AbortResult"></a>
-    <strong>hook.AbortResult (...)</strong>
+    <a name = "HookResult:AbortResult"></a>
+    <strong>HookResult:AbortResult (...)</strong>
     </dt>
     <dd>
     Create an Abort HookResult
@@ -223,14 +227,14 @@ end, 9999)
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">...</span>
-         Return values passed from hook function
+         any Return values passed from hook function
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">HookResult</span></span>
+           <span class="types"><a class="type" href="../modules/_hook.html#HookResult">HookResult</a></span>
 
     </ol>
 
@@ -239,15 +243,15 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.WrapResult"></a>
-    <strong>hook.WrapResult (...)</strong>
+    <a name = "HookResult:WrapResult"></a>
+    <strong>HookResult:WrapResult (...)</strong>
     </dt>
     <dd>
     Create an basic HookResult
-<p> This wraps a return value similarly to <a href="../modules/_hook.html#hook.AbortResult">AbortResult</a> and
+<p> This wraps a return value similarly to `_hook.AbortResult` and
  can be used optionally to wrap return values.  This is primarily used internally
  to wrap the prior return value to be passed as the next Parameter in
- <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a> based event triggers as event
+ `_hook.CallAllPassReturn` based event triggers as event
  handler return values are auto-unwrapped by the event handler if wrapping is
  detected but process fine if unwrapped.
 
@@ -256,24 +260,29 @@ end, 9999)
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">...</span>
-         Return values passed from hook function
+         any Return values passed from hook function
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">HookResult</span></span>
+           <span class="types"><a class="type" href="../modules/_hook.html#HookResult">HookResult</a> or <span class="type">nil</span></span>
 
     </ol>
 
 
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/_hook.html#HookResult:AbortResult">_hook.AbortResult</a></li>
+         <li><a href="../modules/_hook.html#HookResult:CallAllPassReturn">_hook.CallAllPassReturn</a></li>
+    </ul>
 
 
 </dd>
     <dt>
-    <a name = "hook.Add"></a>
-    <strong>hook.Add (event, identifier, func[, priority=0])</strong>
+    <a name = "HookResult:Add"></a>
+    <strong>HookResult:Add (event, identifier, func[, priority])</strong>
     </dt>
     <dd>
     Add a hook to listen to the specified event.
@@ -297,7 +306,7 @@ end, 9999)
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">number</span></span>
          Higher numbers are higher priority
-         (<em>default</em> 0)
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -307,8 +316,34 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.AddSaveLoad"></a>
-    <strong>hook.AddSaveLoad (identifier[, save[, load]])</strong>
+    <a name = "HookResult:Remove"></a>
+    <strong>HookResult:Remove (event, identifier)</strong>
+    </dt>
+    <dd>
+    Removes the hook with the given identifier.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Event to be hooked
+        </li>
+        <li><span class="parameter">identifier</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Identifier for this hook observer
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "HookResult:AddSaveLoad"></a>
+    <strong>HookResult:AddSaveLoad (identifier[, save[, load]])</strong>
     </dt>
     <dd>
     Add a hook to listen to the Save and Load event.
@@ -339,8 +374,8 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.RemoveSaveLoad"></a>
-    <strong>hook.RemoveSaveLoad (identifier)</strong>
+    <a name = "HookResult:RemoveSaveLoad"></a>
+    <strong>HookResult:RemoveSaveLoad (identifier)</strong>
     </dt>
     <dd>
     Removes the Save and Load hooks with the given identifier.
@@ -361,8 +396,8 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.CallSave"></a>
-    <strong>hook.CallSave ()</strong>
+    <a name = "HookResult:CallSave"></a>
+    <strong>HookResult:CallSave ()</strong>
     </dt>
     <dd>
     Calls hooks associated with Save.
@@ -376,20 +411,14 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.CallLoad"></a>
-    <strong>hook.CallLoad (SaveData)</strong>
+    <a name = "HookResult:CallLoad"></a>
+    <strong>HookResult:CallLoad ()</strong>
     </dt>
     <dd>
     Calls hooks associated with Load.
 
     </ul>
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">SaveData</span>
-
-        </li>
-    </ul>
 
 
 
@@ -397,8 +426,8 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.CallAllNoReturn"></a>
-    <strong>hook.CallAllNoReturn (event, ...)</strong>
+    <a name = "HookResult:CallAllNoReturn"></a>
+    <strong>HookResult:CallAllNoReturn (event, ...)</strong>
     </dt>
     <dd>
     Calls hooks associated with the hook name ignoring any return values.
@@ -412,14 +441,14 @@ end, 9999)
          Event to be hooked
         </li>
         <li><span class="parameter">...</span>
-         Parameters passed to every hooked function
+         any Parameters passed to every hooked function
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span> or <span class="type">nil</span></span>
         Return true if stopped early, else nil
     </ol>
 
@@ -428,8 +457,8 @@ end, 9999)
 
 </dd>
     <dt>
-    <a name = "hook.CallAllPassReturn"></a>
-    <strong>hook.CallAllPassReturn (event, ...)</strong>
+    <a name = "HookResult:CallAllPassReturn"></a>
+    <strong>HookResult:CallAllPassReturn (event, ...)</strong>
     </dt>
     <dd>
     Calls hooks associated with the hook name passing each return to the next.
@@ -449,10 +478,16 @@ end, 9999)
          Event to be hooked
         </li>
         <li><span class="parameter">...</span>
-         Parameters passed to every hooked function
+         any Parameters passed to every hooked function
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">nil</span>, <a class="type" href="../modules/_hook.html#HookResult">HookResult</a> or <span class="type">any</span></span>
+        ... `nil` if no hooks are called, a `HookResult` if the chain is aborted, or the return values from the last hook function.
+    </ol>
 
 
 
@@ -465,7 +500,7 @@ end, 9999)
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

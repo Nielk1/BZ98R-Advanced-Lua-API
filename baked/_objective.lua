@@ -2,21 +2,21 @@
 ---
 --- Note that this module cannot manage manually created objectives.
 ---
---- Dependencies: @{_hook}
---- @module _objective
+--- @module '_objective'
 --- @author John "Nielk1" Klein
---- @alias _objective
 --- @usage local objective = require("_objective");
 --- 
 --- @todo write example usage
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_objective Loading");
 
 local hook = require("_hook");
 
-local _objective = {};
+local M = {};
 
 local allObjectives = {};
 local nextId = 1;
@@ -26,9 +26,8 @@ local cmpObj = function(a, b)
 end
 
 local reorderObjectives = function()
-    --- @diagnostic disable: deprecated
+    --- @diagnostic disable-next-line: deprecated
     ClearObjectives();
-    --- @diagnostic enable: deprecated
 
     local stable = {};
     for i, v in pairs(allObjectives) do
@@ -36,9 +35,8 @@ local reorderObjectives = function()
     end
     table.sort(stable, cmpObj);
     for i, v in ipairs(stable) do
-        --- @diagnostic disable: deprecated
+        --- @diagnostic disable-next-line: deprecated
         AddObjective(v.name, v.color, v.duration, v.text);
-        --- @diagnostic enable: deprecated
     end
 end
 
@@ -48,8 +46,8 @@ end
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
 --- @param position? number Sort position of the objective. Defaults to the next available ID.
---- @param persistant? bool If true, the objective will not be removed when the objectives are cleared. Defaults to false.
-function _objective.UpdateObjective(name, color, duration, text, position, persistant)
+--- @param persistant? boolean If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+function M.UpdateObjective(name, color, duration, text, position, persistant)
     if allObjectives[name] then
         local o = allObjectives[name];
         allObjectives[name] = {
@@ -60,13 +58,14 @@ function _objective.UpdateObjective(name, color, duration, text, position, persi
             position = position ~= nil and position or o.position,
             persistant = persistant ~= nil and persistant or o.persistant
         }
+        --- @diagnostic disable-next-line: deprecated
         UpdateObjective(name, color, duration, text);
         reorderObjectives();
     end
 end
 
 --- Clear all objectives except for persistant ones.
-function _objective.ClearObjectives()
+function M.ClearObjectives()
     nextId = 1;
     local p = {};
     for i, v in pairs(allObjectives) do
@@ -84,8 +83,8 @@ end
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
 --- @param position? number Sort position of the objective. Defaults to the next available ID.
---- @param persistant? bool If true, the objective will not be removed when the objectives are cleared. Defaults to false.
-function _objective.AddObjective(name, color, duration, text, position, persistant)
+--- @param persistant? boolean If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+function M.AddObjective(name, color, duration, text, position, persistant)
     --Resort all objectives
     if not allObjectives[name] then
         allObjectives[name] = {
@@ -103,15 +102,16 @@ end
 
 --- Removes the objective message with the given file name. Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
 --- @param name string
-function _objective.RemoveObjective(name)
+function M.RemoveObjective(name)
     allObjectives[name] = nil;
+    --- @diagnostic disable-next-line: deprecated
     RemoveObjective(name);
 end
 
 --- Set the objective position of the given name. If no objective exists with that name, it does nothing.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
 --- @param position number Sort position of the objective.
-function _objective.SetObjectivePosition(name, position)
+function M.SetObjectivePosition(name, position)
     if allObjectives[name] then
         allObjectives[name].position = position;
         reorderObjectives();
@@ -120,8 +120,8 @@ end
 
 --- Get the objective position of the given name. If no objective exists with that name, it does nothing.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @treturn number position Sort position of the objective.
-function _objective.GetObjectivePosition(name)
+--- @return number? position Sort position of the objective.
+function M.GetObjectivePosition(name)
     if allObjectives[name] then
         return allObjectives[name].position;
     end
@@ -134,20 +134,17 @@ end
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
 --- @param position? number Sort position of the objective. Defaults to the removed objective's position or next available ID.
---- @param persistant? bool If true, the objective will not be removed when the objectives are cleared. Defaults to false.
-function _objective.ReplaceObjective(oldname, name, color, duration, text, position, persistant)
+--- @param persistant? boolean If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+function M.ReplaceObjective(oldname, name, color, duration, text, position, persistant)
     local obj = allObjectives[name];
-    _objective.RemoveObjective(oldname);
+    M.RemoveObjective(oldname);
     if obj then
-        _objective.UpdateObjective(name, color, duration, text, obj.position, persistant); -- update if it exists or do nothing
-        _objective.AddObjective(name, color, duration, text, obj.position, persistant); -- add if it doesn't exist
+        M.UpdateObjective(name, color, duration, text, obj.position, persistant); -- update if it exists or do nothing
+        M.AddObjective(name, color, duration, text, obj.position, persistant); -- add if it doesn't exist
     else
-        _objective.AddObjective(name, color, duration, text, position, persistant);
+        M.AddObjective(name, color, duration, text, position, persistant);
     end
 end
-
-
-
 
 -------------------------------------------------------------------------------
 -- Objective - Core
@@ -164,4 +161,4 @@ end);
 
 debugprint("_objective Loaded");
 
-return _objective;
+return M;

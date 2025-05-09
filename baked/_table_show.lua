@@ -9,7 +9,7 @@
 --- Modified slightly by John "Nielk1" Klein for LDoc.
 ---
 --- @author Julio Manuel Fernandez-Diaz
---- @module _table_show
+--- @module '_table_show'
 
 --- Convert table to string representation.
 ---

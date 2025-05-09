@@ -2,8 +2,7 @@
 ---
 --- Event hook for event observer pattern.
 ---
---- Dependencies: @{_utility}
---- @module _hook
+--- @module '_hook'
 --- @author John "Nielk1" Klein
 --- @usage local hook = require("_hook");
 --- 
@@ -42,62 +41,74 @@
 --     end
 -- end, 9999)
 
+--- @diagnostic disable-next-line: undefined-global
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 
+--- @diagnostic disable-next-line: undefined-global
 local debugprint = debugprint or function(...) end;
 
 debugprint("_hook Loading");
 
 local utility = require("_utility");
 
-local hook = {};
+local M = {};
 
-hook.Hooks = {};
-hook.HookLookup = {};
+M.Hooks = {};
+M.HookLookup = {};
 
-hook.SaveLoadHooks = {};
+M.SaveLoadHooks = {};
+
+--- @class HookResult
+--- @field Abort boolean Flag to abort the hook chain.
+--- @field Return any[] Return values passed from hook function.
+--- @field __type string Type of the object, used for type checking. "HookResult"
 
 --- Table of all hooks.
-function hook.GetTable() return hook.Hooks end
+function M.GetTable() return M.Hooks end
 
-hookresult_meta = {};
+M_MT = {};
 
 --hookresult_meta.__index = function(table, key)
 --    return nil;
 --end
-hookresult_meta.__newindex = function(dtable, key, value)
+M_MT.__newindex = function(dtable, key, value)
     error("Attempt to update a read-only table.", 2)
 end
 
 --- Is this object an instance of HookResult?
 --- @param object any Object in question
---- @treturn bool
-function hook.isresult(object)
+--- @return boolean
+function M.isresult(object)
     return (type(object) == "table" and object.__type == "HookResult");
 end
 
 --- Create an Abort HookResult
---- @param ... Return values passed from hook function
---- @treturn HookResult
-function hook.AbortResult(...)
+--- @param ... any Return values passed from hook function
+--- @return HookResult
+--- @function _hook.AbortResult
+function M.AbortResult(...)
     return setmetatable({
         Abort = true,
         Return = { ... },
         __type = "HookResult"
-    }, hookresult_meta);
+    }, M_MT);
 end
 
 --- Create an basic HookResult
---
--- This wraps a return value similarly to @{_hook.AbortResult|AbortResult} and
--- can be used optionally to wrap return values. This is primarily used internally
--- to wrap the prior return value to be passed as the next Parameter in
--- @{_hook.CallAllPassReturn|CallAllPassReturn} based event triggers as event
--- handler return values are auto-unwrapped by the event handler if wrapping is
--- detected but process fine if unwrapped.
--- @param ... Return values passed from hook function
--- @treturn HookResult
-function hook.WrapResult(...)
+---
+--- This wraps a return value similarly to `_hook.AbortResult` and
+--- can be used optionally to wrap return values. This is primarily used internally
+--- to wrap the prior return value to be passed as the next Parameter in
+--- `_hook.CallAllPassReturn` based event triggers as event
+--- handler return values are auto-unwrapped by the event handler if wrapping is
+--- detected but process fine if unwrapped.
+--- @see _hook.AbortResult
+--- @see _hook.CallAllPassReturn
+--- @param ... any Return values passed from hook function
+--- @return HookResult?
+--- @function _hook.WrapResult
+function M.WrapResult(...)
+    --- @diagnostic disable-next-line: deprecated
     local vargs = table.pack( ... );
     local cvar = vargs.n;--select('#', ...);
     if cvar == 0 then
@@ -105,17 +116,17 @@ function hook.WrapResult(...)
     end
     if cvar == 1 then
         local var1 = vargs[1];
-        if hook.isresult(var1) then
+        if M.isresult(var1) then
             return var1;
         end
     end
     return setmetatable({
         Return = { ... },
         __type = "HookResult"
-    }, hookresult_meta);
+    }, M_MT);
 end
 
-function sort_handlers(item1, item2)
+local function sort_handlers(item1, item2)
     if item1.priority == item1.priority then
         return item1.identifier < item2.identifier;
     end
@@ -126,59 +137,62 @@ end
 --- @param event string Event to be hooked
 --- @param identifier string Identifier for this hook observer
 --- @param func function Function to be executed
---- @tparam[opt=0] number priority Higher numbers are higher priority
-function hook.Add( event, identifier, func, priority )
+--- @param priority? number Higher numbers are higher priority
+--- @function _hook.Add
+function M.Add( event, identifier, func, priority )
     if not utility.isstring(event) then error("Parameter event must be a string."); end
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if not utility.isfunction(func) then error("Parameter func must be a function."); end
     if priority == nil or not utility.isnumber(priority) then priority = 0; end
 
+    --- @diagnostic disable-next-line: undefined-global
     priority = (_api_hook_priority_override and _api_hook_priority_override[event]) and _api_hook_priority_override[event][identifier] or priority;
 
-    if (hook.Hooks[ event ] == nil) then
-        hook.Hooks[ event ] = {};
+    if (M.Hooks[ event ] == nil) then
+        M.Hooks[ event ] = {};
     end
-    if (hook.HookLookup[ event ] == nil) then
-        hook.HookLookup[ event ] = {};
+    if (M.HookLookup[ event ] == nil) then
+        M.HookLookup[ event ] = {};
     end
     
-    if (hook.HookLookup[ event ][ identifier ] ~= nil) then
-        local found = hook.HookLookup[ event ][ identifier ];
-        hook.HookLookup[ event ][ identifier ] = nil;
+    if (M.HookLookup[ event ][ identifier ] ~= nil) then
+        local found = M.HookLookup[ event ][ identifier ];
+        M.HookLookup[ event ][ identifier ] = nil;
 		
 		-- delete the item from the sorted array
-		for i, v in ipairs(hook.Hooks[ event ]) do
+		for i, v in ipairs(M.Hooks[ event ]) do
 			if v.identifier == identifier then
-				table.remove(hook.Hooks[ event ], i)
+				table.remove(M.Hooks[ event ], i)
 				break;
 			end
 		end
     end
 
     local new_handler =  { identifier = identifier, priority = priority, func = func };
-    hook.HookLookup[ event ][ identifier ] = new_handler; -- store in lookup strong-table
-    table.insert(hook.Hooks[ event ], new_handler); -- store in priority weak-table
-    table.sort(hook.Hooks[ event ], sort_handlers);
+    M.HookLookup[ event ][ identifier ] = new_handler; -- store in lookup strong-table
+    table.insert(M.Hooks[ event ], new_handler); -- store in priority weak-table
+    table.sort(M.Hooks[ event ], sort_handlers);
   
     debugprint("Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
 end
 
--- Removes the hook with the given identifier.
--- @tparam string event Event to be hooked
--- @tparam string identifier Identifier for this hook observer
-function hook.Remove( event, name )
+--- Removes the hook with the given identifier.
+--- @param event string Event to be hooked
+--- @param identifier string Identifier for this hook observer
+--- @function _hook.Remove
+function M.Remove( event, identifier )
     if not utility.isstring(event) then error("Parameter event must be a string."); end
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
 
-    if (hook.HookLookup[ event ][ identifier ] ~= nil) then
+    if (M.HookLookup[ event ][ identifier ] ~= nil) then
         -- deal with existing hook before replacing it?
-        local found = hook.HookLookup[ event ][ identifier ];
-        hook.HookLookup[ event ][ identifier ] = nil;
+        local found = M.HookLookup[ event ][ identifier ];
+        M.HookLookup[ event ][ identifier ] = nil;
 		
 		-- delete the item from the sorted array
-		for i, v in ipairs(hook.Hooks[ event ]) do
+		for i, v in ipairs(M.Hooks[ event ]) do
 			if v.identifier == identifier then
-				table.remove(hook.Hooks[ event ], i)
+				table.remove(M.Hooks[ event ], i)
 				break;
 			end
 		end
@@ -191,37 +205,40 @@ end
 --- @param identifier string Identifier for this hook observer
 --- @param save? function Function to be executed for Save
 --- @param load? function Function to be executed for Load
-function hook.AddSaveLoad( identifier, save, load )
+--- @function _hook.AddSaveLoad
+function M.AddSaveLoad( identifier, save, load )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if save == nil and load == nil then error("At least one of Parameters save or load must be supplied."); end
     if save ~= nil and not utility.isfunction(save) then error("Parameter save must be a function."); end
     if load ~= nil and not utility.isfunction(load) then error("Parameter load must be a function."); end
     
-    if (hook.SaveLoadHooks[ identifier ] == nil) then
-        hook.SaveLoadHooks[identifier ] = {};
+    if (M.SaveLoadHooks[ identifier ] == nil) then
+        M.SaveLoadHooks[identifier ] = {};
     end
 
-    hook.SaveLoadHooks[ identifier ]['Save'] = save;
-    hook.SaveLoadHooks[ identifier ]['Load'] = load;
+    M.SaveLoadHooks[ identifier ]['Save'] = save;
+    M.SaveLoadHooks[ identifier ]['Load'] = load;
     
     debugprint("Added Save/Load hooks for " .. identifier);
 end
 
 --- Removes the Save and Load hooks with the given identifier.
 --- @param identifier string Identifier for this hook observer
-function hook.RemoveSaveLoad( identifier )
+--- @function _hook.RemoveSaveLoad
+function M.RemoveSaveLoad( identifier )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
-    if ( not hook.SaveLoadHooks[ identifier ] ) then return; end
-    hook.SaveLoadHooks[ identifier ] = nil;
+    if ( not M.SaveLoadHooks[ identifier ] ) then return; end
+    M.SaveLoadHooks[ identifier ] = nil;
     
     debugprint("Removed Save/Load hooks for " .. identifier);
 end
 
 --- Calls hooks associated with Save.
-function hook.CallSave()
-    if ( hook.SaveLoadHooks ~= nil ) then
+--- @function _hook.CallSave
+function M.CallSave()
+    if ( M.SaveLoadHooks ~= nil ) then
         local ret = {};
-        for k, v in pairs( hook.SaveLoadHooks ) do 
+        for k, v in pairs( M.SaveLoadHooks ) do 
             if v.Save ~= nil and utility.isfunction(v.Save) then
                 ret[k] = {v.Save()};
             else
@@ -234,10 +251,11 @@ function hook.CallSave()
 end
 
 --- Calls hooks associated with Load.
-function hook.CallLoad(SaveData)
-    if ( hook.SaveLoadHooks ~= nil ) then
+--- @function _hook.CallLoad
+function M.CallLoad(SaveData)
+    if ( M.SaveLoadHooks ~= nil ) then
         local ret = {};
-        for k, v in pairs( hook.SaveLoadHooks ) do
+        for k, v in pairs( M.SaveLoadHooks ) do
             if v.Load ~= nil and utility.isfunction(v.Load) then
                 v.Load(table.unpack(SaveData[k]));
             end
@@ -247,34 +265,24 @@ function hook.CallLoad(SaveData)
     return
 end
 
-local range = function(from, to, step)
-  step = step or 1
-  return function(_, lastvalue)
-    local nextvalue = lastvalue + step
-    if step > 0 and nextvalue <= to or step < 0 and nextvalue >= to or
-       step == 0
-    then
-      return nextvalue
-    end
-  end, nil, from - step
-end
-
-
 --- Calls hooks associated with the hook name ignoring any return values.
+--- @todo Consider redoing the return value as nothing uses it right now.
 --- @param event string Event to be hooked
---- @param ... Parameters passed to every hooked function
---- @treturn bool Return true if stopped early, else nil
-function hook.CallAllNoReturn( event, ... )
-    local HookTable = hook.Hooks[ event ]
+--- @param ... any Parameters passed to every hooked function
+--- @return boolean? Return true if stopped early, else nil
+--- @function _hook.CallAllNoReturn
+function M.CallAllNoReturn( event, ... )
+    local HookTable = M.Hooks[ event ]
     if ( HookTable ~= nil ) then
         for i, v in ipairs(HookTable) do
 			local lastreturn = { v.func( ... ) };
 			-- ignore the result value and just check Abort flag
-			if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) and lastreturn[1].Abort then
-				break;
+			if select('#', lastreturn) == 1 and M.isresult(lastreturn[1]) and lastreturn[1].Abort then
+				return true;
 			end
         end
     end
+    return nil;
 end
 
 -- @todo this might be able to be replaced using table.pack to get accurate length, but that might waste speed/memory
@@ -294,15 +302,17 @@ end
 --- the AbortResult function. The best action here is to nil check and test your last
 --- Parameter with hook.isresult before processing it.
 --- @param event string Event to be hooked
---- @param ... Parameters passed to every hooked function
-function hook.CallAllPassReturn( event, ... )
-    local HookTable = hook.Hooks[ event ]
+--- @param ... any Parameters passed to every hooked function
+--- @return nil|HookResult|any ... `nil` if no hooks are called, a `HookResult` if the chain is aborted, or the return values from the last hook function.
+--- @function _hook.CallAllPassReturn
+function M.CallAllPassReturn( event, ... )
+    local HookTable = M.Hooks[ event ]
     local lastreturn = nil;
     if ( HookTable ~= nil ) then
         for i, v in ipairs(HookTable) do
-			lastreturn = { v.func(appendvargs(hook.WrapResult(lastreturn), ... )) };
+			lastreturn = { v.func(appendvargs(M.WrapResult(lastreturn), ... )) };
 			-- preserve the Abort flag, then unwrap the result
-			if select('#', lastreturn) == 1 and hook.isresult(lastreturn[1]) then
+			if select('#', lastreturn) == 1 and M.isresult(lastreturn[1]) then
 				local abort = lastreturn[1].Abort;
 				lastreturn = lastreturn[1].Return;
 				if abort then
@@ -319,4 +329,4 @@ end
 
 debugprint("_hook Loaded");
 
-return hook;
+return M;

@@ -33,6 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_StateMachineIter">Class StateMachineIter </a></li>
 <li><a href="#StateMachineIter___Core">StateMachineIter - Core </a></li>
 </ul>
 
@@ -66,7 +67,7 @@
 <p>BZ98R LUA Extended API StateMachineIter.</p>
 <p>
 <p> State Machine and State Machine Iterator for serial event sequences across game turns.
-<p> Dependencies: <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_config.html#">_config</a>, <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_customsavetype.html#">_customsavetype</a></p>
+'</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local statemachine = require(&quot;_statemachine&quot;);
@@ -147,10 +148,9 @@ end);
 	<td class="name" nowrap><a href="#isstatemachineiter">isstatemachineiter (object)</a></td>
 	<td class="summary">Is this object an instance of StateMachineIter?</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CreateStateMachineIter">CreateStateMachineIter (name, timer, target_time, state_key, values)</a></td>
-	<td class="summary">Create StateMachineIter</td>
-	</tr>
+</table>
+<h2><a href="#Class_StateMachineIter">Class StateMachineIter </a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#StateMachineIter.run">StateMachineIter.run (self)</a></td>
 	<td class="summary">Run StateMachineIter.</td>
@@ -164,15 +164,15 @@ end);
 	<td class="summary">Switch StateMachineIter State.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Create">Create (name, ...)</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter:Create">StateMachineIter:Create (name, ...)</a></td>
 	<td class="summary">Creates an StateMachineIter Template with the given indentifier.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Start">Start (name, state_key, init)</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter:Start">StateMachineIter:Start (name, state_key, init)</a></td>
 	<td class="summary">Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#SleepCalls">SleepCalls (calls, next_state[, early_exit])</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter:SleepCalls">StateMachineIter:SleepCalls (calls, next_state[, early_exit])</a></td>
 	<td class="summary">Wait a set period of time on this state.</td>
 	</tr>
 	<tr>
@@ -180,7 +180,7 @@ end);
 	<td class="summary">Check if a set period of time has passed.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#SleepSeconds">SleepSeconds (seconds, next_state[, early_exit])</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter:SleepSeconds">StateMachineIter:SleepSeconds (seconds, next_state[, early_exit])</a></td>
 	<td class="summary">Wait a set period of time on this state.</td>
 	</tr>
 </table>
@@ -226,7 +226,7 @@ end);
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -234,44 +234,10 @@ end);
 
 
 </dd>
-    <dt>
-    <a name = "CreateStateMachineIter"></a>
-    <strong>CreateStateMachineIter (name, timer, target_time, state_key, values)</strong>
-    </dt>
-    <dd>
-    Create StateMachineIter
+</dl>
+    <h2 class="section-header "><a name="Class_StateMachineIter"></a>Class StateMachineIter </h2>
 
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         StateMachineIter template
-        </li>
-        <li><span class="parameter">timer</span>
-            <span class="types"><span class="type">int</span></span>
-         Timer's value, nil for not set
-        </li>
-        <li><span class="parameter">target_time</span>
-            <span class="types"><span class="type">int</span></span>
-         TargetTurn's value, nil for not set
-        </li>
-        <li><span class="parameter">state_key</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Current state, string name or integer index if state machine is ordered
-        </li>
-        <li><span class="parameter">values</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         Table of values embeded in the StateMachineIter
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
+    <dl class="function">
     <dt>
     <a name = "StateMachineIter.run"></a>
     <strong>StateMachineIter.run (self)</strong>
@@ -284,7 +250,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateMachineIter</span></span>
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
          FuncArrayIter instance
         </li>
     </ul>
@@ -307,7 +273,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateMachineIter</span></span>
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
          StateMachineIter instance
         </li>
     </ul>
@@ -329,7 +295,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateMachineIter</span></span>
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
          StateMachineIter instance
         </li>
         <li><span class="parameter">key</span>
@@ -344,8 +310,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "Create"></a>
-    <strong>Create (name, ...)</strong>
+    <a name = "StateMachineIter:Create"></a>
+    <strong>StateMachineIter:Create (name, ...)</strong>
     </dt>
     <dd>
     Creates an StateMachineIter Template with the given indentifier.
@@ -361,7 +327,7 @@ end);
          Name of the StateMachineIter Template (string)
         </li>
         <li><span class="parameter">...</span>
-         State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
+         any State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
         </li>
     </ul>
 
@@ -371,8 +337,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "Start"></a>
-    <strong>Start (name, state_key, init)</strong>
+    <a name = "StateMachineIter:Start"></a>
+    <strong>StateMachineIter:Start (name, state_key, init)</strong>
     </dt>
     <dd>
     Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
@@ -400,8 +366,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "SleepCalls"></a>
-    <strong>SleepCalls (calls, next_state[, early_exit])</strong>
+    <a name = "StateMachineIter:SleepCalls"></a>
+    <strong>StateMachineIter:SleepCalls (calls, next_state[, early_exit])</strong>
     </dt>
     <dd>
     Wait a set period of time on this state.
@@ -411,7 +377,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">calls</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          How many calls to wait
         </li>
         <li><span class="parameter">next_state</span>
@@ -444,7 +410,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateMachineIter</span></span>
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
          StateMachineIter instance
         </li>
         <li><span class="parameter">seconds</span>
@@ -457,7 +423,7 @@ end);
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
         True if the time is up
     </ol>
 
@@ -466,8 +432,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "SleepSeconds"></a>
-    <strong>SleepSeconds (seconds, next_state[, early_exit])</strong>
+    <a name = "StateMachineIter:SleepSeconds"></a>
+    <strong>StateMachineIter:SleepSeconds (seconds, next_state[, early_exit])</strong>
     </dt>
     <dd>
     Wait a set period of time on this state.
@@ -513,7 +479,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateMachineIter</span></span>
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
          instance
         </li>
     </ul>
@@ -573,7 +539,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

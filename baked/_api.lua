@@ -7,11 +7,13 @@
 -- @module _api
 -- @author John "Nielk1" Klein
 
+--- @diagnostic disable: undefined-global
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 SetLabel = SetLabel or SettLabel; -- BZ1.5 compatibility
 
 local debugprint = debugprint or function(...) end;
 local traceprint = traceprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_api Loading");
 
@@ -183,10 +185,6 @@ local customsavetype = require("_customsavetype");
 -- @tparam ... parameters
 -- @tparam[opt] HookResult priorResult prior event handler's result
 
-
-
-
-
 -------------------------------------------------------------------------------
 -- Enums
 -------------------------------------------------------------------------------
@@ -215,6 +213,7 @@ function SimplifyForSave(...)
             else
                 if customsavetype.CustomSavableTypes[v.__type] ~= nil then
                     local specialTypeTable = {};
+                    if not CustomTypeMap then error("CustomTypeMap is nil") end
                     local typeIndex = CustomTypeMap[v.__type];
                     debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
                     specialTypeTable["*custom_type"] = typeIndex;
@@ -244,6 +243,7 @@ function DeSimplifyForLoad(...)
         local v = select(k,...); -- get Kth Parameter, store in v
         if utility.istable(v) then -- it's a table, start special logic
             if v["*custom_type"] ~= nil then
+                if not CustomTypeMap then error("CustomTypeMap is nil") end
                 local typeName = CustomTypeMap[v["*custom_type"]];
                 local typeObj = customsavetype.CustomSavableTypes[typeName];
                 if typeObj.Load ~= nil then
@@ -429,9 +429,9 @@ function Update(dtime)
 end
 
 --- Called when a player joins the game world.
---- @param id int DPID number for this player
+--- @param id integer DPID number for this player
 --- @param name string name for this player
---- @param team int Team number for this player
+--- @param team integer Team number for this player
 --- @local
 function CreatePlayer(id, name, team)
     debugprint("_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
@@ -440,9 +440,9 @@ function CreatePlayer(id, name, team)
 end
 
 --- Called when a player joins the game world.
---- @param id int DPID number for this player
+--- @param id integer DPID number for this player
 --- @param name string name for this player
---- @param team int Team number for this player
+--- @param team integer Team number for this player
 --- @local
 function AddPlayer(id, name, team)
     debugprint("_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
@@ -451,9 +451,9 @@ function AddPlayer(id, name, team)
 end
 
 --- Called when a player leaves the game world.
---- @param id int DPID number for this player
+--- @param id integer DPID number for this player
 --- @param name string name for this player
---- @param team int Team number for this player
+--- @param team integer Team number for this player
 --- @local
 function DeletePlayer(id, name, team)
     debugprint("_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
@@ -476,7 +476,7 @@ function Command(command, ...)
 end
 
 --- Receive
---- @param from int x
+--- @param from integer x
 --- @param type string x
 --- @tparam ... data
 --- @local

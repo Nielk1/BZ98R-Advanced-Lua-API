@@ -2,11 +2,13 @@
 ---
 --- Repairs lua loader to look in mod paths for DLL or LUA modules with names longer than 15 characters.
 ---
---- @module _requirefix
+--- @module '_requirefix'
 --- @author John "Nielk1" Klein
 --- @usage require("_requirefix").addmod("12345").addmod("67890");
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_requirefix Loading");
 

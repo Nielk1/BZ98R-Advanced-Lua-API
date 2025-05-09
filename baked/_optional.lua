@@ -2,9 +2,8 @@
 ---
 --- Load a lua module optionally.
 ---
---- @module _optional
+--- @module '_optional'
 --- @author John "Nielk1" Klein
---- @alias _optional
 --- @usage local optional = require("_optional");
 --- local missingSuccess, missingMod = optional("_missing");
 --- missingMod = missingSuccess and missingMod or nil;
@@ -13,19 +12,21 @@
 --- missingMod2 = missing2Success and missingMod2 or nil;
 
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("__optional Loading");
 
-local _optional_module = {};
-local _optional_module_meta = {};
+local M = {};
+local M_MT = {};
 
-_optional_module_meta.__index = function(table, key)
+M_MT.__index = function(table, key)
     local retVal = rawget(table, key);
     if retVal ~= nil then
         return retVal; -- found in table
     end
-    return rawget(_optional_module_meta, key); -- move on to base (looking for functions)
+    return rawget(M_MT, key); -- move on to base (looking for functions)
 end
 
 local KnownFailedModules = {};
@@ -36,8 +37,8 @@ local KnownFailedModules = {};
 --- @param table table The module table itself.
 --- @param moduleName string Module name to load.
 --- @treturn boolean success True if the module loaded successfully, false if it failed.
---- @return The module return value or nil if failed
-_optional_module_meta.__call = function(table, moduleName)
+--- @return ... The module return values or error if failed
+M_MT.__call = function(table, moduleName)
     local priorError = KnownFailedModules[moduleName];
     if priorError ~= nil then
         return false, priorError;
@@ -49,7 +50,7 @@ _optional_module_meta.__call = function(table, moduleName)
     return ok, result;
 end
 
-_optional_module = setmetatable(_optional_module, _optional_module_meta);
+M = setmetatable(M, M_MT);
 
 -------------------------------------------------------------------------------
 -- Utility - Core
@@ -58,4 +59,4 @@ _optional_module = setmetatable(_optional_module, _optional_module_meta);
 
 debugprint("__optional Loaded");
 
-return _optional_module;
+return M;

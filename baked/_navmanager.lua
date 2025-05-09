@@ -2,8 +2,7 @@
 ---
 --- Manage navs
 ---
---- Dependencies: @{_config}, @{_utility}, @{_gameobject}, @{_api}, @{_hook}
---- @module _navmanager
+--- @module '_navmanager'
 --- @author John "Nielk1" Klein
 --- @usage local navmanager = require("_navmanager");
 --- 
@@ -12,14 +11,15 @@
 --- @todo Determine if network handling is needed.
 --- @todo Look into soft-loading native module that gives nav data access.
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_navmanager Loading");
 
 local config = require("_config");
 local utility = require("_utility");
 local gameobject = require("_gameobject");
-local _api = require("_api");
 local hook = require("_hook");
 
 --- Nav GameObjects swapped.
@@ -33,7 +33,7 @@ local hook = require("_hook");
 -- @tparam GameObject new GameObject instance
 -- @see _hook.Add
 
-local _navmanager = {};
+local M = {};
 
 local PendingNavs = {};
 local PendingNavsMemo = {};
@@ -42,36 +42,24 @@ local OverflowNavs = {};
 
 local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
 
---- Build an important nav and add it to the collection.
---- Important navs will push non-important navs out of the way in the list.
---- @param odf string ODF of the nav to build, if nil uses the default nav ODF
---- @param team integer Team number of the nav to build
---- @param position vector
---- @treturn GameObject The nav object that was built
---- @function _navmanager.BuildImportantNav
+--- Adds custom data to GameObject for this module.
+--- @class GameObject
+--- @field NavManager table A table containing custom data for this module.
 
 --- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
 --- @param odf string ODF of the nav to build, if nil uses the default nav ODF
 --- @param team integer Team number of the nav to build
---- @param transform matrix
---- @treturn GameObject The nav object that was built
---- @function _navmanager.BuildImportantNav
-
---- Build an important nav and add it to the collection.
---- Important navs will push non-important navs out of the way in the list.
---- @param odf string ODF of the nav to build, if nil uses the default nav ODF
---- @param team integer Team number of the nav to build
---- @param path string path name to build the nav
---- @param point? integer Path point number
---- @treturn GameObject The nav object that was built
---- @function _navmanager.BuildImportantNav
-
-function _navmanager.BuildImportantNav(odf, team, location, point)
+--- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the location is a path this is the path point index, defaults to 0.
+--- @return GameObject? nav The nav object that was built
+function M.BuildImportantNav(odf, team, location, point)
     -- @todo check params h ere, don't allow GameObject on location here, that's internal only
     --return BuildImportantNavInternal(odf, team, location, point);
 
+    --- @type GameObject?
     local nav = gameobject.BuildGameObject(odf or "apcamr", team, location, point);
+    if not nav then return nil; end -- failed to build nav
 
     nav.NavManager = { important = true; }
 
@@ -87,7 +75,7 @@ end
 
 --- What to do when empty slots exist and excess navs exist
 --- @table _navmanager.CompactionStrategy
-_navmanager.CompactionStrategy = {
+M.CompactionStrategy = {
     DoNothing = 1, -- Do nothing, leave excess navs in overflow
     ChronologicalToGap = 2, -- Excess navs inserted into gaps in order of creation
     ImportantFirstToGap = 3, -- Excess navs inserted into gaps in order of importance, then creation
@@ -97,27 +85,24 @@ _navmanager.CompactionStrategy = {
     [3] = "ImportantFirstChronologicalToGap", -- ImportantFirstChronologicalToGap
 }
 
-local CompactMode = _navmanager.CompactionStrategy.DoNothing; -- default to chronological
+local CompactMode = M.CompactionStrategy.DoNothing; -- default to chronological
 
 --- Set the compaction strategy for navs.
---- @param strategy string The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+--- @param strategy string|integer The strategy to use. See @{_navmanager.CompactionStrategy} for options.
 --- @function _navmanager.SetCompactionStrategy
-
---- Set the compaction strategy for navs.
---- @param strategy integer The strategy to use. See @{_navmanager.CompactionStrategy} for options.
---- @function _navmanager.SetCompactionStrategy
-function _navmanager.SetCompactionStrategy(strategy)
+function M.SetCompactionStrategy(strategy)
     local strat = strategy;
     if utility.isstring(strategy) then
-        strat = _navmanager.CompactionStrategy[strategy];
+        strat = M.CompactionStrategy[strategy];
+        --- @cast strat integer
     end
-    if _navmanager.CompactionStrategy[strat] == nil then error("Invalid compaction strategy: " .. tostring(strategy)); end
+    if M.CompactionStrategy[strat] == nil then error("Invalid compaction strategy: " .. tostring(strategy)); end
     CompactMode = strat;
 end
 
 --- Get the current compaction strategy for navs.
 --- @treturn integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
-function _navmanager.GetCompactionStrategy()
+function M.GetCompactionStrategy()
     return CompactMode;
 end
 
@@ -125,18 +110,18 @@ end
 --- At least 10 indexes will be iterated, even if there are no navs in those slots.
 --- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
 --- @param team integer Team number to enumerate
---- @param include_overflow? bool If true "Overflow Navs" will be included in the enumeration after the initial 10.
+--- @param include_overflow? boolean If true "Overflow Navs" will be included in the enumeration after the initial 10.
 --- @treturn integer index The index of the nav in the enumeration
 --- @treturn GameObject nav The nav object at the index
 --- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
 ---     print("Nav " .. i .. ": " .. tostring(nav));
 --- end
 --- @usage local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
-function _navmanager.AllNavGameObjects(team, include_overflow)
+function M.AllNavGameObjects(team, include_overflow)
     for slot = TeamSlot.MIN_BEACON, TeamSlot.MAX_BEACON do
         return (slot - TeamSlot.MIN_BEACON + 1), gameobject.GetTeamSlot(slot, team);
     end
-    if includeOverflow and OverflowNavs[team] then
+    if include_overflow and OverflowNavs[team] then
         for i = 1, #OverflowNavs[team] do
             return (10 + i), OverflowNavs[team][i];
         end
@@ -213,9 +198,9 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
 
             -- for now we're hard coding this, but it will be the strategy by which overflow navs are moved into open slots
             if CountOpenSlots > 0 then
-                if CompactMode == _navmanager.CompactionStrategy.DoNothing then
+                if CompactMode == M.CompactionStrategy.DoNothing then
                     NewNavOverflow = PendingNavsForTeam; -- we are set to do nothing, so we just leave the navs in overflow and make sure the new pendings are added too
-                elseif CompactMode == _navmanager.CompactionStrategy.ChronologicalToGap then
+                elseif CompactMode == M.CompactionStrategy.ChronologicalToGap then
                     -- chronological, so we just add the navs in order
                     local SlotListIndex = 1;
                     for i = 1, #PendingNavsForTeam do
@@ -228,7 +213,8 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                 else
                                     -- build a new nav in the now open slot
                                     local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
-                                                            
+                                    if not newNav then error("Failed to build nav in slot " .. tostring(OpenSlotList[SlotListIndex])); end -- failed to build nav
+
                                     -- sync properties
                                     newNav:SetObjectiveName(nav:GetObjectiveName());
                                     newNav:SetMaxHealth(nav:GetMaxHealth());
@@ -252,7 +238,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                             end
                         end
                     end
-                elseif CompactMode == _navmanager.CompactionStrategy.ImportantFirstToGap then
+                elseif CompactMode == M.CompactionStrategy.ImportantFirstToGap then
                     -- important first, so we add the important navs first, then the normal navs
 
                     -- temporary holding for overflow navs left over after first insert pass
@@ -269,6 +255,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                     else
                                         -- build a new nav in the now open slot
                                         local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                        if not newNav then error("Failed to build nav in slot " .. tostring(OpenSlotList[SlotListIndex])); end -- failed to build nav
                                         
                                         -- sync properties
                                         newNav:SetObjectiveName(nav:GetObjectiveName());
@@ -308,6 +295,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                     else
                                         -- build a new nav in the now open slot
                                         local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                        if not newNav then error("Failed to build nav in slot " .. tostring(OpenSlotList[SlotListIndex])); end -- failed to build nav
                                         
                                         -- sync properties
                                         newNav:SetObjectiveName(nav:GetObjectiveName());
@@ -369,4 +357,4 @@ end);
 
 debugprint("_navmanager Loaded");
 
-return _navmanager;
+return M;

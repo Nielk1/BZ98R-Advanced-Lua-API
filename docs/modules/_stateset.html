@@ -32,7 +32,7 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_StateSetRunner">Class StateSetRunner </a></li>
 <li><a href="#StateSetRunner___Core">StateSetRunner - Core </a></li>
 </ul>
 
@@ -69,7 +69,7 @@
  The main use case of this is to hold multiple toggelable objectives.
  If you want to do something more complex, use the hook module instead.
  Like most similar constructs State Set Runners have internal data storage and can be saved and loaded.
-<p> Dependencies: <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_customsavetype.html#">_customsavetype</a></p>
+'</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local stateset = require(&quot;_stateset&quot;);
@@ -101,14 +101,14 @@ end);
     </ul>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Class_StateSetRunner">Class StateSetRunner </a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#StateSet.Add">StateSet.Add (self, name, state[, permitBased])</a></td>
 	<td class="summary">Add a state to the StateSet.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#isstatesetrunner">isstatesetrunner (object)</a></td>
+	<td class="name" nowrap><a href="#StateSetRunner:isstatesetrunner">StateSetRunner:isstatesetrunner (object)</a></td>
 	<td class="summary">Is this object an instance of StateSetRunner?</td>
 	</tr>
 	<tr>
@@ -124,11 +124,11 @@ end);
 	<td class="summary">Set state off.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Create">Create (name)</a></td>
+	<td class="name" nowrap><a href="#StateSetRunner:Create">StateSetRunner:Create (name)</a></td>
 	<td class="summary">Creates an StateSetRunner Template with the given indentifier.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Start">Start (name, init)</a></td>
+	<td class="name" nowrap><a href="#StateSetRunner:Start">StateSetRunner:Start (name, init)</a></td>
 	<td class="summary">Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.</td>
 	</tr>
 </table>
@@ -139,7 +139,7 @@ end);
 	<td class="summary">Save event function.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateSetRunner.Load">StateSetRunner.Load (data)</a></td>
+	<td class="name" nowrap><a href="#StateSetRunner.Load">StateSetRunner.Load (template, active_states, addonData)</a></td>
 	<td class="summary">Load event function.</td>
 	</tr>
 </table>
@@ -148,7 +148,7 @@ end);
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Class_StateSetRunner"></a>Class StateSetRunner </h2>
 
     <dl class="function">
     <dt>
@@ -165,7 +165,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateSet</span></span>
+            <span class="types"><a class="type" href="../modules/_stateset.html#StateSet">StateSet</a></span>
          StateSet instance
         </li>
         <li><span class="parameter">name</span>
@@ -177,7 +177,7 @@ end);
          Function to be called when the state is active, should return true if the state did something.
         </li>
         <li><span class="parameter">permitBased</span>
-            <span class="types"><span class="type">bool</span></span>
+            <span class="types"><span class="type">boolean</span></span>
          If true, the state is permit based
          (<em>optional</em>)
         </li>
@@ -186,7 +186,7 @@ end);
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">StateSet</span></span>
+           <span class="types"><a class="type" href="../modules/_stateset.html#StateSet">StateSet</a></span>
         For function chaining
     </ol>
 
@@ -195,8 +195,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "isstatesetrunner"></a>
-    <strong>isstatesetrunner (object)</strong>
+    <a name = "StateSetRunner:isstatesetrunner"></a>
+    <strong>StateSetRunner:isstatesetrunner (object)</strong>
     </dt>
     <dd>
     Is this object an instance of StateSetRunner?
@@ -233,18 +233,18 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateSetRunner</span></span>
+            <span class="types"><a class="type" href="../modules/_stateset.html#StateSetRunner">StateSetRunner</a></span>
          StateSetRunner instance
         </li>
         <li><span class="parameter">...</span>
-         Arguments to pass to the state function
+         any Arguments to pass to the state function
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
         True if at least one state was found and executed and returned true
     </ol>
 
@@ -264,7 +264,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateSetRunner</span></span>
+            <span class="types"><a class="type" href="../modules/_stateset.html#StateSetRunner">StateSetRunner</a></span>
          StateSetRunner instance
         </li>
         <li><span class="parameter">name</span>
@@ -276,7 +276,7 @@ end);
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">StateSetRunner</span></span>
+           <span class="types"><a class="type" href="../modules/_stateset.html#StateSetRunner">StateSetRunner</a></span>
         For function chaining
     </ol>
 
@@ -296,7 +296,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateSetRunner</span></span>
+            <span class="types"><a class="type" href="../modules/_stateset.html#StateSetRunner">StateSetRunner</a></span>
          StateSetRunner instance
         </li>
         <li><span class="parameter">name</span>
@@ -304,7 +304,7 @@ end);
          Name of the state
         </li>
         <li><span class="parameter">force</span>
-            <span class="types"><span class="type">bool</span></span>
+            <span class="types"><span class="type">boolean</span></span>
          If true, the state is set off regardless of the current permits
          (<em>optional</em>)
         </li>
@@ -313,7 +313,7 @@ end);
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">StateSetRunner</span></span>
+           <span class="types"><a class="type" href="../modules/_stateset.html#StateSetRunner">StateSetRunner</a></span>
         For function chaining
     </ol>
 
@@ -322,8 +322,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "Create"></a>
-    <strong>Create (name)</strong>
+    <a name = "StateSetRunner:Create"></a>
+    <strong>StateSetRunner:Create (name)</strong>
     </dt>
     <dd>
     Creates an StateSetRunner Template with the given indentifier.
@@ -341,7 +341,7 @@ end);
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">StateSet</span></span>
+           <span class="types"><a class="type" href="../modules/_stateset.html#StateSet">StateSet</a></span>
         StateSet for calling Add and AddPermit, can not be saved.
     </ol>
 
@@ -350,8 +350,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "Start"></a>
-    <strong>Start (name, init)</strong>
+    <a name = "StateSetRunner:Start"></a>
+    <strong>StateSetRunner:Start (name, init)</strong>
     </dt>
     <dd>
     Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.
@@ -392,7 +392,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-            <span class="types"><span class="type">StateSetRunner</span></span>
+            <span class="types"><a class="type" href="../modules/_stateset.html#StateSetRunner">StateSetRunner</a></span>
          instance
         </li>
     </ul>
@@ -409,7 +409,7 @@ end);
 </dd>
     <dt>
     <a name = "StateSetRunner.Load"></a>
-    <strong>StateSetRunner.Load (data)</strong>
+    <strong>StateSetRunner.Load (template, active_states, addonData)</strong>
     </dt>
     <dd>
     Load event function.
@@ -419,7 +419,13 @@ end);
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">data</span>
+        <li><span class="parameter">template</span>
+
+        </li>
+        <li><span class="parameter">active_states</span>
+
+        </li>
+        <li><span class="parameter">addonData</span>
 
         </li>
     </ul>
@@ -436,7 +442,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

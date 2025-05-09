@@ -2,9 +2,8 @@
 ---
 --- Crude custom type to make data not save/load exploiting the custom type system.
 ---
---- @module _utility
+--- @module '_utility'
 --- @author John "Nielk1" Klein
---- @alias utility_module
 --- @usage local utility = require("_utility");
 --- 
 --- utility.Register(ObjectDef);
@@ -13,7 +12,7 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_utility Loading");
 
-local utility_module = {};
+local M = {};
 --local utility_module_meta = {};
 
 --utility_meta.__index = function(table, key)
@@ -31,8 +30,8 @@ local utility_module = {};
 
 --- This is a table that converts between class labels and class signatures.
 --- For example, `ClassLabels["PROD"]` returns `"producer"`, and `ClassLabels["producer"]` returns `"PROD"`.
---- @table ClassLabels
-utility_module.ClassLabel = {
+--- @enum ClassLabels
+M.ClassLabel = {
     ["PROD"] = "producer", -- producer
     ["HOVR"] = "hover", -- hover
     ["WEPN"] = "weapon", -- weapon
@@ -122,8 +121,8 @@ utility_module.ClassLabel = {
 };
 
 --- Convert human readable color names to BZ98R color labels.
---- @table ColorLabels
-utility_module.ColorLabels = {
+--- @enum ColorLabels
+M.ColorLabels = {
     Black      = "BLACK",    -- BLACK:    <div style="background-color: #000000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLACK</div>
     DarkGrey   = "DKGREY",   -- DKGREY:   <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREY</div>
     Grey       = "GREY",     -- GREY:     <div style="background-color: #999999; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREY</div>
@@ -140,8 +139,8 @@ utility_module.ColorLabels = {
 
 --- Convert BZ98R color labels to RGB color codes.
 --- This probably isn't useful but it's here.
---- @table ColorCodes
-utility_module.colorCodes = {
+--- @enum ColorCodes
+M.colorCodes = {
     BLACK    = 0x000000FF, -- 0x000000FF: <div style="background-color: #000000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLACK</div>
     DKGREY   = 0x4C4C4CFF, -- 0x4C4C4CFF: <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREY</div>
     GREY     = 0x999999FF, -- 0x999999FF: <div style="background-color: #999999; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREY</div>
@@ -165,45 +164,78 @@ utility_module.colorCodes = {
 
 --- Is this object a function?
 --- @param object any Object in question
---- @treturn bool
-function utility_module.isfunction(object)
+--- @return boolean
+function M.isfunction(object)
     return (type(object) == "function");
 end
 
 --- Is this object a table?
 --- @param object any Object in question
---- @treturn bool
-function utility_module.istable(object)
+--- @return boolean
+function M.istable(object)
     return (type(object) == 'table');
 end
 
 --- Is this object a string?
 --- @param object any Object in question
---- @treturn bool
-function utility_module.isstring(object)
+--- @return boolean
+function M.isstring(object)
     return (type(object) == "string");
 end
 
 --- Is this object a boolean?
 --- @param object any Object in question
---- @treturn bool
-function utility_module.isboolean(object)
+--- @return boolean
+function M.isboolean(object)
     return (type(object) == "boolean");
 end
 
 --- Is this object a number?
 --- @param object any Object in question
---- @treturn bool
-function utility_module.isnumber(object)
+--- @return boolean
+function M.isnumber(object)
     return (type(object) == "number");
 end
 
 --- Is this object an integer?
 --- @param object any Object in question
---- @treturn bool
-function utility_module.isinteger(object)
-    if not utility_module.isnumber(object) then return false end;
+--- @return boolean
+function M.isinteger(object)
+    if not M.isnumber(object) then return false end;
     return object == math.floor(object);
+end
+
+--- Is this object a Handle?
+--- @param object any Object in question
+--- @return boolean
+function M.isHandle(object)
+    if type(object) ~= "userdata" then
+        return false
+    end
+    local mt = getmetatable(object)
+    return mt and mt.__name == "BZHandle"
+end
+
+--- Is this object a Vector?
+--- @param object any Object in question
+--- @return boolean
+function M.isVector(object)
+    if type(object) ~= "userdata" then
+        return false
+    end
+    local mt = getmetatable(object)
+    return mt and mt.__name == "VECTOR_3D"
+end
+
+--- Is this object a Matrix?
+--- @param object any Object in question
+--- @return boolean
+function M.isMatrix(object)
+    if type(object) ~= "userdata" then
+        return false
+    end
+    local mt = getmetatable(object)
+    return mt and mt.__name == "MAT_3D"
 end
 
 -------------------------------------------------------------------------------
@@ -211,7 +243,7 @@ end
 -------------------------------------------------------------------------------
 -- @section
 
-function utility_module.shallowCopy(original)
+function M.shallowCopy(original)
     local copy = {}
     for k, v in pairs(original) do
         copy[k] = v
@@ -226,8 +258,8 @@ end
 
 --- Convert an iterator to an array.
 --- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
---- @param iterator any The iterator to convert
---- @return table array An array containing the values from the iterator
+--- @param iterator function The iterator to convert
+--- @return any[] array An array containing the values from the iterator
 function IteratorToArray(iterator)
     local array = {}
     for index, value in iterator do
@@ -251,4 +283,4 @@ end
 
 debugprint("_utility Loaded");
 
-return utility_module;
+return M;

@@ -2,9 +2,8 @@
 ---
 --- Crude custom type to make data not save/load exploiting the custom type system.
 ---
---- @module _unsaved
+--- @module '_unsaved'
 --- @author John "Nielk1" Klein
---- @alias unsaved_module
 --- @usage local unsaved = require("_unsaved");
 --- 
 --- data.unsavable = unsaved(data.unsavable);
@@ -13,8 +12,8 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_unsaved Loading");
 
-local unsaved_module = {};
-local unsaved_module_meta = {};
+local M = {};
+local M_MT = {};
 
 --local unsaved_meta = {};
 
@@ -36,7 +35,7 @@ local unsaved_module_meta = {};
 --- @param table table The module table itself.
 --- @param data table Table to augment with unsaved data. If nil, a new table is created.
 --- @treturn table The unsavable table.
-unsaved_module_meta.__call = function(table, data)
+M_MT.__call = function(table, data)
     --if data ~= nil then
     --    return setmetatable(data, unsaved_meta);
     --end
@@ -48,13 +47,8 @@ unsaved_module_meta.__call = function(table, data)
     return data;
 end
 
-unsaved_module = setmetatable(unsaved_module, unsaved_module_meta);
-
--------------------------------------------------------------------------------
--- MapData - Core
--------------------------------------------------------------------------------
--- @section
+M = setmetatable(M, M_MT);
 
 debugprint("_unsaved Loaded");
 
-return unsaved_module;
+return M;

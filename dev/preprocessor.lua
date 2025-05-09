@@ -15,69 +15,152 @@ local function preprocess_file(input_file, output_file)
     end
 
     local lines = {}
+    local pendingblock = nil;
     local inBlock = false;
     for line in file:lines() do
         -- Apply transformations to each line
         local transformed = 0
 
         if inBlock then
-            if string.match(line, "^%-%-%- ") then
-                line = line:gsub("^%-%-%- (.*)$", "-- %1")
-            elseif string.match(line, "^%-%-%-") then
-                line = line:gsub("^%-%-%-(.*)$", "--%1")
+            if string.match(line, "^%s*%-%-%- ") then
+                line = line:gsub("^%s*%-%-%- (.*)$", "-- %1")
+            elseif string.match(line, "^%s*%-%-%-") then
+                line = line:gsub("^%s*%-%-%-(.*)$", "--%1")
             else
                 inBlock = false;
+                if pendingblock then
+                    local dontLike = false;
+                    for i = 1, #pendingblock do
+                        if string.match(pendingblock[i], "^%-%- @overload") then
+                            dontLike = true;
+                            break;
+                        end
+                    end
+                    if not dontLike then
+                        for i = 1, #pendingblock do
+                            table.insert(lines, pendingblock[i]);
+                        end
+                    end
+                    pendingblock = nil;
+                end
             end
         else
-            if string.match(line, "^%-%-%- ") then
+            if string.match(line, "^%s*%-%-%- ") then
                 inBlock = true;
+                pendingblock = {};
             end
         end
 
+        line = line:gsub("%-%- \\@", "-- @")
+
         -- 1. `--- @param name any` -> `-- @param name`
         if transformed == 0 then
-            line, transformed = line:gsub("^%-%- @param%s+([a-zA-Z0-9_]+)%s+any", "-- @param %1")
+            line, transformed = line:gsub("%-%- @param%s+([a-zA-Z0-9_]+)%s+any", "-- @param %1")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
         -- 2. `--- @param name type` -> `-- @tparam type name`
         if transformed == 0 then
-            line, transformed = line:gsub("^%-%- @param%s+([a-zA-Z0-9_]+)%s+([a-zA-Z0-9_]+)", "-- @tparam %2 %1")
+            line, transformed = line:gsub("%-%- @param%s+([a-zA-Z0-9_]+)%s+([a-zA-Z0-9_|]+)", "-- @tparam %2 %1")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
         -- 3. `--- @param name? any` -> `-- @param[opt] name`
         if transformed == 0 then
-            line, transformed = line:gsub("^%-%- @param%s+([a-zA-Z0-9_]+)%?%s+any", "-- @param[opt] %1")
+            line, transformed = line:gsub("%-%- @param%s+([a-zA-Z0-9_]+)%?%s+any", "-- @param[opt] %1")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
         -- 4. `--- @param name? type` -> `-- @tparam[opt] type name`
         if transformed == 0 then
-            line, transformed = line:gsub("^%-%- @param%s+([a-zA-Z0-9_]+)%?%s+([a-zA-Z0-9_]+)", "-- @tparam[opt] %2 %1")
+            line, transformed = line:gsub("%-%- @param%s+([a-zA-Z0-9_]+)%?%s+([a-zA-Z0-9_|]+)", "-- @tparam[opt] %2 %1")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
-        -- 5. `--- @return any` -> `-- @return`
+        -- 5. `--- @return any[]` -> `-- @return`
         if transformed == 0 then
-            line, transformed = line:gsub("^%-%- @return%s+any", "-- @return")
+            line, transformed = line:gsub("%-%- @return%s+any%[%]", "-- @return any[]")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
-        -- 6. `--- @return type` -> `-- @treturn type`
+        -- 6. `--- @return any` -> `-- @return`
         if transformed == 0 then
-            line, transformed = line:gsub("^%-%- @return%s+([a-zA-Z0-9_]+)", "-- @treturn %1")
+            line, transformed = line:gsub("%-%- @return%s+any", "-- @return")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
-        -- 7. Blank lines starting with `--- @diagnostic`
+        -- 7. `--- @return type?` -> `-- @treturn type|nil`
         if transformed == 0 then
-            line, transformed = line:gsub("%-%-%- @diagnostic .*", "")
+            line, transformed = line:gsub("%-%- @return%s+([a-zA-Z0-9_|]+)%?", "-- @treturn %1|nil")
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 7. `--- @return type` -> `-- @treturn type`
+        if transformed == 0 then
+            line, transformed = line:gsub("%-%- @return%s+([a-zA-Z0-9_|]+)", "-- @treturn %1")
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 8. `--- @alias name type` -> `-- @type name`
+        if transformed == 0 then
+            line, transformed = line:gsub("%-%- @alias%s+([a-zA-Z0-9_]+)%s+([a-zA-Z0-9_]+)", "-- @type %1")
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 9. Blank lines starting with `--- @operator`
+        if transformed == 0 then
+            --line, transformed = line:gsub("%-%-%- @operator .*", "")
+            if string.match(line, "%-%-%- @operator .*") then
+                line = nil;
+                transformed = 1;
+            end
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 9. Blank lines starting with `--- @diagnostic`
+        if transformed == 0 then
+            --line, transformed = line:gsub("%-%-%- @diagnostic .*", "")
+            if string.match(line, "%-%-%- @diagnostic .*") then
+                line = nil;
+                transformed = 1;
+            end
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 9. Blank lines starting with `--- @cast`
+        if transformed == 0 then
+            --line, transformed = line:gsub("%-%-%- @cast .*", "")
+            if string.match(line, "%-%-%- @cast .*") then
+                line = nil;
+                transformed = 1;
+            end
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 9. Blank lines starting with `--- @diagnostic`
+        if transformed == 0 then
+            --line, transformed = line:gsub("%-%-%- @diagnostic .*", "")
+            if string.match(line, "%-%- @diagnostic .*") then
+                line = nil;
+                transformed = 1;
+            end
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 
         -- Add the processed line to the output
-        table.insert(lines, line)
+        if line then
+            if pendingblock then
+                table.insert(pendingblock, line);
+            else
+                table.insert(lines, line)
+            end
+        end
+    end
+    if pendingblock then
+        for i = 1, #pendingblock do
+            table.insert(lines, pendingblock[i]);
+        end
+        pendingblock = nil;
     end
     file:close()
 

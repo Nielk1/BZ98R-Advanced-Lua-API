@@ -2,7 +2,7 @@
 ---
 --- Hot-patches print to decorate output for finding in the mess of a log file.
 ---
---- @module _printfix
+--- @module '_printfix'
 --- @author John "Nielk1" Klein
 
 --[[
@@ -45,6 +45,7 @@ error = function(...)
     end
 
     -- Capture the stack trace at the appropriate level
+    --- @diagnostic disable-next-line: undefined-global
     local traceback = debug.traceback("", (level or 2))
 
     for s in table.concat(args, "\t"):gmatch("[^\r\n]+") do

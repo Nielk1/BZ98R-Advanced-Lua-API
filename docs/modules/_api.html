@@ -146,7 +146,7 @@
     Called when saving state to a save game file, allowing the script to preserve its state.
 <p> Any values returned by this function will be passed as parameters to Load when loading the save game file. Save supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
 <p> The console window will print the saved values in human-readable format.
-<p> Call method: <a href="../modules/_hook.html#hook.CallSave">CallSave</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallSave">CallSave</a>
 
     </ul>
 
@@ -155,7 +155,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.AddSaveLoad">_hook.AddSaveLoad</a>
+         <a href="../modules/_hook.html#HookResult:AddSaveLoad">_hook.AddSaveLoad</a>
     </ul>
 
 
@@ -168,7 +168,7 @@
     Called when loading state from a save game file, allowing the script to restore its state.
 <p> Data values returned from Save will be passed as parameters to Load in the same order they were returned. Load supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
 <p> The console window will print the loaded values in human-readable format.
-<p> Call method: <a href="../modules/_hook.html#hook.CallLoad">CallLoad</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallLoad">CallLoad</a>
 
     </ul>
 
@@ -184,7 +184,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.AddSaveLoad">_hook.AddSaveLoad</a>
+         <a href="../modules/_hook.html#HookResult:AddSaveLoad">_hook.AddSaveLoad</a>
     </ul>
 
 
@@ -196,7 +196,7 @@
     <dd>
     Called when the mission starts for the first time.
 <p> Use this function to perform any one-time script initialization.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -205,7 +205,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -219,7 +219,7 @@
 <p> Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
 <p> The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
 <p> The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -235,7 +235,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -247,7 +247,7 @@
     <dd>
     Called once per tick after updating the network system and before simulating game objects.
 <p> This function performs most of the mission script's game logic.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -267,7 +267,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -280,7 +280,7 @@
     Called after any game object is created.
 <p> Handle is the game object that was created.
 <p> This function will get a lot of traffic so it should not do too much work.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -301,7 +301,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -314,7 +314,7 @@
     Called when a game object gets added to the mission
 <p> Handle is the game object that was added
 <p> This function is normally called for "important" game objects, and excludes things like Scrap pieces.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -330,7 +330,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -343,7 +343,7 @@
     Called before a game object is fully deleted.
 <p> This function will get a lot of traffic so it should not do too much work.
 <p> Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -359,7 +359,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -373,7 +373,7 @@
 <p> Players that join before the host launches trigger CreatePlayer just before the first Update.
 <p> Players that join joining after the host launches trigger CreatePlayer on entering the pre-game lobby.
 <p> This function gets called for the local player.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -397,7 +397,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -410,7 +410,7 @@
     Called when a player starts sending state updates.
 <p> This indicates that a player has finished loaded and started simulating.
 <p> This function is _not_ called for the local player.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -434,7 +434,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -445,7 +445,7 @@
     </dt>
     <dd>
     Called when a player leaves the session.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllNoReturn">CallAllNoReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllNoReturn">CallAllNoReturn</a>
 
     </ul>
 
@@ -469,7 +469,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -481,7 +481,7 @@
     <dd>
     Called when a script-defined message arrives.
 <p> This function should return true if it handled the message and false, nil, or none if it did not.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a> (TODO consider changing call type to stop after first true)
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllPassReturn">CallAllPassReturn</a> (TODO consider changing call type to stop after first true)
 
     </ul>
 
@@ -510,7 +510,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -531,7 +531,7 @@
 <p> You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
  <pre>for arg in string.gmatch(arguments, "%g+") do ... end</pre>
 <p> Check the Lua <a href="http://lua-users.org/wiki/PatternsTutorial">patterns tutorial</a> and <a href="http://www.lua.org/manual/5.2/manual.html#6.4.1">patterns manual</a> for more details.
-<p> Call method: <a href="../modules/_hook.html#hook.CallAllPassReturn">CallAllPassReturn</a>
+<p> Call method: <a href="../modules/_hook.html#HookResult:CallAllPassReturn">CallAllPassReturn</a>
 
     </ul>
 
@@ -556,7 +556,7 @@
 
     <h3>See also:</h3>
     <ul>
-         <a href="../modules/_hook.html#hook.Add">_hook.Add</a>
+         <a href="../modules/_hook.html#HookResult:Add">_hook.Add</a>
     </ul>
 
 
@@ -568,7 +568,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

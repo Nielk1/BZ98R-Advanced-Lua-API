@@ -80,8 +80,8 @@
 <li><a href="#Map">Map </a></li>
 <li><a href="#Files__2_0__">Files [2.0+] </a></li>
 <li><a href="#Effects__2_0__">Effects [2.0+] </a></li>
-<li><a href="#Vector">Vector </a></li>
-<li><a href="#Matrix">Matrix </a></li>
+<li><a href="#Class_Vector">Class Vector </a></li>
+<li><a href="#Class_Matrix">Class Matrix </a></li>
 <li><a href="#Portal_Functions__2_1__">Portal Functions [2.1+] </a></li>
 <li><a href="#Cloak__2_1__">Cloak [2.1+] </a></li>
 <li><a href="#Hide__2_1__">Hide [2.1+] </a></li>
@@ -141,6 +141,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#SetObjectiveOff">SetObjectiveOff (h)</a></td>
 	<td class="summary">Sets the game object back to normal.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#IsObjectiveOn">IsObjectiveOn (h)</a></td>
+	<td class="summary">Get the objective on status of object.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetObjectiveName">GetObjectiveName (h)</a></td>
@@ -221,20 +225,8 @@
 	<td class="summary">Returns the handle of the game object with the given label.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildObject">BuildObject (odfname, teamnum, h)</a></td>
-	<td class="summary">Creates a game object with the given odf name and team number at the location of a game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildObject">BuildObject (odfname, teamnum, path[, point])</a></td>
-	<td class="summary">Creates a game object with the given odf name and team number at a point on the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildObject">BuildObject (odfname, teamnum, position)</a></td>
-	<td class="summary">Creates a game object with the given odf name and team number at the given position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildObject">BuildObject (odfname, teamnum, transform)</a></td>
-	<td class="summary">Creates a game object with the given odf name and team number with the given transform matrix.</td>
+	<td class="name" nowrap><a href="#BuildObject">BuildObject (odfname, teamnum, location[, point])</a></td>
+	<td class="summary">Creates a game object with the given odf name, team number, and location.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#RemoveObject">RemoveObject (h)</a></td>
@@ -365,24 +357,12 @@
 <h2><a href="#Position_and_Orientation">Position and Orientation </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#SetPosition">SetPosition (h, path[, point])</a></td>
-	<td class="summary">Teleports the game object to a point on the named path.</td>
+	<td class="name" nowrap><a href="#SetPosition">SetPosition (h, target[, point])</a></td>
+	<td class="summary">Teleports the game object to a target location.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#SetPosition">SetPosition (h, position)</a></td>
-	<td class="summary">Teleports the game object to the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetPosition">SetPosition (h, transform)</a></td>
-	<td class="summary">Teleports the game object to the position of the transform matrix.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetPosition">GetPosition (h)</a></td>
-	<td class="summary">Returns the game object's position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetPosition">GetPosition (path[, point])</a></td>
-	<td class="summary">Returns the path point's position vector.</td>
+	<td class="name" nowrap><a href="#GetPosition">GetPosition (target[, point])</a></td>
+	<td class="summary">Returns the game object's or path point's position vector.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetFront">GetFront (h)</a></td>
@@ -475,20 +455,8 @@
 <h2><a href="#Distance">Distance </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, h2)</a></td>
-	<td class="summary">Returns the distance in meters between the two game objects.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, path[, point])</a></td>
-	<td class="summary">Returns the distance in meters between the game object and a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, position)</a></td>
-	<td class="summary">Returns the distance in meters between the game object and a position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, transform)</a></td>
-	<td class="summary">Returns the distance in meters between the game object and the position of a transform matrix.</td>
+	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, target[, point])</a></td>
+	<td class="summary">Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#IsWithin">IsWithin (h1, h2, dist)</a></td>
@@ -502,84 +470,24 @@
 <h2><a href="#Nearest">Nearest </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (h)</a></td>
-	<td class="summary">Returns the game object closest to the given game object.</td>
+	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (target[, point])</a></td>
+	<td class="summary">Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (path[, point])</a></td>
-	<td class="summary">Returns the game object closest to a point on the path.</td>
+	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (target[, point])</a></td>
+	<td class="summary">Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (position)</a></td>
-	<td class="summary">Returns the game object closest to the position vector.</td>
+	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (target[, point])</a></td>
+	<td class="summary">Returns the building closest to a position vector, transform matrix, another object, or point on a named path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (transform)</a></td>
-	<td class="summary">Returns the game object closest to the position of the transform matrix.</td>
+	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (target[, point])</a></td>
+	<td class="summary">Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (h)</a></td>
-	<td class="summary">Returns the craft closest to the given game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (path[, point])</a></td>
-	<td class="summary">Returns the craft closest to a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (position)</a></td>
-	<td class="summary">Returns the vehicle closest to the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (transform)</a></td>
-	<td class="summary">Returns the vehicle closest to the position of the transform matrix.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (h)</a></td>
-	<td class="summary">Returns the building closest to the given game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (path[, point])</a></td>
-	<td class="summary">Returns the building closest to a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (position)</a></td>
-	<td class="summary">Returns the building closest to the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (transform)</a></td>
-	<td class="summary">Returns the building closest to the position of the transform matrix.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (h)</a></td>
-	<td class="summary">Returns the enemy closest to the given game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (path[, point])</a></td>
-	<td class="summary">Returns the enemy closest to a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (position)</a></td>
-	<td class="summary">Returns the enemy closest to the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (transform)</a></td>
-	<td class="summary">Returns the enemy closest to the position of the transform matrix.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (h)</a></td>
-	<td class="summary">Returns the friend closest to the given game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (path[, point])</a></td>
-	<td class="summary">Returns the friend closest to a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (position)</a></td>
-	<td class="summary">Returns the friend closest to the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (transform)</a></td>
-	<td class="summary">Returns the friend closest to the position of the transform matrix.</td>
+	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (target[, point])</a></td>
+	<td class="summary">Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (h, team)</a></td>
@@ -605,20 +513,8 @@
 <h2><a href="#Iterators">Iterators </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, h)</a></td>
-	<td class="summary">Enumerates game objects within the given distance of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, path[, point])</a></td>
-	<td class="summary">Enumerates game objects within the given distance of the path point.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, position)</a></td>
-	<td class="summary">Enumerates game objects within the given distance of the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, transform)</a></td>
-	<td class="summary">Enumerates game objects within the given distance of the transform matrix.</td>
+	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, target[, point])</a></td>
+	<td class="summary">Enumerates game objects within the given distance a target.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#AllObjects">AllObjects ()</a></td>
@@ -644,20 +540,8 @@
 	<td class="summary">While the global scrap count is above the limit, remove the oldest scrap piece.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ClearScrapAround">ClearScrapAround (distance, h)</a></td>
-	<td class="summary">Clear all scrap within the given distance of a game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ClearScrapAround">ClearScrapAround (distance, path[, point])</a></td>
-	<td class="summary">Clear all scrap within the given distance of a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ClearScrapAround">ClearScrapAround (distance, position)</a></td>
-	<td class="summary">Clear all scrap within the given distance of a position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ClearScrapAround">ClearScrapAround (distance, transform)</a></td>
-	<td class="summary">Clear all scrap within the given distance of the position of a transform matrix.</td>
+	<td class="name" nowrap><a href="#ClearScrapAround">ClearScrapAround (distance, target[, point])</a></td>
+	<td class="summary">Clear all scrap within the given distance of a position vector, transform matrix, game object, or named path.</td>
 	</tr>
 </table>
 <h2><a href="#Team_Slots">Team Slots </a></h2>
@@ -929,28 +813,12 @@
 <h2><a href="#Path_Area__2_0__">Path Area [2.0+] </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#GetWindingNumber">GetWindingNumber (path, h)</a></td>
-	<td class="summary">Returns how many times the named path loops around the given game object.</td>
+	<td class="name" nowrap><a href="#GetWindingNumber">GetWindingNumber (path, target)</a></td>
+	<td class="summary">Returns how many times the named path loops around the given position vector, transform matrix, or object.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetWindingNumber">GetWindingNumber (path, position)</a></td>
-	<td class="summary">Returns how many times the named path loops around the given position.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetWindingNumber">GetWindingNumber (path, transform)</a></td>
-	<td class="summary">Returns how many times the named path loops around the position of the given transform.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsInsideArea">IsInsideArea (path, h)</a></td>
-	<td class="summary">Returns true if the given game object is inside the area bounded by the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsInsideArea">IsInsideArea (path, position)</a></td>
-	<td class="summary">Returns true if the given position is inside the area bounded by the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsInsideArea">IsInsideArea (path, transform)</a></td>
-	<td class="summary">Returns true if the position of the given transform is inside the area bounded by the named path.</td>
+	<td class="name" nowrap><a href="#IsInsideArea">IsInsideArea (path, target)</a></td>
+	<td class="summary">Returns true if the given position vector, transform matrix, or object is inside the area bounded by the named path.</td>
 	</tr>
 </table>
 <h2><a href="#Unit_Commands">Unit Commands </a></h2>
@@ -988,7 +856,7 @@
 	<td class="summary">Sets the independence of a unit.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#SetCommand">SetCommand (me, command[, priority[, who[, where[, when[, param]]]]])</a></td>
+	<td class="name" nowrap><a href="#SetCommand">SetCommand (me, command[, priority][, who], where[, when[, param]])</a></td>
 	<td class="summary">Commands the unit using the given parameters.</td>
 	</tr>
 	<tr>
@@ -996,37 +864,12 @@
 	<td class="summary">Commands the unit to attack the given target.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Goto">Goto (me, path[, priority])</a></td>
-	<td class="summary">Commands the unit to go to the named path.</td>
+	<td class="name" nowrap><a href="#Goto">Goto (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to go to the position vector, transform matrix, game object location, or named path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Goto">Goto (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to go to the given target
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goto">Goto (me, position[, priority])</a></td>
-	<td class="summary">Commands the unit to go to the given position vector
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goto">Goto (me, transform[, priority])</a></td>
-	<td class="summary">Commands the unit to go to the position of the given transform matrix
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Mine">Mine (me, path[, priority])</a></td>
-	<td class="summary">Commands the unit to lay mines at the named path; only minelayer units support this.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Mine">Mine (me, position[, priority])</a></td>
-	<td class="summary">Commands the unit to lay mines at the given position vector
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Mine">Mine (me, transform[, priority])</a></td>
-	<td class="summary">Commands the unit to lay mines at the position of the transform matrix
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.</td>
+	<td class="name" nowrap><a href="#Mine">Mine (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to lay mines at the given position vector, transform matrix, or named path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Follow">Follow (me, him[, priority])</a></td>
@@ -1053,12 +896,8 @@
 	<td class="summary">Commands the unit to patrol along the named path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Retreat">Retreat (me, path[, priority])</a></td>
-	<td class="summary">Commands the unit to retreat to the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Retreat">Retreat (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to retreat to the given target.</td>
+	<td class="name" nowrap><a href="#Retreat">Retreat (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to retreat to the given target or named path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetIn">GetIn (me, him[, priority])</a></td>
@@ -1069,16 +908,8 @@
 	<td class="summary">Commands the unit to pick up the target object.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Dropoff">Dropoff (me, path[, priority])</a></td>
-	<td class="summary">Commands the unit to drop off at the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Dropoff">Dropoff (me, position[, priority])</a></td>
-	<td class="summary">Commands the unit to drop off at the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Dropoff">Dropoff (me, transform[, priority])</a></td>
-	<td class="summary">Commands the unit to drop off at the position of the transform matrix.</td>
+	<td class="name" nowrap><a href="#Dropoff">Dropoff (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to drop off at the position vector, transform matrix, or named path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Build">Build (me, odfname[, priority])</a></td>
@@ -1086,19 +917,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BuildAt">BuildAt (me, odfname, target[, priority])</a></td>
-	<td class="summary">Commands a producer to build the given odf name at the location of the target game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildAt">BuildAt (me, odfname, path[, priority])</a></td>
-	<td class="summary">Commands a producer to build the given odf name at the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildAt">BuildAt (me, odfname, position[, priority])</a></td>
-	<td class="summary">Commands a producer to build the given odf name at the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildAt">BuildAt (me, odfname, transform[, priority])</a></td>
-	<td class="summary">Commands a producer to build the given odf name at the transform matrix.</td>
+	<td class="summary">Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Formation">Formation (me, him[, priority])</a></td>
@@ -1304,39 +1123,15 @@
 <h2><a href="#Terrain">Terrain </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#GetTerrainHeightAndNormal">GetTerrainHeightAndNormal (h)</a></td>
-	<td class="summary">Returns the terrain height and normal vector at the location of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetTerrainHeightAndNormal">GetTerrainHeightAndNormal (path[, point])</a></td>
-	<td class="summary">Returns the terrain height and normal vector at a point on the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetTerrainHeightAndNormal">GetTerrainHeightAndNormal (position)</a></td>
-	<td class="summary">Returns the terrain height and normal vector at the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetTerrainHeightAndNormal">GetTerrainHeightAndNormal (transform)</a></td>
-	<td class="summary">Returns the terrain height and normal vector at the position of the transform matrix.</td>
+	<td class="name" nowrap><a href="#GetTerrainHeightAndNormal">GetTerrainHeightAndNormal (target[, point])</a></td>
+	<td class="summary">Returns the terrain height and normal vector at a position vector, transform matrix, object, or point on a named path.</td>
 	</tr>
 </table>
 <h2><a href="#Floor">Floor </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#GetFloorHeightAndNormal">GetFloorHeightAndNormal (h)</a></td>
-	<td class="summary">Returns the floor height and normal vector at the location of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetFloorHeightAndNormal">GetFloorHeightAndNormal (path[, point])</a></td>
-	<td class="summary">Returns the floor height and normal vector at a point on the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetFloorHeightAndNormal">GetFloorHeightAndNormal (position)</a></td>
-	<td class="summary">Returns the floor height and normal vector at the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetFloorHeightAndNormal">GetFloorHeightAndNormal (transform)</a></td>
-	<td class="summary">Returns the floor height and normal vector at the position of the transform matrix.</td>
+	<td class="name" nowrap><a href="#GetFloorHeightAndNormal">GetFloorHeightAndNormal (target[, point])</a></td>
+	<td class="summary">Returns the floor height and normal vector at a position vector, transform matrix, object, or point on a named path.</td>
 	</tr>
 </table>
 <h2><a href="#Map">Map </a></h2>
@@ -1364,129 +1159,129 @@
 	<td class="summary">Starts a full screen color fade.</td>
 	</tr>
 </table>
-<h2><a href="#Vector">Vector </a></h2>
+<h2><a href="#Class_Vector">Class Vector </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#SetVector">SetVector ([x[, y[, z]]])</a></td>
+	<td class="name" nowrap><a href="#Vector:SetVector">Vector:SetVector ([x[, y[, z]]])</a></td>
 	<td class="summary">Returns a vector whose components have the given number values.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#DotProduct">DotProduct (a, a)</a></td>
+	<td class="name" nowrap><a href="#Vector:DotProduct">Vector:DotProduct (a, b)</a></td>
 	<td class="summary">Returns the <a href="http://en.wikipedia.org/wiki/Dot_product">dot product</a> between vectors a and b.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#CrossProduct">CrossProduct (a, b)</a></td>
+	<td class="name" nowrap><a href="#Vector:CrossProduct">Vector:CrossProduct (a, b)</a></td>
 	<td class="summary">Returns the <a href="http://en.wikipedia.org/wiki/Cross_product">cross product</a> between vectors a and b.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Normalize">Normalize (v)</a></td>
+	<td class="name" nowrap><a href="#Vector:Normalize">Vector:Normalize (v)</a></td>
 	<td class="summary">Returns the vector scaled to unit length.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Length">Length (v)</a></td>
+	<td class="name" nowrap><a href="#Vector:Length">Vector:Length (v)</a></td>
 	<td class="summary">Returns the length of the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#LengthSquared">LengthSquared (v)</a></td>
+	<td class="name" nowrap><a href="#Vector:LengthSquared">Vector:LengthSquared (v)</a></td>
 	<td class="summary">Returns the squared length of the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Distance2D">Distance2D (a, b)</a></td>
+	<td class="name" nowrap><a href="#Vector:Distance2D">Vector:Distance2D (a, b)</a></td>
 	<td class="summary">Returns the 2D distance between vectors a and b.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Distance2DSquared">Distance2DSquared (a, b)</a></td>
+	<td class="name" nowrap><a href="#Vector:Distance2DSquared">Vector:Distance2DSquared (a, b)</a></td>
 	<td class="summary">Returns the squared 2D distance of the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Distance3D">Distance3D (a, b)</a></td>
+	<td class="name" nowrap><a href="#Vector:Distance3D">Vector:Distance3D (a, b)</a></td>
 	<td class="summary">Returns the 3D distance between vectors a and b.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Distance3DSquared">Distance3DSquared (a, b)</a></td>
+	<td class="name" nowrap><a href="#Vector:Distance3DSquared">Vector:Distance3DSquared (a, b)</a></td>
 	<td class="summary">Returns the squared 3D distance of the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:unm">vector:unm (vector)</a></td>
+	<td class="name" nowrap><a href="#Vector.__unm">Vector.__unm (vector)</a></td>
 	<td class="summary">Negate the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:add">vector:add (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__add">Vector.__add (vector1, vector2)</a></td>
 	<td class="summary">Add two vectors.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:sub">vector:sub (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__sub">Vector.__sub (vector1, vector2)</a></td>
 	<td class="summary">Subtract two vectors.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:mul">vector:mul (number, vector)</a></td>
+	<td class="name" nowrap><a href="#Vector.__mul">Vector.__mul (number, vector)</a></td>
 	<td class="summary">Multiply a number by a vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:mul">vector:mul (vector, number)</a></td>
+	<td class="name" nowrap><a href="#Vector.__mul">Vector.__mul (vector, number)</a></td>
 	<td class="summary">Multiply a vector by a number.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:mul">vector:mul (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__mul">Vector.__mul (vector1, vector2)</a></td>
 	<td class="summary">Multiply two vectors.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:div">vector:div (number, vector)</a></td>
+	<td class="name" nowrap><a href="#Vector.__div">Vector.__div (number, vector)</a></td>
 	<td class="summary">Divide a number by a vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:div">vector:div (vector, number)</a></td>
+	<td class="name" nowrap><a href="#Vector.__div">Vector.__div (vector, number)</a></td>
 	<td class="summary">Divide a vector by a number.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:div">vector:div (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__div">Vector.__div (vector1, vector2)</a></td>
 	<td class="summary">Divide two vectors.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#vector:eq">vector:eq (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__eq">Vector.__eq (v1, v2)</a></td>
 	<td class="summary">Check if two vectors are equal.</td>
 	</tr>
 </table>
-<h2><a href="#Matrix">Matrix </a></h2>
+<h2><a href="#Class_Matrix">Class Matrix </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#SetMatrix">SetMatrix ([right_x[, right_y[, right_z[, up_x[, up_y[, up_z[, front_x[, front_y[, front_z[, posit_x[, posit_y[, posit_z]]]]]]]]]]]])</a></td>
+	<td class="name" nowrap><a href="#Matrix:SetMatrix">Matrix:SetMatrix ([right_x[, right_y[, right_z[, up_x[, up_y[, up_z[, front_x[, front_y[, front_z[, posit_x[, posit_y[, posit_z]]]]]]]]]]]])</a></td>
 	<td class="summary">Returns a matrix whose components have the given number values.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#matrix">matrix ()</a></td>
+	<td class="name" nowrap><a href="#Matrix:matrix">Matrix:matrix ()</a></td>
 	<td class="summary">Global value representing the identity matrix.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildAxisRotationMatrix">BuildAxisRotationMatrix ([angle[, axis_x[, axis_y[, axis_z]]]])</a></td>
+	<td class="name" nowrap><a href="#Matrix:BuildAxisRotationMatrix">Matrix:BuildAxisRotationMatrix ([angle[, axis_x[, axis_y[, axis_z]]]])</a></td>
 	<td class="summary">Build a matrix representing a rotation by an angle around an axis.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildAxisRotationMatrix">BuildAxisRotationMatrix ([angle], axis)</a></td>
+	<td class="name" nowrap><a href="#Matrix:BuildAxisRotationMatrix">Matrix:BuildAxisRotationMatrix ([angle], axis)</a></td>
 	<td class="summary">Build a matrix representing a rotation by an angle around an axis.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildPositionRotationMatrix">BuildPositionRotationMatrix ([pitch[, yaw[, roll[, posit_x[, posit_y[, posit_z]]]]]])</a></td>
+	<td class="name" nowrap><a href="#Matrix:BuildPositionRotationMatrix">Matrix:BuildPositionRotationMatrix ([pitch[, yaw[, roll[, posit_x[, posit_y[, posit_z]]]]]])</a></td>
 	<td class="summary">Build a matrix with the given pitch, yaw, and roll angles and position.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildPositionRotationMatrix">BuildPositionRotationMatrix ([pitch][, yaw][, roll], position)</a></td>
+	<td class="name" nowrap><a href="#Matrix:BuildPositionRotationMatrix">Matrix:BuildPositionRotationMatrix ([pitch][, yaw][, roll], position)</a></td>
 	<td class="summary">Build a matrix with the given pitch, yaw, and roll angles and position.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildOrthogonalMatrix">BuildOrthogonalMatrix ([up[, heading]])</a></td>
+	<td class="name" nowrap><a href="#Matrix:BuildOrthogonalMatrix">Matrix:BuildOrthogonalMatrix ([up[, heading]])</a></td>
 	<td class="summary">Build a matrix with zero position, its up axis along the specified up vector, oriented so that its front axis points as close as possible to the heading vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#BuildDirectionalMatrix">BuildDirectionalMatrix ([position[, direction]])</a></td>
+	<td class="name" nowrap><a href="#Matrix:BuildDirectionalMatrix">Matrix:BuildDirectionalMatrix ([position[, direction]])</a></td>
 	<td class="summary">Build a matrix with the given position vector, its front axis pointing along the direction vector, and zero roll.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#matrix:mul">matrix:mul (matrix1, matrix2)</a></td>
+	<td class="name" nowrap><a href="#matrix.__mul">matrix.__mul (matrix1, matrix2)</a></td>
 	<td class="summary">Multiply two matrices.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#matrix:mul">matrix:mul (matrix, vector)</a></td>
+	<td class="name" nowrap><a href="#matrix.__mul">matrix.__mul (matrix, vector)</a></td>
 	<td class="summary">Transform a vector by a matrix.</td>
 	</tr>
 </table>
@@ -1566,20 +1361,8 @@
 <h2><a href="#Explosion__2_1__">Explosion [2.1+] </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#MakeExplosion">MakeExplosion (odfname, h)</a></td>
-	<td class="summary">Creates an explosion with the given odf name at the location of a game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#MakeExplosion">MakeExplosion (odfname, path)</a></td>
-	<td class="summary">Creates an explosion with the given odf name at the start of the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#MakeExplosion">MakeExplosion (odfname, position)</a></td>
-	<td class="summary">Creates an explosion with the given odf name at the given position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#MakeExplosion">MakeExplosion (odfname, transform)</a></td>
-	<td class="summary">Creates an explosion with the given odf name with the given transform matrix.</td>
+	<td class="name" nowrap><a href="#MakeExplosion">MakeExplosion (odfname, target)</a></td>
+	<td class="summary">Creates an explosion with the given odf name at the target position vector, transform matrix, object, or the start of the named path.</td>
 	</tr>
 </table>
 
@@ -1605,7 +1388,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">odfname</span>
@@ -1631,7 +1414,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -1639,7 +1422,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -1667,7 +1450,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -1689,11 +1472,40 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "IsObjectiveOn"></a>
+    <strong>IsObjectiveOn (h)</strong>
+    </dt>
+    <dd>
+    Get the objective on status of object.
+ [UNRELEASED]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
 
 
 
@@ -1711,7 +1523,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -1739,7 +1551,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">name</span>
@@ -1766,7 +1578,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">name</span>
@@ -1945,7 +1757,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">message</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#AudioMessage">AudioMessage</a></span>
 
     </ol>
 
@@ -1965,7 +1777,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">msg</span>
-            <span class="types"><span class="type">message</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#AudioMessage">AudioMessage</a></span>
 
         </li>
     </ul>
@@ -1993,7 +1805,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">msg</span>
-            <span class="types"><span class="type">message</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#AudioMessage">AudioMessage</a></span>
 
         </li>
     </ul>
@@ -2053,7 +1865,7 @@
 
         </li>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">Handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
          (<em>optional</em>)
         </li>
@@ -2100,7 +1912,7 @@
 
         </li>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">Handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
          (<em>optional</em>)
         </li>
@@ -2139,7 +1951,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -2149,11 +1961,10 @@
 </dd>
     <dt>
     <a name = "BuildObject"></a>
-    <strong>BuildObject (odfname, teamnum, h)</strong>
+    <strong>BuildObject (odfname, teamnum, location[, point])</strong>
     </dt>
     <dd>
-    Creates a game object with the given odf name and team number at the location of a game object.
- Returns the handle of the created object if it created one. Returns nil if it failed.
+    Creates a game object with the given odf name, team number, and location.
 
     </ul>
 
@@ -2167,50 +1978,13 @@
             <span class="types"><span class="type">integer</span></span>
 
         </li>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildObject"></a>
-    <strong>BuildObject (odfname, teamnum, path[, point])</strong>
-    </dt>
-    <dd>
-    Creates a game object with the given odf name and team number at a point on the named path.  It uses the start of the path if no point is given.
- Returns the handle of the created object if it created one. Returns nil if it failed.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">teamnum</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the location is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -2218,81 +1992,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildObject"></a>
-    <strong>BuildObject (odfname, teamnum, position)</strong>
-    </dt>
-    <dd>
-    Creates a game object with the given odf name and team number at the given position vector.
- Returns the handle of the created object if it created one. Returns nil if it failed.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">teamnum</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildObject"></a>
-    <strong>BuildObject (odfname, teamnum, transform)</strong>
-    </dt>
-    <dd>
-    Creates a game object with the given odf name and team number with the given transform matrix.
- Returns the handle of the created object if it created one. Returns nil if it failed.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">teamnum</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -2312,7 +2012,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2334,7 +2034,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">odfname</span>
@@ -2366,7 +2066,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2374,7 +2074,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -2394,7 +2094,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2402,7 +2102,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -2422,7 +2122,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2430,7 +2130,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -2452,7 +2152,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">Handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">label</span>
@@ -2478,7 +2178,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2506,7 +2206,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2535,7 +2235,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2823,7 +2523,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2851,7 +2551,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2879,7 +2579,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2907,7 +2607,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2935,7 +2635,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2963,7 +2663,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -2991,7 +2691,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3019,12 +2719,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">threshold</span>
-            <span class="types"><span class="type">float</span></span>
-
+            <span class="types"><span class="type">number</span></span>
+         float
          (<em>optional</em>)
         </li>
     </ul>
@@ -3053,7 +2753,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">team</span>
@@ -3092,7 +2792,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3100,7 +2800,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">integer</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
     </ol>
 
@@ -3120,11 +2820,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -3147,11 +2847,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">t</span>
-            <span class="types"><span class="type">teamnum</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -3159,7 +2859,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">teamnum</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
     </ol>
 
@@ -3181,11 +2881,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">t</span>
-            <span class="types"><span class="type">teamnum</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -3214,7 +2914,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">t</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3237,7 +2937,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3257,11 +2957,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">t</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3283,7 +2983,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3291,7 +2991,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3318,11 +3018,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">o</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3344,7 +3044,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3352,7 +3052,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3369,26 +3069,26 @@
     <dl class="function">
     <dt>
     <a name = "SetPosition"></a>
-    <strong>SetPosition (h, path[, point])</strong>
+    <strong>SetPosition (h, target[, point])</strong>
     </dt>
     <dd>
-    Teleports the game object to a point on the named path.  It uses the start of the path if no point is given.
+    Teleports the game object to a target location.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
-        <li><span class="parameter">path</span>
+        <li><span class="parameter">target</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -3399,103 +3099,23 @@
 
 </dd>
     <dt>
-    <a name = "SetPosition"></a>
-    <strong>SetPosition (h, position)</strong>
-    </dt>
-    <dd>
-    Teleports the game object to the position vector.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetPosition"></a>
-    <strong>SetPosition (h, transform)</strong>
-    </dt>
-    <dd>
-    Teleports the game object to the position of the transform matrix.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "GetPosition"></a>
-    <strong>GetPosition (h)</strong>
+    <strong>GetPosition (target[, point])</strong>
     </dt>
     <dd>
-    Returns the game object's position vector.  Returns nil if none exists.
+    Returns the game object's or path point's position vector.  Returns nil if none exists.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">vector</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetPosition"></a>
-    <strong>GetPosition (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the path point's position vector.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -3503,7 +3123,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3523,7 +3143,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3531,7 +3151,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3551,11 +3171,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
         </li>
     </ul>
@@ -3577,7 +3197,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3585,7 +3205,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3612,7 +3232,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3620,7 +3240,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3640,11 +3260,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">velocity</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -3673,7 +3293,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3681,7 +3301,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -3701,11 +3321,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">omega</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -3737,7 +3357,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">center</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">radius</span>
@@ -3755,7 +3375,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -3777,7 +3397,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">center</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">minradius</span>
@@ -3795,7 +3415,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -3822,7 +3442,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3830,7 +3450,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -3850,7 +3470,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3858,8 +3478,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">float</span></span>
-
+           <span class="types"><span class="type">number</span></span>
+        float
     </ol>
 
 
@@ -3878,7 +3498,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -3886,8 +3506,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">float</span></span>
-
+           <span class="types"><span class="type">number</span></span>
+        float
     </ol>
 
 
@@ -4040,11 +3660,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -4069,123 +3689,27 @@
     <dl class="function">
     <dt>
     <a name = "GetDistance"></a>
-    <strong>GetDistance (h1, h2)</strong>
+    <strong>GetDistance (h1, target[, point])</strong>
     </dt>
     <dd>
-    Returns the distance in meters between the two game objects.
+    Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h1</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
-        <li><span class="parameter">h2</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetDistance"></a>
-    <strong>GetDistance (h1, path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the distance in meters between the game object and a point on the path.  It uses the start of the path if no point is given.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h1</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetDistance"></a>
-    <strong>GetDistance (h1, position)</strong>
-    </dt>
-    <dd>
-    Returns the distance in meters between the game object and a position vector.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h1</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetDistance"></a>
-    <strong>GetDistance (h1, transform)</strong>
-    </dt>
-    <dd>
-    Returns the distance in meters between the game object and the position of a transform matrix.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h1</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
         </li>
     </ul>
 
@@ -4213,11 +3737,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h1</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">h2</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">dist</span>
@@ -4250,11 +3774,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h1</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">h2</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">tolerance</span>
@@ -4267,7 +3791,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -4284,50 +3808,22 @@
     <dl class="function">
     <dt>
     <a name = "GetNearestObject"></a>
-    <strong>GetNearestObject (h)</strong>
+    <strong>GetNearestObject (target[, point])</strong>
     </dt>
     <dd>
-    Returns the game object closest to the given game object.  Returns nil if none exists.
+    Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestObject"></a>
-    <strong>GetNearestObject (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the game object closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -4335,63 +3831,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestObject"></a>
-    <strong>GetNearestObject (position)</strong>
-    </dt>
-    <dd>
-    Returns the game object closest to the position vector.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestObject"></a>
-    <strong>GetNearestObject (transform)</strong>
-    </dt>
-    <dd>
-    Returns the game object closest to the position of the transform matrix.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4401,50 +3841,22 @@
 </dd>
     <dt>
     <a name = "GetNearestVehicle"></a>
-    <strong>GetNearestVehicle (h)</strong>
+    <strong>GetNearestVehicle (target[, point])</strong>
     </dt>
     <dd>
-    Returns the craft closest to the given game object.  Returns nil if none exists.
+    Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestVehicle"></a>
-    <strong>GetNearestVehicle (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the craft closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -4452,63 +3864,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestVehicle"></a>
-    <strong>GetNearestVehicle (position)</strong>
-    </dt>
-    <dd>
-    Returns the vehicle closest to the position vector.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestVehicle"></a>
-    <strong>GetNearestVehicle (transform)</strong>
-    </dt>
-    <dd>
-    Returns the vehicle closest to the position of the transform matrix.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4518,50 +3874,22 @@
 </dd>
     <dt>
     <a name = "GetNearestBuilding"></a>
-    <strong>GetNearestBuilding (h)</strong>
+    <strong>GetNearestBuilding (target[, point])</strong>
     </dt>
     <dd>
-    Returns the building closest to the given game object.  Returns nil if none exists.
+    Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestBuilding"></a>
-    <strong>GetNearestBuilding (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the building closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -4569,63 +3897,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestBuilding"></a>
-    <strong>GetNearestBuilding (position)</strong>
-    </dt>
-    <dd>
-    Returns the building closest to the position vector.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestBuilding"></a>
-    <strong>GetNearestBuilding (transform)</strong>
-    </dt>
-    <dd>
-    Returns the building closest to the position of the transform matrix.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4635,50 +3907,22 @@
 </dd>
     <dt>
     <a name = "GetNearestEnemy"></a>
-    <strong>GetNearestEnemy (h)</strong>
+    <strong>GetNearestEnemy (target[, point])</strong>
     </dt>
     <dd>
-    Returns the enemy closest to the given game object.  Returns nil if none exists.
+    Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestEnemy"></a>
-    <strong>GetNearestEnemy (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the enemy closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -4686,63 +3930,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestEnemy"></a>
-    <strong>GetNearestEnemy (position)</strong>
-    </dt>
-    <dd>
-    Returns the enemy closest to the position vector.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestEnemy"></a>
-    <strong>GetNearestEnemy (transform)</strong>
-    </dt>
-    <dd>
-    Returns the enemy closest to the position of the transform matrix.  Returns nil if none exists.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4752,52 +3940,23 @@
 </dd>
     <dt>
     <a name = "GetNearestFriend"></a>
-    <strong>GetNearestFriend (h)</strong>
+    <strong>GetNearestFriend (target[, point])</strong>
     </dt>
     <dd>
-    Returns the friend closest to the given game object.  Returns nil if none exists.
+    Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
  [2.0+]
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestFriend"></a>
-    <strong>GetNearestFriend (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the friend closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
@@ -4805,65 +3964,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestFriend"></a>
-    <strong>GetNearestFriend (position)</strong>
-    </dt>
-    <dd>
-    Returns the friend closest to the position vector.  Returns nil if none exists.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestFriend"></a>
-    <strong>GetNearestFriend (transform)</strong>
-    </dt>
-    <dd>
-    Returns the friend closest to the position of the transform matrix.  Returns nil if none exists.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4884,7 +3985,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">team</span>
@@ -4896,7 +3997,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4910,7 +4011,7 @@
     </dt>
     <dd>
     Returns the craft or person on the given team closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
-  [2.1+]
+ [2.1+]
 
     </ul>
 
@@ -4934,7 +4035,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4948,7 +4049,7 @@
     </dt>
     <dd>
     Returns the craft or person on the given team closest to the position of the transform matrix.  Returns nil if none exists.
-  [2.1+]
+ [2.1+]
 
     </ul>
 
@@ -4967,7 +4068,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -4981,14 +4082,14 @@
     </dt>
     <dd>
     Returns the craft or person on the given team closest to the position vector.  Returns nil if none exists.
-  [2.1+]
+ [2.1+]
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix:matrix">matrix</a></span>
 
         </li>
         <li><span class="parameter">team</span>
@@ -5000,7 +4101,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -5020,7 +4121,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">dist</span>
@@ -5057,10 +4158,10 @@
     <dl class="function">
     <dt>
     <a name = "ObjectsInRange"></a>
-    <strong>ObjectsInRange (dist, h)</strong>
+    <strong>ObjectsInRange (dist, target[, point])</strong>
     </dt>
     <dd>
-    Enumerates game objects within the given distance of the game object.
+    Enumerates game objects within the given distance a target.
 
     </ul>
 
@@ -5070,118 +4171,27 @@
             <span class="types"><span class="type">number</span></span>
 
         </li>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ObjectsInRange"></a>
-    <strong>ObjectsInRange (dist, path[, point])</strong>
-    </dt>
-    <dd>
-    Enumerates game objects within the given distance of the path point.  It uses the start of the path if no point is given.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">dist</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><span class="type">name</span></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
-
+         If the target is a path this is the path point index, defaults to 0.
          (<em>optional</em>)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ObjectsInRange"></a>
-    <strong>ObjectsInRange (dist, position)</strong>
-    </dt>
-    <dd>
-    Enumerates game objects within the given distance of the position vector.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">dist</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ObjectsInRange"></a>
-    <strong>ObjectsInRange (dist, transform)</strong>
-    </dt>
-    <dd>
-    Enumerates game objects within the given distance of the transform matrix.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">dist</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        iterator</li>
+        <li>
+        state</li>
+        <li>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+        value</li>
     </ol>
 
 
@@ -5201,9 +4211,14 @@
 
     <h3>Returns:</h3>
     <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        iterator</li>
+        <li>
+        state</li>
+        <li>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+        value</li>
     </ol>
 
 
@@ -5222,9 +4237,14 @@
 
     <h3>Returns:</h3>
     <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        iterator</li>
+        <li>
+        state</li>
+        <li>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+        value</li>
     </ol>
 
 
@@ -5243,9 +4263,14 @@
 
     <h3>Returns:</h3>
     <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        iterator</li>
+        <li>
+        state</li>
+        <li>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+        value</li>
     </ol>
 
 
@@ -5264,9 +4289,14 @@
 
     <h3>Returns:</h3>
     <ol>
-
-           <span class="types"><span class="type">iterator</span></span>
-
+        <li>
+           <span class="types"><span class="type">function</span></span>
+        iterator</li>
+        <li>
+        state</li>
+        <li>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+        value</li>
     </ol>
 
 
@@ -5305,10 +4335,11 @@
 </dd>
     <dt>
     <a name = "ClearScrapAround"></a>
-    <strong>ClearScrapAround (distance, h)</strong>
+    <strong>ClearScrapAround (distance, target[, point])</strong>
     </dt>
     <dd>
-    Clear all scrap within the given distance of a game object.
+    Clear all scrap within the given distance of a position vector, transform matrix, game object, or named path.
+ It uses the start of the path if no point is given.
 
     </ul>
 
@@ -5318,92 +4349,14 @@
             <span class="types"><span class="type">number</span></span>
 
         </li>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ClearScrapAround"></a>
-    <strong>ClearScrapAround (distance, path[, point])</strong>
-    </dt>
-    <dd>
-    Clear all scrap within the given distance of a point on the path.  It uses the start of the path if no point is given.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">distance</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
 
          (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ClearScrapAround"></a>
-    <strong>ClearScrapAround (distance, position)</strong>
-    </dt>
-    <dd>
-    Clear all scrap within the given distance of a position vector.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">distance</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ClearScrapAround"></a>
-    <strong>ClearScrapAround (distance, transform)</strong>
-    </dt>
-    <dd>
-    Clear all scrap within the given distance of the position of a transform matrix.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">distance</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
         </li>
     </ul>
 
@@ -5632,7 +4585,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -5662,7 +4615,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -5692,7 +4645,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -5722,7 +4675,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -5752,7 +4705,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -5782,7 +4735,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -6199,7 +5152,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -6227,7 +5180,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -6256,7 +5209,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -6284,14 +5237,15 @@
     <strong>IsCritical (h)</strong>
     </dt>
     <dd>
-    Returns true if the game object is marked as mission-critical.  Returns false otherwise. [2.0+]
+    Returns true if the game object is marked as mission-critical.  Returns false otherwise.
+ [2.0+]
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -6313,18 +5267,19 @@
     </dt>
     <dd>
     Sets the game object's mission-critical status.
- If critical is true or not specified, the object is marked as mission-critical. Otherwise, the object is marked as not mission critical. [2.0+]
+ If critical is true or not specified, the object is marked as mission-critical. Otherwise, the object is marked as not mission critical.
+ [2.0+]
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">critical</span>
-            <span class="types"><span class="type">bool</span></span>
+            <span class="types"><span class="type">boolean</span></span>
 
          (<em>optional</em>)
         </li>
@@ -6356,7 +5311,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">mask</span>
@@ -6383,7 +5338,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">weaponname</span>
@@ -6416,7 +5371,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">slot</span>
@@ -6448,11 +5403,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -6474,7 +5429,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">amount</span>
@@ -7059,7 +6014,8 @@
     <strong>SetPathType (path, type)</strong>
     </dt>
     <dd>
-    Changes the named path to the given path type.  [2.0+]
+    Changes the named path to the given path type.
+ [2.0+]
 
     </ul>
 
@@ -7085,7 +6041,8 @@
     <strong>GetPathType (path)</strong>
     </dt>
     <dd>
-    Returns the type of the named path.  [2.0+]
+    Returns the type of the named path.
+ [2.0+]
 
     </ul>
 
@@ -7216,10 +6173,10 @@
     <dl class="function">
     <dt>
     <a name = "GetWindingNumber"></a>
-    <strong>GetWindingNumber (path, h)</strong>
+    <strong>GetWindingNumber (path, target)</strong>
     </dt>
     <dd>
-    Returns how many times the named path loops around the given game object.
+    Returns how many times the named path loops around the given position vector, transform matrix, or object.
  Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
  [2.0+]
 
@@ -7231,76 +6188,8 @@
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">integer</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetWindingNumber"></a>
-    <strong>GetWindingNumber (path, position)</strong>
-    </dt>
-    <dd>
-    Returns how many times the named path loops around the given position.
- Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">integer</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetWindingNumber"></a>
-    <strong>GetWindingNumber (path, transform)</strong>
-    </dt>
-    <dd>
-    Returns how many times the named path loops around the position of the given transform.
- Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
     </ul>
@@ -7318,10 +6207,10 @@
 </dd>
     <dt>
     <a name = "IsInsideArea"></a>
-    <strong>IsInsideArea (path, h)</strong>
+    <strong>IsInsideArea (path, target)</strong>
     </dt>
     <dd>
-    Returns true if the given game object is inside the area bounded by the named path.  Returns false otherwise.
+    Returns true if the given position vector, transform matrix, or object is inside the area bounded by the named path.  Returns false otherwise.
  This function is equivalent to <pre>GetWindingNumber( path, h ) ~= 0</pre>
  [2.0+]
 
@@ -7333,76 +6222,8 @@
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "IsInsideArea"></a>
-    <strong>IsInsideArea (path, position)</strong>
-    </dt>
-    <dd>
-    Returns true if the given position is inside the area bounded by the named path.  Returns false otherwise.
- This function is equivalent to <pre>GetWindingNumber( path, position ) ~= 0</pre>
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "IsInsideArea"></a>
-    <strong>IsInsideArea (path, transform)</strong>
-    </dt>
-    <dd>
-    Returns true if the position of the given transform is inside the area bounded by the named path.  Returns false otherwise.
- This function is equivalent to <pre>GetWindingNumber( path, transform ) ~= 0</pre>
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7629,7 +6450,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7657,7 +6478,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7685,7 +6506,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7713,7 +6534,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7741,7 +6562,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7749,7 +6570,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -7769,7 +6590,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -7797,7 +6618,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">independence</span>
@@ -7813,7 +6634,7 @@
 </dd>
     <dt>
     <a name = "SetCommand"></a>
-    <strong>SetCommand (me, command[, priority[, who[, where[, when[, param]]]]])</strong>
+    <strong>SetCommand (me, command[, priority][, who], where[, when[, param]])</strong>
     </dt>
     <dd>
     Commands the unit using the given parameters.  Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
@@ -7829,7 +6650,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">command</span>
@@ -7842,14 +6663,13 @@
          (<em>optional</em>)
         </li>
         <li><span class="parameter">who</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
          (<em>optional</em>)
         </li>
         <li><span class="parameter">where</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a>, <span class="type">vector</span> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-         (<em>optional</em>)
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+        ?
         </li>
         <li><span class="parameter">when</span>
             <span class="types"><span class="type">number</span></span>
@@ -7881,11 +6701,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -7902,10 +6722,10 @@
 </dd>
     <dt>
     <a name = "Goto"></a>
-    <strong>Goto (me, path[, priority])</strong>
+    <strong>Goto (me, target[, priority])</strong>
     </dt>
     <dd>
-    Commands the unit to go to the named path.
+    Commands the unit to go to the position vector, transform matrix, game object location, or named path.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
     </ul>
@@ -7913,108 +6733,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goto"></a>
-    <strong>Goto (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to go to the given target
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goto"></a>
-    <strong>Goto (me, position[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to go to the given position vector
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goto"></a>
-    <strong>Goto (me, transform[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to go to the position of the given transform matrix
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
@@ -8030,10 +6754,10 @@
 </dd>
     <dt>
     <a name = "Mine"></a>
-    <strong>Mine (me, path[, priority])</strong>
+    <strong>Mine (me, target[, priority])</strong>
     </dt>
     <dd>
-    Commands the unit to lay mines at the named path; only minelayer units support this.
+    Commands the unit to lay mines at the given position vector, transform matrix, or named path.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
     </ul>
@@ -8041,75 +6765,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Mine"></a>
-    <strong>Mine (me, position[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to lay mines at the given position vector
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Mine"></a>
-    <strong>Mine (me, transform[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to lay mines at the position of the transform matrix
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8137,11 +6797,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8169,11 +6829,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8202,7 +6862,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8230,11 +6890,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8262,7 +6922,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8290,7 +6950,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">path</span>
@@ -8311,10 +6971,11 @@
 </dd>
     <dt>
     <a name = "Retreat"></a>
-    <strong>Retreat (me, path[, priority])</strong>
+    <strong>Retreat (me, target[, priority])</strong>
     </dt>
     <dd>
-    Commands the unit to retreat to the named path.  This is equivalent to Goto with an independence of 0.
+    Commands the unit to retreat to the given target or named path.
+ This is equivalent to Goto with an independence of 0.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
     </ul>
@@ -8322,43 +6983,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Retreat"></a>
-    <strong>Retreat (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to retreat to the given target.  This is equivalent to Goto with an independence of 0.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8386,11 +7015,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8418,11 +7047,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8439,10 +7068,11 @@
 </dd>
     <dt>
     <a name = "Dropoff"></a>
-    <strong>Dropoff (me, path[, priority])</strong>
+    <strong>Dropoff (me, target[, priority])</strong>
     </dt>
     <dd>
-    Commands the unit to drop off at the named path.  Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
+    Commands the unit to drop off at the position vector, transform matrix, or named path.
+ Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
     </ul>
@@ -8450,75 +7080,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Dropoff"></a>
-    <strong>Dropoff (me, position[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to drop off at the position vector.  Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Dropoff"></a>
-    <strong>Dropoff (me, transform[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to drop off at the position of the transform matrix.  Tugs drop off their cargo and Construction Rigs build the selected item with the facing of the transform matrix.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8546,7 +7112,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">odfname</span>
@@ -8570,7 +7136,8 @@
     <strong>BuildAt (me, odfname, target[, priority])</strong>
     </dt>
     <dd>
-    Commands a producer to build the given odf name at the location of the target game object.  A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
+    Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.
+ A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
     </ul>
@@ -8578,7 +7145,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">odfname</span>
@@ -8586,116 +7153,8 @@
 
         </li>
         <li><span class="parameter">target</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildAt"></a>
-    <strong>BuildAt (me, odfname, path[, priority])</strong>
-    </dt>
-    <dd>
-    Commands a producer to build the given odf name at the named path.  A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildAt"></a>
-    <strong>BuildAt (me, odfname, position[, priority])</strong>
-    </dt>
-    <dd>
-    Commands a producer to build the given odf name at the position vector.  A Construction Rig will build at the location with their current facing and an Armory will launch the item to the location. Other producers will ignore the location.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildAt"></a>
-    <strong>BuildAt (me, odfname, transform[, priority])</strong>
-    </dt>
-    <dd>
-    Commands a producer to build the given odf name at the transform matrix.  A Construction Rig will build at the location with the facing of the transform and an Armory will launch the item to the location. Other producers will ignore the location.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
@@ -8723,11 +7182,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">him</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8756,7 +7215,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">me</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">priority</span>
@@ -8790,7 +7249,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">tug</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8819,7 +7278,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">tug</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8827,7 +7286,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -8847,7 +7306,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">cargo</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8855,7 +7314,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -8882,7 +7341,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8904,7 +7363,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8926,7 +7385,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8948,7 +7407,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8970,7 +7429,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -8978,7 +7437,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -9005,7 +7464,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9033,7 +7492,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9061,7 +7520,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9089,7 +7548,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">health</span>
@@ -9115,7 +7574,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">health</span>
@@ -9141,7 +7600,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">health</span>
@@ -9168,7 +7627,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9197,7 +7656,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9225,7 +7684,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9253,7 +7712,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9281,7 +7740,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">ammo</span>
@@ -9307,7 +7766,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">ammo</span>
@@ -9333,7 +7792,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">ammo</span>
@@ -9360,7 +7819,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9424,7 +7883,7 @@
 
         </li>
         <li><span class="parameter">target</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9511,7 +7970,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">base</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">right</span>
@@ -9527,7 +7986,7 @@
 
         </li>
         <li><span class="parameter">target</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9679,7 +8138,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9701,7 +8160,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9729,7 +8188,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -9777,23 +8236,23 @@
  Type is a one-character string indicating the script-defined message type.
  Other parameters will be sent as data and passed to the recipient's Receive function as parameters. Send supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
  The sent packet can contain up to 244 bytes of data (255 bytes maximum for an Anet packet minus 6 bytes for the packet header and 5 bytes for the reliable transmission header)
- <table><tbody>
-   <tr><th colspan="2">Type</th><th>Bytes</th></tr>
-   <tr><td colspan="2">nil</td><td>1</td></tr>
-   <tr><td colspan="2">boolean</td><td>1</td></tr>
-   <tr><td rowspan="2">handle</td><td>invalid (zero)</td><td>1</td></tr>
-   <tr><td>valid (nonzero)</td><td>1 + sizeof(int) = 5</td></tr>
-   <tr><td rowspan="5">number</td><td>zero</td><td>1</td></tr>
-   <tr><td>char (integer -128 to 127)</td><td>1 + sizeof(char) = 2</td></tr>
-   <tr><td>short (integer -32768 to 32767)</td><td>1 + sizeof(short) = 3</td></tr>
-   <tr><td>int (integer)</td><td>1 + sizeof(int) = 5</td></tr>
-   <tr><td>double (non-integer)</td><td>1 + sizeof(double) = 9</td></tr>
-   <tr><td rowspan="2">string</td><td>length &lt; 31</td><td>1 + length</td></tr>
-   <tr><td>length &gt;= 31</td><td>2 + length</td></tr>
-   <tr><td rowspan="2">table</td><td>count &lt; 31</td><td>1 + count + size of keys and values</td></tr>
-   <tr><td>count &gt;= 31</td><td>2 + count + size of keys and values</td></tr>
-   <tr><td rowspan="2">userdata</td><td>VECTOR_3D</td><td>1 + sizeof(VECTOR_3D) = 13</td></tr>
-   <tr><td>MAT_3D</td><td>1 + sizeof(REDUCED_MAT) = 12</td></tr>
+ <table style="border-collapse:collapse;border:3px solid black;"><tbody>
+   <tr><th style="border:2px solid black;" colspan="2">Type</th><th style="border:2px solid black;">Bytes</th></tr>
+   <tr><td style="border:2px solid black;" colspan="2">nil</td><td style="border:2px solid black;">1</td></tr>
+   <tr><td style="border:2px solid black;" colspan="2">boolean</td><td style="border:2px solid black;">1</td></tr>
+   <tr><td style="border:2px solid black;" rowspan="2">handle</td><td style="border:2px solid black;">invalid (zero)</td><td style="border:2px solid black;">1</td></tr>
+   <tr><td style="border:2px solid black;">valid (nonzero)</td><td style="border:2px solid black;">1 + sizeof(int) = 5</td></tr>
+   <tr><td style="border:2px solid black;" rowspan="5">number</td><td style="border:2px solid black;">zero</td><td style="border:2px solid black;">1</td></tr>
+   <tr><td style="border:2px solid black;">char (integer -128 to 127)</td><td style="border:2px solid black;">1 + sizeof(char) = 2</td></tr>
+   <tr><td style="border:2px solid black;">short (integer -32768 to 32767)</td><td style="border:2px solid black;">1 + sizeof(short) = 3</td></tr>
+   <tr><td style="border:2px solid black;">int (integer)</td><td style="border:2px solid black;">1 + sizeof(int) = 5</td></tr>
+   <tr><td style="border:2px solid black;">double (non-integer)</td><td style="border:2px solid black;">1 + sizeof(double) = 9</td></tr>
+   <tr><td style="border:2px solid black;" rowspan="2">string</td><td style="border:2px solid black;">length &lt; 31</td><td style="border:2px solid black;">1 + length</td></tr>
+   <tr><td style="border:2px solid black;">length &gt;= 31</td><td style="border:2px solid black;">2 + length</td></tr>
+   <tr><td style="border:2px solid black;" rowspan="2">table</td><td style="border:2px solid black;">count &lt; 31</td><td style="border:2px solid black;">1 + count + size of keys and values</td></tr>
+   <tr><td style="border:2px solid black;">count &gt;= 31</td><td style="border:2px solid black;">2 + count + size of keys and values</td></tr>
+   <tr><td style="border:2px solid black;" rowspan="2">userdata</td><td style="border:2px solid black;">VECTOR_3D</td><td style="border:2px solid black;">1 + sizeof(VECTOR_3D) = 13</td></tr>
+   <tr><td style="border:2px solid black;">MAT_3D</td><td style="border:2px solid black;">1 + sizeof(REDUCED_MAT) = 12</td></tr>
  </tbody></table>
 
     </ul>
@@ -9809,7 +8268,7 @@
 
         </li>
         <li><span class="parameter">...</span>
-
+         any
         </li>
     </ul>
 
@@ -9847,7 +8306,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">odfhandle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#ParameterDB">ParameterDB</a></span>
 
     </ol>
 
@@ -9870,7 +8329,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">odf</span>
-            <span class="types"><span class="type">odfhandle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#ParameterDB">ParameterDB</a></span>
 
         </li>
         <li><span class="parameter">section</span>
@@ -9917,7 +8376,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">odf</span>
-            <span class="types"><span class="type">odfhandle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#ParameterDB">ParameterDB</a></span>
 
         </li>
         <li><span class="parameter">section</span>
@@ -9964,7 +8423,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">odf</span>
-            <span class="types"><span class="type">odfhandle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#ParameterDB">ParameterDB</a></span>
 
         </li>
         <li><span class="parameter">section</span>
@@ -10011,7 +8470,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">odf</span>
-            <span class="types"><span class="type">odfhandle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#ParameterDB">ParameterDB</a></span>
 
         </li>
         <li><span class="parameter">section</span>
@@ -10053,49 +8512,18 @@
     <dl class="function">
     <dt>
     <a name = "GetTerrainHeightAndNormal"></a>
-    <strong>GetTerrainHeightAndNormal (h)</strong>
+    <strong>GetTerrainHeightAndNormal (target[, point])</strong>
     </dt>
     <dd>
-    Returns the terrain height and normal vector at the location of the game object.
+    Returns the terrain height and normal vector at a position vector, transform matrix, object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        </li>
-        <li>
-           <span class="types"><span class="type">vector</span></span>
-        </li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetTerrainHeightAndNormal"></a>
-    <strong>GetTerrainHeightAndNormal (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the terrain height and normal vector at a point on the named path.  It uses the start of the path if no point is given.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
@@ -10110,69 +8538,7 @@
            <span class="types"><span class="type">number</span></span>
         </li>
         <li>
-           <span class="types"><span class="type">vector</span></span>
-        </li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetTerrainHeightAndNormal"></a>
-    <strong>GetTerrainHeightAndNormal (position)</strong>
-    </dt>
-    <dd>
-    Returns the terrain height and normal vector at the position vector.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        </li>
-        <li>
-           <span class="types"><span class="type">vector</span></span>
-        </li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetTerrainHeightAndNormal"></a>
-    <strong>GetTerrainHeightAndNormal (transform)</strong>
-    </dt>
-    <dd>
-    Returns the terrain height and normal vector at the position of the transform matrix.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        </li>
-        <li>
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
         </li>
     </ol>
 
@@ -10189,49 +8555,18 @@
     <dl class="function">
     <dt>
     <a name = "GetFloorHeightAndNormal"></a>
-    <strong>GetFloorHeightAndNormal (h)</strong>
+    <strong>GetFloorHeightAndNormal (target[, point])</strong>
     </dt>
     <dd>
-    Returns the floor height and normal vector at the location of the game object.
+    Returns the floor height and normal vector at a position vector, transform matrix, object, or point on a named path.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        </li>
-        <li>
-           <span class="types"><span class="type">vector</span></span>
-        </li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetFloorHeightAndNormal"></a>
-    <strong>GetFloorHeightAndNormal (path[, point])</strong>
-    </dt>
-    <dd>
-    Returns the floor height and normal vector at a point on the named path.  It uses the start of the path if no point is given.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
             <span class="types"><span class="type">integer</span></span>
@@ -10246,69 +8581,7 @@
            <span class="types"><span class="type">number</span></span>
         </li>
         <li>
-           <span class="types"><span class="type">vector</span></span>
-        </li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetFloorHeightAndNormal"></a>
-    <strong>GetFloorHeightAndNormal (position)</strong>
-    </dt>
-    <dd>
-    Returns the floor height and normal vector at the position vector.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        </li>
-        <li>
-           <span class="types"><span class="type">vector</span></span>
-        </li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetFloorHeightAndNormal"></a>
-    <strong>GetFloorHeightAndNormal (transform)</strong>
-    </dt>
-    <dd>
-    Returns the floor height and normal vector at the position of the transform matrix.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">number</span></span>
-        </li>
-        <li>
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
         </li>
     </ol>
 
@@ -10437,15 +8710,15 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Vector"></a>Vector </h2>
+    <h2 class="section-header has-description"><a name="Class_Vector"></a>Class Vector </h2>
 
           <div class="section-description">
-           is a custom userdata representing a position or direction. It has three number components: x, y, and z.
+          A Vector in 3D space
           </div>
     <dl class="function">
     <dt>
-    <a name = "SetVector"></a>
-    <strong>SetVector ([x[, y[, z]]])</strong>
+    <a name = "Vector:SetVector"></a>
+    <strong>Vector:SetVector ([x[, y[, z]]])</strong>
     </dt>
     <dd>
     Returns a vector whose components have the given number values.  If no value is given for a component, the default value is 0.0.
@@ -10474,7 +8747,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -10483,8 +8756,8 @@
 
 </dd>
     <dt>
-    <a name = "DotProduct"></a>
-    <strong>DotProduct (a, a)</strong>
+    <a name = "Vector:DotProduct"></a>
+    <strong>Vector:DotProduct (a, b)</strong>
     </dt>
     <dd>
     Returns the <a href="http://en.wikipedia.org/wiki/Dot_product">dot product</a> between vectors a and b.
@@ -10495,11 +8768,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
-        <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">b</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10516,8 +8789,8 @@
 
 </dd>
     <dt>
-    <a name = "CrossProduct"></a>
-    <strong>CrossProduct (a, b)</strong>
+    <a name = "Vector:CrossProduct"></a>
+    <strong>Vector:CrossProduct (a, b)</strong>
     </dt>
     <dd>
     Returns the <a href="http://en.wikipedia.org/wiki/Cross_product">cross product</a> between vectors a and b.
@@ -10528,11 +8801,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">b</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10540,7 +8813,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -10549,8 +8822,8 @@
 
 </dd>
     <dt>
-    <a name = "Normalize"></a>
-    <strong>Normalize (v)</strong>
+    <a name = "Vector:Normalize"></a>
+    <strong>Vector:Normalize (v)</strong>
     </dt>
     <dd>
     Returns the vector scaled to unit length.
@@ -10561,7 +8834,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">v</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10569,7 +8842,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">vector</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -10578,8 +8851,8 @@
 
 </dd>
     <dt>
-    <a name = "Length"></a>
-    <strong>Length (v)</strong>
+    <a name = "Vector:Length"></a>
+    <strong>Vector:Length (v)</strong>
     </dt>
     <dd>
     Returns the length of the vector.
@@ -10590,7 +8863,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">v</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10607,8 +8880,8 @@
 
 </dd>
     <dt>
-    <a name = "LengthSquared"></a>
-    <strong>LengthSquared (v)</strong>
+    <a name = "Vector:LengthSquared"></a>
+    <strong>Vector:LengthSquared (v)</strong>
     </dt>
     <dd>
     Returns the squared length of the vector.
@@ -10619,7 +8892,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">v</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10636,8 +8909,8 @@
 
 </dd>
     <dt>
-    <a name = "Distance2D"></a>
-    <strong>Distance2D (a, b)</strong>
+    <a name = "Vector:Distance2D"></a>
+    <strong>Vector:Distance2D (a, b)</strong>
     </dt>
     <dd>
     Returns the 2D distance between vectors a and b.
@@ -10648,11 +8921,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">b</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10669,8 +8942,8 @@
 
 </dd>
     <dt>
-    <a name = "Distance2DSquared"></a>
-    <strong>Distance2DSquared (a, b)</strong>
+    <a name = "Vector:Distance2DSquared"></a>
+    <strong>Vector:Distance2DSquared (a, b)</strong>
     </dt>
     <dd>
     Returns the squared 2D distance of the vector.
@@ -10681,11 +8954,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">b</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10702,8 +8975,8 @@
 
 </dd>
     <dt>
-    <a name = "Distance3D"></a>
-    <strong>Distance3D (a, b)</strong>
+    <a name = "Vector:Distance3D"></a>
+    <strong>Vector:Distance3D (a, b)</strong>
     </dt>
     <dd>
     Returns the 3D distance between vectors a and b.
@@ -10714,11 +8987,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">b</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10735,8 +9008,8 @@
 
 </dd>
     <dt>
-    <a name = "Distance3DSquared"></a>
-    <strong>Distance3DSquared (a, b)</strong>
+    <a name = "Vector:Distance3DSquared"></a>
+    <strong>Vector:Distance3DSquared (a, b)</strong>
     </dt>
     <dd>
     Returns the squared 3D distance of the vector.
@@ -10747,11 +9020,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">a</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">b</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -10768,8 +9041,8 @@
 
 </dd>
     <dt>
-    <a name = "vector:unm"></a>
-    <strong>vector:unm (vector)</strong>
+    <a name = "Vector.__unm"></a>
+    <strong>Vector.__unm (vector)</strong>
     </dt>
     <dd>
     Negate the vector.
@@ -10791,8 +9064,8 @@
 
 </dd>
     <dt>
-    <a name = "vector:add"></a>
-    <strong>vector:add (vector1, vector2)</strong>
+    <a name = "Vector.__add"></a>
+    <strong>Vector.__add (vector1, vector2)</strong>
     </dt>
     <dd>
     Add two vectors.
@@ -10818,8 +9091,8 @@
 
 </dd>
     <dt>
-    <a name = "vector:sub"></a>
-    <strong>vector:sub (vector1, vector2)</strong>
+    <a name = "Vector.__sub"></a>
+    <strong>Vector.__sub (vector1, vector2)</strong>
     </dt>
     <dd>
     Subtract two vectors.
@@ -10845,8 +9118,8 @@
 
 </dd>
     <dt>
-    <a name = "vector:mul"></a>
-    <strong>vector:mul (number, vector)</strong>
+    <a name = "Vector.__mul"></a>
+    <strong>Vector.__mul (number, vector)</strong>
     </dt>
     <dd>
     Multiply a number by a vector.
@@ -10861,19 +9134,25 @@
 
         </li>
         <li><span class="parameter">vector</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "vector:mul"></a>
-    <strong>vector:mul (vector, number)</strong>
+    <a name = "Vector.__mul"></a>
+    <strong>Vector.__mul (vector, number)</strong>
     </dt>
     <dd>
     Multiply a vector by a number.
@@ -10884,7 +9163,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">vector</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">number</span>
@@ -10893,14 +9172,20 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "vector:mul"></a>
-    <strong>vector:mul (vector1, vector2)</strong>
+    <a name = "Vector.__mul"></a>
+    <strong>Vector.__mul (vector1, vector2)</strong>
     </dt>
     <dd>
     Multiply two vectors.
@@ -10911,23 +9196,29 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">vector1</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
         <li><span class="parameter">vector2</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "vector:div"></a>
-    <strong>vector:div (number, vector)</strong>
+    <a name = "Vector.__div"></a>
+    <strong>Vector.__div (number, vector)</strong>
     </dt>
     <dd>
     Divide a number by a vector.
@@ -10947,14 +9238,20 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "vector:div"></a>
-    <strong>vector:div (vector, number)</strong>
+    <a name = "Vector.__div"></a>
+    <strong>Vector.__div (vector, number)</strong>
     </dt>
     <dd>
     Divide a vector by a number.
@@ -10974,18 +9271,24 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "vector:div"></a>
-    <strong>vector:div (vector1, vector2)</strong>
+    <a name = "Vector.__div"></a>
+    <strong>Vector.__div (vector1, vector2)</strong>
     </dt>
     <dd>
     Divide two vectors.
-<p> Equivlent to SetVector(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z)
+<p> Equivalent to SetVector(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z)
 
     </ul>
 
@@ -11001,14 +9304,20 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "vector:eq"></a>
-    <strong>vector:eq (vector1, vector2)</strong>
+    <a name = "Vector.__eq"></a>
+    <strong>Vector.__eq (v1, v2)</strong>
     </dt>
     <dd>
     Check if two vectors are equal.
@@ -11017,31 +9326,37 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">vector1</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v1</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
-        <li><span class="parameter">vector2</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v2</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
 
 
 
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Matrix"></a>Matrix </h2>
+    <h2 class="section-header has-description"><a name="Class_Matrix"></a>Class Matrix </h2>
 
           <div class="section-description">
-           is a custom userdata representing an orientation and position in space. It has four vector components (right, up, front, and posit) sharing space with twelve number components (right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z).
+          A Matrix
           </div>
     <dl class="function">
     <dt>
-    <a name = "SetMatrix"></a>
-    <strong>SetMatrix ([right_x[, right_y[, right_z[, up_x[, up_y[, up_z[, front_x[, front_y[, front_z[, posit_x[, posit_y[, posit_z]]]]]]]]]]]])</strong>
+    <a name = "Matrix:SetMatrix"></a>
+    <strong>Matrix:SetMatrix ([right_x[, right_y[, right_z[, up_x[, up_y[, up_z[, front_x[, front_y[, front_z[, posit_x[, posit_y[, posit_z]]]]]]]]]]]])</strong>
     </dt>
     <dd>
     Returns a matrix whose components have the given number values.  If no value is given for a component, the default value is zero. Be careful with this since it's easy to build a non-orthonormal matrix that will break all kinds of built-in assumptions.
@@ -11115,7 +9430,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11124,8 +9439,8 @@
 
 </dd>
     <dt>
-    <a name = "matrix"></a>
-    <strong>matrix ()</strong>
+    <a name = "Matrix:matrix"></a>
+    <strong>Matrix:matrix ()</strong>
     </dt>
     <dd>
     Global value representing the identity matrix.
@@ -11134,14 +9449,20 @@
     </ul>
 
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "BuildAxisRotationMatrix"></a>
-    <strong>BuildAxisRotationMatrix ([angle[, axis_x[, axis_y[, axis_z]]]])</strong>
+    <a name = "Matrix:BuildAxisRotationMatrix"></a>
+    <strong>Matrix:BuildAxisRotationMatrix ([angle[, axis_x[, axis_y[, axis_z]]]])</strong>
     </dt>
     <dd>
     Build a matrix representing a rotation by an angle around an axis.  The angle is in radians. If no value is given for the angle or an axis component, the default value is zero. The axis must be unit-length (i.e. axis_x<sup>2</sup> + axis_y<sup>2</sup> + axis_z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
@@ -11175,7 +9496,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11184,8 +9505,8 @@
 
 </dd>
     <dt>
-    <a name = "BuildAxisRotationMatrix"></a>
-    <strong>BuildAxisRotationMatrix ([angle], axis)</strong>
+    <a name = "Matrix:BuildAxisRotationMatrix"></a>
+    <strong>Matrix:BuildAxisRotationMatrix ([angle], axis)</strong>
     </dt>
     <dd>
     Build a matrix representing a rotation by an angle around an axis.  The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
@@ -11200,7 +9521,7 @@
          (<em>optional</em>)
         </li>
         <li><span class="parameter">axis</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -11208,7 +9529,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11217,8 +9538,8 @@
 
 </dd>
     <dt>
-    <a name = "BuildPositionRotationMatrix"></a>
-    <strong>BuildPositionRotationMatrix ([pitch[, yaw[, roll[, posit_x[, posit_y[, posit_z]]]]]])</strong>
+    <a name = "Matrix:BuildPositionRotationMatrix"></a>
+    <strong>Matrix:BuildPositionRotationMatrix ([pitch[, yaw[, roll[, posit_x[, posit_y[, posit_z]]]]]])</strong>
     </dt>
     <dd>
     Build a matrix with the given pitch, yaw, and roll angles and position.  The angles are in radians. If no value is given for a component, the default value is zero.
@@ -11262,7 +9583,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11271,8 +9592,8 @@
 
 </dd>
     <dt>
-    <a name = "BuildPositionRotationMatrix"></a>
-    <strong>BuildPositionRotationMatrix ([pitch][, yaw][, roll], position)</strong>
+    <a name = "Matrix:BuildPositionRotationMatrix"></a>
+    <strong>Matrix:BuildPositionRotationMatrix ([pitch][, yaw][, roll], position)</strong>
     </dt>
     <dd>
     Build a matrix with the given pitch, yaw, and roll angles and position.  The angles are in radians. If no value is given for a component, the default value is zero.
@@ -11297,7 +9618,7 @@
          (<em>optional</em>)
         </li>
         <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
@@ -11305,7 +9626,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11314,8 +9635,8 @@
 
 </dd>
     <dt>
-    <a name = "BuildOrthogonalMatrix"></a>
-    <strong>BuildOrthogonalMatrix ([up[, heading]])</strong>
+    <a name = "Matrix:BuildOrthogonalMatrix"></a>
+    <strong>Matrix:BuildOrthogonalMatrix ([up[, heading]])</strong>
     </dt>
     <dd>
     Build a matrix with zero position, its up axis along the specified up vector, oriented so that its front axis points as close as possible to the heading vector.  If up is not specified, the default value is the Y axis. If heading is not specified, the default value is the Z axis.
@@ -11325,12 +9646,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">up</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
          (<em>optional</em>)
         </li>
         <li><span class="parameter">heading</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
          (<em>optional</em>)
         </li>
@@ -11339,7 +9660,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11348,8 +9669,8 @@
 
 </dd>
     <dt>
-    <a name = "BuildDirectionalMatrix"></a>
-    <strong>BuildDirectionalMatrix ([position[, direction]])</strong>
+    <a name = "Matrix:BuildDirectionalMatrix"></a>
+    <strong>Matrix:BuildDirectionalMatrix ([position[, direction]])</strong>
     </dt>
     <dd>
     Build a matrix with the given position vector, its front axis pointing along the direction vector, and zero roll.  If position is not specified, the default value is a zero vector. If direction is not specified, the default value is the Z axis.
@@ -11359,12 +9680,12 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
          (<em>optional</em>)
         </li>
         <li><span class="parameter">direction</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
          (<em>optional</em>)
         </li>
@@ -11373,7 +9694,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
     </ol>
 
@@ -11382,8 +9703,8 @@
 
 </dd>
     <dt>
-    <a name = "matrix:mul"></a>
-    <strong>matrix:mul (matrix1, matrix2)</strong>
+    <a name = "matrix.__mul"></a>
+    <strong>matrix.__mul (matrix1, matrix2)</strong>
     </dt>
     <dd>
     Multiply two matrices.
@@ -11393,23 +9714,29 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">matrix1</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
         </li>
         <li><span class="parameter">matrix2</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
+
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "matrix:mul"></a>
-    <strong>matrix:mul (matrix, vector)</strong>
+    <a name = "matrix.__mul"></a>
+    <strong>matrix.__mul (matrix, vector)</strong>
     </dt>
     <dd>
     Transform a vector by a matrix.
@@ -11419,15 +9746,21 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">matrix</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
 
         </li>
         <li><span class="parameter">vector</span>
-            <span class="types"><span class="type">vector</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a></span>
+
+    </ol>
 
 
 
@@ -11453,7 +9786,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11476,7 +9809,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11499,7 +9832,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11522,7 +9855,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11545,7 +9878,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11553,7 +9886,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -11575,7 +9908,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11583,7 +9916,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -11613,7 +9946,7 @@
 
         </li>
         <li><span class="parameter">portal</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11621,7 +9954,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">handle</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
     </ol>
 
@@ -11650,7 +9983,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11674,7 +10007,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11697,7 +10030,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11720,7 +10053,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11743,7 +10076,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11751,7 +10084,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -11773,11 +10106,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
         <li><span class="parameter">enable</span>
-            <span class="types"><span class="type">bool</span></span>
+            <span class="types"><span class="type">boolean</span></span>
 
         </li>
     </ul>
@@ -11801,7 +10134,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">enable</span>
-            <span class="types"><span class="type">bool</span></span>
+            <span class="types"><span class="type">boolean</span></span>
 
         </li>
     </ul>
@@ -11831,7 +10164,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11854,7 +10187,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
         </li>
     </ul>
@@ -11873,10 +10206,10 @@
     <dl class="function">
     <dt>
     <a name = "MakeExplosion"></a>
-    <strong>MakeExplosion (odfname, h)</strong>
+    <strong>MakeExplosion (odfname, target)</strong>
     </dt>
     <dd>
-    Creates an explosion with the given odf name at the location of a game object.
+    Creates an explosion with the given odf name at the target position vector, transform matrix, object, or the start of the named path.
  [2.1+]
 
     </ul>
@@ -11887,90 +10220,9 @@
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
 
         </li>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "MakeExplosion"></a>
-    <strong>MakeExplosion (odfname, path)</strong>
-    </dt>
-    <dd>
-    Creates an explosion with the given odf name at the start of the named path.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "MakeExplosion"></a>
-    <strong>MakeExplosion (odfname, position)</strong>
-    </dt>
-    <dd>
-    Creates an explosion with the given odf name at the given position vector.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "MakeExplosion"></a>
-    <strong>MakeExplosion (odfname, transform)</strong>
-    </dt>
-    <dd>
-    Creates an explosion with the given odf name with the given transform matrix.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#matrix">matrix</a></span>
-
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
         </li>
     </ul>
 
@@ -11986,7 +10238,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

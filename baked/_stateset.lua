@@ -5,8 +5,7 @@
 --- If you want to do something more complex, use the hook module instead.
 --- Like most similar constructs State Set Runners have internal data storage and can be saved and loaded.
 ---
---- Dependencies: @{_utility}, @{_hook}, @{_customsavetype}
---- @module _stateset
+--- @module '_stateset'
 --- @author John "Nielk1" Klein
 --- @usage local stateset = require("_stateset");
 --- 
@@ -30,19 +29,29 @@
 --     MissionData.TestSMI:run(1, 2);
 -- end);
 
+--- @diagnostic disable: undefined-global
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 
 local debugprint = debugprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_stateset Loading");
 
 local utility = require("_utility");
-local hook = require("_hook");
 local customsavetype = require("_customsavetype");
+local statemachine = require("_statemachine");
 
-local _stateset = {};
+local M = {};
 
-_stateset.Sets = {};
+M.Sets = {};
+
+--- @class StateSet
+--- @field template string Name of the StateSet template
+
+--- @class StateSetRunner
+--- @field template string Name of the StateSet template the runner is using
+--- @field active_states table Table of active states, key is the state name and value is the state activation flag or permit count
+--- @field addonData table Custom context data stored in the StateSetRunner
 
 local StateSet = {};
 StateSet.__index = StateSet;
@@ -53,14 +62,14 @@ StateSet.__index = StateSet;
 --- @param self StateSet StateSet instance
 --- @param name string Name of the state
 --- @param state function Function to be called when the state is active, should return true if the state did something.
---- @param permitBased? bool If true, the state is permit based
+--- @param permitBased? boolean If true, the state is permit based
 --- @treturn StateSet For function chaining
 function StateSet.Add(self, name, state, permitBased)
     debugprint("Add state '"..name.."' to StateSet '"..self.template.."'.", permitBased);
     if permitBased then
-        _stateset.Sets[self.template][name] = { f = state, p = true };
+        M.Sets[self.template][name] = { f = state, p = true };
     else
-        _stateset.Sets[self.template][name] = { f = state };
+        M.Sets[self.template][name] = { f = state };
     end
     return self;
 end
@@ -68,7 +77,7 @@ end
 --- Is this object an instance of StateSetRunner?
 --- @param object any Object in question
 --- @treturn bool
-function isstatesetrunner(object)
+function M.isstatesetrunner(object)
   return (type(object) == "table" and object.__type == "StateSetRunner");
 end
 
@@ -98,13 +107,13 @@ StateSetRunner.__type = "StateSetRunner";
 --- Create StateSetRunner
 --- @param name string StateSetRunner template
 --- @param values table Table of values embeded in the StateSetRunner
-local CreateStateSetRunner = function(name, values)
+local function CreateStateSetRunner(name, values)
   local self = setmetatable({}, StateSetRunner);
   self.template = name;
   self.active_states = {};
   
   if utility.istable(values) then
-    for k, v in pairs( values ) do
+    for k, v in pairs(values) do
       self[k] = v;
     end
   end
@@ -114,20 +123,20 @@ end
 
 --- Run StateSetRunner.
 --- @param self StateSetRunner StateSetRunner instance
---- @param ... Arguments to pass to the state function
---- @treturn bool True if at least one state was found and executed and returned true
+--- @param ... any Arguments to pass to the state function
+--- @return boolean True if at least one state was found and executed and returned true
 function StateSetRunner.run(self, ...)
-    if not isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
+    if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
 
     local foundState = false;
-    local sets = _stateset.Sets[ self.template ];
+    local sets = M.Sets[ self.template ];
     if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     for name,v in pairs(self.active_states) do
         if v then
             local state = sets[name].f;
             if utility.isfunction(state) then
                 foundState = foundState or state(self, ...);
-            elseif isstatemachineiter(state) then
+            elseif statemachine.isstatemachineiter(state) then
                 foundState = foundState or state:run(self, ...);
             end
         end
@@ -141,9 +150,9 @@ end
 --- @param name string Name of the state
 --- @treturn StateSetRunner For function chaining
 function StateSetRunner.on(self, name)
-    if not isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
+    if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.isstring(name) then error("Parameter name must be string."); end
-    local sets = _stateset.Sets[ self.template ];
+    local sets = M.Sets[ self.template ];
     if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
@@ -163,12 +172,12 @@ end
 --- Set state off.
 --- @param self StateSetRunner StateSetRunner instance
 --- @param name string Name of the state
---- @param force? bool If true, the state is set off regardless of the current permits
+--- @param force? boolean If true, the state is set off regardless of the current permits
 --- @treturn StateSetRunner For function chaining
 function StateSetRunner.off(self, name, force)
-    if not isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
+    if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.isstring(name) then error("Parameter name must be string."); end
-    local sets = _stateset.Sets[ self.template ];
+    local sets = M.Sets[ self.template ];
     if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
@@ -188,10 +197,10 @@ end
 --- Creates an StateSetRunner Template with the given indentifier.
 --- @param name string Name of the StateSetRunner Template
 --- @treturn StateSet StateSet for calling Add and AddPermit, can not be saved.
-function _stateset.Create( name )
+function M.Create( name )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
 
-    debugprint("Create StateSetRunner Template '"..name.."'.", _stateset.Sets[name] ~= nil);
+    debugprint("Create StateSetRunner Template '"..name.."'.", M.Sets[name] ~= nil);
     
     --if (_stateset.Machines[ name ] == nil) then
     --    _stateset.Machines[ name ] = {};
@@ -199,17 +208,17 @@ function _stateset.Create( name )
     
     local state = setmetatable({}, StateSet);
     state.template = name;
-    _stateset.Sets[ name ] = state;
+    M.Sets[ name ] = state;
     return state;
 end
 
 --- Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.
 --- @param name string Name of the StateSetRunner Template
 --- @param init table Initial data
-function _stateset.Start( name, init )
+function M.Start( name, init )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
-    if (_stateset.Sets[ name ] == nil) then error('StateSetRunner Template "' .. name .. '" not found.'); end
+    if (M.Sets[ name ] == nil) then error('StateSetRunner Template "' .. name .. '" not found.'); end
 
     return CreateStateSetRunner(name, init);
 end
@@ -225,19 +234,34 @@ end
 -- @param self StateSetRunner instance
 -- @return ...
 function StateSetRunner.Save(self)
-    return self;
+    return self.template, self.active_states, self.addonData;
 end
 
 --- Load event function.
 --
 -- INTERNAL USE.
--- @param data
-function StateSetRunner.Load(data)
-    return CreateStateSetRunner(data.template, data.timer, data.target_time, data.state_index, data.addonData);
+-- @param template
+-- @param active_states
+-- @param addonData
+function StateSetRunner.Load(template, active_states, addonData)
+    local stateRunner = CreateStateSetRunner(template, addonData);
+    --for k, v in pairs(active_states) do
+    --    if type(v) == "number" then
+    --        --stateRunner.active_states[k] = v;
+    --        for i = 1, v do
+    --            stateRunner:on(k);
+    --        end
+    --    elseif v == true then
+    --        --stateRunner.active_states[k] = true;
+    --        stateRunner:on(k);
+    --    end
+    --end
+    stateRunner.active_states = active_states; -- if this doesn't work use the loop above instead
+    return stateRunner;
 end
 
 customsavetype.Register(StateSetRunner);
 
 debugprint("_stateset Loaded");
 
-return _stateset;
+return M;

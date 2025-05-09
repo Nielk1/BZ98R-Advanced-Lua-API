@@ -33,7 +33,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
-<li><a href="#Tables">Tables</a></li>
 <li><a href="#Core">Core </a></li>
 <li><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></li>
 <li><a href="#Orders">Orders </a></li>
@@ -76,7 +75,7 @@
 <p>BZ98R LUA Extended API GameObject.</p>
 <p>
 <p> GameObject wrapper functions.
-<p> Dependencies: <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_config.html#">_config</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_unsaved.html#">_unsaved</a>, <a href="../modules/_customsavetype.html#">_customsavetype</a></p>
+'</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: John "Nielk1" Klein</li>
@@ -90,13 +89,6 @@
 	<td class="summary">Is this object an instance of GameObject?</td>
 	</tr>
 </table>
-<h2><a href="#Tables">Tables</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GameObject">GameObject</a></td>
-	<td class="summary">GameObject.</td>
-	</tr>
-</table>
 <h2><a href="#Core">Core </a></h2>
 <table class="function_list">
 	<tr>
@@ -107,33 +99,9 @@
 	<td class="name" nowrap><a href="#GameObject.GetHandle">GameObject.GetHandle (self)</a></td>
 	<td class="summary">Get Handle used by BZ98R.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.Save">GameObject.Save (self)</a></td>
-	<td class="summary">Save event function.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.Load">GameObject.Load (id)</a></td>
-	<td class="summary">Load event function.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.BulkSave">GameObject.BulkSave ()</a></td>
-	<td class="summary">BulkSave event function.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.BulkLoad">GameObject.BulkLoad (data)</a></td>
-	<td class="summary">BulkLoad event function.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.BulkPostLoad">GameObject.BulkPostLoad ()</a></td>
-	<td class="summary">BulkPostLoad event function.</td>
-	</tr>
 </table>
 <h2><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></h2>
 <table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#BuildGameObject">BuildGameObject (odf, team, pos)</a></td>
-	<td class="summary">Build Object.</td>
-	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#BuildGameObject">BuildGameObject (odf, team, pos[, point])</a></td>
 	<td class="summary">Build Object.</td>
@@ -141,6 +109,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#GameObject.RemoveObject">GameObject.RemoveObject (self)</a></td>
 	<td class="summary">Remove GameObject from world.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetGameObject">GetGameObject (key)</a></td>
+	<td class="summary">Get GameObject by Label.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetTeamSlot">GetTeamSlot (slot[, team])</a></td>
@@ -166,10 +138,6 @@
 	<td class="name" nowrap><a href="#GetConstructorGameObject">GetConstructorGameObject ([team])</a></td>
 	<td class="summary">Get Factory GameObject of team.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetGameObject">GetGameObject (key)</a></td>
-	<td class="summary">Get GameObject by Label.</td>
-	</tr>
 </table>
 <h2><a href="#Orders">Orders </a></h2>
 <table class="function_list">
@@ -179,19 +147,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target[, priority])</a></td>
-	<td class="summary">Order GameObject to Goto target GameObject</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target[, priority])</a></td>
-	<td class="summary">Order GameObject to Goto target Vector</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target[, priority])</a></td>
-	<td class="summary">Order GameObject to Goto target Vector</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GameObject.Goto">GameObject.Goto (self, target, point[, priority])</a></td>
-	<td class="summary">Order GameObject to Goto target Path.</td>
+	<td class="summary">Order GameObject to Goto target Vector, Matrix, GameObject, or Path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GameObject.Mine">GameObject.Mine (self, target, priority)</a></td>
@@ -202,7 +158,7 @@
 	<td class="summary">Order GameObject to Follow target GameObject.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Follow">GameObject.Follow (self, target)</a></td>
+	<td class="name" nowrap><a href="#GameObject.IsFollowing">GameObject.IsFollowing (self, target)</a></td>
 	<td class="summary">Is the GameObject following the target GameObject?</td>
 	</tr>
 	<tr>
@@ -518,29 +474,9 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "GameObject"></a>
-    <strong>GameObject</strong>
-    </dt>
-    <dd>
-    GameObject.
- An object containing all functions and data related to a game object.
-
-    </ul>
-
-
 
 
 
@@ -562,7 +498,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">handle</span>
-            <span class="types"><span class="type">handle</span></span>
+            <span class="types"><span class="type">Handle</span></span>
          Handle from BZ98R
         </li>
     </ul>
@@ -606,154 +542,10 @@
 
 
 </dd>
-    <dt>
-    <a name = "GameObject.Save"></a>
-    <strong>GameObject.Save (self)</strong>
-    </dt>
-    <dd>
-    Save event function.
- INTERNAL USE.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">self</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        ...
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.Load"></a>
-    <strong>GameObject.Load (id)</strong>
-    </dt>
-    <dd>
-    Load event function.
- INTERNAL USE.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">id</span>
-         Handle
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.BulkSave"></a>
-    <strong>GameObject.BulkSave ()</strong>
-    </dt>
-    <dd>
-    BulkSave event function.
- INTERNAL USE.
-
-    </ul>
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        ...
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.BulkLoad"></a>
-    <strong>GameObject.BulkLoad (data)</strong>
-    </dt>
-    <dd>
-    BulkLoad event function.
- INTERNAL USE.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">data</span>
-         Object data
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.BulkPostLoad"></a>
-    <strong>GameObject.BulkPostLoad ()</strong>
-    </dt>
-    <dd>
-    BulkPostLoad event function.
- INTERNAL USE.
-
-    </ul>
-
-
-
-
-
-
-</dd>
 </dl>
     <h2 class="section-header "><a name="Object_Creation___Destruction"></a>Object Creation / Destruction </h2>
 
     <dl class="function">
-    <dt>
-    <a name = "BuildGameObject"></a>
-    <strong>BuildGameObject (odf, team, pos)</strong>
-    </dt>
-    <dd>
-    Build Object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odf</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Object Definition File (without ".odf")
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
-         Team number for the object, 0 to 15
-        </li>
-        <li><span class="parameter">pos</span>
-         Position as GameObject, Vector, or Matrix
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        Newly built GameObject
-    </ol>
-
-
-
-
-</dd>
     <dt>
     <a name = "BuildGameObject"></a>
     <strong>BuildGameObject (odf, team, pos[, point])</strong>
@@ -770,15 +562,15 @@
          Object Definition File (without ".odf")
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number for the object, 0 to 15
         </li>
         <li><span class="parameter">pos</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         Pathpoint Name
+            <span class="types"><span class="type">Vector</span>, <span class="type">Matrix</span>, <a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a>, <span class="type">Handle</span> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Vector, Matrix, GameObject, or pathpoint by name
         </li>
         <li><span class="parameter">point</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          index
          (<em>optional</em>)
         </li>
@@ -787,8 +579,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        Newly built GameObject
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        object Newly built GameObject
     </ol>
 
 
@@ -818,6 +610,33 @@
 
 </dd>
     <dt>
+    <a name = "GetGameObject"></a>
+    <strong>GetGameObject (key)</strong>
+    </dt>
+    <dd>
+    Get GameObject by Label.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+         Label
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        object GameObject with Label or nil if none found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "GetTeamSlot"></a>
     <strong>GetTeamSlot (slot[, team])</strong>
     </dt>
@@ -829,11 +648,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Slot number, see TeamSlot
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number, 0 to 15
          (<em>optional</em>)
         </li>
@@ -860,7 +679,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -869,8 +688,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        GameObject of player or nil
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        player GameObject of player or nil
     </ol>
 
 
@@ -889,7 +708,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -898,8 +717,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        GameObject of player or nil
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        recycler GameObject of recycler or nil
     </ol>
 
 
@@ -918,7 +737,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -927,8 +746,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        GameObject of player or nil
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        factory GameObject of factory or nil
     </ol>
 
 
@@ -947,7 +766,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -956,8 +775,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        GameObject of player or nil
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        armory of armory or nil
     </ol>
 
 
@@ -976,7 +795,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -985,35 +804,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        GameObject of player or nil
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetGameObject"></a>
-    <strong>GetGameObject (key)</strong>
-    </dt>
-    <dd>
-    Get GameObject by Label.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">key</span>
-         Label
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        GameObject with Label or nil if none found
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        constructor of constructor or nil
     </ol>
 
 
@@ -1044,7 +836,7 @@
          Target GameObject
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1059,7 +851,7 @@
     <strong>GameObject.Goto (self, target[, priority])</strong>
     </dt>
     <dd>
-    Order GameObject to Goto target GameObject
+    Order GameObject to Goto target Vector, Matrix, GameObject, or Path.
 
     </ul>
 
@@ -1070,104 +862,11 @@
          GameObject instance
         </li>
         <li><span class="parameter">target</span>
-         Target GameObject
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
-         Order priority, >0 removes user control
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.Goto"></a>
-    <strong>GameObject.Goto (self, target[, priority])</strong>
-    </dt>
-    <dd>
-    Order GameObject to Goto target Vector
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">self</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-        <li><span class="parameter">target</span>
-         Target Vector
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
-         Order priority, >0 removes user control
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.Goto"></a>
-    <strong>GameObject.Goto (self, target[, priority])</strong>
-    </dt>
-    <dd>
-    Order GameObject to Goto target Vector
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">self</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-        <li><span class="parameter">target</span>
-         Target Matrix
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
-         Order priority, >0 removes user control
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.Goto"></a>
-    <strong>GameObject.Goto (self, target, point[, priority])</strong>
-    </dt>
-    <dd>
-    Order GameObject to Goto target Path.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">self</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-        <li><span class="parameter">target</span>
+            <span class="types"><span class="type">Vector</span>, <span class="type">Matrix</span>, <a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Target Path name
         </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">int</span></span>
-         Path point index, 0 based
-        </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
          (<em>optional</em>)
         </li>
@@ -1194,10 +893,11 @@
          GameObject instance
         </li>
         <li><span class="parameter">target</span>
+            <span class="types"><span class="type">Vector</span>, <span class="type">Matrix</span> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Target Vector, Matrix, or Path name
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1226,7 +926,7 @@
          Target GameObject instance
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1237,8 +937,8 @@
 
 </dd>
     <dt>
-    <a name = "GameObject.Follow"></a>
-    <strong>GameObject.Follow (self, target)</strong>
+    <a name = "GameObject.IsFollowing"></a>
+    <strong>GameObject.IsFollowing (self, target)</strong>
     </dt>
     <dd>
     Is the GameObject following the target GameObject?
@@ -1256,6 +956,12 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        following true if following, false otherwise
+    </ol>
 
 
 
@@ -1277,7 +983,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1306,7 +1012,7 @@
          Target GameObject instance
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1332,7 +1038,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1361,7 +1067,7 @@
          Target Path name
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1390,7 +1096,7 @@
          Target GameObject or Path name
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1420,7 +1126,7 @@
          Target GameObject
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1450,7 +1156,7 @@
          Target GameObject
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1479,7 +1185,7 @@
          Target vector, matrix, or path name
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1510,7 +1216,7 @@
          Object Definition
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1544,7 +1250,7 @@
          Target GameObject instance, vector, matrix, or path name
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1573,7 +1279,7 @@
          Target GameObject instance
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1599,7 +1305,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
         </li>
     </ul>
@@ -1774,7 +1480,7 @@
     <ol>
 
            <span class="types"><span class="type">Vector</span></span>
-        Vector, (0,0,0) if the handle is invalid or isn't movable.
+        Vector (0,0,0) if the handle is invalid or isn't movable.
     </ol>
 
 
@@ -1885,7 +1591,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -1914,7 +1620,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -1943,7 +1649,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -1971,7 +1677,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -1999,7 +1705,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -2028,7 +1734,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -2056,7 +1762,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">bool</span></span>
+           <span class="types"><span class="type">boolean</span></span>
 
     </ol>
 
@@ -2568,7 +2274,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">int</span></span>
+           <span class="types"><span class="type">integer</span></span>
         Team number
     </ol>
 
@@ -2592,7 +2298,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          new team number
         </li>
     </ul>
@@ -2622,7 +2328,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">int</span></span>
+           <span class="types"><span class="type">integer</span></span>
         Team number
     </ol>
 
@@ -2646,7 +2352,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          new team number
         </li>
     </ul>
@@ -3094,7 +2800,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">int</span></span>
+            <span class="types"><span class="type">integer</span></span>
          Slot number, see TeamSlot
         </li>
     </ul>
@@ -3102,8 +2808,8 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-        The new game object formerly in the slot, or nil if the slot was empty
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        old_object The new game object formerly in the slot, or nil if the slot was empty
     </ol>
 
 
@@ -3121,7 +2827,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -2,8 +2,7 @@
 ---
 --- Tracks objects by class and odf.
 ---
---- Dependencies: @{_config}, @{_utility}, @{_hook}, @{_gameobject}, @{_table_show}
---- @module _tracker
+--- @module '_tracker'
 --- @author John "Nielk1" Klein
 --- @todo deal with team swapping
 --- @usage local tracker = require("_tracker");
@@ -12,8 +11,10 @@
 --- tracker.setFilterTeam(1, true);
 --- tracker.setFilterClass("TANK", true);
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
 local traceprint = traceprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_tracker Loading");
 
@@ -24,7 +25,7 @@ local gameobject = require("_gameobject");
 local unsaved = require("_unsaved");
 require("_table_show");
 
-local _tracker = {};
+local M = {};
 
 local TrackerData_Class = {}; -- team -> class -> object
 local TrackerData_Odf = {}; -- team -> odf -> object
@@ -202,7 +203,7 @@ end
 --- @param sig string ClassSig name to count.
 --- @param team? integer Team number to count for.
 --- @todo add protections
-function _tracker.countByClassSig(sig, team)
+function M.countByClassSig(sig, team)
     if team == nil then
         local count = 0;
         for i = 0, 15 do
@@ -222,7 +223,7 @@ end
 --- @param classname string ClassName name to count.
 --- @param team? integer Team number to count for.
 --- @todo add protections
-function _tracker.countByClassName(classname, team)
+function M.countByClassName(classname, team)
     local sig = utility.ClassLabel[classname];
     if team == nil then
         local count = 0;
@@ -243,7 +244,7 @@ end
 --- @param odf string Odf name to count.
 --- @param team? integer Team number to count for.
 --- @todo add protections
-function _tracker.countByOdf(odf, team)
+function M.countByOdf(odf, team)
     if team == nil then
         local count = 0;
         for i = 0, 15 do
@@ -264,7 +265,7 @@ end
 --- Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
 --- @param team integer Team number to track.
 --- @param enabled? boolean Enable or disable tracking for the team. Defaults to true.
-function _tracker.setFilterTeam(team, enabled)
+function M.setFilterTeam(team, enabled)
     if not utility.isinteger(team) then error("Team must be an integer") end
     if team > 15 or team < 0 then error("Team must be between 0 and 15") end
     if enabled == nil then enabled = true end
@@ -279,7 +280,7 @@ end
 --- Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
 --- @param class string Class name to track.
 --- @param enabled? boolean Enable or disable tracking for the class. Defaults to true.
-function _tracker.setFilterClass(class, enabled)
+function M.setFilterClass(class, enabled)
     if not utility.isstring(class) then error("Class must be a string") end
     if enabled == nil then enabled = true end
     if not utility.isboolean(enabled) then error("Enabled must be a boolean") end
@@ -301,7 +302,7 @@ end
 --- Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
 --- @param odf string Odf name to track.
 --- @param enabled? boolean Enable or disable tracking for the odf. Defaults to true.
-function _tracker.setFilterOdf(odf, enabled)
+function M.setFilterOdf(odf, enabled)
     if not utility.isstring(odf) then error("Odf must be a string") end
     if enabled == nil then enabled = true end
 
@@ -387,4 +388,4 @@ end, config.get("hook_priority.GameObject_SwapObjectReferences.Tracker"));
 
 debugprint("_tracker Loaded");
 
-return _tracker;
+return M;

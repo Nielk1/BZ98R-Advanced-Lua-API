@@ -273,7 +273,7 @@ end
 -- @section
 
 --- Save is called when you save a game
--- @local
+--- @local
 function Save()
     debugprint("_api::Save()");
     CustomTypeMap = {};
@@ -328,7 +328,7 @@ function Save()
 end
 
 --- Load is called when you load a game, or when a Resync is loaded.
--- @local
+--- @local
 function Load(...)
     debugprint("_api::Load()");
     local args = ...;
@@ -361,8 +361,8 @@ function Load(...)
 end
 
 --- Called when the mission starts for the first time.
--- Use this function to perform any one-time script initialization.
--- @local
+--- Use this function to perform any one-time script initialization.
+--- @local
 function Start()
     debugprint("_api::Start()");
     
@@ -375,10 +375,10 @@ function Start()
 end
 
 --- Called any time a game key is pressed.
--- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
--- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
--- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
--- @local
+--- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
+--- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
+--- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
+--- @local
 function GameKey(key)
     traceprint("_api::GameKey('" .. key .. "')");
     hook.CallAllNoReturn( "GameKey", key );
@@ -386,10 +386,10 @@ function GameKey(key)
 end
 
 --- Called after any game object is created.
--- Handle is the game object that was created.
--- This function will get a lot of traffic so it should not do too much work.
--- Note that many game object functions may not work properly here.
--- @local
+--- Handle is the game object that was created.
+--- This function will get a lot of traffic so it should not do too much work.
+--- Note that many game object functions may not work properly here.
+--- @local
 function CreateObject(h)
     traceprint("_api::CreateObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h) );
@@ -397,10 +397,10 @@ function CreateObject(h)
 end
 
 --- Called after any game object is created.
--- Handle is the game object that was created.
--- This function will get a lot of traffic so it should not do too much work.
--- Note that many game object functions may not work properly here.
--- @local
+--- Handle is the game object that was created.
+--- This function will get a lot of traffic so it should not do too much work.
+--- Note that many game object functions may not work properly here.
+--- @local
 function AddObject(h)
     traceprint("_api::AddObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "AddObject", gameobject.FromHandle(h) );
@@ -408,10 +408,10 @@ function AddObject(h)
 end
 
 --- Called before a game object is deleted.
--- Handle is the game object to be deleted.
--- This function will get a lot of traffic so it should not do too much work.
--- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
--- @local
+--- Handle is the game object to be deleted.
+--- This function will get a lot of traffic so it should not do too much work.
+--- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+--- @local
 function DeleteObject(h)
     traceprint("_api::DeleteObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "DeleteObject", gameobject.FromHandle(h) );
@@ -419,8 +419,8 @@ function DeleteObject(h)
 end
 
 --- Called once per tick after updating the network system and before simulating game objects.
--- This function performs most of the mission script's game logic.
--- @local
+--- This function performs most of the mission script's game logic.
+--- @local
 function Update(dtime)
     traceprint("_api::Update()");
     local ttime = GetTime();
@@ -429,10 +429,10 @@ function Update(dtime)
 end
 
 --- Called when a player joins the game world.
--- @tparam int id DPID number for this player
--- @tparam string name name for this player
--- @tparam int team Team number for this player
--- @local
+--- @tparam int id DPID number for this player
+--- @tparam string name name for this player
+--- @tparam int team Team number for this player
+--- @local
 function CreatePlayer(id, name, team)
     debugprint("_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("CreatePlayer", id, name, team);
@@ -440,10 +440,10 @@ function CreatePlayer(id, name, team)
 end
 
 --- Called when a player joins the game world.
--- @tparam int id DPID number for this player
--- @tparam string name name for this player
--- @tparam int team Team number for this player
--- @local
+--- @tparam int id DPID number for this player
+--- @tparam string name name for this player
+--- @tparam int team Team number for this player
+--- @local
 function AddPlayer(id, name, team)
     debugprint("_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("AddPlayer", id, name, team);
@@ -451,10 +451,10 @@ function AddPlayer(id, name, team)
 end
 
 --- Called when a player leaves the game world.
--- @tparam int id DPID number for this player
--- @tparam string name name for this player
--- @tparam int team Team number for this player
--- @local
+--- @tparam int id DPID number for this player
+--- @tparam string name name for this player
+--- @tparam int team Team number for this player
+--- @local
 function DeletePlayer(id, name, team)
     debugprint("_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("DeletePlayer", id, name, team);
@@ -462,8 +462,8 @@ function DeletePlayer(id, name, team)
 end
 
 --- Command
--- @tparam string command the command string
--- @local
+--- @tparam string command the command string
+--- @local
 function Command(command, ...)
     traceprint("_api::Command('" .. command .. "')");
     local args = ...;
@@ -476,10 +476,10 @@ function Command(command, ...)
 end
 
 --- Receive
--- @tparam int from x
--- @tparam string type x
--- @tparam ... data
--- @local
+--- @tparam int from x
+--- @tparam string type x
+--- @tparam ... data
+--- @local
 function Receive(from, type, ...)
     traceprint("_api::Receive(" .. from .. ", '" .. type .. "')");
     local args = ...;

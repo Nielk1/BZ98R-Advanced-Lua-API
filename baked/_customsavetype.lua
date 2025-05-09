@@ -1,13 +1,13 @@
 --- BZ98R LUA Extended API CustomSaveType.
--- 
--- Crude custom type to make data not save/load exploiting the custom type system.
--- 
--- @module _customsavetype
--- @author John "Nielk1" Klein
--- @alias customsavetype
--- @usage local customsavetype = require("_customsavetype");
--- 
--- customsavetype.Register(ObjectDef);
+--- 
+--- Crude custom type to make data not save/load exploiting the custom type system.
+--- 
+--- @module _customsavetype
+--- @author John "Nielk1" Klein
+--- @alias customsavetype
+--- @usage local customsavetype = require("_customsavetype");
+--- 
+--- customsavetype.Register(ObjectDef);
 
 local debugprint = debugprint or function(...) end;
 
@@ -69,9 +69,9 @@ end
 
 customsavetype_module = setmetatable(customsavetype_module, customsavetype_module_meta);
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- MapData - Core
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- @section
 
 debugprint("_customsavetype Loaded");

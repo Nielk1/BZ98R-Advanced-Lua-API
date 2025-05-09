@@ -1,12 +1,12 @@
 --- BZ98R LUA Extended API Configuration.
--- 
--- Constants used to configure the API's system.
--- Note that reading any non-table value other than "locked" will lock the config table.
--- 
--- Dependencies: @{_table_show}
--- @module _config
--- @author John "Nielk1" Klein
--- @usage local config = require("_config");
+--- 
+--- Constants used to configure the API's system.
+--- Note that reading any non-table value other than "locked" will lock the config table.
+--- 
+--- Dependencies: @{_table_show}
+--- @module _config
+--- @author John "Nielk1" Klein
+--- @usage local config = require("_config");
 --
 -- if not config.locked then
 --     config.hook_priority.DeleteObject.GameObject = -99999;
@@ -64,8 +64,8 @@ config_meta.__newindex = function(dtable, key, value)
 end
 
 --- Get a value from the config table using a period or colon delimited path.
--- @tparam string path The path to the value, e.g. "hook_priority.Update.StateMachine"
--- @return The value at the specified path
+--- @tparam string path The path to the value, e.g. "hook_priority.Update.StateMachine"
+--- @return The value at the specified path
 function config_meta.get(path)
     -- Access a value using a period or colon delimited path
     local value = resolve_path(config_meta.data, path)
@@ -90,6 +90,7 @@ end
 -- Start                          .Tracker      =  4999
 -- ----------------------------------------------------
 -- Update                         .Tracker      =  4999
+-- Update                         .NavManager   =  5999
 -- Update                         .StateMachine =  8999
 -- ----------------------------------------------------
 -- GameObject_SwapObjectReferences.Tracker      =  8999
@@ -112,6 +113,7 @@ config.hook_priority = {
     },
     Update = {
         Tracker = 4999,
+        NavManager = 5999,
         StateMachine = 8999,
         --GameObject = 9999,
     },

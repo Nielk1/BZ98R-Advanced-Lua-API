@@ -1,9 +1,9 @@
 --- BZ98R LUA Extended API Print Fix.
--- 
--- Hot-patches print to decorate output for finding in the mess of a log file.
--- 
--- @module _printfix
--- @author John "Nielk1" Klein
+--- 
+--- Hot-patches print to decorate output for finding in the mess of a log file.
+--- 
+--- @module _printfix
+--- @author John "Nielk1" Klein
 
 --[[
 tail -F -n0 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '

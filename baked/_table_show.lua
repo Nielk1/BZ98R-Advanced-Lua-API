@@ -1,5 +1,5 @@
 --- BZ98R LUA Extended API table to string.
--- Converts table to string representation.
+--- Converts table to string representation.
 --
 -- January 12, 2007
 -- (For Lua 5.1)

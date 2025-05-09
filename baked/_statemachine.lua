@@ -1,74 +1,74 @@
 --- BZ98R LUA Extended API StateMachineIter.
--- 
--- State Machine and State Machine Iterator for serial event sequences across game turns.
--- 
--- Dependencies: @{_utility}, @{_config}, @{_api}, @{_hook}, @{_customsavetype}
--- @module _statemachine
--- @author John "Nielk1" Klein
--- @usage local statemachine = require("_statemachine");
--- 
--- statemachine.Create("TestMachine",
--- {
---     ["state_a"] = function(state)
---         print("test " .. state.test1);
---         state:switch("state_b");
---     end,
---     ["state_b"] = statemachine.SleepSeconds(10,"state_c"),
---     ["state_c"] = function(state)
---         print("test " .. state.test2);
---         state:switch("state_d");
---     end,
---     ["state_d"] = statemachine.SleepSeconds(15,"state_e"),
---     ["state_e"] = function(state)
---         print("test " .. state.test3);
---         state:switch("state_f");
---     end
--- });
--- 
--- -- ordered state machine that supports state:next()
--- statemachine.Create("OrderedTestMachine",
--- {
---     -- named state function
---     { "state_a", function(state)
---         print("test " .. state.test1);
---         state:switch("state_b");
---     end },
---
---     -- named magic state function (SleepSeconds)
---     -- note nil next_state means next state by index
---     { "state_b", statemachine.SleepSeconds(10) },
---
---     -- named state function with automatic name
---     { nil, function(state)
---         print("test " .. state.test2);
---         state:switch("state_d");
---     end },
---
---     -- named state function with automatic name
---     { function(state)
---         print("test " .. state.test2);
---         state:switch("state_d");
---     end },
---
---     -- magic state function (SleepSeconds)
---     statemachine.SleepSeconds(15,"nonexistent_state"),
---
---     -- stsate function with automatic name
---     function(state)
---         print("test " .. state.test3);
---         state:next();
---     end
--- });
---
--- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
---     MissionData.TestSMI1 = statemachine.Start("TestMachine","state_a",{test1='d',test2="e",test3="f"});
---     MissionData.TestSMI2 = statemachine.Start("OrderedTestMachine","state_a",{test1='d',test2="e",test3="f"});
--- end);
--- 
--- hook.Add("Update", "Custom_Update", function(turn)
---     MissionData.TestSMI1:run();
---     MissionData.TestSMI2:run();
--- end);
+--- 
+--- State Machine and State Machine Iterator for serial event sequences across game turns.
+--- 
+--- Dependencies: @{_utility}, @{_config}, @{_api}, @{_hook}, @{_customsavetype}
+--- @module _statemachine
+--- @author John "Nielk1" Klein
+--- @usage local statemachine = require("_statemachine");
+--- 
+--- statemachine.Create("TestMachine",
+--- {
+---     ["state_a"] = function(state)
+---         print("test " .. state.test1);
+---         state:switch("state_b");
+---     end,
+---     ["state_b"] = statemachine.SleepSeconds(10,"state_c"),
+---     ["state_c"] = function(state)
+---         print("test " .. state.test2);
+---         state:switch("state_d");
+---     end,
+---     ["state_d"] = statemachine.SleepSeconds(15,"state_e"),
+---     ["state_e"] = function(state)
+---         print("test " .. state.test3);
+---         state:switch("state_f");
+---     end
+--- });
+--- 
+--- -- ordered state machine that supports state:next()
+--- statemachine.Create("OrderedTestMachine",
+--- {
+---     -- named state function
+---     { "state_a", function(state)
+---         print("test " .. state.test1);
+---         state:switch("state_b");
+---     end },
+---
+---     -- named magic state function (SleepSeconds)
+---     -- note nil next_state means next state by index
+---     { "state_b", statemachine.SleepSeconds(10) },
+---
+---     -- named state function with automatic name
+---     { nil, function(state)
+---         print("test " .. state.test2);
+---         state:switch("state_d");
+---     end },
+---
+---     -- named state function with automatic name
+---     { function(state)
+---         print("test " .. state.test2);
+---         state:switch("state_d");
+---     end },
+---
+---     -- magic state function (SleepSeconds)
+---     statemachine.SleepSeconds(15,"nonexistent_state"),
+---
+---     -- stsate function with automatic name
+---     function(state)
+---         print("test " .. state.test3);
+---         state:next();
+---     end
+--- });
+---
+--- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
+---     MissionData.TestSMI1 = statemachine.Start("TestMachine","state_a",{test1='d',test2="e",test3="f"});
+---     MissionData.TestSMI2 = statemachine.Start("OrderedTestMachine","state_a",{test1='d',test2="e",test3="f"});
+--- end);
+--- 
+--- hook.Add("Update", "Custom_Update", function(turn)
+---     MissionData.TestSMI1:run();
+---     MissionData.TestSMI2:run();
+--- end);
 
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
 
@@ -91,14 +91,14 @@ _statemachine.Machines = {};
 _statemachine.MachineFlags = {};
 
 --- Is this object an instance of StateMachineIter?
--- @param object Object in question
--- @treturn bool
+--- @param object Object in question
+--- @treturn bool
 function isstatemachineiter(object)
   return (type(object) == "table" and object.__type == "StateMachineIter");
 end
 
 --- StateMachineIter.
--- An object containing all functions and data related to an StateMachineIter.
+--- An object containing all functions and data related to an StateMachineIter.
 local StateMachineIter = {}; -- the table representing the class, which will double as the metatable for the instances
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 StateMachineIter.__index = function(table, key)
@@ -122,11 +122,11 @@ end
 StateMachineIter.__type = "StateMachineIter";
 
 --- Create StateMachineIter
--- @tparam string name StateMachineIter template
--- @tparam int timer Timer's value, nil for not set
--- @tparam int target_time TargetTurn's value, nil for not set
--- @param state_key Current state, string name or integer index if state machine is ordered
--- @tparam table values Table of values embeded in the StateMachineIter
+--- @tparam string name StateMachineIter template
+--- @tparam int timer Timer's value, nil for not set
+--- @tparam int target_time TargetTurn's value, nil for not set
+--- @param state_key Current state, string name or integer index if state machine is ordered
+--- @tparam table values Table of values embeded in the StateMachineIter
 local CreateStateMachineIter = function(name, timer, target_time, state_key, values)
   local self = setmetatable({}, StateMachineIter);
   self.template = name;
@@ -144,7 +144,7 @@ local CreateStateMachineIter = function(name, timer, target_time, state_key, val
 end
 
 --- Run StateMachineIter.
--- @tparam StateMachineIter self FuncArrayIter instance
+--- @tparam StateMachineIter self FuncArrayIter instance
 function StateMachineIter.run(self, ...)
     if not isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
 
@@ -165,8 +165,8 @@ function StateMachineIter.run(self, ...)
 end
 
 --- Get next state for StateMachineIter.
--- @tparam StateMachineIter state FuncArrayIter instance
--- @local
+--- @tparam StateMachineIter state FuncArrayIter instance
+--- @local
 function nextState(state)
     local flags = _statemachine.MachineFlags[ state.template ];
     if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
@@ -193,8 +193,8 @@ function nextState(state)
 end
 
 --- Next StateMachineIter State.
--- This only works if the StateMachineIter is ordered.
--- @tparam StateMachineIter self StateMachineIter instance
+--- This only works if the StateMachineIter is ordered.
+--- @tparam StateMachineIter self StateMachineIter instance
 function StateMachineIter.next(self)
     --local flags = _statemachine.MachineFlags[ self.template ];
     --if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
@@ -217,8 +217,8 @@ function StateMachineIter.next(self)
 end
 
 --- Switch StateMachineIter State.
--- @tparam StateMachineIter self StateMachineIter instance
--- @tparam string key State to switch to (will also accept state index if the StateMachineIter is ordered)
+--- @tparam StateMachineIter self StateMachineIter instance
+--- @tparam string key State to switch to (will also accept state index if the StateMachineIter is ordered)
 function StateMachineIter.switch(self, key)
     if utility.isinteger(key) then
         local flags = _statemachine.MachineFlags[ self.template ];
@@ -234,11 +234,11 @@ function StateMachineIter.switch(self, key)
 end
 
 --- Creates an StateMachineIter Template with the given indentifier.
--- @param name Name of the StateMachineIter Template (string)
--- @param ... State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
--- State descriptors are tables with the first element being the state name and the second element being the state function.
--- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
--- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
+--- @param name Name of the StateMachineIter Template (string)
+--- @param ... State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
+--- State descriptors are tables with the first element being the state name and the second element being the state function.
+--- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
+--- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
 function _statemachine.Create( name, ... )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     
@@ -438,9 +438,9 @@ function _statemachine.Create( name, ... )
 end
 
 --- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
--- @tparam string name Name of the StateMachineIter Template
--- @param state_key Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
--- @tparam table init Initial data
+--- @tparam string name Name of the StateMachineIter Template
+--- @param state_key Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
+--- @tparam table init Initial data
 function _statemachine.Start( name, state_key, init )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
@@ -465,9 +465,9 @@ function _statemachine.Start( name, state_key, init )
 end
 
 --- Wait a set period of time on this state.
--- @tparam int calls How many calls to wait
--- @tparam string next_state Next state when timer hits zero
--- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next state name
+--- @tparam int calls How many calls to wait
+--- @tparam string next_state Next state when timer hits zero
+--- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next state name
 function _statemachine.SleepCalls( calls, next_state, early_exit )
     if not utility.isinteger(calls) then error("Parameter calls must be an integer."); end
     if not utility.isstring(next_state) then error("Parameter next_state must be a string."); end
@@ -500,11 +500,11 @@ function _statemachine.SleepCalls( calls, next_state, early_exit )
 end
 
 --- Check if a set period of time has passed.
--- This first time this is called the target time is latched in until true is returned.
--- Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
--- @tparam StateMachineIter self StateMachineIter instance
--- @tparam[opt] number seconds How many seconds to wait
--- @treturn bool True if the time is up
+--- This first time this is called the target time is latched in until true is returned.
+--- Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
+--- @tparam StateMachineIter self StateMachineIter instance
+--- @tparam[opt] number seconds How many seconds to wait
+--- @treturn bool True if the time is up
 function StateMachineIter.SecondsHavePassed(self, seconds)
     if seconds == nil then
         self.target_time = nil;
@@ -522,9 +522,9 @@ function StateMachineIter.SecondsHavePassed(self, seconds)
 end
 
 --- Wait a set period of time on this state.
--- @tparam number seconds How many seconds to wait
--- @tparam string next_state Next state when timer hits zero
--- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next state name
+--- @tparam number seconds How many seconds to wait
+--- @tparam string next_state Next state when timer hits zero
+--- @tparam[opt] function early_exit Function to check if the state should be exited early, return false, true, or next state name
 function _statemachine.SleepSeconds(seconds, next_state, early_exit )
     if not utility.isnumber(seconds) then error("Parameter seconds must be a number."); end
     if next_state ~= nil and not utility.isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
@@ -562,9 +562,9 @@ function _statemachine.SleepSeconds(seconds, next_state, early_exit )
     end, p = {seconds, next_state, early_exit} };
 end
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- StateMachineIter - Core
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- @section
 
 --- Save event function.

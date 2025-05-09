@@ -1,10 +1,10 @@
 --- BZ98R LUA Extended API Require Fix.
--- 
--- Repairs lua loader to look in mod paths for DLL or LUA modules with names longer than 15 characters.
--- 
--- @module _requirefix
--- @author John "Nielk1" Klein
--- @usage require("_requirefix").addmod("12345").addmod("67890");
+--- 
+--- Repairs lua loader to look in mod paths for DLL or LUA modules with names longer than 15 characters.
+--- 
+--- @module _requirefix
+--- @author John "Nielk1" Klein
+--- @usage require("_requirefix").addmod("12345").addmod("67890");
 
 local debugprint = debugprint or function(...) end;
 

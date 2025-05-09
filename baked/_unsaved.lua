@@ -1,13 +1,13 @@
 --- BZ98R LUA Extended API Unsaved.
--- 
--- Crude custom type to make data not save/load exploiting the custom type system.
--- 
--- @module _unsaved
--- @author John "Nielk1" Klein
--- @alias unsaved
--- @usage local unsaved = require("_unsaved");
--- 
--- data.unsavable = unsaved(data.unsavable);
+--- 
+--- Crude custom type to make data not save/load exploiting the custom type system.
+--- 
+--- @module _unsaved
+--- @author John "Nielk1" Klein
+--- @alias unsaved
+--- @usage local unsaved = require("_unsaved");
+--- 
+--- data.unsavable = unsaved(data.unsavable);
 
 local debugprint = debugprint or function(...) end;
 
@@ -31,11 +31,11 @@ local unsaved_module_meta = {};
 --unsaved_meta.__nosave = true;
 
 --- __call
--- @function __call
--- Creates a new table or augments the passed in table marking it as unsaved.
--- @tparam table table The module table itself.
--- @tparam table data Table to augment with unsaved data. If nil, a new table is created.
--- @treturn table The unsavable table.
+--- @function __call
+--- Creates a new table or augments the passed in table marking it as unsaved.
+--- @tparam table table The module table itself.
+--- @tparam table data Table to augment with unsaved data. If nil, a new table is created.
+--- @treturn table The unsavable table.
 unsaved_module_meta.__call = function(table, data)
     --if data ~= nil then
     --    return setmetatable(data, unsaved_meta);
@@ -50,9 +50,9 @@ end
 
 unsaved_module = setmetatable(unsaved_module, unsaved_module_meta);
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- MapData - Core
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- @section
 
 debugprint("_unsaved Loaded");

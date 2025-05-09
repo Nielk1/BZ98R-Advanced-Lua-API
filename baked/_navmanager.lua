@@ -1,16 +1,16 @@
 --- BZ98R LUA Extended API NavManager.
--- 
--- Manage navs
--- 
--- Dependencies: @{_config}, @{_utility}, @{_gameobject}, @{_api}, @{_hook}
--- @module _navmanager
--- @author John "Nielk1" Klein
--- @usage local navmanager = require("_navmanager");
--- 
--- navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstChronologicalToGap);
--- 
--- @todo Determine if network handling is needed.
--- @todo Look into soft-loading native module that gives nav data access.
+--- 
+--- Manage navs
+--- 
+--- Dependencies: @{_config}, @{_utility}, @{_gameobject}, @{_api}, @{_hook}
+--- @module _navmanager
+--- @author John "Nielk1" Klein
+--- @usage local navmanager = require("_navmanager");
+--- 
+--- navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstChronologicalToGap);
+--- 
+--- @todo Determine if network handling is needed.
+--- @todo Look into soft-loading native module that gives nav data access.
 
 local debugprint = debugprint or function(...) end;
 
@@ -23,8 +23,8 @@ local _api = require("_api");
 local hook = require("_hook");
 
 --- Nav GameObjects swapped.
--- The old nav will be deleted after this event is called.
--- This event allows for scripts to replace their nav references or copy over custom data.
+--- The old nav will be deleted after this event is called.
+--- This event allows for scripts to replace their nav references or copy over custom data.
 --
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 --
@@ -43,29 +43,29 @@ local OverflowNavs = {};
 local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
 
 --- Build an important nav and add it to the collection.
--- Important navs will push non-important navs out of the way in the list.
--- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
--- @tparam integer team Team number of the nav to build
--- @tparam vector position
--- @treturn GameObject The nav object that was built
--- @function _navmanager.BuildImportantNav
+--- Important navs will push non-important navs out of the way in the list.
+--- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
+--- @tparam integer team Team number of the nav to build
+--- @tparam vector position
+--- @treturn GameObject The nav object that was built
+--- @function _navmanager.BuildImportantNav
 
 --- Build an important nav and add it to the collection.
--- Important navs will push non-important navs out of the way in the list.
--- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
--- @tparam integer team Team number of the nav to build
--- @tparam matrix transform
--- @treturn GameObject The nav object that was built
--- @function _navmanager.BuildImportantNav
+--- Important navs will push non-important navs out of the way in the list.
+--- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
+--- @tparam integer team Team number of the nav to build
+--- @tparam matrix transform
+--- @treturn GameObject The nav object that was built
+--- @function _navmanager.BuildImportantNav
 
 --- Build an important nav and add it to the collection.
--- Important navs will push non-important navs out of the way in the list.
--- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
--- @tparam integer team Team number of the nav to build
--- @tparam string path path name to build the nav
--- @tparam[opt] integer point Path point number
--- @treturn GameObject The nav object that was built
--- @function _navmanager.BuildImportantNav
+--- Important navs will push non-important navs out of the way in the list.
+--- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
+--- @tparam integer team Team number of the nav to build
+--- @tparam string path path name to build the nav
+--- @tparam[opt] integer point Path point number
+--- @treturn GameObject The nav object that was built
+--- @function _navmanager.BuildImportantNav
 
 function _navmanager.BuildImportantNav(odf, team, location, point)
     -- @todo check params h ere, don't allow GameObject on location here, that's internal only
@@ -86,7 +86,7 @@ function _navmanager.BuildImportantNav(odf, team, location, point)
 end
 
 --- What to do when empty slots exist and excess navs exist
--- @table _navmanager.CompactionStrategy
+--- @table _navmanager.CompactionStrategy
 _navmanager.CompactionStrategy = {
     DoNothing = 1, -- Do nothing, leave excess navs in overflow
     ChronologicalToGap = 2, -- Excess navs inserted into gaps in order of creation
@@ -100,12 +100,12 @@ _navmanager.CompactionStrategy = {
 local CompactMode = _navmanager.CompactionStrategy.DoNothing; -- default to chronological
 
 --- Set the compaction strategy for navs.
--- @tparam string strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
--- @function _navmanager.SetCompactionStrategy
+--- @tparam string strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+--- @function _navmanager.SetCompactionStrategy
 
 --- Set the compaction strategy for navs.
--- @tparam integer strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
--- @function _navmanager.SetCompactionStrategy
+--- @tparam integer strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+--- @function _navmanager.SetCompactionStrategy
 function _navmanager.SetCompactionStrategy(strategy)
     local strat = strategy;
     if utility.isstring(strategy) then
@@ -116,22 +116,22 @@ function _navmanager.SetCompactionStrategy(strategy)
 end
 
 --- Get the current compaction strategy for navs.
--- @treturn integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
+--- @treturn integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
 function _navmanager.GetCompactionStrategy()
     return CompactMode;
 end
 
 --- Enumerates all navs for a team.
--- At least 10 indexes will be iterated, even if there are no navs in those slots.
--- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
--- @tparam integer team Team number to enumerate
--- @tparam[opt] bool include_overflow If true "Overflow Navs" will be included in the enumeration after the initial 10.
--- @treturn integer index The index of the nav in the enumeration
--- @treturn GameObject nav The nav object at the index
--- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
---     print("Nav " .. i .. ": " .. tostring(nav));
--- end
--- @usage local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
+--- At least 10 indexes will be iterated, even if there are no navs in those slots.
+--- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
+--- @tparam integer team Team number to enumerate
+--- @tparam[opt] bool include_overflow If true "Overflow Navs" will be included in the enumeration after the initial 10.
+--- @treturn integer index The index of the nav in the enumeration
+--- @treturn GameObject nav The nav object at the index
+--- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
+---     print("Nav " .. i .. ": " .. tostring(nav));
+--- end
+--- @usage local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
 function _navmanager.AllNavGameObjects(team, include_overflow)
     for slot = TeamSlot.MIN_BEACON, TeamSlot.MAX_BEACON do
         return (slot - TeamSlot.MIN_BEACON + 1), gameobject.GetTeamSlot(slot, team);
@@ -144,9 +144,9 @@ function _navmanager.AllNavGameObjects(team, include_overflow)
     return nil; -- End of iteration
 end
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- NavManager - Core
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- @section
 
 hook.Add("CreateObject", "_navmanager_CreateObject", function(object, isMapObject)
@@ -191,7 +191,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
             end
             for i = 1, #PendingNavs[team] do
                 local nav = PendingNavs[team];
-                if nav then
+                if nav and nav:IsValid() then
                     table.insert(PendingNavsForTeam, nav);
                 end
             end
@@ -220,7 +220,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                     local SlotListIndex = 1;
                     for i = 1, #PendingNavsForTeam do
                         local nav = PendingNavsForTeam[i];
-                        if nav then
+                        if nav and nav:IsValid() then
                             if CountOpenSlots > 0 then -- should be impossible to fail this but whatever
                                 if utility.isfunction(nav.SetTeamSlot) then
                                     nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
@@ -260,7 +260,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                     local SlotListIndex = 1;
                     for i = 1, #PendingNavsForTeam do
                         local nav = PendingNavsForTeam[i];
-                        if nav then
+                        if nav and nav:IsValid() then
                             if nav.NavManager and nav.NavManager.important then
                                 if CountOpenSlots > 0 then
                                     if utility.isfunction(nav.SetTeamSlot) then
@@ -300,7 +300,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                     if CountOpenSlots > 0 then
                         for i = 1, #PendingNavsForTeamAfterFirstPass do
                             local nav = PendingNavsForTeamAfterFirstPass[i];
-                            if nav then
+                            if nav and nav:IsValid() then
                                 if CountOpenSlots > 0 then
                                     if utility.isfunction(nav.SetTeamSlot) then
                                         nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
@@ -353,13 +353,18 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
         PendingDirty = false;
         DisableAutomaticNavAdding = false;
     end
-end, 49999);
+end, config.get("hook_priority.Update.NavManager"));
 
 hook.AddSaveLoad("_navmanager", function()
-    return NavCollection;
+    return PendingNavs, PendingNavsMemo, PendingDirty, OverflowNavs;
+    -- should we leave CompactMode out and leave it to script parse?
 end,
-function(_NavCollection)
-    NavCollection = _NavCollection;
+function(_PendingNavs, _PendingNavsMemo, _PendingDirty, _OverflowNavs)
+    PendingNavs = _PendingNavs;
+    PendingNavsMemo = _PendingNavsMemo;
+    PendingDirty = _PendingDirty;
+    OverflowNavs = _OverflowNavs;
+    -- should we leave CompactMode out and leave it to script parse?
 end);
 
 debugprint("_navmanager Loaded");

@@ -1,16 +1,16 @@
 --- BZ98R LUA Extended API Optional loader.
--- 
--- Load a lua module optionally.
--- 
--- @module _optional
--- @author John "Nielk1" Klein
--- @alias _optional
--- @usage local optional = require("_optional");
--- local missingSuccess, missingMod = optional("_missing");
--- missingMod = missingSuccess and missingMod or nil;
--- 
--- local missing2Success, missingMod2 = require("_optional")("_missing2");
--- missingMod2 = missing2Success and missingMod2 or nil;
+--- 
+--- Load a lua module optionally.
+--- 
+--- @module _optional
+--- @author John "Nielk1" Klein
+--- @alias _optional
+--- @usage local optional = require("_optional");
+--- local missingSuccess, missingMod = optional("_missing");
+--- missingMod = missingSuccess and missingMod or nil;
+--- 
+--- local missing2Success, missingMod2 = require("_optional")("_missing2");
+--- missingMod2 = missing2Success and missingMod2 or nil;
 
 
 local debugprint = debugprint or function(...) end;
@@ -31,12 +31,12 @@ end
 local KnownFailedModules = {};
 
 --- __call
--- @function __call
--- Attempt to load a module, if it fails return false and error, if succesful return true and the module.
--- @tparam table table The module table itself.
--- @tparam string moduleName Module name to load.
--- @treturn boolean success True if the module loaded successfully, false if it failed.
--- @return The module return value or nil if failed
+--- @function __call
+--- Attempt to load a module, if it fails return false and error, if succesful return true and the module.
+--- @tparam table table The module table itself.
+--- @tparam string moduleName Module name to load.
+--- @treturn boolean success True if the module loaded successfully, false if it failed.
+--- @return The module return value or nil if failed
 _optional_module_meta.__call = function(table, moduleName)
     local priorError = KnownFailedModules[moduleName];
     if priorError ~= nil then
@@ -51,9 +51,9 @@ end
 
 _optional_module = setmetatable(_optional_module, _optional_module_meta);
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Utility - Core
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- @section
 
 debugprint("__optional Loaded");

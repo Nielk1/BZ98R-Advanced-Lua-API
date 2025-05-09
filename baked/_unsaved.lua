@@ -1,10 +1,10 @@
 --- BZ98R LUA Extended API Unsaved.
---- 
+---
 --- Crude custom type to make data not save/load exploiting the custom type system.
---- 
+---
 --- @module _unsaved
 --- @author John "Nielk1" Klein
---- @alias unsaved
+--- @alias unsaved_module
 --- @usage local unsaved = require("_unsaved");
 --- 
 --- data.unsavable = unsaved(data.unsavable);
@@ -33,8 +33,8 @@ local unsaved_module_meta = {};
 --- __call
 --- @function __call
 --- Creates a new table or augments the passed in table marking it as unsaved.
---- @tparam table table The module table itself.
---- @tparam table data Table to augment with unsaved data. If nil, a new table is created.
+--- @param table table The module table itself.
+--- @param data table Table to augment with unsaved data. If nil, a new table is created.
 --- @treturn table The unsavable table.
 unsaved_module_meta.__call = function(table, data)
     --if data ~= nil then

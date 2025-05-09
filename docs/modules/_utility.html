@@ -40,13 +40,13 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
@@ -56,6 +56,7 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><strong>_utility</strong></li>
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
 
 </div>
@@ -65,9 +66,8 @@
 <h1>Module <code>_utility</code></h1>
 <p>BZ98R LUA Extended API Utility.</p>
 <p>
-
- Crude custom type to make data not save/load exploiting the custom type system.
- </p>
+<p> Crude custom type to make data not save/load exploiting the custom type system.
+</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local utility = require(&quot;_utility&quot;);
@@ -87,31 +87,39 @@ utility.Register(ObjectDef);
 	<td class="name" nowrap><a href="#ClassLabels">ClassLabels</a></td>
 	<td class="summary">This is a table that converts between class labels and class signatures.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ColorLabels">ColorLabels</a></td>
+	<td class="summary">Convert human readable color names to BZ98R color labels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ColorCodes">ColorCodes</a></td>
+	<td class="summary">Convert BZ98R color labels to RGB color codes.</td>
+	</tr>
 </table>
 <h2><a href="#Type_Check_Functions">Type Check Functions </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#utility_module.isfunction">utility_module.isfunction (object)</a></td>
+	<td class="name" nowrap><a href="#isfunction">isfunction (object)</a></td>
 	<td class="summary">Is this object a function?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#utility_module.istable">utility_module.istable (object)</a></td>
+	<td class="name" nowrap><a href="#istable">istable (object)</a></td>
 	<td class="summary">Is this object a table?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#utility_module.isstring">utility_module.isstring (object)</a></td>
+	<td class="name" nowrap><a href="#isstring">isstring (object)</a></td>
 	<td class="summary">Is this object a string?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#utility_module.isboolean">utility_module.isboolean (object)</a></td>
+	<td class="name" nowrap><a href="#isboolean">isboolean (object)</a></td>
 	<td class="summary">Is this object a boolean?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#utility_module.isnumber">utility_module.isnumber (object)</a></td>
+	<td class="name" nowrap><a href="#isnumber">isnumber (object)</a></td>
 	<td class="summary">Is this object a number?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#utility_module.isinteger">utility_module.isinteger (object)</a></td>
+	<td class="name" nowrap><a href="#isinteger">isinteger (object)</a></td>
 	<td class="summary">Is this object an integer?</td>
 	</tr>
 </table>
@@ -138,6 +146,7 @@ utility.Register(ObjectDef);
     This is a table that converts between class labels and class signatures.
  For example, `ClassLabels["PROD"]` returns `"producer"`, and `ClassLabels["producer"]` returns `"PROD"`.
 
+    </ul>
 
     <h3>Fields:</h3>
     <ul>
@@ -403,17 +412,159 @@ utility.Register(ObjectDef);
 
 
 </dd>
+    <dt>
+    <a name = "ColorLabels"></a>
+    <strong>ColorLabels</strong>
+    </dt>
+    <dd>
+    Convert human readable color names to BZ98R color labels.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">Black</span>
+            <span class="types"><span class="type">BLACK</span></span>
+            <div style="background-color: #000000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLACK</div>
+        </li>
+        <li><span class="parameter">DarkGrey</span>
+            <span class="types"><span class="type">DKGREY</span></span>
+           <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREY</div>
+        </li>
+        <li><span class="parameter">Grey</span>
+            <span class="types"><span class="type">GREY</span></span>
+             <div style="background-color: #999999; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREY</div>
+        </li>
+        <li><span class="parameter">White</span>
+            <span class="types"><span class="type">WHITE</span></span>
+            <div style="background-color: #FFFFFF; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">WHITE</div>
+        </li>
+        <li><span class="parameter">Blue</span>
+            <span class="types"><span class="type">BLUE</span></span>
+             <div style="background-color: #007FFF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLUE</div>
+        </li>
+        <li><span class="parameter">DarkBlue</span>
+            <span class="types"><span class="type">DKBLUE</span></span>
+           <div style="background-color: #004C99; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKBLUE</div>
+        </li>
+        <li><span class="parameter">Green</span>
+            <span class="types"><span class="type">GREEN</span></span>
+            <div style="background-color: #00FF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREEN</div>
+        </li>
+        <li><span class="parameter">DarkGreen</span>
+            <span class="types"><span class="type">DKGREEN</span></span>
+          <div style="background-color: #009900; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREEN</div>
+        </li>
+        <li><span class="parameter">Yellow</span>
+            <span class="types"><span class="type">YELLOW</span></span>
+           <div style="background-color: #FFFF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">YELLOW</div>
+        </li>
+        <li><span class="parameter">DarkYellow</span>
+            <span class="types"><span class="type">DKYELLOW</span></span>
+         <div style="background-color: #999900; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKYELLOW</div>
+        </li>
+        <li><span class="parameter">Red</span>
+            <span class="types"><span class="type">RED</span></span>
+              <div style="background-color: #FF0000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">RED</div>
+        </li>
+        <li><span class="parameter">DarkRed</span>
+            <span class="types"><span class="type">DKRED</span></span>
+            <div style="background-color: #990000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKRED</div>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ColorCodes"></a>
+    <strong>ColorCodes</strong>
+    </dt>
+    <dd>
+    Convert BZ98R color labels to RGB color codes.
+ This probably isn't useful but it's here.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">BLACK</span>
+            <span class="types"><span class="type">0x000000FF</span></span>
+         <div style="background-color: #000000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLACK</div>
+        </li>
+        <li><span class="parameter">DKGREY</span>
+            <span class="types"><span class="type">0x4C4C4CFF</span></span>
+         <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREY</div>
+        </li>
+        <li><span class="parameter">GREY</span>
+            <span class="types"><span class="type">0x999999FF</span></span>
+         <div style="background-color: #999999; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREY</div>
+        </li>
+        <li><span class="parameter">WHITE</span>
+            <span class="types"><span class="type">0xFFFFFFFF</span></span>
+         <div style="background-color: #FFFFFF; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">WHITE</div>
+        </li>
+        <li><span class="parameter">BLUE</span>
+            <span class="types"><span class="type">0x007FFFFF</span></span>
+         <div style="background-color: #007FFF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLUE</div>
+        </li>
+        <li><span class="parameter">DKBLUE</span>
+            <span class="types"><span class="type">0x004C99FF</span></span>
+         <div style="background-color: #004C99; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKBLUE</div>
+        </li>
+        <li><span class="parameter">GREEN</span>
+            <span class="types"><span class="type">0x00FF00FF</span></span>
+         <div style="background-color: #00FF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREEN</div>
+        </li>
+        <li><span class="parameter">DKGREEN</span>
+            <span class="types"><span class="type">0x009900FF</span></span>
+         <div style="background-color: #009900; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREEN</div>
+        </li>
+        <li><span class="parameter">YELLOW</span>
+            <span class="types"><span class="type">0xFFFF00FF</span></span>
+         <div style="background-color: #FFFF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">YELLOW</div>
+        </li>
+        <li><span class="parameter">DKYELLOW</span>
+            <span class="types"><span class="type">0x999900FF</span></span>
+         <div style="background-color: #999900; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKYELLOW</div>
+        </li>
+        <li><span class="parameter">RED</span>
+            <span class="types"><span class="type">0xFF0000FF</span></span>
+         <div style="background-color: #FF0000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">RED</div>
+        </li>
+        <li><span class="parameter">DKRED</span>
+            <span class="types"><span class="type">0x990000FF</span></span>
+         <div style="background-color: #990000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKRED</div>
+        </li>
+        <li><span class="parameter">CYAN</span>
+            <span class="types"><span class="type">0x00FFFFFF</span></span>
+         <div style="background-color: #00FFFF; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">CYAN</div>
+        </li>
+        <li><span class="parameter">DKCYAN</span>
+            <span class="types"><span class="type">0x009999FF</span></span>
+         <div style="background-color: #009999; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKCYAN</div>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
     <h2 class="section-header "><a name="Type_Check_Functions"></a>Type Check Functions </h2>
 
     <dl class="function">
     <dt>
-    <a name = "utility_module.isfunction"></a>
-    <strong>utility_module.isfunction (object)</strong>
+    <a name = "isfunction"></a>
+    <strong>isfunction (object)</strong>
     </dt>
     <dd>
     Is this object a function?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -434,12 +585,13 @@ utility.Register(ObjectDef);
 
 </dd>
     <dt>
-    <a name = "utility_module.istable"></a>
-    <strong>utility_module.istable (object)</strong>
+    <a name = "istable"></a>
+    <strong>istable (object)</strong>
     </dt>
     <dd>
     Is this object a table?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -460,12 +612,13 @@ utility.Register(ObjectDef);
 
 </dd>
     <dt>
-    <a name = "utility_module.isstring"></a>
-    <strong>utility_module.isstring (object)</strong>
+    <a name = "isstring"></a>
+    <strong>isstring (object)</strong>
     </dt>
     <dd>
     Is this object a string?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -486,12 +639,13 @@ utility.Register(ObjectDef);
 
 </dd>
     <dt>
-    <a name = "utility_module.isboolean"></a>
-    <strong>utility_module.isboolean (object)</strong>
+    <a name = "isboolean"></a>
+    <strong>isboolean (object)</strong>
     </dt>
     <dd>
     Is this object a boolean?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -512,12 +666,13 @@ utility.Register(ObjectDef);
 
 </dd>
     <dt>
-    <a name = "utility_module.isnumber"></a>
-    <strong>utility_module.isnumber (object)</strong>
+    <a name = "isnumber"></a>
+    <strong>isnumber (object)</strong>
     </dt>
     <dd>
     Is this object a number?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -538,12 +693,13 @@ utility.Register(ObjectDef);
 
 </dd>
     <dt>
-    <a name = "utility_module.isinteger"></a>
-    <strong>utility_module.isinteger (object)</strong>
+    <a name = "isinteger"></a>
+    <strong>isinteger (object)</strong>
     </dt>
     <dd>
     Is this object an integer?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -575,6 +731,7 @@ utility.Register(ObjectDef);
     Convert an iterator to an array.
  This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -586,7 +743,8 @@ utility.Register(ObjectDef);
     <h3>Returns:</h3>
     <ol>
 
-        An array containing the values from the iterator
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        array An array containing the values from the iterator
     </ol>
 
 
@@ -600,7 +758,7 @@ utility.Register(ObjectDef);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-08 18:27:06 </i>
+<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

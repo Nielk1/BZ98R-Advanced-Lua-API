@@ -1,35 +1,35 @@
 --- BZ98R LUA Extended API table to string.
 --- Converts table to string representation.
---
--- January 12, 2007
--- (For Lua 5.1)
---
--- Modified slightly by RiciLake to avoid the unnecessary table traversal in tablecount().
---
--- Modified slightly by John "Nielk1" Klein for LDoc.
---
--- @author Julio Manuel Fernandez-Diaz
--- @module _table_show
+---
+--- January 12, 2007
+--- (For Lua 5.1)
+---
+--- Modified slightly by RiciLake to avoid the unnecessary table traversal in tablecount().
+---
+--- Modified slightly by John "Nielk1" Klein for LDoc.
+---
+--- @author Julio Manuel Fernandez-Diaz
+--- @module _table_show
 
 --- Convert table to string representation.
---
--- Heavily based on "Saving tables with cycles", PIL2, p. 113.
--- 
--- Formats tables with cycles recursively to any depth.
--- The output is returned as a string.
--- References to other tables are shown as values.
--- Self references are indicated.
---
--- The string returned is "Lua code", which can be procesed
--- (in the case in which indent is composed by spaces or "--").
---
--- Userdata and function keys and values are shown as strings,
--- which logically are exactly not equivalent to the original code.
---
--- @tparam table t the table
--- @tparam[opt] string name name of the table
--- @tparam[opt] string indent first indentation (optional)
--- @usage print(table.show(t, "t"))   -- a typical use
+---
+--- Heavily based on "Saving tables with cycles", PIL2, p. 113.
+--- 
+--- Formats tables with cycles recursively to any depth.
+--- The output is returned as a string.
+--- References to other tables are shown as values.
+--- Self references are indicated.
+---
+--- The string returned is "Lua code", which can be procesed
+--- (in the case in which indent is composed by spaces or "--").
+---
+--- Userdata and function keys and values are shown as strings,
+--- which logically are exactly not equivalent to the original code.
+---
+--- @param t table the table
+--- @param name? string name of the table
+--- @param indent? string first indentation (optional)
+--- @usage print(table.show(t, "t"))   -- a typical use
 function table.show(t, name, indent)
    local cart     -- a container
    local autoref  -- for self references

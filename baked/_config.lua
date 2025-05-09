@@ -1,8 +1,8 @@
 --- BZ98R LUA Extended API Configuration.
---- 
+---
 --- Constants used to configure the API's system.
 --- Note that reading any non-table value other than "locked" will lock the config table.
---- 
+---
 --- Dependencies: @{_table_show}
 --- @module _config
 --- @author John "Nielk1" Klein
@@ -64,8 +64,8 @@ config_meta.__newindex = function(dtable, key, value)
 end
 
 --- Get a value from the config table using a period or colon delimited path.
---- @tparam string path The path to the value, e.g. "hook_priority.Update.StateMachine"
---- @return The value at the specified path
+--- @param path string The path to the value, e.g. "hook_priority.Update.StateMachine"
+--- @return any The value at the specified path
 function config_meta.get(path)
     -- Access a value using a period or colon delimited path
     local value = resolve_path(config_meta.data, path)

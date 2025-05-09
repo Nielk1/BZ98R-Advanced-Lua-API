@@ -1,7 +1,7 @@
 --- BZ98R LUA Extended API Hook.
---- 
+---
 --- Event hook for event observer pattern.
---- 
+---
 --- Dependencies: @{_utility}
 --- @module _hook
 --- @author John "Nielk1" Klein
@@ -70,7 +70,7 @@ hookresult_meta.__newindex = function(dtable, key, value)
 end
 
 --- Is this object an instance of HookResult?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function hook.isresult(object)
     return (type(object) == "table" and object.__type == "HookResult");
@@ -123,9 +123,9 @@ function sort_handlers(item1, item2)
 end
 
 --- Add a hook to listen to the specified event.
---- @tparam string event Event to be hooked
---- @tparam string identifier Identifier for this hook observer
---- @tparam function func Function to be executed
+--- @param event string Event to be hooked
+--- @param identifier string Identifier for this hook observer
+--- @param func function Function to be executed
 --- @tparam[opt=0] number priority Higher numbers are higher priority
 function hook.Add( event, identifier, func, priority )
     if not utility.isstring(event) then error("Parameter event must be a string."); end
@@ -188,9 +188,9 @@ function hook.Remove( event, name )
 end
 
 --- Add a hook to listen to the Save and Load event.
---- @tparam string identifier Identifier for this hook observer
---- @tparam[opt] function save Function to be executed for Save
---- @tparam[opt] function load Function to be executed for Load
+--- @param identifier string Identifier for this hook observer
+--- @param save? function Function to be executed for Save
+--- @param load? function Function to be executed for Load
 function hook.AddSaveLoad( identifier, save, load )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if save == nil and load == nil then error("At least one of Parameters save or load must be supplied."); end
@@ -208,7 +208,7 @@ function hook.AddSaveLoad( identifier, save, load )
 end
 
 --- Removes the Save and Load hooks with the given identifier.
---- @tparam string identifier Identifier for this hook observer
+--- @param identifier string Identifier for this hook observer
 function hook.RemoveSaveLoad( identifier )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if ( not hook.SaveLoadHooks[ identifier ] ) then return; end
@@ -261,7 +261,7 @@ end
 
 
 --- Calls hooks associated with the hook name ignoring any return values.
---- @tparam string event Event to be hooked
+--- @param event string Event to be hooked
 --- @param ... Parameters passed to every hooked function
 --- @treturn bool Return true if stopped early, else nil
 function hook.CallAllNoReturn( event, ... )
@@ -293,7 +293,7 @@ end
 --- wrapping. This allows for the hook chain to be broken early through the use of
 --- the AbortResult function. The best action here is to nil check and test your last
 --- Parameter with hook.isresult before processing it.
---- @tparam string event Event to be hooked
+--- @param event string Event to be hooked
 --- @param ... Parameters passed to every hooked function
 function hook.CallAllPassReturn( event, ... )
     local HookTable = hook.Hooks[ event ]

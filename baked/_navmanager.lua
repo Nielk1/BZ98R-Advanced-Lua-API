@@ -1,7 +1,7 @@
 --- BZ98R LUA Extended API NavManager.
---- 
+---
 --- Manage navs
---- 
+---
 --- Dependencies: @{_config}, @{_utility}, @{_gameobject}, @{_api}, @{_hook}
 --- @module _navmanager
 --- @author John "Nielk1" Klein
@@ -44,26 +44,26 @@ local DisableAutomaticNavAdding = false; -- used to prevent navs from being adde
 
 --- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
---- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
---- @tparam integer team Team number of the nav to build
---- @tparam vector position
+--- @param odf string ODF of the nav to build, if nil uses the default nav ODF
+--- @param team integer Team number of the nav to build
+--- @param position vector
 --- @treturn GameObject The nav object that was built
 --- @function _navmanager.BuildImportantNav
 
 --- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
---- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
---- @tparam integer team Team number of the nav to build
---- @tparam matrix transform
+--- @param odf string ODF of the nav to build, if nil uses the default nav ODF
+--- @param team integer Team number of the nav to build
+--- @param transform matrix
 --- @treturn GameObject The nav object that was built
 --- @function _navmanager.BuildImportantNav
 
 --- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
---- @tparam string odf ODF of the nav to build, if nil uses the default nav ODF
---- @tparam integer team Team number of the nav to build
---- @tparam string path path name to build the nav
---- @tparam[opt] integer point Path point number
+--- @param odf string ODF of the nav to build, if nil uses the default nav ODF
+--- @param team integer Team number of the nav to build
+--- @param path string path name to build the nav
+--- @param point? integer Path point number
 --- @treturn GameObject The nav object that was built
 --- @function _navmanager.BuildImportantNav
 
@@ -100,11 +100,11 @@ _navmanager.CompactionStrategy = {
 local CompactMode = _navmanager.CompactionStrategy.DoNothing; -- default to chronological
 
 --- Set the compaction strategy for navs.
---- @tparam string strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+--- @param strategy string The strategy to use. See @{_navmanager.CompactionStrategy} for options.
 --- @function _navmanager.SetCompactionStrategy
 
 --- Set the compaction strategy for navs.
---- @tparam integer strategy The strategy to use. See @{_navmanager.CompactionStrategy} for options.
+--- @param strategy integer The strategy to use. See @{_navmanager.CompactionStrategy} for options.
 --- @function _navmanager.SetCompactionStrategy
 function _navmanager.SetCompactionStrategy(strategy)
     local strat = strategy;
@@ -124,8 +124,8 @@ end
 --- Enumerates all navs for a team.
 --- At least 10 indexes will be iterated, even if there are no navs in those slots.
 --- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
---- @tparam integer team Team number to enumerate
---- @tparam[opt] bool include_overflow If true "Overflow Navs" will be included in the enumeration after the initial 10.
+--- @param team integer Team number to enumerate
+--- @param include_overflow? bool If true "Overflow Navs" will be included in the enumeration after the initial 10.
 --- @treturn integer index The index of the nav in the enumeration
 --- @treturn GameObject nav The nav object at the index
 --- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do

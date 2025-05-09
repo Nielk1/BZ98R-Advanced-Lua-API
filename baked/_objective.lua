@@ -1,10 +1,11 @@
 --- BZ98R LUA Extended API Objective Manager.
---- 
+---
 --- Note that this module cannot manage manually created objectives.
---- 
---- Dependencies: @{_config}, @{_utility}, @{_gameobject}, @{_api}, @{_hook}
+---
+--- Dependencies: @{_hook}
 --- @module _objective
 --- @author John "Nielk1" Klein
+--- @alias _objective
 --- @usage local objective = require("_objective");
 --- 
 --- @todo write example usage
@@ -13,10 +14,6 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_objective Loading");
 
-local config = require("_config");
-local utility = require("_utility");
-local gameobject = require("_gameobject");
-local _api = require("_api");
 local hook = require("_hook");
 
 local _objective = {};
@@ -35,9 +32,9 @@ local reorderObjectives = function()
 
     local stable = {};
     for i, v in pairs(allObjectives) do
-        table.insert(stable,v);
+        table.insert(stable, v);
     end
-    table.sort(stable,cmpObj);
+    table.sort(stable, cmpObj);
     for i, v in ipairs(stable) do
         --- @diagnostic disable: deprecated
         AddObjective(v.name, v.color, v.duration, v.text);
@@ -46,12 +43,12 @@ local reorderObjectives = function()
 end
 
 --- Updates the objective message with the given name. If no objective exists with that name, it does nothing.
---- @tparam string name Unique name for objective, usually a filename ending with otf from which data is loaded
---- @tparam[opt] string color Default to WHITE. See @{_utility.ColorLabels};
---- @tparam[opt] number duration defaults to 8 seconds
---- @tparam[opt] string text Override text from the target objective file. [2.0+]
---- @tparam[opt] number position Sort position of the objective. Defaults to the next available ID.
---- @tparam[opt] bool persistant If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+--- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param color? string Default to WHITE. See @{_utility.ColorLabels};
+--- @param duration? number defaults to 8 seconds
+--- @param text? string Override text from the target objective file. [2.0+]
+--- @param position? number Sort position of the objective. Defaults to the next available ID.
+--- @param persistant? bool If true, the objective will not be removed when the objectives are cleared. Defaults to false.
 function _objective.UpdateObjective(name, color, duration, text, position, persistant)
     if allObjectives[name] then
         local o = allObjectives[name];
@@ -82,12 +79,12 @@ function _objective.ClearObjectives()
 end
 
 --- Adds an objective message with the given name and properties.
---- @tparam string name Unique name for objective, usually a filename ending with otf from which data is loaded
---- @tparam[opt] string color Default to WHITE. See @{_utility.ColorLabels};
---- @tparam[opt] number duration defaults to 8 seconds
---- @tparam[opt] string text Override text from the target objective file. [2.0+]
---- @tparam[opt] number position Sort position of the objective. Defaults to the next available ID.
---- @tparam[opt] bool persistant If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+--- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param color? string Default to WHITE. See @{_utility.ColorLabels};
+--- @param duration? number defaults to 8 seconds
+--- @param text? string Override text from the target objective file. [2.0+]
+--- @param position? number Sort position of the objective. Defaults to the next available ID.
+--- @param persistant? bool If true, the objective will not be removed when the objectives are cleared. Defaults to false.
 function _objective.AddObjective(name, color, duration, text, position, persistant)
     --Resort all objectives
     if not allObjectives[name] then
@@ -105,15 +102,15 @@ function _objective.AddObjective(name, color, duration, text, position, persista
 end
 
 --- Removes the objective message with the given file name. Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
---- @tparam string name
+--- @param name string
 function _objective.RemoveObjective(name)
     allObjectives[name] = nil;
     RemoveObjective(name);
 end
 
 --- Set the objective position of the given name. If no objective exists with that name, it does nothing.
---- @tparam string name Unique name for objective, usually a filename ending with otf from which data is loaded
---- @tparam number position Sort position of the objective.
+--- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param position number Sort position of the objective.
 function _objective.SetObjectivePosition(name, position)
     if allObjectives[name] then
         allObjectives[name].position = position;
@@ -122,7 +119,7 @@ function _objective.SetObjectivePosition(name, position)
 end
 
 --- Get the objective position of the given name. If no objective exists with that name, it does nothing.
---- @tparam string name Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
 --- @treturn number position Sort position of the objective.
 function _objective.GetObjectivePosition(name)
     if allObjectives[name] then
@@ -131,13 +128,13 @@ function _objective.GetObjectivePosition(name)
 end
 
 --- Replaces the objective message with the given name. If no objective exists with that name, it does nothing.
---- @tparam string oldname Unique name for objective, usually a filename ending with otf from which data is loaded
---- @tparam string name Unique name for objective, usually a filename ending with otf from which data is loaded
---- @tparam[opt] string color Default to WHITE. See @{_utility.ColorLabels};
---- @tparam[opt] number duration defaults to 8 seconds
---- @tparam[opt] string text Override text from the target objective file. [2.0+]
---- @tparam[opt] number position Sort position of the objective. Defaults to the removed objective's position or next available ID.
---- @tparam[opt] bool persistant If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+--- @param oldname string Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param color? string Default to WHITE. See @{_utility.ColorLabels};
+--- @param duration? number defaults to 8 seconds
+--- @param text? string Override text from the target objective file. [2.0+]
+--- @param position? number Sort position of the objective. Defaults to the removed objective's position or next available ID.
+--- @param persistant? bool If true, the objective will not be removed when the objectives are cleared. Defaults to false.
 function _objective.ReplaceObjective(oldname, name, color, duration, text, position, persistant)
     local obj = allObjectives[name];
     _objective.RemoveObjective(oldname);
@@ -157,23 +154,12 @@ end
 -------------------------------------------------------------------------------
 -- @section
 
-hook.Add("CreateObject", "_objective_CreateObject", function(object, isMapObject)
-    
-end, config.get("hook_priority.CreateObject.Objective"));
-
-hook.Add("DeleteObject", "_objective_DeleteObject", function(object)
-
-end, config.get("hook_priority.DeleteObject.Objective"));
-
-hook.Add("Update", "_objective_Update", function(dtime, ttime)
-    
-end, 49999);
-
 hook.AddSaveLoad("_objective", function()
-    return NavCollection;
+    return allObjectives, nextId;
 end,
-function(_NavCollection)
-    NavCollection = _NavCollection;
+function(_allObjectives, _nextId)
+    allObjectives = _allObjectives;
+    nextId = _nextId;
 end);
 
 debugprint("_objective Loaded");

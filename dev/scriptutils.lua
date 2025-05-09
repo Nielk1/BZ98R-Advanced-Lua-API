@@ -2328,18 +2328,18 @@ function CameraCancelled() end
 
 --- Returns a matrix whose components have the given number values. If no value is given for a component, the default value is zero. Be careful with this since it's easy to build a non-orthonormal matrix that will break all kinds of built-in assumptions.
 --- @return matrix
---- @param right? number_x
---- @param right? number_y
---- @param right? number_z
---- @param up? number_x
---- @param up? number_y
---- @param up? number_z
---- @param front? number_x
---- @param front? number_y
---- @param front? number_z
---- @param posit? number_x
---- @param posit? number_y
---- @param posit? number_z
+--- @param right_x? number
+--- @param right_y? number
+--- @param right_z? number
+--- @param up_x? number
+--- @param up_y? number
+--- @param up_z? number
+--- @param front_x? number
+--- @param front_y? number
+--- @param front_z? number
+--- @param posit_x? number
+--- @param posit_y? number
+--- @param posit_z? number
 --- @function SetMatrix
 
 --- Global value representing the identity matrix.
@@ -2349,9 +2349,9 @@ function CameraCancelled() end
 --- Build a matrix representing a rotation by an angle around an axis. The angle is in radians. If no value is given for the angle or an axis component, the default value is zero. The axis must be unit-length (i.e. axis_x<sup>2</sup> + axis_y<sup>2</sup> + axis_z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
 --- @return matrix
 --- @param angle? number
---- @param axis? number_x
---- @param axis? number_y
---- @param axis? number_z
+--- @param axis_x? number
+--- @param axis_y? number
+--- @param axis_z? number
 --- @function BuildAxisRotationMatrix
 
 --- Build a matrix representing a rotation by an angle around an axis. The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
@@ -2365,9 +2365,9 @@ function CameraCancelled() end
 --- @param pitch? number
 --- @param yaw? number
 --- @param roll? number
---- @param posit? number_x
---- @param posit? number_y
---- @param posit? number_z
+--- @param posit_x? number
+--- @param posit_y? number
+--- @param posit_z? number
 --- @function BuildPositionRotationMatrix
 
 --- Build a matrix with the given pitch, yaw, and roll angles and position. The angles are in radians. If no value is given for a component, the default value is zero.

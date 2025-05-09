@@ -1,7 +1,7 @@
 --- BZ98R LUA Extended API Optional loader.
---- 
+---
 --- Load a lua module optionally.
---- 
+---
 --- @module _optional
 --- @author John "Nielk1" Klein
 --- @alias _optional
@@ -33,8 +33,8 @@ local KnownFailedModules = {};
 --- __call
 --- @function __call
 --- Attempt to load a module, if it fails return false and error, if succesful return true and the module.
---- @tparam table table The module table itself.
---- @tparam string moduleName Module name to load.
+--- @param table table The module table itself.
+--- @param moduleName string Module name to load.
 --- @treturn boolean success True if the module loaded successfully, false if it failed.
 --- @return The module return value or nil if failed
 _optional_module_meta.__call = function(table, moduleName)

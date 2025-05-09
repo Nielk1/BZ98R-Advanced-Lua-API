@@ -39,13 +39,13 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
@@ -55,6 +55,7 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
 
 </div>
@@ -64,10 +65,8 @@
 <h1>Module <code>_statemachine</code></h1>
 <p>BZ98R LUA Extended API StateMachineIter.</p>
 <p>
-
- State Machine and State Machine Iterator for serial event sequences across game turns.
-
- Dependencies: <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_config.html#">_config</a>, <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_customsavetype.html#">_customsavetype</a></p>
+<p> State Machine and State Machine Iterator for serial event sequences across game turns.
+<p> Dependencies: <a href="../modules/_utility.html#">_utility</a>, <a href="../modules/_config.html#">_config</a>, <a href="../modules/_api.html#">_api</a>, <a href="../modules/_hook.html#">_hook</a>, <a href="../modules/_customsavetype.html#">_customsavetype</a></p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local statemachine = require(&quot;_statemachine&quot;);
@@ -149,6 +148,10 @@ end);
 	<td class="summary">Is this object an instance of StateMachineIter?</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#CreateStateMachineIter">CreateStateMachineIter (name, timer, target_time, state_key, values)</a></td>
+	<td class="summary">Create StateMachineIter</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#StateMachineIter.run">StateMachineIter.run (self)</a></td>
 	<td class="summary">Run StateMachineIter.</td>
 	</tr>
@@ -211,6 +214,7 @@ end);
     <dd>
     Is this object an instance of StateMachineIter?
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -231,12 +235,51 @@ end);
 
 </dd>
     <dt>
+    <a name = "CreateStateMachineIter"></a>
+    <strong>CreateStateMachineIter (name, timer, target_time, state_key, values)</strong>
+    </dt>
+    <dd>
+    Create StateMachineIter
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         StateMachineIter template
+        </li>
+        <li><span class="parameter">timer</span>
+            <span class="types"><span class="type">int</span></span>
+         Timer's value, nil for not set
+        </li>
+        <li><span class="parameter">target_time</span>
+            <span class="types"><span class="type">int</span></span>
+         TargetTurn's value, nil for not set
+        </li>
+        <li><span class="parameter">state_key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Current state, string name or integer index if state machine is ordered
+        </li>
+        <li><span class="parameter">values</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Table of values embeded in the StateMachineIter
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "StateMachineIter.run"></a>
     <strong>StateMachineIter.run (self)</strong>
     </dt>
     <dd>
     Run StateMachineIter.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -259,6 +302,7 @@ end);
     Next StateMachineIter State.
  This only works if the StateMachineIter is ordered.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -280,6 +324,7 @@ end);
     <dd>
     Switch StateMachineIter State.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -308,6 +353,7 @@ end);
  If the second element is nil, the first element is considered the state function and the state name is generated automatically.
  If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -331,6 +377,7 @@ end);
     <dd>
     Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -359,6 +406,7 @@ end);
     <dd>
     Wait a set period of time on this state.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -391,6 +439,7 @@ end);
  This first time this is called the target time is latched in until true is returned.
  Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -423,6 +472,7 @@ end);
     <dd>
     Wait a set period of time on this state.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -458,11 +508,13 @@ end);
     Save event function.
 <p> INTERNAL USE.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">self</span>
-         StateMachineIter instance
+            <span class="types"><span class="type">StateMachineIter</span></span>
+         instance
         </li>
     </ul>
 
@@ -484,6 +536,7 @@ end);
     Load event function.
 <p> INTERNAL USE.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -505,6 +558,7 @@ end);
     BulkLoad event function.
 <p> INTERNAL USE.
 
+    </ul>
 
 
 
@@ -519,7 +573,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-08 18:27:06 </i>
+<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

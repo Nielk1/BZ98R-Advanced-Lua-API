@@ -32,6 +32,8 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Pilot_Class">Pilot Class </a></li>
+<li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Globals">Globals </a></li>
 <li><a href="#Audio_Messages">Audio Messages </a></li>
 <li><a href="#Sound_Effects">Sound Effects </a></li>
@@ -39,14 +41,12 @@
 <li><a href="#Team_Number">Team Number </a></li>
 <li><a href="#Target">Target </a></li>
 <li><a href="#Owner">Owner </a></li>
-<li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Position_and_Orientation">Position and Orientation </a></li>
 <li><a href="#Linear_Velocity">Linear Velocity </a></li>
 <li><a href="#Angular_Velocity">Angular Velocity </a></li>
 <li><a href="#Position_Helpers">Position Helpers </a></li>
 <li><a href="#Shot">Shot </a></li>
 <li><a href="#Alliances">Alliances </a></li>
-<li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Distance">Distance </a></li>
 <li><a href="#Nearest">Nearest </a></li>
 <li><a href="#Iterators">Iterators </a></li>
@@ -91,13 +91,13 @@
 
 <h2>Modules</h2>
 <ul class="nowrap">
-  <li><strong>ScriptUtils</strong></li>
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
@@ -107,6 +107,7 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><strong>ScriptUtils</strong></li>
 </ul>
 
 </div>
@@ -120,6 +121,40 @@
 </p>
 
 
+<h2><a href="#Pilot_Class">Pilot Class </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SetPilotClass">SetPilotClass (h, odfname)</a></td>
+	<td class="summary">Sets the vehicle's pilot class to the given odf name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetPilotClass">GetPilotClass (h)</a></td>
+	<td class="summary">Returns the odf name of the vehicle's pilot class.</td>
+	</tr>
+</table>
+<h2><a href="#Objective_Marker">Objective Marker </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SetObjectiveOn">SetObjectiveOn (h)</a></td>
+	<td class="summary">Sets the game object as an objective to all teams.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetObjectiveOff">SetObjectiveOff (h)</a></td>
+	<td class="summary">Sets the game object back to normal.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetObjectiveName">GetObjectiveName (h)</a></td>
+	<td class="summary">Gets the game object's visible name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetObjectiveName">SetObjectiveName (h, name)</a></td>
+	<td class="summary">Sets the game object's visible name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetName">SetName (h, name)</a></td>
+	<td class="summary">Sets the game object's visible name.</td>
+	</tr>
+</table>
 <h2><a href="#Globals">Globals </a></h2>
 <table class="function_list">
 	<tr>
@@ -327,17 +362,6 @@
 	<td class="summary">Returns the game object's owner.</td>
 	</tr>
 </table>
-<h2><a href="#Pilot_Class">Pilot Class </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#SetPilotClass">SetPilotClass (h, odfname)</a></td>
-	<td class="summary">Sets the vehicle's pilot class to the given odf name.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetPilotClass">GetPilotClass (h)</a></td>
-	<td class="summary">Returns the odf name of the vehicle's pilot class.</td>
-	</tr>
-</table>
 <h2><a href="#Position_and_Orientation">Position and Orientation </a></h2>
 <table class="function_list">
 	<tr>
@@ -446,29 +470,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#IsAlly">IsAlly (me, him)</a></td>
 	<td class="summary">Returns true if game object "me" considers game object "him" an ally.</td>
-	</tr>
-</table>
-<h2><a href="#Objective_Marker">Objective Marker </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#SetObjectiveOn">SetObjectiveOn (h)</a></td>
-	<td class="summary">Sets the game object as an objective to all teams.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetObjectiveOff">SetObjectiveOff (h)</a></td>
-	<td class="summary">Sets the game object back to normal.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetObjectiveName">GetObjectiveName (h)</a></td>
-	<td class="summary">Gets the game object's visible name.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetObjectiveName">SetObjectiveName (h, name)</a></td>
-	<td class="summary">Sets the game object's visible name.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetName">SetName (h, name)</a></td>
-	<td class="summary">Sets the game object's visible name.</td>
 	</tr>
 </table>
 <h2><a href="#Distance">Distance </a></h2>
@@ -1586,6 +1587,200 @@
 <br/>
 
 
+    <h2 class="section-header has-description"><a name="Pilot_Class"></a>Pilot Class </h2>
+
+          <div class="section-description">
+           functions get and set vehicle pilot class.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "SetPilotClass"></a>
+    <strong>SetPilotClass (h, odfname)</strong>
+    </dt>
+    <dd>
+    Sets the vehicle's pilot class to the given odf name.  This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+        <li><span class="parameter">odfname</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetPilotClass"></a>
+    <strong>GetPilotClass (h)</strong>
+    </dt>
+    <dd>
+    Returns the odf name of the vehicle's pilot class.  Returns nil if none exists.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Objective_Marker"></a>Objective Marker </h2>
+
+          <div class="section-description">
+           functions control objective markers.
+ Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "SetObjectiveOn"></a>
+    <strong>SetObjectiveOn (h)</strong>
+    </dt>
+    <dd>
+    Sets the game object as an objective to all teams.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetObjectiveOff"></a>
+    <strong>SetObjectiveOff (h)</strong>
+    </dt>
+    <dd>
+    Sets the game object back to normal.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetObjectiveName"></a>
+    <strong>GetObjectiveName (h)</strong>
+    </dt>
+    <dd>
+    Gets the game object's visible name.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetObjectiveName"></a>
+    <strong>SetObjectiveName (h, name)</strong>
+    </dt>
+    <dd>
+    Sets the game object's visible name.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetName"></a>
+    <strong>SetName (h, name)</strong>
+    </dt>
+    <dd>
+    Sets the game object's visible name.  This function is effectively an alias for SetObjectiveName.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><span class="type">handle</span></span>
+
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Globals"></a>Globals </h2>
 
           <div class="section-description">
@@ -1601,6 +1796,7 @@
 <p> Battlezone 98 Redux versions start with "2"
 <p> For example "1.5.2.27u1"
 
+    </ul>
 
     <ul>
         <li><span class="parameter">GameVersion</span>
@@ -1630,6 +1826,7 @@
  </ol>
  [2.0+]
 
+    </ul>
 
     <ul>
         <li><span class="parameter">Language</span>
@@ -1650,6 +1847,7 @@
     Contains the full name of the current language in all-caps: "ENGLISH", "FRENCH", "GERMAN", "SPANISH", "ITALIAN", "PORTUGUESE", or "RUSSIAN"
  [2.0+]
 
+    </ul>
 
     <ul>
         <li><span class="parameter">LanguageName</span>
@@ -1670,6 +1868,7 @@
     Contains the two-letter language code of the current language: "en", "fr", "de", "es", "it", "pt" or "ru"
  [2.0+]
 
+    </ul>
 
     <ul>
         <li><span class="parameter">LanguageSuffix</span>
@@ -1689,6 +1888,7 @@
     <dd>
     Contains the most recently pressed game key (e.g.  "Ctrl+Z")
 
+    </ul>
 
     <ul>
         <li><span class="parameter">LastGameKey</span>
@@ -1716,6 +1916,7 @@
     <dd>
     Repeat the last audio message.
 
+    </ul>
 
 
 
@@ -1731,6 +1932,7 @@
     Plays the given audio file, which must be an uncompressed RIFF WAVE (.WAV) file.
  Returns an audio message handle.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1758,6 +1960,7 @@
     <dd>
     Returns true if the audio message has stopped.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1785,6 +1988,7 @@
     <dd>
     Stops the given audio message.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1806,6 +2010,7 @@
     <dd>
     Returns true if <em>any</em> audio message is playing.  Returns false otherwise.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -1839,6 +2044,7 @@
  Volume ranges from 0 to 100, with 0 being silent and 100 being maximum volume. The default volume is 100 if not specified.
  Rate overrides the playback rate of the sound file, so a value of 22050 would cause a sound file recorded at 11025 Hz to play back twice as fast. The rate defaults to the file's native rate if not specified.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1885,6 +2091,7 @@
     <dd>
     Stops the sound using the given filename and associated with the given object.  Use a handle of none or nil to stop a global 2D sound.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1919,6 +2126,7 @@
     <dd>
     Returns the handle of the game object with the given label.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1947,6 +2155,7 @@
     Creates a game object with the given odf name and team number at the location of a game object.
  Returns the handle of the created object if it created one. Returns nil if it failed.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -1983,6 +2192,7 @@
     Creates a game object with the given odf name and team number at a point on the named path.  It uses the start of the path if no point is given.
  Returns the handle of the created object if it created one. Returns nil if it failed.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2024,6 +2234,7 @@
     Creates a game object with the given odf name and team number at the given position vector.
  Returns the handle of the created object if it created one. Returns nil if it failed.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2060,6 +2271,7 @@
     Creates a game object with the given odf name and team number with the given transform matrix.
  Returns the handle of the created object if it created one. Returns nil if it failed.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2095,6 +2307,7 @@
     <dd>
     Removes the game object with the given handle.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2116,6 +2329,7 @@
     <dd>
     Returns true if the game object's odf name matches the given odf name.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2147,6 +2361,7 @@
     <dd>
     Returns the odf name of the game object.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2174,6 +2389,7 @@
     <dd>
     Returns the base config of the game object which determines what VDF/SDF model it uses.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2201,6 +2417,7 @@
     <dd>
     Returns the label of the game object (e.g.  "avtank0_wingman"). Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2230,6 +2447,7 @@
  <p>Note: this function was misspelled as SettLabel in 1.5. It can be renamed compatibly with a short snippet of code at the top of the mission script:</p>
  <pre>SetLabel = SetLabel or SettLabel</pre>
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2255,6 +2473,7 @@
     <dd>
     Returns the four-character class signature of the game object (e.g.  "WING"). Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2282,6 +2501,7 @@
     <dd>
     Returns the class label of the game object (e.g.  "wingman"). Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2310,6 +2530,7 @@
     Returns the numeric class identifier of the game object.  Returns nil if none exists.
  Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2338,6 +2559,7 @@
     This is a global table that converts between class identifier numbers and class identifier names.
  Many of these values likely never appear in game and are leftover from Interstate '76
 
+    </ul>
 
     <h3>Fields:</h3>
     <ul>
@@ -2596,6 +2818,7 @@
     Returns the one-letter nation code of the game object (e.g.  "a" for American, "b" for Black Dog, "c" for Chinese, and "s" for Soviet).
  The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2623,6 +2846,7 @@
     <dd>
     Returns true if the game object exists.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2650,6 +2874,7 @@
     <dd>
     Returns true if the game object exists and (if the object is a vehicle) controlled.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2677,6 +2902,7 @@
     <dd>
     Returns true if the game object exists and (if the object is a vehicle) controlled and piloted.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2704,6 +2930,7 @@
     <dd>
     Returns true if the game object exists and is a vehicle.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2731,6 +2958,7 @@
     <dd>
     Returns true if the game object exists and is a building.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2758,6 +2986,7 @@
     <dd>
     Returns true if the game object exists and is a person.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2785,6 +3014,7 @@
     <dd>
     Returns true if the game object exists and has less health than the threshold.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2818,6 +3048,7 @@
     Returns true if the game object was recycled by a Construction Rig on the given team.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2856,6 +3087,7 @@
     <dd>
     Returns the game object's team number.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2883,6 +3115,7 @@
     <dd>
     Sets the game object's team number.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2909,6 +3142,7 @@
     Returns the game object's perceived team number (as opposed to its real team number).
  The perceived team will differ from the real team when a player enters an empty enemy vehicle without being seen until they attack something.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2942,6 +3176,7 @@
  Units on the game object's perceived team will treat it as friendly until it "blows its cover" by attacking, at which point it will revert to its real team.
  Units on the game object's real team will treat it as friendly regardless of its perceived team.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2974,6 +3209,7 @@
     <dd>
     Sets the local player's target.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -2995,6 +3231,7 @@
     <dd>
     Returns the local player's target.  Returns nil if it has none.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -3015,6 +3252,7 @@
     <dd>
     Sets the game object's target.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3040,6 +3278,7 @@
     <dd>
     Returns the game object's target.  Returns nil if it has none.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3074,6 +3313,7 @@
     <dd>
     Sets the game object's owner.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3099,6 +3339,7 @@
     <dd>
     Returns the game object's owner.  Returns nil if it has none.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3120,65 +3361,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Pilot_Class"></a>Pilot Class </h2>
-
-          <div class="section-description">
-           functions get and set vehicle pilot class.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "SetPilotClass"></a>
-    <strong>SetPilotClass (h, odfname)</strong>
-    </dt>
-    <dd>
-    Sets the vehicle's pilot class to the given odf name.  This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetPilotClass"></a>
-    <strong>GetPilotClass (h)</strong>
-    </dt>
-    <dd>
-    Returns the odf name of the vehicle's pilot class.  Returns nil if none exists.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Position_and_Orientation"></a>Position and Orientation </h2>
 
           <div class="section-description">
@@ -3192,6 +3374,7 @@
     <dd>
     Teleports the game object to a point on the named path.  It uses the start of the path if no point is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3222,6 +3405,7 @@
     <dd>
     Teleports the game object to the position vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3247,6 +3431,7 @@
     <dd>
     Teleports the game object to the position of the transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3272,6 +3457,7 @@
     <dd>
     Returns the game object's position vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3299,6 +3485,7 @@
     <dd>
     Returns the path point's position vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3331,6 +3518,7 @@
     <dd>
     Returns the game object's front vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3358,6 +3546,7 @@
     <dd>
     Teleports the game object to the given transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3383,6 +3572,7 @@
     <dd>
     Returns the game object's transform matrix.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3417,6 +3607,7 @@
     <dd>
     Returns the game object's linear velocity vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3444,6 +3635,7 @@
     <dd>
     Sets the game object's angular velocity vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3476,6 +3668,7 @@
     <dd>
     Returns the game object's angular velocity vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3503,6 +3696,7 @@
     <dd>
     Sets the game object's angular velocity vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3538,6 +3732,7 @@
  If no angle is given, it uses a default angle of zero.
  An angle of zero is +X (due east), pi * 0.5 is +Z (due north), pi is -X (due west), and pi * 1.5 is -Z (due south).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3577,6 +3772,7 @@
  This is good for scattering spawn positions around a point while excluding positions that are too high or too low.
  If no radius is given, it uses the default radius of zero.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3621,6 +3817,7 @@
     <dd>
     Returns who scored the most recent hit on the game object.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3648,6 +3845,7 @@
     <dd>
     Returns the last time an enemy shot the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3675,6 +3873,7 @@
     <dd>
     Returns the last time a friend shot the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3711,6 +3910,7 @@
     <dd>
     Sets team alliances back to default.
 
+    </ul>
 
 
 
@@ -3725,6 +3925,7 @@
     <dd>
     Sets whether team alliances are locked.  Locking alliances prevents players from allying or un-allying, preserving alliances set up by the mission script.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3747,6 +3948,7 @@
     Makes the two teams allies of each other.
  This function affects both teams so Ally(1, 2) and Ally(2, 1) produces the identical results, unlike the "half-allied" state created by the "ally" game key.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3773,6 +3975,7 @@
     Makes the two teams enemies of each other.
  This function affects both teams so UnAlly(1, 2) and UnAlly(2, 1) produces the identical results, unlike the "half-enemy" state created by the "unally" game key.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3799,6 +4002,7 @@
     Returns true if team1 considers team2 an ally.  Returns false otherwise.
  Due to the possibility of player-initiated "half-alliances", IsTeamAllied(team1, team2) might not return the same result as IsTeamAllied(team2, team1).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3831,6 +4035,7 @@
     Returns true if game object "me" considers game object "him" an ally.  Returns false otherwise.
  Due to the possibility of player-initiated "half-alliances", IsAlly(me, him) might not return the same result as IsAlly(him, me).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -3856,134 +4061,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Objective_Marker"></a>Objective Marker </h2>
-
-          <div class="section-description">
-           functions control objective markers.
- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "SetObjectiveOn"></a>
-    <strong>SetObjectiveOn (h)</strong>
-    </dt>
-    <dd>
-    Sets the game object as an objective to all teams.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetObjectiveOff"></a>
-    <strong>SetObjectiveOff (h)</strong>
-    </dt>
-    <dd>
-    Sets the game object back to normal.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetObjectiveName"></a>
-    <strong>GetObjectiveName (h)</strong>
-    </dt>
-    <dd>
-    Gets the game object's visible name.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetObjectiveName"></a>
-    <strong>SetObjectiveName (h, name)</strong>
-    </dt>
-    <dd>
-    Sets the game object's visible name.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetName"></a>
-    <strong>SetName (h, name)</strong>
-    </dt>
-    <dd>
-    Sets the game object's visible name.  This function is effectively an alias for SetObjectiveName.
- [2.1+]
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><span class="type">handle</span></span>
-
-        </li>
-        <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Distance"></a>Distance </h2>
 
           <div class="section-description">
@@ -3997,6 +4074,7 @@
     <dd>
     Returns the distance in meters between the two game objects.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4028,6 +4106,7 @@
     <dd>
     Returns the distance in meters between the game object and a point on the path.  It uses the start of the path if no point is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4064,6 +4143,7 @@
     <dd>
     Returns the distance in meters between the game object and a position vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4095,6 +4175,7 @@
     <dd>
     Returns the distance in meters between the game object and the position of a transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4127,6 +4208,7 @@
     Returns true if the units are closer than the given distance of each other.  Returns false otherwise.
  (This function is equivalent to GetDistance (h1, h2) < d)
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4163,6 +4245,7 @@
     Returns true if the bounding spheres of the two game objects are within the specified tolerance.  The default tolerance is 1.3 meters if not specified.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4206,6 +4289,7 @@
     <dd>
     Returns the game object closest to the given game object.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4233,6 +4317,7 @@
     <dd>
     Returns the game object closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4265,6 +4350,7 @@
     <dd>
     Returns the game object closest to the position vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4292,6 +4378,7 @@
     <dd>
     Returns the game object closest to the position of the transform matrix.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4319,6 +4406,7 @@
     <dd>
     Returns the craft closest to the given game object.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4346,6 +4434,7 @@
     <dd>
     Returns the craft closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4378,6 +4467,7 @@
     <dd>
     Returns the vehicle closest to the position vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4405,6 +4495,7 @@
     <dd>
     Returns the vehicle closest to the position of the transform matrix.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4432,6 +4523,7 @@
     <dd>
     Returns the building closest to the given game object.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4459,6 +4551,7 @@
     <dd>
     Returns the building closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4491,6 +4584,7 @@
     <dd>
     Returns the building closest to the position vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4518,6 +4612,7 @@
     <dd>
     Returns the building closest to the position of the transform matrix.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4545,6 +4640,7 @@
     <dd>
     Returns the enemy closest to the given game object.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4572,6 +4668,7 @@
     <dd>
     Returns the enemy closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4604,6 +4701,7 @@
     <dd>
     Returns the enemy closest to the position vector.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4631,6 +4729,7 @@
     <dd>
     Returns the enemy closest to the position of the transform matrix.  Returns nil if none exists.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4659,6 +4758,7 @@
     Returns the friend closest to the given game object.  Returns nil if none exists.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4687,6 +4787,7 @@
     Returns the friend closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4720,6 +4821,7 @@
     Returns the friend closest to the position vector.  Returns nil if none exists.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4748,6 +4850,7 @@
     Returns the friend closest to the position of the transform matrix.  Returns nil if none exists.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4776,6 +4879,7 @@
     Returns the craft or person on the given team closest to the given game object.  Returns nil if none exists.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4808,6 +4912,7 @@
     Returns the craft or person on the given team closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
   [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4845,6 +4950,7 @@
     Returns the craft or person on the given team closest to the position of the transform matrix.  Returns nil if none exists.
   [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4877,6 +4983,7 @@
     Returns the craft or person on the given team closest to the position vector.  Returns nil if none exists.
   [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4908,6 +5015,7 @@
     <dd>
     Returns how many objects with the given team and odf name are closer than the given distance.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4954,6 +5062,7 @@
     <dd>
     Enumerates game objects within the given distance of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -4985,6 +5094,7 @@
     <dd>
     Enumerates game objects within the given distance of the path point.  It uses the start of the path if no point is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5021,6 +5131,7 @@
     <dd>
     Enumerates game objects within the given distance of the position vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5052,6 +5163,7 @@
     <dd>
     Enumerates game objects within the given distance of the transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5084,6 +5196,7 @@
     Enumerates all game objects.
  Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -5104,6 +5217,7 @@
     <dd>
     Enumerates all craft.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -5124,6 +5238,7 @@
     <dd>
     Enumerates all game objects currently selected by the local player.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -5144,6 +5259,7 @@
     <dd>
     Enumerates all game objects marked as objectives.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -5171,6 +5287,7 @@
     <dd>
     While the global scrap count is above the limit, remove the oldest scrap piece.  It no limit is given, it uses the default limit of 300.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5193,6 +5310,7 @@
     <dd>
     Clear all scrap within the given distance of a game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5218,6 +5336,7 @@
     <dd>
     Clear all scrap within the given distance of a point on the path.  It uses the start of the path if no point is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5248,6 +5367,7 @@
     <dd>
     Clear all scrap within the given distance of a position vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5273,6 +5393,7 @@
     <dd>
     Clear all scrap within the given distance of the position of a transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5306,6 +5427,7 @@
     This is a global table that converts between team slot numbers and team slot names.  For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
  Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
 
+    </ul>
 
     <h3>Fields:</h3>
     <ul>
@@ -5492,6 +5614,7 @@
     Get the game object in the specified team slot.
  It uses the local player team if no team is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5525,6 +5648,7 @@
     Returns the game object controlled by the player on the given team.  Returns nil if none exists.
  It uses the local player team if no team is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5554,6 +5678,7 @@
     Returns the Recycler on the given team.  Returns nil if none exists.
  It uses the local player team if no team is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5583,6 +5708,7 @@
     Returns the Factory on the given team.  Returns nil if none exists.
  It uses the local player team if no team is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5612,6 +5738,7 @@
     Returns the Armory on the given team.  Returns nil if none exists.
  It uses the local player team if no team is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5641,6 +5768,7 @@
     Returns the Constructor on the given team.  Returns nil if none exists.
  It uses the local player team if no team is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5677,6 +5805,7 @@
     Adds pilots to the team's pilot count, clamped between zero and maximum count.
  Returns the new pilot count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5709,6 +5838,7 @@
     Sets the team's pilot count, clamped between zero and maximum count.
  Returns the new pilot count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5740,6 +5870,7 @@
     <dd>
     Returns the team's pilot count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5768,6 +5899,7 @@
     Adds pilots to the team's maximum pilot count.
  Returns the new pilot count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5800,6 +5932,7 @@
     Sets the team's maximum pilot count.
  Returns the new pilot count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5831,6 +5964,7 @@
     <dd>
     Returns the team's maximum pilot count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5866,6 +6000,7 @@
     Adds to the team's scrap count, clamped between zero and maximum count.
  Returns the new scrap count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5898,6 +6033,7 @@
     Sets the team's scrap count, clamped between zero and maximum count.
  Returns the new scrap count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5929,6 +6065,7 @@
     <dd>
     Returns the team's scrap count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5957,6 +6094,7 @@
     Adds to the team's maximum scrap count.
  Returns the new maximum scrap count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -5989,6 +6127,7 @@
     Sets the team's maximum scrap count.
  Returns the new maximum scrap count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6020,6 +6159,7 @@
     <dd>
     Returns the team's maximum scrap count.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6054,6 +6194,7 @@
     <dd>
     Returns true if the game object is a deployed craft.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6081,6 +6222,7 @@
     <dd>
     Tells the game object to deploy.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6109,6 +6251,7 @@
     <dd>
     Returns true if the game object is selected.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6143,6 +6286,7 @@
     <dd>
     Returns true if the game object is marked as mission-critical.  Returns false otherwise. [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6171,6 +6315,7 @@
     Sets the game object's mission-critical status.
  If critical is true or not specified, the object is marked as mission-critical. Otherwise, the object is marked as not mission critical. [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6206,6 +6351,7 @@
  To calculate the mask value, add up the values of the weapon hardpoint slots you want to enable.
  weaponHard1: 1 weaponHard2: 2 weaponHard3: 4 weaponHard4: 8 weaponHard5: 16
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6232,6 +6378,7 @@
     Gives the game object the named weapon in the given slot.  If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
  Returns true if it succeeded. Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6264,6 +6411,7 @@
     Returns the odf name of the weapon in the given slot on the game object.  Returns nil if the game object does not exist or the slot is empty.
  For example, an "avtank" game object would return "gatstab" for index 0 and "gminigun" for index 1.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6295,6 +6443,7 @@
     <dd>
     Tells the game object to fire at the given target.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6320,6 +6469,7 @@
     <dd>
     Applies damage to the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6352,6 +6502,7 @@
     <dd>
     Returns the elapsed time in seconds since the start of the mission.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -6372,6 +6523,7 @@
     <dd>
     Returns the simulation time step in seconds.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -6392,6 +6544,7 @@
     <dd>
     Returns the current system time in milliseconds.  This is mostly useful for performance profiling.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -6420,6 +6573,7 @@
     Enables (or disables) strategic AI control for a given team.  As of version 1.5.2.7, mission scripts must enable AI control for any team that intends to use an AIP.
  IMPORTANT SAFETY TIP: only call this function from the "root" of the Lua mission script! The strategic AI gets set up shortly afterward and attempting to use SetAIControl later will crash the game.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6447,6 +6601,7 @@
     Returns true if a given team is AI controlled.  Returns false otherwise.
  Unlike SetAIControl, this function may be called at any time.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6474,6 +6629,7 @@
     <dd>
     Returns the current AIP for the team.  It uses team 2 if no team number is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6502,6 +6658,7 @@
     <dd>
     Switches the team's AI plan.  It uses team 2 if no team number is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6528,6 +6685,7 @@
     <dd>
     Fails the mission after the given time elapses.  If supplied with a filename (usually a .des), it sets the failure message to text from that file.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6554,6 +6712,7 @@
     <dd>
     Succeeds the mission after the given time elapses.  If supplied with a filename (usually a .des), it sets the success message to text from that file.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6587,6 +6746,7 @@
     <dd>
     Clears all objective messages.
 
+    </ul>
 
 
 
@@ -6600,31 +6760,28 @@
     </dt>
     <dd>
     Adds an objective message with the given name and properties.
- The message defaults to white if no color is given. The color may be "black", "dkgrey", "grey", "white", "blue", "dkblue", "green", "dkgreen", "yellow", "dkyellow", "red", or "dkred"; the value is case-insensitive.
- The message lasts 8 seconds if no duration is given.
- The message text defaults to the contents of of the file with the specified name (usually an .otf).
- Script-supplied message text is only available in version 2.0.121.1 or higher.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">name</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Unique name for objective, usually a filename ending with otf from which data is loaded
         </li>
         <li><span class="parameter">color</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Default to WHITE. See <a href="../modules/_utility.html#ColorLabels">_utility.ColorLabels</a>;
          (<em>optional</em>)
         </li>
         <li><span class="parameter">duration</span>
             <span class="types"><span class="type">number</span></span>
-
+         defaults to 8 seconds
          (<em>optional</em>)
         </li>
         <li><span class="parameter">text</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Override text from the target objective file. [2.0+]
          (<em>optional</em>)
         </li>
     </ul>
@@ -6640,31 +6797,28 @@
     </dt>
     <dd>
     Updates the objective message with the given name.  If no objective exists with that name, it does nothing.
- The message defaults to white if no color is given. The color may be "black", "dkgrey", "grey", "white", "blue", "dkblue", "green", "dkgreen", "yellow", "dkyellow", "red", or "dkred"; the value is case-insensitive.
- The message lasts 8 seconds if no duration is given.
- The message text will keep its previous value if no text is given.
- Script-supplied message text is only available in version 2.0.121.1 or higher.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">name</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Unique name for objective, usually a filename ending with otf from which data is loaded
         </li>
         <li><span class="parameter">color</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Default to WHITE. See <a href="../modules/_utility.html#ColorLabels">_utility.ColorLabels</a>;
          (<em>optional</em>)
         </li>
         <li><span class="parameter">duration</span>
             <span class="types"><span class="type">number</span></span>
-
+         defaults to 8 seconds
          (<em>optional</em>)
         </li>
         <li><span class="parameter">text</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+         Override text from the target objective file. [2.0+]
          (<em>optional</em>)
         </li>
     </ul>
@@ -6681,6 +6835,7 @@
     <dd>
     Removes the objective message with the given file name.  Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6710,6 +6865,7 @@
     Starts the cockpit timer counting down from the given time.  If a warn time is given, the timer will turn yellow when it reaches that value. If an alert time is given, the timer will turn red when it reaches that value. All time values are in seconds.
  The start time can be up to 35999, which will appear on-screen as 9:59:59. If the remaining time is an hour or less, the timer will show only minutes and seconds.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6742,6 +6898,7 @@
     Starts the cockpit timer counting up from the given time.  If a warn time is given, the timer will turn yellow when it reaches that value. If an alert time is given, the timer will turn red when it reaches that value. All time values are in seconds.
  The on-screen timer will always show hours, minutes, and seconds The hours digit will malfunction after 10 hours.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6773,6 +6930,7 @@
     <dd>
     Stops the cockpit timer.
 
+    </ul>
 
 
 
@@ -6787,6 +6945,7 @@
     <dd>
     Hides the cockpit timer.
 
+    </ul>
 
 
 
@@ -6801,6 +6960,7 @@
     <dd>
     Returns the current time in seconds on the cockpit timer.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -6828,6 +6988,7 @@
     <dd>
     Starts a global earthquake effect.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6850,6 +7011,7 @@
     Changes the magnitude of an existing earthquake effect.
  Important: note the inconsistent capitalization, which matches the internal C++ script utility functions.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6871,6 +7033,7 @@
     <dd>
     Stops the global earthquake effect.
 
+    </ul>
 
 
 
@@ -6898,6 +7061,7 @@
     <dd>
     Changes the named path to the given path type.  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6923,6 +7087,7 @@
     <dd>
     Returns the type of the named path.  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6950,6 +7115,7 @@
     <dd>
     Changes the named path to one-way.  Once a unit reaches the end of the path, it will stop.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6971,6 +7137,7 @@
     <dd>
     Changes the named path to round-trip.  Once a unit reaches the end of the path, it will follow the path backwards to the start and begin again.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -6992,6 +7159,7 @@
     <dd>
     Changes the named path to looping.  Once a unit reaches the end of the path, it will continue along to the start and begin again.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7018,6 +7186,7 @@
     Returns the number of points in the named path, or 0 if the path does not exist.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7054,6 +7223,7 @@
  Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7087,6 +7257,7 @@
  Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7120,6 +7291,7 @@
  Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7153,6 +7325,7 @@
  This function is equivalent to <pre>GetWindingNumber( path, h ) ~= 0</pre>
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7186,6 +7359,7 @@
  This function is equivalent to <pre>GetWindingNumber( path, position ) ~= 0</pre>
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7219,6 +7393,7 @@
  This function is equivalent to <pre>GetWindingNumber( path, transform ) ~= 0</pre>
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7257,6 +7432,7 @@
     <dd>
     This is a global table that converts between command numbers and command names.  For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
 
+    </ul>
 
     <h3>Fields:</h3>
     <ul>
@@ -7448,6 +7624,7 @@
     <dd>
     Returns true if the game object can be commanded.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7475,6 +7652,7 @@
     <dd>
     Returns true if the game object is a producer that can build at the moment.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7502,6 +7680,7 @@
     <dd>
     Returns true if the game object is a producer and currently busy.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7529,6 +7708,7 @@
     <dd>
     Returns the current command for the game object.  Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7556,6 +7736,7 @@
     <dd>
     Returns the target of the current command for the game object.  Returns nil if it has none.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7583,6 +7764,7 @@
     <dd>
     Gets the independence of a unit.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7610,6 +7792,7 @@
     <dd>
     Sets the independence of a unit.  1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7641,6 +7824,7 @@
  "When" is an optional absolute time value only used by command AiCommand.STAGE.
  "Param" is an optional odf name only used by command AiCommand.BUILD.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7692,6 +7876,7 @@
     Commands the unit to attack the given target.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7723,6 +7908,7 @@
     Commands the unit to go to the named path.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7754,6 +7940,7 @@
     Commands the unit to go to the given target
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7785,6 +7972,7 @@
     Commands the unit to go to the given position vector
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7816,6 +8004,7 @@
     Commands the unit to go to the position of the given transform matrix
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7847,6 +8036,7 @@
     Commands the unit to lay mines at the named path; only minelayer units support this.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7878,6 +8068,7 @@
     Commands the unit to lay mines at the given position vector
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7909,6 +8100,7 @@
     Commands the unit to lay mines at the position of the transform matrix
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7940,6 +8132,7 @@
     Commands the unit to follow the given target.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -7971,6 +8164,7 @@
     Returns true if the unit is currently following the given target.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8003,6 +8197,7 @@
     Commands the unit to defend its current location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8030,6 +8225,7 @@
     Commands the unit to defend the given target.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8061,6 +8257,7 @@
     Commands the unit to stop at its current location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8088,6 +8285,7 @@
     Commands the unit to patrol along the named path.  This is equivalent to Goto with an independence of 1.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8119,6 +8317,7 @@
     Commands the unit to retreat to the named path.  This is equivalent to Goto with an independence of 0.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8150,6 +8349,7 @@
     Commands the unit to retreat to the given target.  This is equivalent to Goto with an independence of 0.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8181,6 +8381,7 @@
     Commands the pilot to get into the target vehicle.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8212,6 +8413,7 @@
     Commands the unit to pick up the target object.  Deployed units pack up (ignoring the target), scavengers pick up scrap, and tugs pick up and carry objects.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8243,6 +8445,7 @@
     Commands the unit to drop off at the named path.  Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8274,6 +8477,7 @@
     Commands the unit to drop off at the position vector.  Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8305,6 +8509,7 @@
     Commands the unit to drop off at the position of the transform matrix.  Tugs drop off their cargo and Construction Rigs build the selected item with the facing of the transform matrix.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8336,6 +8541,7 @@
     Commands a producer to build the given odf name.  The Armory and Construction Rig need an additional Dropoff to give them a location to build but first need at least one simulation update to process the Build.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8367,6 +8573,7 @@
     Commands a producer to build the given odf name at the location of the target game object.  A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8402,6 +8609,7 @@
     Commands a producer to build the given odf name at the named path.  A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8437,6 +8645,7 @@
     Commands a producer to build the given odf name at the position vector.  A Construction Rig will build at the location with their current facing and an Armory will launch the item to the location. Other producers will ignore the location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8472,6 +8681,7 @@
     Commands a producer to build the given odf name at the transform matrix.  A Construction Rig will build at the location with the facing of the transform and an Armory will launch the item to the location. Other producers will ignore the location.
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8508,6 +8718,7 @@
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8540,6 +8751,7 @@
  Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8573,6 +8785,7 @@
     <dd>
     Returns true if the unit is a tug carrying cargo.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8601,6 +8814,7 @@
     Returns the handle of the cargo if the unit is a tug carrying cargo.  Returns nil otherwise.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8628,6 +8842,7 @@
     <dd>
     Returns the handle of the tug carrying the object.  Returns nil if not carried.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8662,6 +8877,7 @@
     <dd>
     Commands the vehicle's pilot to eject.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8683,6 +8899,7 @@
     <dd>
     Commands the vehicle's pilot to hop out.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8704,6 +8921,7 @@
     <dd>
     Kills the vehicle's pilot as if sniped.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8725,6 +8943,7 @@
     <dd>
     Removes the vehicle's pilot cleanly.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8746,6 +8965,7 @@
     <dd>
     Returns the vehicle that the pilot most recently hopped out of.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8780,6 +9000,7 @@
     <dd>
     Returns the fractional health of the game object between 0 and 1.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8807,6 +9028,7 @@
     <dd>
     Returns the current health value of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8834,6 +9056,7 @@
     <dd>
     Returns the maximum health value of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8861,6 +9084,7 @@
     <dd>
     Sets the current health of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8886,6 +9110,7 @@
     <dd>
     Sets the maximum health of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8911,6 +9136,7 @@
     <dd>
     Adds to the current health of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8937,6 +9163,7 @@
     Sets the unit's current health to maximum.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8965,6 +9192,7 @@
     <dd>
     Returns the fractional ammo of the game object between 0 and 1.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -8992,6 +9220,7 @@
     <dd>
     Returns the current ammo value of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9019,6 +9248,7 @@
     <dd>
     Returns the maximum ammo value of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9046,6 +9276,7 @@
     <dd>
     Sets the current ammo of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9071,6 +9302,7 @@
     <dd>
     Sets the maximum ammo of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9096,6 +9328,7 @@
     <dd>
     Adds to the current ammo of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9122,6 +9355,7 @@
     Sets the unit's current ammo to maximum.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9151,6 +9385,7 @@
     Starts the cinematic camera and disables normal input.
  Always returns true.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -9172,6 +9407,7 @@
     Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
  Returns true when the camera arrives at its destination. Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9212,6 +9448,7 @@
     Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
  Returns true when the camera arrives at its destination. Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9247,6 +9484,7 @@
     <dd>
     Returns true when the camera arrives at its destination.  Returns false otherwise.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -9268,6 +9506,7 @@
     Offsets a cinematic camera from a base game object while looking at a target game object.  The right, up, and forward offsets are in centimeters.
  Returns true if the base or handle game object does not exist. Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9312,6 +9551,7 @@
     Finishes the cinematic camera and enables normal input.
  Always returns true.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -9332,6 +9572,7 @@
     <dd>
     Returns true if the player canceled the cinematic.  Returns false otherwise.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -9356,6 +9597,7 @@
     <dd>
     Returns true if the game object inspected by the info display matches the given odf name.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9390,6 +9632,7 @@
     <dd>
     Returns true if the game is a network game.  Returns false otherwise.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -9410,6 +9653,7 @@
     <dd>
     Returns true if the local machine is hosting a network game.  Returns false otherwise.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -9430,6 +9674,7 @@
     <dd>
     Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.  Important safety tip: only call this on one machine at a time!
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9451,6 +9696,7 @@
     <dd>
     Returns true if the game is local to the machine the script is running on.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9478,6 +9724,7 @@
     <dd>
     Returns true if the game object is remote to the machine the script is running on.  Returns false otherwise.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9505,6 +9752,7 @@
     <dd>
     Adds a system text message to the chat window on the local machine.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9548,6 +9796,7 @@
    <tr><td>MAT_3D</td><td>1 + sizeof(REDUCED_MAT) = 12</td></tr>
  </tbody></table>
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9585,6 +9834,7 @@
  If the file is not already open, the function reads in and parses the file into an internal database. If you need to read values from it relatively frequently, save the handle into a global variable to prevent it from closing.
  Returns the file handle if it succeeded. Returns nil if it failed.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9615,6 +9865,7 @@
  If a value is not found or is undefined, it uses the default value. If no default value is given, the default value is false.
  Returns the value and whether the value was found.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9661,6 +9912,7 @@
  If no value is found, it uses the default value. If no default value is given, the default value is 0.
  Returns the value and whether the value was found.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9707,6 +9959,7 @@
  If no value is found, it uses the default value. If no default value is given, the default value is 0.0.
  Returns the value and whether the value was found.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9753,6 +10006,7 @@
  If a value is not found, it uses the default value. If no default value is given, the default value is nil.
  Returns the value and whether the value was found.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9804,6 +10058,7 @@
     <dd>
     Returns the terrain height and normal vector at the location of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9834,6 +10089,7 @@
     <dd>
     Returns the terrain height and normal vector at a point on the named path.  It uses the start of the path if no point is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9869,6 +10125,7 @@
     <dd>
     Returns the terrain height and normal vector at the position vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9899,6 +10156,7 @@
     <dd>
     Returns the terrain height and normal vector at the position of the transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9936,6 +10194,7 @@
     <dd>
     Returns the floor height and normal vector at the location of the game object.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -9966,6 +10225,7 @@
     <dd>
     Returns the floor height and normal vector at a point on the named path.  It uses the start of the path if no point is given.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10001,6 +10261,7 @@
     <dd>
     Returns the floor height and normal vector at the position vector.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10031,6 +10292,7 @@
     <dd>
     Returns the floor height and normal vector at the position of the transform matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10066,6 +10328,7 @@
     Returns the name of the BZN file for the map.  This can be used to generate an ODF name for mission settings.
  [2.0+]
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -10086,6 +10349,7 @@
     <dd>
     Returns the name of the TRN file for the map.  This can be used with OpenODF() to read values from the TRN file.
 
+    </ul>
 
 
     <h3>Returns:</h3>
@@ -10111,6 +10375,7 @@
     Returns the contents of the named file as a string, or nil if the file could not be opened.
  [2.0+] UseItem
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10140,6 +10405,7 @@
  R, G, and B set the color components and range from 0 to 255
  [2.0+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10184,6 +10450,7 @@
     <dd>
     Returns a vector whose components have the given number values.  If no value is given for a component, the default value is 0.0.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10223,6 +10490,7 @@
     Returns the <a href="http://en.wikipedia.org/wiki/Dot_product">dot product</a> between vectors a and b.
  Equivalent to a.x * b.x + a.y * b.y + a.z * b.z.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10255,6 +10523,7 @@
     Returns the <a href="http://en.wikipedia.org/wiki/Cross_product">cross product</a> between vectors a and b.
  Equivalent to SetVector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10287,6 +10556,7 @@
     Returns the vector scaled to unit length.
  Equivalent to SetVector(v.x * scale, v.y * scale, v.z * scale) where scale is 1.0f / sqrt(v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10315,6 +10585,7 @@
     Returns the length of the vector.
  Equivalent to sqrt(v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10343,6 +10614,7 @@
     Returns the squared length of the vector.
  Equivalent to v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10371,6 +10643,7 @@
     Returns the 2D distance between vectors a and b.
  Equivalent to sqrt((b.x - a.x)<sup>2</sup> + (b.z - a.z)<sup>2</sup>).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10403,6 +10676,7 @@
     Returns the squared 2D distance of the vector.
  Equivalent to (b.x - a.x)<sup>2</sup> + (b.z - a.z)<sup>2</sup>.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10435,6 +10709,7 @@
     Returns the 3D distance between vectors a and b.
  Equivalent to sqrt((b.x - a.x)<sup>2</sup> + (b.y - a.y)<sup>2</sup> + (b.z - a.z)<sup>2</sup>).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10467,6 +10742,7 @@
     Returns the squared 3D distance of the vector.
  Equivalent to (b.x - a.x)<sup>2</sup> + (b.y - a.y)<sup>2</sup> + (b.z - a.z)<sup>2</sup>.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10499,6 +10775,7 @@
     Negate the vector.
 <p> Equivalent to SetVector(-vector.x, -vector.y, -vector.z).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10521,6 +10798,7 @@
     Add two vectors.
 <p> Equivalent to SetVector(vector1.x + vector2.x, vector1.y + vector2.y, vector1.z + vector2.z).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10547,6 +10825,7 @@
     Subtract two vectors.
 <p> Equivlent to SetVector(vector1.x - vector2.x, vector1.y - vector2.y, vector1.z - vector2.z).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10573,6 +10852,7 @@
     Multiply a number by a vector.
 <p> Equivalent to SetVector( number * vector.x, number * vector.y, number * vector.z).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10599,6 +10879,7 @@
     Multiply a vector by a number.
 <p> Equivalent to SetVector(vector.x * number, vector.y * number, vector.z * number).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10625,6 +10906,7 @@
     Multiply two vectors.
 <p> Equivlent to SetVector(vector1.x * vector2.x, vector1.y * vector2.y, vector1.z * vector2.z)
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10651,6 +10933,7 @@
     Divide a number by a vector.
 <p> Equivalent to SetVector( number / vector.x, number / vector.y, number / vector.z).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10677,6 +10960,7 @@
     Divide a vector by a number.
 <p> Equivalent to SetVector(vector.x / number, vector.y / number, vector.z / number).
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10703,6 +10987,7 @@
     Divide two vectors.
 <p> Equivlent to SetVector(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z)
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10728,6 +11013,7 @@
     <dd>
     Check if two vectors are equal.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10760,6 +11046,7 @@
     <dd>
     Returns a matrix whose components have the given number values.  If no value is given for a component, the default value is zero. Be careful with this since it's easy to build a non-orthonormal matrix that will break all kinds of built-in assumptions.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10844,6 +11131,7 @@
     Global value representing the identity matrix.
  Equivalent to SetMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0). IdentityMatrix
 
+    </ul>
 
 
 
@@ -10858,6 +11146,7 @@
     <dd>
     Build a matrix representing a rotation by an angle around an axis.  The angle is in radians. If no value is given for the angle or an axis component, the default value is zero. The axis must be unit-length (i.e. axis_x<sup>2</sup> + axis_y<sup>2</sup> + axis_z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10901,6 +11190,7 @@
     <dd>
     Build a matrix representing a rotation by an angle around an axis.  The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10933,6 +11223,7 @@
     <dd>
     Build a matrix with the given pitch, yaw, and roll angles and position.  The angles are in radians. If no value is given for a component, the default value is zero.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -10986,6 +11277,7 @@
     <dd>
     Build a matrix with the given pitch, yaw, and roll angles and position.  The angles are in radians. If no value is given for a component, the default value is zero.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11028,6 +11320,7 @@
     <dd>
     Build a matrix with zero position, its up axis along the specified up vector, oriented so that its front axis points as close as possible to the heading vector.  If up is not specified, the default value is the Y axis. If heading is not specified, the default value is the Z axis.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11061,6 +11354,7 @@
     <dd>
     Build a matrix with the given position vector, its front axis pointing along the direction vector, and zero roll.  If position is not specified, the default value is a zero vector. If direction is not specified, the default value is the Z axis.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11094,6 +11388,7 @@
     <dd>
     Multiply two matrices.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11119,6 +11414,7 @@
     <dd>
     Transform a vector by a matrix.
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11152,6 +11448,7 @@
     Sets the specified Portal direction to "out", indicated by a blue visual effect while active.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11174,6 +11471,7 @@
     Sets the specified Portal direction to "in", indicated by an orange visual effect while active.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11196,6 +11494,7 @@
     Deactivates the specified Portal, stopping the visual effect.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11218,6 +11517,7 @@
     Activates the specified Portal, starting the visual effect.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11240,6 +11540,7 @@
     Returns true if the specified Portal direction is "in".  Returns false otherwise.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11269,6 +11570,7 @@
  Important: note the capitalization!
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11298,6 +11600,7 @@
  The object is created at the location of the visual effect and given a 50 m/s initial velocity.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11342,6 +11645,7 @@
  Note: unlike SetCommand(h, AiCommand.CLOAK), this does not change the unit's current command.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11365,6 +11669,7 @@
  Note: unlike SetCommand(h, AiCommand.DECLOAK), this does not change the unit's current command.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11387,6 +11692,7 @@
     Instantly sets the unit as cloaked (with no fade out).
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11409,6 +11715,7 @@
     Instant sets the unit as uncloaked (with no fade in).
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11431,6 +11738,7 @@
     Returns true if the unit is cloaked.  Returns false otherwise
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11460,6 +11768,7 @@
  Note: this does not grant a non-cloaking-capable unit the ability to cloak.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11487,6 +11796,7 @@
  Note: this does not grant a non-cloaking-capable unit the ability to cloak.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11516,6 +11826,7 @@
     Hides a game object.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11538,6 +11849,7 @@
     Un-hides a game object.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11567,6 +11879,7 @@
     Creates an explosion with the given odf name at the location of a game object.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11593,6 +11906,7 @@
     Creates an explosion with the given odf name at the start of the named path.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11619,6 +11933,7 @@
     Creates an explosion with the given odf name at the given position vector.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11645,6 +11960,7 @@
     Creates an explosion with the given odf name with the given transform matrix.
  [2.1+]
 
+    </ul>
 
     <h3>Parameters:</h3>
     <ul>
@@ -11670,7 +11986,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-08 18:27:06 </i>
+<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

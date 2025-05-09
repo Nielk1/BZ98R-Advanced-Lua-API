@@ -1,10 +1,10 @@
 --- BZ98R LUA Extended API Utility.
---- 
+---
 --- Crude custom type to make data not save/load exploiting the custom type system.
---- 
+---
 --- @module _utility
 --- @author John "Nielk1" Klein
---- @alias utility
+--- @alias utility_module
 --- @usage local utility = require("_utility");
 --- 
 --- utility.Register(ObjectDef);
@@ -123,7 +123,7 @@ utility_module.ClassLabel = {
 
 --- Convert human readable color names to BZ98R color labels.
 --- @table ColorLabels
-ColorLabels = {
+utility_module.ColorLabels = {
     Black      = "BLACK",    -- BLACK:    <div style="background-color: #000000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLACK</div>
     DarkGrey   = "DKGREY",   -- DKGREY:   <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREY</div>
     Grey       = "GREY",     -- GREY:     <div style="background-color: #999999; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREY</div>
@@ -141,7 +141,7 @@ ColorLabels = {
 --- Convert BZ98R color labels to RGB color codes.
 --- This probably isn't useful but it's here.
 --- @table ColorCodes
-local colorCodes = {
+utility_module.colorCodes = {
     BLACK    = 0x000000FF, -- 0x000000FF: <div style="background-color: #000000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">BLACK</div>
     DKGREY   = 0x4C4C4CFF, -- 0x4C4C4CFF: <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKGREY</div>
     GREY     = 0x999999FF, -- 0x999999FF: <div style="background-color: #999999; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">GREY</div>
@@ -164,42 +164,42 @@ local colorCodes = {
 -- @section
 
 --- Is this object a function?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function utility_module.isfunction(object)
     return (type(object) == "function");
 end
 
 --- Is this object a table?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function utility_module.istable(object)
     return (type(object) == 'table');
 end
 
 --- Is this object a string?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function utility_module.isstring(object)
     return (type(object) == "string");
 end
 
 --- Is this object a boolean?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function utility_module.isboolean(object)
     return (type(object) == "boolean");
 end
 
 --- Is this object a number?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function utility_module.isnumber(object)
     return (type(object) == "number");
 end
 
 --- Is this object an integer?
---- @param object Object in question
+--- @param object any Object in question
 --- @treturn bool
 function utility_module.isinteger(object)
     if not utility_module.isnumber(object) then return false end;
@@ -226,8 +226,8 @@ end
 
 --- Convert an iterator to an array.
 --- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
---- @param iterator The iterator to convert
---- @return An array containing the values from the iterator
+--- @param iterator any The iterator to convert
+--- @return table array An array containing the values from the iterator
 function IteratorToArray(iterator)
     local array = {}
     for index, value in iterator do

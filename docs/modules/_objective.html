@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><strong>_objective</strong></li>
+  <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_stateset.html">_stateset</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><a href="../modules/_tracker.html">_tracker</a></li>
+  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_objective</code></h1>
+<p>BZ98R LUA Extended API Objective Manager.</p>
+<p>
+<p> Note that this module cannot manage manually created objectives.
+<p> Dependencies: <a href="../modules/_hook.html#">_hook</a></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local objective = require(&quot;_objective&quot;);
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#UpdateObjective">UpdateObjective (name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
+	<td class="summary">Updates the objective message with the given name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ClearObjectives">ClearObjectives ()</a></td>
+	<td class="summary">Clear all objectives except for persistant ones.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddObjective">AddObjective (name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
+	<td class="summary">Adds an objective message with the given name and properties.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RemoveObjective">RemoveObjective (name)</a></td>
+	<td class="summary">Removes the objective message with the given file name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetObjectivePosition">SetObjectivePosition (name, position)</a></td>
+	<td class="summary">Set the objective position of the given name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetObjectivePosition">GetObjectivePosition (name)</a></td>
+	<td class="summary">Get the objective position of the given name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ReplaceObjective">ReplaceObjective (oldname, name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
+	<td class="summary">Replaces the objective message with the given name.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "UpdateObjective"></a>
+    <strong>UpdateObjective (name[, color[, duration[, text[, position[, persistant]]]]])</strong>
+    </dt>
+    <dd>
+    Updates the objective message with the given name.  If no objective exists with that name, it does nothing.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Unique name for objective, usually a filename ending with otf from which data is loaded
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Default to WHITE. See <a href="../modules/_utility.html#ColorLabels">_utility.ColorLabels</a>;
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">number</span></span>
+         defaults to 8 seconds
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Override text from the target objective file. [2.0+]
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">number</span></span>
+         Sort position of the objective. Defaults to the next available ID.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">persistant</span>
+            <span class="types"><span class="type">bool</span></span>
+         If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ClearObjectives"></a>
+    <strong>ClearObjectives ()</strong>
+    </dt>
+    <dd>
+    Clear all objectives except for persistant ones.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddObjective"></a>
+    <strong>AddObjective (name[, color[, duration[, text[, position[, persistant]]]]])</strong>
+    </dt>
+    <dd>
+    Adds an objective message with the given name and properties.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Unique name for objective, usually a filename ending with otf from which data is loaded
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Default to WHITE. See <a href="../modules/_utility.html#ColorLabels">_utility.ColorLabels</a>;
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">number</span></span>
+         defaults to 8 seconds
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Override text from the target objective file. [2.0+]
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">number</span></span>
+         Sort position of the objective. Defaults to the next available ID.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">persistant</span>
+            <span class="types"><span class="type">bool</span></span>
+         If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RemoveObjective"></a>
+    <strong>RemoveObjective (name)</strong>
+    </dt>
+    <dd>
+    Removes the objective message with the given file name.  Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetObjectivePosition"></a>
+    <strong>SetObjectivePosition (name, position)</strong>
+    </dt>
+    <dd>
+    Set the objective position of the given name.  If no objective exists with that name, it does nothing.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Unique name for objective, usually a filename ending with otf from which data is loaded
+        </li>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">number</span></span>
+         Sort position of the objective.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetObjectivePosition"></a>
+    <strong>GetObjectivePosition (name)</strong>
+    </dt>
+    <dd>
+    Get the objective position of the given name.  If no objective exists with that name, it does nothing.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Unique name for objective, usually a filename ending with otf from which data is loaded
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        position Sort position of the objective.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ReplaceObjective"></a>
+    <strong>ReplaceObjective (oldname, name[, color[, duration[, text[, position[, persistant]]]]])</strong>
+    </dt>
+    <dd>
+    Replaces the objective message with the given name.  If no objective exists with that name, it does nothing.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">oldname</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Unique name for objective, usually a filename ending with otf from which data is loaded
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Unique name for objective, usually a filename ending with otf from which data is loaded
+        </li>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Default to WHITE. See <a href="../modules/_utility.html#ColorLabels">_utility.ColorLabels</a>;
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">number</span></span>
+         defaults to 8 seconds
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Override text from the target objective file. [2.0+]
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">number</span></span>
+         Sort position of the objective. Defaults to the removed objective's position or next available ID.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">persistant</span>
+            <span class="types"><span class="type">bool</span></span>
+         If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-05-09 00:24:17 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

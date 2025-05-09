@@ -429,9 +429,9 @@ function Update(dtime)
 end
 
 --- Called when a player joins the game world.
---- @tparam int id DPID number for this player
---- @tparam string name name for this player
---- @tparam int team Team number for this player
+--- @param id int DPID number for this player
+--- @param name string name for this player
+--- @param team int Team number for this player
 --- @local
 function CreatePlayer(id, name, team)
     debugprint("_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
@@ -440,9 +440,9 @@ function CreatePlayer(id, name, team)
 end
 
 --- Called when a player joins the game world.
---- @tparam int id DPID number for this player
---- @tparam string name name for this player
---- @tparam int team Team number for this player
+--- @param id int DPID number for this player
+--- @param name string name for this player
+--- @param team int Team number for this player
 --- @local
 function AddPlayer(id, name, team)
     debugprint("_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
@@ -451,9 +451,9 @@ function AddPlayer(id, name, team)
 end
 
 --- Called when a player leaves the game world.
---- @tparam int id DPID number for this player
---- @tparam string name name for this player
---- @tparam int team Team number for this player
+--- @param id int DPID number for this player
+--- @param name string name for this player
+--- @param team int Team number for this player
 --- @local
 function DeletePlayer(id, name, team)
     debugprint("_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
@@ -462,7 +462,7 @@ function DeletePlayer(id, name, team)
 end
 
 --- Command
---- @tparam string command the command string
+--- @param command string the command string
 --- @local
 function Command(command, ...)
     traceprint("_api::Command('" .. command .. "')");
@@ -476,8 +476,8 @@ function Command(command, ...)
 end
 
 --- Receive
---- @tparam int from x
---- @tparam string type x
+--- @param from int x
+--- @param type string x
 --- @tparam ... data
 --- @local
 function Receive(from, type, ...)

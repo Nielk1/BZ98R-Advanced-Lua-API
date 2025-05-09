@@ -1,7 +1,7 @@
 --- BZ98R LUA Extended API Tracker.
---- 
---- Manage navs
---- 
+---
+--- Tracks objects by class and odf.
+---
 --- Dependencies: @{_config}, @{_utility}, @{_hook}, @{_gameobject}, @{_table_show}
 --- @module _tracker
 --- @author John "Nielk1" Klein
@@ -199,8 +199,8 @@ local CheckUpdated = function()
 end
 
 --- Count object by ClassSig
---- @tparam string sig ClassSig name to count.
---- @tparam[opt] integer team Team number to count for.
+--- @param sig string ClassSig name to count.
+--- @param team? integer Team number to count for.
 --- @todo add protections
 function _tracker.countByClassSig(sig, team)
     if team == nil then
@@ -219,8 +219,8 @@ function _tracker.countByClassSig(sig, team)
 end
 
 --- Count object by ClassName
---- @tparam string classname ClassName name to count.
---- @tparam[opt] integer team Team number to count for.
+--- @param classname string ClassName name to count.
+--- @param team? integer Team number to count for.
 --- @todo add protections
 function _tracker.countByClassName(classname, team)
     local sig = utility.ClassLabel[classname];
@@ -240,8 +240,8 @@ function _tracker.countByClassName(classname, team)
 end
 
 --- Count object by class
---- @tparam string odf Odf name to count.
---- @tparam[opt] integer team Team number to count for.
+--- @param odf string Odf name to count.
+--- @param team? integer Team number to count for.
 --- @todo add protections
 function _tracker.countByOdf(odf, team)
     if team == nil then
@@ -262,8 +262,8 @@ end
 --- Enable tracking for a team.
 --- Note that items that no longer fit the filter will remain in the tracker.
 --- Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
---- @tparam integer team Team number to track.
---- @tparam[opt] boolean enabled Enable or disable tracking for the team. Defaults to true.
+--- @param team integer Team number to track.
+--- @param enabled? boolean Enable or disable tracking for the team. Defaults to true.
 function _tracker.setFilterTeam(team, enabled)
     if not utility.isinteger(team) then error("Team must be an integer") end
     if team > 15 or team < 0 then error("Team must be between 0 and 15") end
@@ -277,8 +277,8 @@ end
 --- Note that items that no longer fit the filter will remain in the tracker.
 --- Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
 --- Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
---- @tparam string class Class name to track.
---- @tparam[opt] boolean enabled Enable or disable tracking for the class. Defaults to true.
+--- @param class string Class name to track.
+--- @param enabled? boolean Enable or disable tracking for the class. Defaults to true.
 function _tracker.setFilterClass(class, enabled)
     if not utility.isstring(class) then error("Class must be a string") end
     if enabled == nil then enabled = true end
@@ -299,8 +299,8 @@ end
 --- Note that items that no longer fit the filter will remain in the tracker.
 --- Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
 --- Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
---- @tparam string odf Odf name to track.
---- @tparam[opt] boolean enabled Enable or disable tracking for the odf. Defaults to true.
+--- @param odf string Odf name to track.
+--- @param enabled? boolean Enable or disable tracking for the odf. Defaults to true.
 function _tracker.setFilterOdf(odf, enabled)
     if not utility.isstring(odf) then error("Odf must be a string") end
     if enabled == nil then enabled = true end

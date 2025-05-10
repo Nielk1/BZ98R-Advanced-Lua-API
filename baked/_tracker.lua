@@ -191,8 +191,7 @@ local CheckUpdated = function()
 
         if hasNew then
             debugprint("TrackerData Filter has new items, updating tracker data")
-            for h in AllObjects() do
-                local object = gameobject.FromHandle(h);
+            for object in gameobject.AllObjects() do
                 CreateObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
             end
         end

@@ -99,7 +99,7 @@ function M.isstatemachineiter(object)
 end
 
 --- @class StateMachineIter
---- @field state_key string|integer? Current state, string name or integer index if state machine is ordered
+--- @field state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 --- @field template string StateMachineIter template name
 --- @field index_to_name table StateMachineIter index to name mapping, only if the StateMachineIter is ordered
 --- @field target_time integer? Target time if sleeping, nil if not set
@@ -133,7 +133,7 @@ StateMachineIter.__type = "StateMachineIter";
 --- @param name string StateMachineIter template
 --- @param timer integer? Timer's value, nil for not set
 --- @param target_time integer? TargetTurn's value, nil for not set
---- @param state_key string|integer Current state, string name or integer index if state machine is ordered
+--- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 --- @param values table Table of values embeded in the StateMachineIter
 local function CreateStateMachineIter(name, timer, target_time, state_key, values)
   local self = setmetatable({}, StateMachineIter);
@@ -449,7 +449,7 @@ end
 
 --- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
 --- @param name string Name of the StateMachineIter Template
---- @param state_key any Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
+--- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
 --- @param init table? Initial data
 function M.Start( name, state_key, init )
     if not utility.isstring(name) then error("Parameter name must be a string."); end

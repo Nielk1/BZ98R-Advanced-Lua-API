@@ -147,6 +147,7 @@ function GameObject.BulkLoad(data)
     local _ObjectiveObjects = {};
     --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
+        --- @diagnostic disable-next-line: deprecated
         for h in ObjectiveObjects() do
             _ObjectiveObjects[h] = true;
         end

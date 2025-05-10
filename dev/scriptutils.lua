@@ -139,7 +139,7 @@ function StopSound(filename, h) end
 --- @param label string
 --- @return Handle?
 --- @function GetHandle
---- @deprecated Use `_gameobject.GetHandle` instead.
+--- @deprecated Use `_gameobject.GetGameObject` instead.
 function GetHandle(label) error("This function is provided by the engine."); end
 
 --- Creates a game object with the given odf name, team number, and location.
@@ -1241,10 +1241,12 @@ function GetTime() error("This function is provided by the engine."); end
 --- Returns the simulation time step in seconds.
 --- @return number
 --- @function GetTimeStep
+function GetTimeStep() error("This function is provided by the engine."); end
 
 --- Returns the current system time in milliseconds. This is mostly useful for performance profiling.
 --- @return number
 --- @function GetTimeNow
+function GetTimeNow() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
 -- Mission
@@ -2199,6 +2201,9 @@ function ColorFade(ratio, rate, r, g, b) end
 --- @field x number The x-coordinate.
 --- @field y number The y-coordinate.
 --- @field z number The z-coordinate.
+--- @operator unm: Vector
+--- @operator add(Vector): Vector
+--- @operator sub(Vector): Vector
 
 local Vector = {}
 
@@ -2280,26 +2285,29 @@ function Distance3D(a, b) error("This function is provided by the engine."); end
 function Distance3DSquared(a, b) error("This function is provided by the engine."); end
 
 --- Negate the vector.
---
--- Equivalent to SetVector(-vector.x, -vector.y, -vector.z).
--- @tparam vector vector
--- @function Vector.__unm
+---
+--- Equivalent to SetVector(-vector.x, -vector.y, -vector.z).
+--- @param v Vector
+--- @return Vector v
+--- @function Vector.__unm
 function Vector.__unm(v) error("This function is provided by the engine."); end
 
 --- Add two vectors.
---
--- Equivalent to SetVector(vector1.x + vector2.x, vector1.y + vector2.y, vector1.z + vector2.z).
--- @tparam vector vector1
--- @tparam vector vector2
--- @function Vector.__add
+---
+--- Equivalent to SetVector(vector1.x + vector2.x, vector1.y + vector2.y, vector1.z + vector2.z).
+--- @param v1 Vector
+--- @param v2 Vector
+--- @return Vector v
+--- @function Vector.__add
 function Vector.__add(v1, v2) error("This function is provided by the engine."); end
 
 --- Subtract two vectors.
---
--- Equivlent to SetVector(vector1.x - vector2.x, vector1.y - vector2.y, vector1.z - vector2.z).
--- @tparam vector vector1
--- @tparam vector vector2
--- @function Vector.__sub
+---
+--- Equivlent to SetVector(vector1.x - vector2.x, vector1.y - vector2.y, vector1.z - vector2.z).
+--- @param v1 Vector
+--- @param v2 Vector
+--- @return Vector v
+--- @function Vector.__sub
 function Vector.__sub(v1, v2) error("This function is provided by the engine."); end
 
 --- Multiply a number by a vector.

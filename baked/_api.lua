@@ -366,6 +366,7 @@ end
 function Start()
     debugprint("_api::Start()");
     
+    --- @ diagnostic disable-next-line: deprecated
     for h in AllObjects() do
         hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h), true );
     end

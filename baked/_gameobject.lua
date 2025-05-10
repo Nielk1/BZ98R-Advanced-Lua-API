@@ -145,6 +145,7 @@ function GameObject.BulkLoad(data)
 -- Xparam dataDead Dead object data
 --function GameObject.BulkLoad(data,dataDead)
     local _ObjectiveObjects = {};
+    --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
         for h in ObjectiveObjects() do
             _ObjectiveObjects[h] = true;
@@ -289,34 +290,40 @@ end
 
 --- Order GameObject to Attack target GameObject.
 --- @param self GameObject GameObject instance
---- @param target GameObject Target GameObject
+--- @param target GameObject|Handle Target GameObject
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Attack(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
         --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Attack(self:GetHandle(), target:GetHandle(), priority);
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        Attack(self:GetHandle(), target, priority);
     else
-        --Attack(self:GetHandle(), target, priority);
-        error("Parameter target must be GameObject instance.");
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
     end
 end
 
 --- Order GameObject to Goto target Vector, Matrix, GameObject, or Path.
 --- @function GameObject.Goto
 --- @param self GameObject GameObject instance
---- @param target Vector|Matrix|GameObject|string Target Path name
+--- @param target Vector|Matrix|GameObject|Handle|string Target Path name
 --- @param priority? integer Order priority, >0 removes user control
 function GameObject.Goto(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
         --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Goto(self:GetHandle(), target:GetHandle(), priority);
     elseif target ~= nil then
-        --- @cast target Vector|Matrix|string
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
         Goto(self:GetHandle(), target, priority);
     else
-        error("Parameter target must be Vector, Matrix, GameObject, or path name.");
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
     end
 end
 
@@ -327,34 +334,49 @@ end
 function GameObject.Mine(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if target ~= nil then
+        --- @diagnostic disable-next-line: deprecated
         Mine(self:GetHandle(), target, priority);
     else
-        error("Parameter target must be Vector, Matrix, GameObject, or path name.");
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
     end
 end
 
 --- Order GameObject to Follow target GameObject.
 --- @param self GameObject GameObject instance
---- @param target any Target GameObject instance
+--- @param target GameObject|Handle Target GameObject instance
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Follow(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Follow(self:GetHandle(), target:GetHandle(), priority);
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        Follow(self:GetHandle(), target, priority);
     else
-        --Follow(self:GetHandle(), target, priority);
-        error("Parameter target must be GameObject instance.");
+        error("Parameter target must be GameObject instance or Handle.");
     end
 end
 
 --- Is the GameObject following the target GameObject?
 --- @param self GameObject GameObject instance
---- @param target any Target GameObject instance
+--- @param target GameObject|Handle Target GameObject instance
 --- @return boolean following true if following, false otherwise
 function GameObject.IsFollowing(self, target)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not M.isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    return IsFollowing(self:GetHandle(), target:GetHandle());
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        return IsFollowing(self:GetHandle(), target:GetHandle());
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        return IsFollowing(self:GetHandle(), target);
+    else
+        error("Parameter target must be GameObject instance or Handle.");
+    end
 end
 
 --- Order GameObject to Defend area.
@@ -362,21 +384,27 @@ end
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Defend(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     Defend(self:GetHandle(), priority);
 end
 
 --- Order GameObject to Defend2 target GameObject.
 --- @param self GameObject GameObject instance
---- @param target any Target GameObject instance
+--- @param target GameObject|Handle Target GameObject instance
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Defend2(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not M.isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    --if _gameobject.isgameobject(target) then
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Defend2(self:GetHandle(), target:GetHandle(), priority);
-    --else
-    --    Defend2(self:GetHandle(), target, priority);
-    --end
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        Defend2(self:GetHandle(), target, priority);
+    else
+        error("Parameter target must be GameObject instance or Handle.");
+    end
 end
 
 --- Order GameObject to Stop.
@@ -384,70 +412,90 @@ end
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Stop(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     Stop(self:GetHandle(), priority);
 end
 
 --- Order GameObject to Patrol target path.
 --- @param self GameObject GameObject instance
---- @param target any Target Path name
+--- @param target string Target Path name
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Patrol(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if M.isgameobject(target) then
-        Patrol(self:GetHandle(), target:GetHandle(), priority);
-    else
-        Patrol(self:GetHandle(), target, priority);
-    end
+    if not utility.isstring(target) then error("Parameter target must be a string") end
+    --- @diagnostic disable-next-line: deprecated
+    Patrol(self:GetHandle(), target, priority);
 end
 
 --- Order GameObject to Retreat.
 --- @param self GameObject GameObject instance
---- @param target any Target GameObject or Path name
+--- @param target GameObject|Handle|string Target GameObject or Path name
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Retreat(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Retreat(self:GetHandle(), target:GetHandle(), priority);
-    else
+    elseif target ~= nil then
+        --- @cast target Handle|string
+        --- @diagnostic disable-next-line: deprecated
         Retreat(self:GetHandle(), target, priority)
+    else
+        error("Parameter target must be GameObject, Handle, or path name.");
     end
 end
 
 --- Order GameObject to GetIn target GameObject.
 --- @param self GameObject GameObject instance
---- @param target GameObject Target GameObject
+--- @param target GameObject|Handle Target GameObject
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.GetIn(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not M.isgameobject(self) then error("Parameter target must be GameObject instance."); end
-    --if _gameobject.isgameobject(target) then
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         GetIn(self:GetHandle(), target:GetHandle(), priority);
-    --else
-    --    GetIn(self:GetHandle(), target, priority)
-    --end
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        GetIn(self:GetHandle(), target, priority)
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
 end
 
 --- Order GameObject to Pickup target GameObject.
 --- @param self GameObject GameObject instance
---- @param target GameObject Target GameObject
+--- @param target GameObject|Handle Target GameObject
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Pickup(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not M.isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    --if _gameobject.isgameobject(target) then
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Pickup(self:GetHandle(), target:GetHandle(), priority);
-    --else
-    --    Pickup(self:GetHandle(), target, priority)
-    --end
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        Pickup(self:GetHandle(), target, priority)
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
 end
 
 --- Order GameObject to Pickup target path name.
 --- @param self GameObject GameObject instance
---- @param target any Target vector, matrix, or path name
+--- @param target Vector|Matrix|string Target vector, matrix, or path name
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Dropoff(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    Dropoff(self:GetHandle(), target, priority)
+    if target ~= nil then
+        --- @diagnostic disable-next-line: deprecated
+        Dropoff(self:GetHandle(), target, priority)
+    else
+        error("Parameter target must be Vector, Matrix, or path name.");
+    end
 end
 
 --- Order GameObject to Build target config.
@@ -457,35 +505,48 @@ end
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Build(self, odf, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    Build(self:GetHandle(), target, priority)
+    if not utility.isstring(odf) then error("Parameter odf must be a string") end
+    --- @diagnostic disable-next-line: deprecated
+    Build(self:GetHandle(), odf, priority)
 end
 
 --- Order GameObject to BuildAt target GameObject.
 --- @param self GameObject GameObject instance
 --- @param odf string Object Definition
---- @param target GameObject Target GameObject instance, vector, matrix, or path name
+--- @param target Vector|Matrix|GameObject|Handle|string Target GameObject instance, vector, matrix, or path name
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.BuildAt(self, odf, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         BuildAt(self:GetHandle(), odf, target:GetHandle(), priority);
-    else
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
         BuildAt(self:GetHandle(), odf, target, priority)
+    else
+        error("Parameter target must be GameObject, Handle, Vector, Matrix, or path name.");
     end
 end
 
 --- Order GameObject to Formation follow target GameObject.
 --- @param self GameObject GameObject instance
---- @param target any Target GameObject instance
+--- @param target GameObject|Handle Target GameObject instance
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Formation(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not M.isgameobject(target) then error("Parameter target must be GameObject instance."); end
-    --if _gameobject.isgameobject(target) then
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
         Formation(self:GetHandle(), target:GetHandle(), priority);
-    --else
-    --    Formation(self:GetHandle(), target, priority);
-    --end
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        Formation(self:GetHandle(), target, priority);
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
 end
 
 --- Order GameObject to Hunt area.
@@ -493,6 +554,7 @@ end
 --- @param priority integer Order priority, >0 removes user control
 function GameObject.Hunt(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     Hunt(self:GetHandle(), priority);
 end
 
@@ -503,38 +565,42 @@ end
 
 --- Get object's position vector.
 --- @param self GameObject GameObject instance
---- @return Vector
+--- @return Vector?
 function GameObject.GetPosition(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetPosition(self:GetHandle());
 end
 
 --- Get front vector.
 --- @param self GameObject GameObject instance
---- @return Vector
+--- @return Vector?
 function GameObject.GetFront(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetFront(self:GetHandle());
 end
 
 --- Set the position of the GameObject.
 --- @param self GameObject GameObject instance
---- @param position any Vector position, Matrix position, or path name
---- @param point? int Index of the path point in the path (optional)
+--- @param position Vector|Matrix|string Vector position, Matrix position, or path name
+--- @param point? integer Index of the path point in the path (optional)
 function GameObject.SetPosition(self, position, point)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if point ~= nil then
+    if position ~= nil then
+        --- @diagnostic disable-next-line: deprecated
         SetPosition(self:GetHandle(), position, point);
     else
-        SetPosition(self:GetHandle(), position);
+        error("Parameter position must be Vector, Matrix, or path name.");
     end
 end
 
 --- Get object's tranform matrix.
 --- @param self GameObject GameObject instance
---- @return Matrix
+--- @return Matrix?
 function GameObject.GetTransform(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetTransform(self:GetHandle());
 end
 
@@ -543,6 +609,8 @@ end
 --- @param transform Matrix transform matrix
 function GameObject.SetTransform(self, transform)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isMatrix(transform) then error("Parameter transform must be a Matrix") end
+    --- @diagnostic disable-next-line: deprecated
     SetTransform(self:GetHandle(), transform);
 end
 
@@ -551,22 +619,26 @@ end
 --- @return Vector Vector (0,0,0) if the handle is invalid or isn't movable.
 function GameObject.GetVelocity(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetVelocity(self:GetHandle());
 end
 
 --- Set the velocity of the GameObject.
 --- @param self GameObject GameObject instance
---- @param vel Vector Vector velocity
-function GameObject.SetVelocity(self, vel)
+--- @param velocity Vector Vector velocity
+function GameObject.SetVelocity(self, velocity)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    SetVelocity(self:GetHandle(), vel);
+    if not utility.isVector(velocity) then error("Parameter velocity must be a Vector") end
+    --- @diagnostic disable-next-line: deprecated
+    SetVelocity(self:GetHandle(), velocity);
 end
 
 --- Get object's omega.
 --- @param self GameObject GameObject instance
---- @return Vector Vector, (0,0,0) if the handle is invalid or isn't movable.
+--- @return Vector Vector (0,0,0) if the handle is invalid or isn't movable.
 function GameObject.GetOmega(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetOmega(self:GetHandle());
 end
 
@@ -575,7 +647,9 @@ end
 --- @param omega any
 function GameObject.SetOmega(self, omega)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    SetOmega(self:GetHandle(),omega);
+    if not utility.isVector(omega) then error("Parameter omega must be a Vector") end
+    --- @diagnostic disable-next-line: deprecated
+    SetOmega(self:GetHandle(), omega);
 end
 
 -------------------------------------------------------------------------------
@@ -589,6 +663,7 @@ end
 --- @return boolean
 function GameObject.IsValid(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return IsValid(self:GetHandle());
 end
 
@@ -598,6 +673,7 @@ end
 --- @return boolean
 function GameObject.IsAlive(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return IsAlive(self:GetHandle());
 end
 
@@ -607,6 +683,7 @@ end
 --- @return boolean
 function GameObject.IsAliveAndPilot(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return IsAliveAndPilot(self:GetHandle());
 end
 
@@ -615,15 +692,8 @@ end
 --- @return boolean
 function GameObject.IsCraft(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return IsCraft(self:GetHandle());
-end
-
---- Returns true if it's a person.
---- @param self GameObject GameObject instance
---- @return boolean
-function GameObject.IsPerson(self)
-    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    return IsPerson(self:GetHandle());
 end
 
 --- Returns true if it's a Building.
@@ -632,198 +702,341 @@ end
 --- @return boolean
 function GameObject.IsBuilding(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return IsBuilding(self:GetHandle());
 end
 
---- Checks if the GameObject has cargo (tug).
+--- Returns true if it's a person.
+--- @param self GameObject GameObject instance
+--- @return boolean
+function GameObject.IsPerson(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return IsPerson(self:GetHandle());
+end
+
+-------------------------------------------------------------------------------
+-- Tug Cargo
+-------------------------------------------------------------------------------
+-- @section
+-- These functions query Tug and Cargo.
+
+--- Returns true if the GameObject is a tug carrying cargo.
 --- @param self GameObject GameObject instance
 --- @return boolean
 function GameObject.HasCargo(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    HasCargo(self:GetHandle());
+    --- @diagnostic disable-next-line: deprecated
+    return HasCargo(self:GetHandle());
 end
 
---- What tug GameObject is tugging this if any?
+--- Returns the GameObject of the cargo if the GameObject is a tug carrying cargo. Returns nil otherwise.
 --- @param self GameObject GameObject instance
---- @return GameObject GameObject of the GameObject carried by the GameObject, or nil
+--- @return GameObject? GameObject of the GameObject carried by the GameObject, or nil
 function GameObject.GetCargo(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     local handle = GetCargo(self:GetHandle());
     if handle == nil then return nil end;
     return M.FromHandle(handle);
 end
 
---- What tug GameObject is tugging this if any?
+--- Returns the GameObject of the tug carrying the object. Returns nil if not carried.
 --- @param self GameObject GameObject instance
---- @return GameObject GameObject of the tug carrying the GameObject, or nil
+--- @return GameObject? GameObject of the tug carrying the GameObject, or nil
 function GameObject.GetTug(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     local handle = GetTug(self:GetHandle());
     if handle == nil then return nil end;
     return M.FromHandle(handle);
 end
 
---- Has the GameObject hopped out of a vehicle? What vehicle?
+-------------------------------------------------------------------------------
+-- Pilot Actions
+-------------------------------------------------------------------------------
+-- @section
+-- These functions control the pilot of a vehicle.
+
+--- Commands the vehicle's pilot to eject.
+--- @param self GameObject
+function GameObject.EjectPilot(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    EjectPilot(self:GetHandle());
+end
+
+--- Commands the vehicle's pilot to hop out.
+--- @param self GameObject
+function GameObject.HopOut(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    HopOut(self:GetHandle());
+end
+
+--- Kills the vehicle's pilot as if sniped.
+--- @param self GameObject
+function GameObject.KillPilot(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    KillPilot(self:GetHandle());
+end
+
+--- Removes the vehicle's pilot cleanly.
+--- @param self GameObject
+function GameObject.RemovePilot(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    RemovePilot(self:GetHandle());
+end
+
+--- Returns the vehicle that the pilot GameObject most recently hopped out of.
 --- @param self GameObject GameObject instance
---- @return GameObject GameObject of the vehicle that the pilot most recently hopped out of, or nil
+--- @return GameObject? GameObject of the vehicle that the pilot most recently hopped out of, or nil
 function GameObject.HoppedOutOf(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     local handle = HoppedOutOf(self:GetHandle());
     if handle == nil then return nil end;
     return M.FromHandle(handle);
 end
 
 -------------------------------------------------------------------------------
--- Damage, Health, and Ammo
+-- Weapon
 -------------------------------------------------------------------------------
 -- @section
+-- These functions access unit weapons and damage.
+
+--- Sets what weapons the unit's AI process will use.
+--- To calculate the mask value, add up the values of the weapon hardpoint slots you want to enable.
+--- weaponHard1: 1 weaponHard2: 2 weaponHard3: 4 weaponHard4: 8 weaponHard5: 16
+--- @param self GameObject GameObject instance
+--- @param mask integer
+function GameObject.SetWeaponMask(self, mask)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isnumber(mask) then error("Parameter mask must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetWeaponMask(self:GetHandle(), mask);
+end
+
+--- Gives the game object the named weapon in the given slot. If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
+--- Returns true if it succeeded. Returns false otherwise.
+--- @param self GameObject GameObject instance
+--- @param weaponname? string
+--- @param slot? integer
+function GameObject.GiveWeapon(self, weaponname, slot)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if weaponname ~= nil and not utility.isstring(weaponname) then error("Parameter weaponname must be a string or nil.") end
+    if slot ~= nil and not utility.isnumber(slot) then error("Parameter slot must be a number or nil.") end
+    --- @diagnostic disable-next-line: deprecated
+    return GiveWeapon(self:GetHandle(), weaponname, slot);
+end
+
+--- Returns the odf name of the weapon in the given slot on the game object. Returns nil if the game object does not exist or the slot is empty.
+--- For example, an "avtank" game object would return "gatstab" for index 0 and "gminigun" for index 1.
+--- @param self GameObject GameObject instance
+--- @param slot integer
+--- @return string
+function GameObject.GetWeaponClass(self, slot)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isnumber(slot) then error("Parameter slot must be number.") end
+    --- @diagnostic disable-next-line: deprecated
+    return GetWeaponClass(self:GetHandle(), slot);
+end
+
+--- Tells the game object to fire at the given target.
+--- @param self GameObject GameObject instance
+--- @param target GameObject|Handle
+function GameObject.FireAt(self, target)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        FireAt(self:GetHandle(), target:GetHandle());
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        FireAt(self:GetHandle(), target);
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
+end
 
 --- Applies damage to the game object.
 --- @param self GameObject GameObject instance
---- @param amt number damage amount
-function GameObject.Damage(self, amt)
+--- @param amount number damage amount
+function GameObject.Damage(self, amount)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    Damage(self:GetHandle(), amt);
+    if not utility.isnumber(amount) then error("Parameter amt must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    Damage(self:GetHandle(), amount);
 end
 
---- Get health ratio of GameObject.
+-------------------------------------------------------------------------------
+-- Health Values
+-------------------------------------------------------------------------------
+-- @section
+-- These functions get and set health values on a game object.
+
+--- Returns the fractional health of the game object between 0 and 1.
 --- @usage if friend1:GetHealth() < 0.5 then friend1:Retreat("retreat_path"); end
 --- @param self GameObject GameObject instance
---- @return number health ratio
+--- @return number ratio health ratio
 function GameObject.GetHealth(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetHealth(self:GetHandle());
 end
 
---- Get current health of GameObject.
+--- Returns the current health value of the game object.
 --- @param self GameObject GameObject instance
---- @return number current health or nil
+--- @return number current current health or nil
 function GameObject.GetCurHealth(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetCurHealth(self:GetHandle());
 end
 
---- Get max health of GameObject.
+--- Returns the maximum health value of the game object.
 --- @param self GameObject GameObject instance
---- @return number max health or nil
+--- @return number max max health or nil
 function GameObject.GetMaxHealth(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetMaxHealth(self:GetHandle());
 end
 
---- Sets the current health of the GameObject to the NewHealth value.
+--- Sets the current health of the game object.
 --- @param self GameObject GameObject instance
---- @param amt any health amount
-function GameObject.SetCurHealth(self, amt)
+--- @param health number health amount
+function GameObject.SetCurHealth(self, health)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    SetCurHealth(self:GetHandle(), amt);
+    if not utility.isnumber(health) then error("Parameter health must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetCurHealth(self:GetHandle(), health);
 end
 
 --- Sets the max health of the GameObject to the NewHealth value.
 --- @param self GameObject GameObject instance
---- @param amt any health amount
-function GameObject.SetMaxHealth(self, amt)
+--- @param health number health amount
+function GameObject.SetMaxHealth(self, health)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    SetMaxHealth(self:GetHandle(), amt);
+    if not utility.isnumber(health) then error("Parameter health must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetMaxHealth(self:GetHandle(), health);
 end
 
 --- Adds the health to the GameObject.
 --- @param self GameObject GameObject instance
---- @param amt any health amount
-function GameObject.AddHealth(self, amt)
+--- @param health number health amount
+function GameObject.AddHealth(self, health)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    AddHealth(self:GetHandle(), amt);
+    if not utility.isnumber(health) then error("Parameter health must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    AddHealth(self:GetHandle(), health);
 end
 
 --- GiveMaxHealth
 --- @param self GameObject GameObject instance
 function GameObject.GiveMaxHealth(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     GiveMaxHealth(self:GetHandle());
 end
 
---- Get ammo ratio of GameObject.
+-------------------------------------------------------------------------------
+-- Ammo Values
+-------------------------------------------------------------------------------
+-- @section
+-- These functions get and set ammo values on a game object.
+
+--- Returns the fractional ammo of the game object between 0 and 1.
 --- @param self GameObject GameObject instance
---- @return number ammo ratio
+--- @return number ratio ammo ratio
 function GameObject.GetAmmo(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetAmmo(self:GetHandle());
 end
 
---- Get current ammo of GameObject.
+--- Returns the current ammo value of the game object.
 --- @param self GameObject GameObject instance
---- @return number current ammo or nil
+--- @return number current current ammo or nil
 function GameObject.GetCurAmmo(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetCurAmmo(self:GetHandle());
 end
 
---- Get max ammo of GameObject.
+--- Returns the maximum ammo value of the game object.
 --- @param self GameObject GameObject instance
---- @return number max ammo or nil
+--- @return number max max ammo or nil
 function GameObject.GetMaxAmmo(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetMaxAmmo(self:GetHandle());
 end
 
---- Sets the current ammo of the GameObject to the NewAmmo value.
+--- Sets the current ammo of the game object.
 --- @param self GameObject GameObject instance
---- @param amt any ammo amount
-function GameObject.SetCurAmmo(self, amt)
+--- @param ammo any ammo amount
+function GameObject.SetCurAmmo(self, ammo)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    SetCurAmmo(self:GetHandle(), amt);
+    if not utility.isnumber(ammo) then error("Parameter ammo must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetCurAmmo(self:GetHandle(), ammo);
 end
 
---- Sets the max ammo of the GameObject to the NewAmmo value.
+--- Sets the maximum ammo of the game object.
 --- @param self GameObject GameObject instance
---- @param amt any ammo amount
-function GameObject.SetMaxAmmo(self, amt)
+--- @param ammo any ammo amount
+function GameObject.SetMaxAmmo(self, ammo)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    SetMaxAmmo(self:GetHandle(), amt);
+    if not utility.isnumber(ammo) then error("Parameter ammo must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetMaxAmmo(self:GetHandle(), ammo);
 end
 
---- Adds the ammo to the GameObject.
+--- Adds to the current ammo of the game object.
 --- @param self GameObject GameObject instance
---- @param amt any ammo amount
-function GameObject.AddAmmo(self, amt)
+--- @param ammo any ammo amount
+function GameObject.AddAmmo(self, ammo)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amt) then error("Parameter amt must be number."); end
-    AddAmmo(self:GetHandle(), amt);
+    if not utility.isnumber(ammo) then error("Parameter ammo must be number."); end
+    --- @diagnostic disable-next-line: deprecated
+    AddAmmo(self:GetHandle(), ammo);
 end
 
---- GiveMaxAmmo
+--- Sets the unit's current ammo to maximum.
 --- @param self GameObject GameObject instance
 function GameObject.GiveMaxAmmo(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     GiveMaxAmmo(self:GetHandle());
 end
 
-
 -------------------------------------------------------------------------------
--- Team
+-- Team Number
 -------------------------------------------------------------------------------
 -- @section
+-- These functions get and set team number. Team 0 is the neutral or environment team.
 
---- Get team number of the GameObject.
+--- Returns the game object's team number.
 --- @param self GameObject GameObject instance
 --- @return integer Team number
 function GameObject.GetTeamNum(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetTeamNum(self:GetHandle());
 end
 
---- Set team number of the GameObject.
+--- Sets the game object's team number.
 --- @param self GameObject GameObject instance
 --- @param team integer new team number
 function GameObject.SetTeamNum(self, team)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
+    --- @diagnostic disable-next-line: deprecated
     SetTeamNum(self:GetHandle(), team);
 end
 
@@ -832,6 +1045,7 @@ end
 --- @return integer Team number
 function GameObject.GetPerceivedTeam(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetPerceivedTeam(self:GetHandle());
 end
 
@@ -841,6 +1055,7 @@ end
 function GameObject.SetPerceivedTeam(self, team)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
+    --- @diagnostic disable-next-line: deprecated
     SetPerceivedTeam(self:GetHandle(), team);
 end
 
@@ -851,20 +1066,22 @@ end
 -- These functions get and set vehicle pilot class.
 
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
---- @param h handle
---- @param odfname string
-function GameObject.SetPilotClass(h, odfname)
-    if not M.isgameobject(h) then error("Parameter h must be GameObject instance."); end
-    if not utility.isstring(odfname) and odfname ~= nil then error("Parameter odfname must be a string or nil."); end
-    SetPilotClass(h:GetHandle(), odfname);
+--- @param self GameObject
+--- @param odf string?
+function GameObject.SetPilotClass(self, odf)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isstring(odf) and odf ~= nil then error("Parameter odf must be a string or nil."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetPilotClass(self:GetHandle(), odf);
 end
 
 --- Returns the odf name of the vehicle's pilot class. Returns nil if none exists.
---- @param h handle
---- @return string
-function GameObject.GetPilotClass(h)
-    if not M.isgameobject(h) then error("Parameter h must be GameObject instance."); end
-    return GetPilotClass(h:GetHandle());
+--- @param self GameObject
+--- @return string?
+function GameObject.GetPilotClass(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetPilotClass(self:GetHandle());
 end
 
 -------------------------------------------------------------------------------
@@ -878,8 +1095,10 @@ end
 --- @param self GameObject GameObject instance
 function GameObject.SetObjectiveOn(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     SetObjectiveOn(self:GetHandle());
 
+    --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
         self.cache_memo = unsaved(self.cache_memo)
         self.cache_memo.IsObjectiveOn = true;
@@ -890,9 +1109,11 @@ end
 --- @param self GameObject GameObject instance
 function GameObject.SetObjectiveOff(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     SetObjectiveOff(self:GetHandle());
 
-    if not utility.isfunction(IsObjectIsObjectiveOnive) then
+    --- @diagnostic disable-next-line: deprecated
+    if not utility.isfunction(IsObjectiveOn) then
         self.cache_memo = unsaved(self.cache_memo)
         self.cache_memo.IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
     end
@@ -900,11 +1121,13 @@ end
 
 --- If the game object an objective?
 --- @param self GameObject GameObject instance
---- @return bool true if the game object is an objective
+--- @return boolean true if the game object is an objective
 function GameObject.IsObjectiveOn(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
 
+    --- @diagnostic disable-next-line: deprecated
     if utility.isfunction(IsObjectiveOn) then
+        --- @diagnostic disable-next-line: deprecated
         return IsObjectiveOn(self:GetHandle());
     else
         if not self.cache_memo then return false; end
@@ -917,6 +1140,7 @@ end
 --- @return string Name of the objective/object
 function GameObject.GetObjectiveName(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetObjectiveName(self:GetHandle());
 end
 
@@ -926,6 +1150,7 @@ end
 function GameObject.SetObjectiveName(self, name)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(name) then error("Parameter name must be a string."); end
+    --- @diagnostic disable-next-line: deprecated
     SetObjectiveName(self:GetHandle(), name);
 end
 
@@ -937,6 +1162,7 @@ end
 function GameObject.SetName(self, name)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(name) then error("Parameter name must be a string."); end
+    --- @diagnostic disable-next-line: deprecated
     SetName(self:GetHandle(), name);
 end
 
@@ -951,31 +1177,35 @@ end
 --- @param odf string ODF filename
 --- @usage enemy1:IsOdf("svturr")
 function GameObject.IsOdf(self, odf)
-  if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-  if not utility.isstring(odf) then error("Parameter odf must be a string."); end
-  IsOdf(self:GetHandle(), odf);
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    --- @diagnostic disable-next-line: deprecated
+    IsOdf(self:GetHandle(), odf);
 end
 
 --- Get odf of GameObject
 --- @param self GameObject GameObject instance
 function GameObject.GetOdf(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetOdf(self:GetHandle());
 end
 
 --- Get base of GameObject
 --- @param self GameObject GameObject instance
---- @return string character identifier for race
+--- @return string? character identifier for race
 function GameObject.GetBase(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetBase(self:GetHandle());
 end
 
 --- Get label of GameObject
 --- @param self GameObject GameObject instance
---- @return string Label name string
+--- @return string? Label name string
 function GameObject.GetLabel(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetLabel(self:GetHandle());
 end
 
@@ -984,9 +1214,10 @@ end
 --- @param label string Label
 --- @usage enemy1:SetLabel("special_object_7")
 function GameObject.SetLabel(self, label)
-  if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-  if not utility.isstring(label) then error("Parameter label must be a string."); end
-  SetLabel(self:GetHandle(),label);
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isstring(label) then error("Parameter label must be a string."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetLabel(self:GetHandle(),label);
 end
 
 --- Get nation of GameObject
@@ -994,6 +1225,7 @@ end
 --- @return string character identifier for race
 function GameObject.GetNation(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetNation(self:GetHandle());
 end
 
@@ -1001,6 +1233,7 @@ end
 --- @param self GameObject GameObject instance
 function GameObject.GetClassSig(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
     return GetClassSig(self:GetHandle());
 end
 

@@ -32,13 +32,18 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Tug_Cargo">Tug Cargo </a></li>
+<li><a href="#Pilot_Actions">Pilot Actions </a></li>
+<li><a href="#Weapon">Weapon </a></li>
+<li><a href="#Health_Values">Health Values </a></li>
+<li><a href="#Ammo_Values">Ammo Values </a></li>
+<li><a href="#Team_Number">Team Number </a></li>
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Globals">Globals </a></li>
 <li><a href="#Audio_Messages">Audio Messages </a></li>
 <li><a href="#Sound_Effects">Sound Effects </a></li>
 <li><a href="#Game_Object">Game Object </a></li>
-<li><a href="#Team_Number">Team Number </a></li>
 <li><a href="#Target">Target </a></li>
 <li><a href="#Owner">Owner </a></li>
 <li><a href="#Position_and_Orientation">Position and Orientation </a></li>
@@ -57,7 +62,6 @@
 <li><a href="#Deploy">Deploy </a></li>
 <li><a href="#Selection">Selection </a></li>
 <li><a href="#Mission_Critical__2_0__">Mission-Critical [2.0+] </a></li>
-<li><a href="#Weapon">Weapon </a></li>
 <li><a href="#Time">Time </a></li>
 <li><a href="#Mission">Mission </a></li>
 <li><a href="#Objective_Messages">Objective Messages </a></li>
@@ -67,10 +71,6 @@
 <li><a href="#Path_Points__2_0__">Path Points [2.0+] </a></li>
 <li><a href="#Path_Area__2_0__">Path Area [2.0+] </a></li>
 <li><a href="#Unit_Commands">Unit Commands </a></li>
-<li><a href="#Tug_Cargo">Tug Cargo </a></li>
-<li><a href="#Pilot_Actions">Pilot Actions </a></li>
-<li><a href="#Health_Values">Health Values </a></li>
-<li><a href="#Ammo_Values">Ammo Values </a></li>
 <li><a href="#Cinematic_Camera">Cinematic Camera </a></li>
 <li><a href="#Info_Display">Info Display </a></li>
 <li><a href="#Network">Network </a></li>
@@ -121,6 +121,148 @@
 </p>
 
 
+<h2><a href="#Tug_Cargo">Tug Cargo </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#HasCargo">HasCargo (tug)</a></td>
+	<td class="summary">Returns true if the unit is a tug carrying cargo.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetCargo">GetCargo (tug)</a></td>
+	<td class="summary">Returns the handle of the cargo if the unit is a tug carrying cargo.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetTug">GetTug (cargo)</a></td>
+	<td class="summary">Returns the handle of the tug carrying the object.</td>
+	</tr>
+</table>
+<h2><a href="#Pilot_Actions">Pilot Actions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#EjectPilot">EjectPilot (h)</a></td>
+	<td class="summary">Commands the vehicle's pilot to eject.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#HopOut">HopOut (h)</a></td>
+	<td class="summary">Commands the vehicle's pilot to hop out.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#KillPilot">KillPilot (h)</a></td>
+	<td class="summary">Kills the vehicle's pilot as if sniped.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RemovePilot">RemovePilot (h)</a></td>
+	<td class="summary">Removes the vehicle's pilot cleanly.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#HoppedOutOf">HoppedOutOf (h)</a></td>
+	<td class="summary">Returns the vehicle that the pilot most recently hopped out of.</td>
+	</tr>
+</table>
+<h2><a href="#Weapon">Weapon </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SetWeaponMask">SetWeaponMask (h, mask)</a></td>
+	<td class="summary">Sets what weapons the unit's AI process will use.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GiveWeapon">GiveWeapon (h[, weaponname[, slot]])</a></td>
+	<td class="summary">Gives the game object the named weapon in the given slot.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetWeaponClass">GetWeaponClass (h, slot)</a></td>
+	<td class="summary">Returns the odf name of the weapon in the given slot on the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#FireAt">FireAt (me, him)</a></td>
+	<td class="summary">Tells the game object to fire at the given target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Damage">Damage (h, amount)</a></td>
+	<td class="summary">Applies damage to the game object.</td>
+	</tr>
+</table>
+<h2><a href="#Health_Values">Health Values </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetHealth">GetHealth (h)</a></td>
+	<td class="summary">Returns the fractional health of the game object between 0 and 1.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetCurHealth">GetCurHealth (h)</a></td>
+	<td class="summary">Returns the current health value of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetMaxHealth">GetMaxHealth (h)</a></td>
+	<td class="summary">Returns the maximum health value of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetCurHealth">SetCurHealth (h, health)</a></td>
+	<td class="summary">Sets the current health of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetMaxHealth">SetMaxHealth (h, health)</a></td>
+	<td class="summary">Sets the maximum health of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddHealth">AddHealth (h, health)</a></td>
+	<td class="summary">Adds to the current health of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GiveMaxHealth">GiveMaxHealth (h)</a></td>
+	<td class="summary">Sets the unit's current health to maximum.</td>
+	</tr>
+</table>
+<h2><a href="#Ammo_Values">Ammo Values </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetAmmo">GetAmmo (h)</a></td>
+	<td class="summary">Returns the fractional ammo of the game object between 0 and 1.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetCurAmmo">GetCurAmmo (h)</a></td>
+	<td class="summary">Returns the current ammo value of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetMaxAmmo">GetMaxAmmo (h)</a></td>
+	<td class="summary">Returns the maximum ammo value of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetCurAmmo">SetCurAmmo (h, ammo)</a></td>
+	<td class="summary">Sets the current ammo of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetMaxAmmo">SetMaxAmmo (h, ammo)</a></td>
+	<td class="summary">Sets the maximum ammo of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AddAmmo">AddAmmo (h, ammo)</a></td>
+	<td class="summary">Adds to the current ammo of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GiveMaxAmmo">GiveMaxAmmo (h)</a></td>
+	<td class="summary">Sets the unit's current ammo to maximum.</td>
+	</tr>
+</table>
+<h2><a href="#Team_Number">Team Number </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetTeamNum">GetTeamNum (h)</a></td>
+	<td class="summary">Returns the game object's team number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetTeamNum">SetTeamNum (h, team)</a></td>
+	<td class="summary">Sets the game object's team number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetPerceivedTeam">GetPerceivedTeam (h)</a></td>
+	<td class="summary">Returns the game object's perceived team number (as opposed to its real team number).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetPerceivedTeam">SetPerceivedTeam (h, t)</a></td>
+	<td class="summary">Set the game object's perceived team number (as opposed to its real team number).</td>
+	</tr>
+</table>
 <h2><a href="#Pilot_Class">Pilot Class </a></h2>
 <table class="function_list">
 	<tr>
@@ -303,25 +445,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#IsRecycledByTeam">IsRecycledByTeam (h, team)</a></td>
 	<td class="summary">Returns true if the game object was recycled by a Construction Rig on the given team.</td>
-	</tr>
-</table>
-<h2><a href="#Team_Number">Team Number </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GetTeamNum">GetTeamNum (h)</a></td>
-	<td class="summary">Returns the game object's team number.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetTeamNum">SetTeamNum (h, team)</a></td>
-	<td class="summary">Sets the game object's team number.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetPerceivedTeam">GetPerceivedTeam (h, t)</a></td>
-	<td class="summary">Returns the game object's perceived team number (as opposed to its real team number).</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetPerceivedTeam">SetPerceivedTeam (h, t)</a></td>
-	<td class="summary">Set the game object's perceived team number (as opposed to its real team number).</td>
 	</tr>
 </table>
 <h2><a href="#Target">Target </a></h2>
@@ -658,29 +781,6 @@
 	<td class="summary">Sets the game object's mission-critical status.</td>
 	</tr>
 </table>
-<h2><a href="#Weapon">Weapon </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#SetWeaponMask">SetWeaponMask (h, mask)</a></td>
-	<td class="summary">Sets what weapons the unit's AI process will use.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GiveWeapon">GiveWeapon (h[, weaponname[, slot]])</a></td>
-	<td class="summary">Gives the game object the named weapon in the given slot.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetWeaponClass">GetWeaponClass (h, slot)</a></td>
-	<td class="summary">Returns the odf name of the weapon in the given slot on the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#FireAt">FireAt (me, him)</a></td>
-	<td class="summary">Tells the game object to fire at the given target.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Damage">Damage (h, amount)</a></td>
-	<td class="summary">Applies damage to the game object.</td>
-	</tr>
-</table>
 <h2><a href="#Time">Time </a></h2>
 <table class="function_list">
 	<tr>
@@ -926,106 +1026,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#Hunt">Hunt (me[, priority])</a></td>
 	<td class="summary">Commands the unit to hunt for targets autonomously.</td>
-	</tr>
-</table>
-<h2><a href="#Tug_Cargo">Tug Cargo </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#HasCargo">HasCargo (tug)</a></td>
-	<td class="summary">Returns true if the unit is a tug carrying cargo.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetCargo">GetCargo (tug)</a></td>
-	<td class="summary">Returns the handle of the cargo if the unit is a tug carrying cargo.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetTug">GetTug (cargo)</a></td>
-	<td class="summary">Returns the handle of the tug carrying the object.</td>
-	</tr>
-</table>
-<h2><a href="#Pilot_Actions">Pilot Actions </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#EjectPilot">EjectPilot (h)</a></td>
-	<td class="summary">Commands the vehicle's pilot to eject.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#HopOut">HopOut (h)</a></td>
-	<td class="summary">Commands the vehicle's pilot to hop out.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#KillPilot">KillPilot (h)</a></td>
-	<td class="summary">Kills the vehicle's pilot as if sniped.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#RemovePilot">RemovePilot (h)</a></td>
-	<td class="summary">Removes the vehicle's pilot cleanly.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#HoppedOutOf">HoppedOutOf (h)</a></td>
-	<td class="summary">Returns the vehicle that the pilot most recently hopped out of.</td>
-	</tr>
-</table>
-<h2><a href="#Health_Values">Health Values </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GetHealth">GetHealth (h)</a></td>
-	<td class="summary">Returns the fractional health of the game object between 0 and 1.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetCurHealth">GetCurHealth (h)</a></td>
-	<td class="summary">Returns the current health value of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetMaxHealth">GetMaxHealth (h)</a></td>
-	<td class="summary">Returns the maximum health value of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetCurHealth">SetCurHealth (h, health)</a></td>
-	<td class="summary">Sets the current health of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetMaxHealth">SetMaxHealth (h, health)</a></td>
-	<td class="summary">Sets the maximum health of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddHealth">AddHealth (h, health)</a></td>
-	<td class="summary">Adds to the current health of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GiveMaxHealth">GiveMaxHealth (h)</a></td>
-	<td class="summary">Sets the unit's current health to maximum.</td>
-	</tr>
-</table>
-<h2><a href="#Ammo_Values">Ammo Values </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GetAmmo">GetAmmo (h)</a></td>
-	<td class="summary">Returns the fractional ammo of the game object between 0 and 1.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetCurAmmo">GetCurAmmo (h)</a></td>
-	<td class="summary">Returns the current ammo value of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetMaxAmmo">GetMaxAmmo (h)</a></td>
-	<td class="summary">Returns the maximum ammo value of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetCurAmmo">SetCurAmmo (h, ammo)</a></td>
-	<td class="summary">Sets the current ammo of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetMaxAmmo">SetMaxAmmo (h, ammo)</a></td>
-	<td class="summary">Sets the maximum ammo of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AddAmmo">AddAmmo (h, ammo)</a></td>
-	<td class="summary">Adds to the current ammo of the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GiveMaxAmmo">GiveMaxAmmo (h)</a></td>
-	<td class="summary">Sets the unit's current ammo to maximum.</td>
 	</tr>
 </table>
 <h2><a href="#Cinematic_Camera">Cinematic Camera </a></h2>
@@ -1370,6 +1370,876 @@
 <br/>
 
 
+    <h2 class="section-header has-description"><a name="Tug_Cargo"></a>Tug Cargo </h2>
+
+          <div class="section-description">
+           functions query Tug and Cargo.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "HasCargo"></a>
+    <strong>HasCargo (tug)</strong>
+    </dt>
+    <dd>
+    Returns true if the unit is a tug carrying cargo.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tug</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetCargo"></a>
+    <strong>GetCargo (tug)</strong>
+    </dt>
+    <dd>
+    Returns the handle of the cargo if the unit is a tug carrying cargo.  Returns nil otherwise.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tug</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetTug"></a>
+    <strong>GetTug (cargo)</strong>
+    </dt>
+    <dd>
+    Returns the handle of the tug carrying the object.  Returns nil if not carried.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cargo</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Pilot_Actions"></a>Pilot Actions </h2>
+
+          <div class="section-description">
+           functions control the pilot of a vehicle.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "EjectPilot"></a>
+    <strong>EjectPilot (h)</strong>
+    </dt>
+    <dd>
+    Commands the vehicle's pilot to eject.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "HopOut"></a>
+    <strong>HopOut (h)</strong>
+    </dt>
+    <dd>
+    Commands the vehicle's pilot to hop out.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "KillPilot"></a>
+    <strong>KillPilot (h)</strong>
+    </dt>
+    <dd>
+    Kills the vehicle's pilot as if sniped.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RemovePilot"></a>
+    <strong>RemovePilot (h)</strong>
+    </dt>
+    <dd>
+    Removes the vehicle's pilot cleanly.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "HoppedOutOf"></a>
+    <strong>HoppedOutOf (h)</strong>
+    </dt>
+    <dd>
+    Returns the vehicle that the pilot most recently hopped out of.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Weapon"></a>Weapon </h2>
+
+          <div class="section-description">
+           functions access unit weapons and damage.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "SetWeaponMask"></a>
+    <strong>SetWeaponMask (h, mask)</strong>
+    </dt>
+    <dd>
+    Sets what weapons the unit's AI process will use.
+ To calculate the mask value, add up the values of the weapon hardpoint slots you want to enable.
+ weaponHard1: 1 weaponHard2: 2 weaponHard3: 4 weaponHard4: 8 weaponHard5: 16
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">mask</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GiveWeapon"></a>
+    <strong>GiveWeapon (h[, weaponname[, slot]])</strong>
+    </dt>
+    <dd>
+    Gives the game object the named weapon in the given slot.  If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
+ Returns true if it succeeded. Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">weaponname</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">slot</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetWeaponClass"></a>
+    <strong>GetWeaponClass (h, slot)</strong>
+    </dt>
+    <dd>
+    Returns the odf name of the weapon in the given slot on the game object.  Returns nil if the game object does not exist or the slot is empty.
+ For example, an "avtank" game object would return "gatstab" for index 0 and "gminigun" for index 1.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">slot</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "FireAt"></a>
+    <strong>FireAt (me, him)</strong>
+    </dt>
+    <dd>
+    Tells the game object to fire at the given target.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Damage"></a>
+    <strong>Damage (h, amount)</strong>
+    </dt>
+    <dd>
+    Applies damage to the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">amount</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Health_Values"></a>Health Values </h2>
+
+          <div class="section-description">
+           functions get and set health values on a game object.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetHealth"></a>
+    <strong>GetHealth (h)</strong>
+    </dt>
+    <dd>
+    Returns the fractional health of the game object between 0 and 1.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetCurHealth"></a>
+    <strong>GetCurHealth (h)</strong>
+    </dt>
+    <dd>
+    Returns the current health value of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetMaxHealth"></a>
+    <strong>GetMaxHealth (h)</strong>
+    </dt>
+    <dd>
+    Returns the maximum health value of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetCurHealth"></a>
+    <strong>SetCurHealth (h, health)</strong>
+    </dt>
+    <dd>
+    Sets the current health of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">health</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetMaxHealth"></a>
+    <strong>SetMaxHealth (h, health)</strong>
+    </dt>
+    <dd>
+    Sets the maximum health of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">health</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddHealth"></a>
+    <strong>AddHealth (h, health)</strong>
+    </dt>
+    <dd>
+    Adds to the current health of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">health</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GiveMaxHealth"></a>
+    <strong>GiveMaxHealth (h)</strong>
+    </dt>
+    <dd>
+    Sets the unit's current health to maximum.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Ammo_Values"></a>Ammo Values </h2>
+
+          <div class="section-description">
+           functions get and set ammo values on a game object.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetAmmo"></a>
+    <strong>GetAmmo (h)</strong>
+    </dt>
+    <dd>
+    Returns the fractional ammo of the game object between 0 and 1.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetCurAmmo"></a>
+    <strong>GetCurAmmo (h)</strong>
+    </dt>
+    <dd>
+    Returns the current ammo value of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetMaxAmmo"></a>
+    <strong>GetMaxAmmo (h)</strong>
+    </dt>
+    <dd>
+    Returns the maximum ammo value of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetCurAmmo"></a>
+    <strong>SetCurAmmo (h, ammo)</strong>
+    </dt>
+    <dd>
+    Sets the current ammo of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">ammo</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetMaxAmmo"></a>
+    <strong>SetMaxAmmo (h, ammo)</strong>
+    </dt>
+    <dd>
+    Sets the maximum ammo of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">ammo</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AddAmmo"></a>
+    <strong>AddAmmo (h, ammo)</strong>
+    </dt>
+    <dd>
+    Adds to the current ammo of the game object.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">ammo</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GiveMaxAmmo"></a>
+    <strong>GiveMaxAmmo (h)</strong>
+    </dt>
+    <dd>
+    Sets the unit's current ammo to maximum.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Team_Number"></a>Team Number </h2>
+
+          <div class="section-description">
+           functions get and set team number. Team 0 is the neutral or environment team.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetTeamNum"></a>
+    <strong>GetTeamNum (h)</strong>
+    </dt>
+    <dd>
+    Returns the game object's team number.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetTeamNum"></a>
+    <strong>SetTeamNum (h, team)</strong>
+    </dt>
+    <dd>
+    Sets the game object's team number.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetPerceivedTeam"></a>
+    <strong>GetPerceivedTeam (h)</strong>
+    </dt>
+    <dd>
+    Returns the game object's perceived team number (as opposed to its real team number).
+ The perceived team will differ from the real team when a player enters an empty enemy vehicle without being seen until they attack something.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetPerceivedTeam"></a>
+    <strong>SetPerceivedTeam (h, t)</strong>
+    </dt>
+    <dd>
+    Set the game object's perceived team number (as opposed to its real team number).
+ Units on the game object's perceived team will treat it as friendly until it "blows its cover" by attacking, at which point it will revert to its real team.
+ Units on the game object's real team will treat it as friendly regardless of its perceived team.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Pilot_Class"></a>Pilot Class </h2>
 
           <div class="section-description">
@@ -1393,7 +2263,7 @@
         </li>
         <li><span class="parameter">odfname</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
+        ?
         </li>
     </ul>
 
@@ -2774,128 +3644,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Team_Number"></a>Team Number </h2>
-
-          <div class="section-description">
-           functions get and set team number. Team 0 is the neutral or environment team.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "GetTeamNum"></a>
-    <strong>GetTeamNum (h)</strong>
-    </dt>
-    <dd>
-    Returns the game object's team number.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetTeamNum"></a>
-    <strong>SetTeamNum (h, team)</strong>
-    </dt>
-    <dd>
-    Sets the game object's team number.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetPerceivedTeam"></a>
-    <strong>GetPerceivedTeam (h, t)</strong>
-    </dt>
-    <dd>
-    Returns the game object's perceived team number (as opposed to its real team number).
- The perceived team will differ from the real team when a player enters an empty enemy vehicle without being seen until they attack something.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">t</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetPerceivedTeam"></a>
-    <strong>SetPerceivedTeam (h, t)</strong>
-    </dt>
-    <dd>
-    Set the game object's perceived team number (as opposed to its real team number).
- Units on the game object's perceived team will treat it as friendly until it "blows its cover" by attacking, at which point it will revert to its real team.
- Units on the game object's real team will treat it as friendly regardless of its perceived team.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">t</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Target"></a>Target </h2>
 
           <div class="section-description">
@@ -3083,7 +3831,7 @@
 
         </li>
         <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
          Position vector, ransform matrix, Object, or path name.
         </li>
         <li><span class="parameter">point</span>
@@ -3240,7 +3988,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <span class="type">nil</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -3301,7 +4049,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <span class="type">nil</span></span>
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
     </ol>
 
@@ -5291,159 +6039,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Weapon"></a>Weapon </h2>
-
-          <div class="section-description">
-           functions access unit weapons and damage.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "SetWeaponMask"></a>
-    <strong>SetWeaponMask (h, mask)</strong>
-    </dt>
-    <dd>
-    Sets what weapons the unit's AI process will use.
- To calculate the mask value, add up the values of the weapon hardpoint slots you want to enable.
- weaponHard1: 1 weaponHard2: 2 weaponHard3: 4 weaponHard4: 8 weaponHard5: 16
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">mask</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GiveWeapon"></a>
-    <strong>GiveWeapon (h[, weaponname[, slot]])</strong>
-    </dt>
-    <dd>
-    Gives the game object the named weapon in the given slot.  If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
- Returns true if it succeeded. Returns false otherwise.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">weaponname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetWeaponClass"></a>
-    <strong>GetWeaponClass (h, slot)</strong>
-    </dt>
-    <dd>
-    Returns the odf name of the weapon in the given slot on the game object.  Returns nil if the game object does not exist or the slot is empty.
- For example, an "avtank" game object would return "gatstab" for index 0 and "gminigun" for index 1.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "FireAt"></a>
-    <strong>FireAt (me, him)</strong>
-    </dt>
-    <dd>
-    Tells the game object to fire at the given target.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Damage"></a>
-    <strong>Damage (h, amount)</strong>
-    </dt>
-    <dd>
-    Applies damage to the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">amount</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Time"></a>Time </h2>
 
           <div class="section-description">
@@ -7222,605 +7817,6 @@
             <span class="types"><span class="type">integer</span></span>
 
          (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Tug_Cargo"></a>Tug Cargo </h2>
-
-          <div class="section-description">
-           functions query Tug and Cargo.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "HasCargo"></a>
-    <strong>HasCargo (tug)</strong>
-    </dt>
-    <dd>
-    Returns true if the unit is a tug carrying cargo.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">tug</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetCargo"></a>
-    <strong>GetCargo (tug)</strong>
-    </dt>
-    <dd>
-    Returns the handle of the cargo if the unit is a tug carrying cargo.  Returns nil otherwise.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">tug</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetTug"></a>
-    <strong>GetTug (cargo)</strong>
-    </dt>
-    <dd>
-    Returns the handle of the tug carrying the object.  Returns nil if not carried.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">cargo</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Pilot_Actions"></a>Pilot Actions </h2>
-
-          <div class="section-description">
-           functions control the pilot of a vehicle.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "EjectPilot"></a>
-    <strong>EjectPilot (h)</strong>
-    </dt>
-    <dd>
-    Commands the vehicle's pilot to eject.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "HopOut"></a>
-    <strong>HopOut (h)</strong>
-    </dt>
-    <dd>
-    Commands the vehicle's pilot to hop out.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "KillPilot"></a>
-    <strong>KillPilot (h)</strong>
-    </dt>
-    <dd>
-    Kills the vehicle's pilot as if sniped.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "RemovePilot"></a>
-    <strong>RemovePilot (h)</strong>
-    </dt>
-    <dd>
-    Removes the vehicle's pilot cleanly.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "HoppedOutOf"></a>
-    <strong>HoppedOutOf (h)</strong>
-    </dt>
-    <dd>
-    Returns the vehicle that the pilot most recently hopped out of.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Health_Values"></a>Health Values </h2>
-
-          <div class="section-description">
-           functions get and set health values on a game object.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "GetHealth"></a>
-    <strong>GetHealth (h)</strong>
-    </dt>
-    <dd>
-    Returns the fractional health of the game object between 0 and 1.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetCurHealth"></a>
-    <strong>GetCurHealth (h)</strong>
-    </dt>
-    <dd>
-    Returns the current health value of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetMaxHealth"></a>
-    <strong>GetMaxHealth (h)</strong>
-    </dt>
-    <dd>
-    Returns the maximum health value of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetCurHealth"></a>
-    <strong>SetCurHealth (h, health)</strong>
-    </dt>
-    <dd>
-    Sets the current health of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">health</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetMaxHealth"></a>
-    <strong>SetMaxHealth (h, health)</strong>
-    </dt>
-    <dd>
-    Sets the maximum health of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">health</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddHealth"></a>
-    <strong>AddHealth (h, health)</strong>
-    </dt>
-    <dd>
-    Adds to the current health of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">health</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GiveMaxHealth"></a>
-    <strong>GiveMaxHealth (h)</strong>
-    </dt>
-    <dd>
-    Sets the unit's current health to maximum.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Ammo_Values"></a>Ammo Values </h2>
-
-          <div class="section-description">
-           functions get and set ammo values on a game object.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "GetAmmo"></a>
-    <strong>GetAmmo (h)</strong>
-    </dt>
-    <dd>
-    Returns the fractional ammo of the game object between 0 and 1.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetCurAmmo"></a>
-    <strong>GetCurAmmo (h)</strong>
-    </dt>
-    <dd>
-    Returns the current ammo value of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetMaxAmmo"></a>
-    <strong>GetMaxAmmo (h)</strong>
-    </dt>
-    <dd>
-    Returns the maximum ammo value of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetCurAmmo"></a>
-    <strong>SetCurAmmo (h, ammo)</strong>
-    </dt>
-    <dd>
-    Sets the current ammo of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">ammo</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetMaxAmmo"></a>
-    <strong>SetMaxAmmo (h, ammo)</strong>
-    </dt>
-    <dd>
-    Sets the maximum ammo of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">ammo</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AddAmmo"></a>
-    <strong>AddAmmo (h, ammo)</strong>
-    </dt>
-    <dd>
-    Adds to the current ammo of the game object.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">ammo</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GiveMaxAmmo"></a>
-    <strong>GiveMaxAmmo (h)</strong>
-    </dt>
-    <dd>
-    Sets the unit's current ammo to maximum.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
         </li>
     </ul>
 
@@ -10238,7 +10234,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 17:40:30 </i>
+<i style="float:right;">Last updated 2025-05-09 19:03:01 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

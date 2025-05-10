@@ -14,10 +14,14 @@ local function preprocess_file(input_file, output_file)
         return
     end
 
+    local lineCounter = 0;
+
     local lines = {}
     local pendingblock = nil;
     local inBlock = false;
     for line in file:lines() do
+        lineCounter = lineCounter + 1;
+
         -- Apply transformations to each line
         local transformed = 0
 
@@ -168,10 +172,14 @@ local function preprocess_file(input_file, output_file)
     file = io.open(output_file, "w")
     file:write(table.concat(lines, "\n"))
     file:close()
+
+    print("Processed "..string.format("%5d", lineCounter).." line file: " .. input_file .. " -> " .. output_file)
+    return lineCounter;
 end
 
 -- Function to recursively process all Lua files in a directory
 local function preprocess_directory(input_dir, output_dir)
+    local lineCounter = 0;
     for file in lfs.dir(input_dir) do
         if file ~= "." and file ~= ".." then
             local input_path = input_dir .. "/" .. file
@@ -180,15 +188,16 @@ local function preprocess_directory(input_dir, output_dir)
             local attr = lfs.attributes(input_path)
             if attr.mode == "directory" then
                 lfs.mkdir(output_path)
-                preprocess_directory(input_path, output_path)
+                lineCounter = lineCounter + preprocess_directory(input_path, output_path)
             elseif file:match("%.lua$") then
-                preprocess_file(input_path, output_path)
+                lineCounter = lineCounter + preprocess_file(input_path, output_path)
             end
         end
     end
+    return lineCounter;
 end
 
 -- Run the preprocessor
-preprocess_file("./scriptutils.lua", output_dir .. "/scriptutils.lua")
-preprocess_directory("./../baked", output_dir)
-print("Preprocessing complete. Files saved to " .. output_dir)
+local lineCounterAll = preprocess_file("./scriptutils.lua", output_dir .. "/scriptutils.lua")
+lineCounterAll = lineCounterAll + preprocess_directory("./../baked", output_dir)
+print("Preprocessing complete. Total lines: "..tostring(lineCounterAll).." Files saved to " .. output_dir)

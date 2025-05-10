@@ -65,7 +65,10 @@ function M.BuildImportantNav(odf, team, location, point)
 
     -- this probably never needs to run
     if PendingNavsMemo[nav] then
-        table.insert(PendingNavs, nav);
+        if not PendingNavs[team] then
+            PendingNavs[team] = {};
+        end
+        table.insert(PendingNavs[team], nav);
         PendingNavsMemo[nav] = true;
         PendingDirty = true;
     end
@@ -174,10 +177,12 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                     end
                 end
             end
-            for i = 1, #PendingNavs[team] do
-                local nav = PendingNavs[team];
-                if nav and nav:IsValid() then
-                    table.insert(PendingNavsForTeam, nav);
+            if PendingNavs[team] then
+                for i = 1, #PendingNavs[team] do
+                    local nav = PendingNavs[team];
+                    if nav and nav:IsValid() then
+                        table.insert(PendingNavsForTeam, nav);
+                    end
                 end
             end
 
@@ -337,6 +342,9 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
             hook.CallAllNoReturn("NavManager:NavSwap", oldNav, newNav); -- call the nav swap hook so scripts can handle reference changes
             oldNav:RemoveObject(); -- remove the old nav, this will call the delete object hook but we're ignoring those here atm
         end
+
+        PendingNavs = {}; -- clear the pending navs
+        PendingNavsMemo = {}; -- clear the pending navs memo
 
         PendingDirty = false;
         DisableAutomaticNavAdding = false;

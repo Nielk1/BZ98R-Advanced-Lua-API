@@ -855,37 +855,32 @@ function CountUnitsNearObject(h, dist, team, odfname) error("This function is pr
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return function iterator
---- @return any state
---- @return Handle? value
+--- @deprecated Use `_gameobject.ObjectsInRange` instead.
 function ObjectsInRange(dist, target, point) error("This function is provided by the engine."); end
 
 --- Enumerates all game objects.
 --- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
 --- @function AllObjects
 --- @return function iterator
---- @return any state
---- @return Handle? value
+--- @deprecated Use `_gameobject.AllObjects` instead.
 function AllObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all craft.
 --- @function AllCraft
 --- @return function iterator
---- @return any state
---- @return Handle? value
+--- @deprecated Use `_gameobject.AllCraft` instead.
 function AllCraft() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects currently selected by the local player.
 --- @function SelectedObjects
 --- @return function iterator
---- @return any state
---- @return Handle? value
+--- @deprecated Use `_gameobject.SelectedObjects` instead.
 function SelectedObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects marked as objectives.
 --- @function ObjectiveObjects
 --- @return function iterator
---- @return any state
---- @return Handle? value
+--- @deprecated Use `_gameobject.ObjectiveObjects` instead.
 function ObjectiveObjects() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------

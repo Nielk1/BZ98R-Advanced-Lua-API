@@ -260,7 +260,7 @@ end
 --- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
 --- @param iterator function The iterator to convert
 --- @return any[] array An array containing the values from the iterator
-function IteratorToArray(iterator)
+function M.IteratorToArray(iterator)
     local array = {}
     for index, value in iterator do
         if type(index) == "number" and index > 0 and math.floor(index) == index then

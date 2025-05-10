@@ -53,11 +53,11 @@ local function testprint()
     traceprint("TrackerData_TotalOdf: " .. table.show(TrackerData_TotalOdf, "TrackerData_TotalOdf"));
 end
 
-local function CreateObject(object, odf, sig, team)
-    traceprint("CreateObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
+local function AddTrackedObject(object, odf, sig, team)
+    traceprint("AddTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
     if next(Current_TrackerData_Filter_Teams) ~= nil and Current_TrackerData_Filter_Teams[team] == nil then
-        traceprint("CreateObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
+        traceprint("AddTrackedObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
         return;
     end
 
@@ -93,8 +93,8 @@ local function CreateObject(object, odf, sig, team)
     testprint();
 end
 
-local function DeleteObject(object, odf, sig, team, remove_from_total)
-    traceprint("DeleteObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
+local function DeleteTrackedObject(object, odf, sig, team, remove_from_total)
+    traceprint("DeleteTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
     -- Remove the object from the TeamClass and TeamOdf tracking tables
     if TrackerData_Class[team] and TrackerData_Class[team][sig] then
@@ -192,7 +192,7 @@ local CheckUpdated = function()
         if hasNew then
             debugprint("TrackerData Filter has new items, updating tracker data")
             for object in gameobject.AllObjects() do
-                CreateObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
+                AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
             end
         end
     end
@@ -331,12 +331,12 @@ hook.Add("CreateObject", "_tracker_CreateObject", function(object, isMapObject)
         HaveStarted = true;
     end
 
-    CreateObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
+    AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
 end, config.get("hook_priority.CreateObject.Tracker"));
 
 hook.Add("DeleteObject", "_tracker_DeleteObject", function(object)
     if object.tracker == nil then return end -- object was not created by us, ignore it
-    DeleteObject(object, object.tracker.odf, object.tracker.sig, object.tracker.team);
+    DeleteTrackedObject(object, object.tracker.odf, object.tracker.sig, object.tracker.team);
     -- consder holding on to dead objects or something? but their data is gone by now unless we start holding it too
     -- if we have stuff hang around though the counts will be wrong
 end, config.get("hook_priority.DeleteObject.Tracker"));
@@ -378,11 +378,11 @@ hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_tra
     end
 
     -- delete the objects from the tracker, account for their swapped keys
-    DeleteObject(objectB, odfA, sigA, teamA, true)
-    DeleteObject(objectA, odfB, sigB, teamB, true)
+    DeleteTrackedObject(objectB, odfA, sigA, teamA, true)
+    DeleteTrackedObject(objectA, odfB, sigB, teamB, true)
 
-    CreateObject(objectA, odfA, sigA, teamA)
-    CreateObject(objectB, odfB, sigB, teamB)
+    AddTrackedObject(objectA, odfA, sigA, teamA)
+    AddTrackedObject(objectB, odfB, sigB, teamB)
 end, config.get("hook_priority.GameObject_SwapObjectReferences.Tracker"));
 
 debugprint("_tracker Loaded");

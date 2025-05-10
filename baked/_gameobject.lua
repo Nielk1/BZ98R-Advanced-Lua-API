@@ -1260,6 +1260,85 @@ function GameObject.IsTouching(self, target, tolerance)
 end
 
 -------------------------------------------------------------------------------
+-- Iterators
+-------------------------------------------------------------------------------
+-- @section
+-- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
+
+--- Enumerates game objects within the given distance a target.
+--- @param dist number
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return function iterator Iterator of GameObject values
+function M.ObjectsInRange(dist, target, point)
+    if not utility.isnumber(dist) then error("Parameter dist must be number."); end
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        return coroutine.wrap(function()
+            --- @diagnostic disable-next-line: deprecated
+            for handle in ObjectsInRange(dist, target:GetHandle(), point) do
+                coroutine.yield(M.FromHandle(handle))
+            end
+        end)
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        return coroutine.wrap(function()
+            --- @diagnostic disable-next-line: deprecated
+            for handle in ObjectsInRange(dist, target, point) do
+                coroutine.yield(M.FromHandle(handle))
+            end
+        end)
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Enumerates all game objects.
+--- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
+--- @return function iterator Iterator of GameObject values
+function M.AllObjects()
+    return coroutine.wrap(function()
+        --- @diagnostic disable-next-line: deprecated
+        for handle in AllObjects() do
+            coroutine.yield(M.FromHandle(handle))
+        end
+    end)
+end
+
+--- Enumerates all craft.
+--- @return function iterator Iterator of GameObject values
+function M.AllCraft()
+    return coroutine.wrap(function()
+        --- @diagnostic disable-next-line: deprecated
+        for handle in AllCraft() do
+            coroutine.yield(M.FromHandle(handle))
+        end
+    end)
+end
+
+--- Enumerates all game objects currently selected by the local player.
+--- @return function iterator Iterator of GameObject values
+function M.SelectedObjects()
+    return coroutine.wrap(function()
+        --- @diagnostic disable-next-line: deprecated
+        for handle in SelectedObjects() do
+            coroutine.yield(M.FromHandle(handle))
+        end
+    end)
+end
+
+--- Enumerates all game objects marked as objectives.
+--- @return function iterator Iterator of GameObject values
+function M.ObjectiveObjects()
+    return coroutine.wrap(function()
+        --- @diagnostic disable-next-line: deprecated
+        for handle in ObjectiveObjects() do
+            coroutine.yield(M.FromHandle(handle))
+        end
+    end)
+end
+
+-------------------------------------------------------------------------------
 -- Other
 -------------------------------------------------------------------------------
 -- @section

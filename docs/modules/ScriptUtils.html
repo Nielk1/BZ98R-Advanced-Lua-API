@@ -42,6 +42,7 @@
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Distance">Distance </a></li>
+<li><a href="#Iterators">Iterators </a></li>
 <li><a href="#Globals">Globals </a></li>
 <li><a href="#Audio_Messages">Audio Messages </a></li>
 <li><a href="#Sound_Effects">Sound Effects </a></li>
@@ -55,7 +56,6 @@
 <li><a href="#Shot">Shot </a></li>
 <li><a href="#Alliances">Alliances </a></li>
 <li><a href="#Nearest">Nearest </a></li>
-<li><a href="#Iterators">Iterators </a></li>
 <li><a href="#Scrap_Management">Scrap Management </a></li>
 <li><a href="#Team_Slots">Team Slots </a></li>
 <li><a href="#Team_Pilots">Team Pilots </a></li>
@@ -325,6 +325,29 @@
 	<tr>
 	<td class="name" nowrap><a href="#IsTouching">IsTouching (h1, h2[, tolerance])</a></td>
 	<td class="summary">Returns true if the bounding spheres of the two game objects are within the specified tolerance.</td>
+	</tr>
+</table>
+<h2><a href="#Iterators">Iterators </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, target[, point])</a></td>
+	<td class="summary">Enumerates game objects within the given distance a target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AllObjects">AllObjects ()</a></td>
+	<td class="summary">Enumerates all game objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AllCraft">AllCraft ()</a></td>
+	<td class="summary">Enumerates all craft.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SelectedObjects">SelectedObjects ()</a></td>
+	<td class="summary">Enumerates all game objects currently selected by the local player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectiveObjects">ObjectiveObjects ()</a></td>
+	<td class="summary">Enumerates all game objects marked as objectives.</td>
 	</tr>
 </table>
 <h2><a href="#Globals">Globals </a></h2>
@@ -642,29 +665,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#CountUnitsNearObject">CountUnitsNearObject (h, dist, team, odfname)</a></td>
 	<td class="summary">Returns how many objects with the given team and odf name are closer than the given distance.</td>
-	</tr>
-</table>
-<h2><a href="#Iterators">Iterators </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#ObjectsInRange">ObjectsInRange (dist, target[, point])</a></td>
-	<td class="summary">Enumerates game objects within the given distance a target.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AllObjects">AllObjects ()</a></td>
-	<td class="summary">Enumerates all game objects.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#AllCraft">AllCraft ()</a></td>
-	<td class="summary">Enumerates all craft.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SelectedObjects">SelectedObjects ()</a></td>
-	<td class="summary">Enumerates all game objects currently selected by the local player.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#ObjectiveObjects">ObjectiveObjects ()</a></td>
-	<td class="summary">Enumerates all game objects marked as objectives.</td>
 	</tr>
 </table>
 <h2><a href="#Scrap_Management">Scrap Management </a></h2>
@@ -2632,6 +2632,135 @@
 
            <span class="types"><span class="type">boolean</span></span>
 
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Iterators"></a>Iterators </h2>
+
+          <div class="section-description">
+           functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "ObjectsInRange"></a>
+    <strong>ObjectsInRange (dist, target[, point])</strong>
+    </dt>
+    <dd>
+    Enumerates game objects within the given distance a target.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dist</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        iterator
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AllObjects"></a>
+    <strong>AllObjects ()</strong>
+    </dt>
+    <dd>
+    Enumerates all game objects.
+ Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        iterator
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AllCraft"></a>
+    <strong>AllCraft ()</strong>
+    </dt>
+    <dd>
+    Enumerates all craft.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        iterator
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SelectedObjects"></a>
+    <strong>SelectedObjects ()</strong>
+    </dt>
+    <dd>
+    Enumerates all game objects currently selected by the local player.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        iterator
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectiveObjects"></a>
+    <strong>ObjectiveObjects ()</strong>
+    </dt>
+    <dd>
+    Enumerates all game objects marked as objectives.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        iterator
     </ol>
 
 
@@ -4948,160 +5077,6 @@
 
            <span class="types"><span class="type">integer</span></span>
 
-    </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Iterators"></a>Iterators </h2>
-
-          <div class="section-description">
-           functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "ObjectsInRange"></a>
-    <strong>ObjectsInRange (dist, target[, point])</strong>
-    </dt>
-    <dd>
-    Enumerates game objects within the given distance a target.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">dist</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        iterator</li>
-        <li>
-        state</li>
-        <li>
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
-        value</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AllObjects"></a>
-    <strong>AllObjects ()</strong>
-    </dt>
-    <dd>
-    Enumerates all game objects.
- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
-
-    </ul>
-
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        iterator</li>
-        <li>
-        state</li>
-        <li>
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
-        value</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "AllCraft"></a>
-    <strong>AllCraft ()</strong>
-    </dt>
-    <dd>
-    Enumerates all craft.
-
-    </ul>
-
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        iterator</li>
-        <li>
-        state</li>
-        <li>
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
-        value</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SelectedObjects"></a>
-    <strong>SelectedObjects ()</strong>
-    </dt>
-    <dd>
-    Enumerates all game objects currently selected by the local player.
-
-    </ul>
-
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        iterator</li>
-        <li>
-        state</li>
-        <li>
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
-        value</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "ObjectiveObjects"></a>
-    <strong>ObjectiveObjects ()</strong>
-    </dt>
-    <dd>
-    Enumerates all game objects marked as objectives.
-
-    </ul>
-
-
-    <h3>Returns:</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">function</span></span>
-        iterator</li>
-        <li>
-        state</li>
-        <li>
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
-        value</li>
     </ol>
 
 
@@ -10234,7 +10209,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 19:48:34 </i>
+<i style="float:right;">Last updated 2025-05-10 04:00:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -186,7 +186,7 @@ function M.BuildGameObject(odf, team, pos, point)
         --- @cast pos GameObject
         --- @diagnostic disable-next-line: deprecated
         handle = BuildObject(odf, team, pos:GetHandle());
-    elseif point ~= nil then
+    elseif pos ~= nil then
         --- @cast pos Vector|Matrix|Handle|string
         --- @diagnostic disable-next-line: deprecated
         handle = BuildObject(odf, team, pos, point);

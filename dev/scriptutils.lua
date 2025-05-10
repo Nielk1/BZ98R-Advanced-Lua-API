@@ -723,6 +723,7 @@ function SetName(h, name) end
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return number
 --- @function GetDistance
+--- @deprecated Use `GameObject.GetDistance` instead.
 function GetDistance(h1, target, point) error("This function is provided by the engine."); end
 
 --- Returns true if the units are closer than the given distance of each other. Returns false otherwise.
@@ -732,6 +733,7 @@ function GetDistance(h1, target, point) error("This function is provided by the 
 --- @param dist number
 --- @return boolean
 --- @function IsWithin
+--- @deprecated Use `GameObject.IsWithin` instead.
 function IsWithin(h1, h2, dist) error("This function is provided by the engine."); end
 
 --- Returns true if the bounding spheres of the two game objects are within the specified tolerance. The default tolerance is 1.3 meters if not specified.
@@ -741,6 +743,7 @@ function IsWithin(h1, h2, dist) error("This function is provided by the engine."
 --- @param tolerance? number
 --- @return boolean
 --- @function IsTouching
+--- @deprecated Use `GameObject.IsTouching` instead.
 function IsTouching(h1, h2, tolerance) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1140,11 +1143,13 @@ function GetMaxScrap(team) error("This function is provided by the engine."); en
 --- @param h Handle
 --- @return boolean
 --- @function IsDeployed
+--- @deprecated use `GameObject.IsDeployed` instead.
 function IsDeployed(h) error("This function is provided by the engine."); end
 
 --- Tells the game object to deploy.
 --- @param h Handle
 --- @function Deploy
+--- @deprecated use `GameObject.Deploy` instead.
 function Deploy(h) end
 
 -------------------------------------------------------------------------------

@@ -32,6 +32,7 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Deploy">Deploy </a></li>
 <li><a href="#Tug_Cargo">Tug Cargo </a></li>
 <li><a href="#Pilot_Actions">Pilot Actions </a></li>
 <li><a href="#Weapon">Weapon </a></li>
@@ -40,6 +41,7 @@
 <li><a href="#Team_Number">Team Number </a></li>
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
+<li><a href="#Distance">Distance </a></li>
 <li><a href="#Globals">Globals </a></li>
 <li><a href="#Audio_Messages">Audio Messages </a></li>
 <li><a href="#Sound_Effects">Sound Effects </a></li>
@@ -52,14 +54,12 @@
 <li><a href="#Position_Helpers">Position Helpers </a></li>
 <li><a href="#Shot">Shot </a></li>
 <li><a href="#Alliances">Alliances </a></li>
-<li><a href="#Distance">Distance </a></li>
 <li><a href="#Nearest">Nearest </a></li>
 <li><a href="#Iterators">Iterators </a></li>
 <li><a href="#Scrap_Management">Scrap Management </a></li>
 <li><a href="#Team_Slots">Team Slots </a></li>
 <li><a href="#Team_Pilots">Team Pilots </a></li>
 <li><a href="#Team_Scrap">Team Scrap </a></li>
-<li><a href="#Deploy">Deploy </a></li>
 <li><a href="#Selection">Selection </a></li>
 <li><a href="#Mission_Critical__2_0__">Mission-Critical [2.0+] </a></li>
 <li><a href="#Time">Time </a></li>
@@ -121,6 +121,17 @@
 </p>
 
 
+<h2><a href="#Deploy">Deploy </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#IsDeployed">IsDeployed (h)</a></td>
+	<td class="summary">Returns true if the game object is a deployed craft.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Deploy">Deploy (h)</a></td>
+	<td class="summary">Tells the game object to deploy.</td>
+	</tr>
+</table>
 <h2><a href="#Tug_Cargo">Tug Cargo </a></h2>
 <table class="function_list">
 	<tr>
@@ -299,6 +310,21 @@
 	<tr>
 	<td class="name" nowrap><a href="#SetName">SetName (h, name)</a></td>
 	<td class="summary">Sets the game object's visible name.</td>
+	</tr>
+</table>
+<h2><a href="#Distance">Distance </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, target[, point])</a></td>
+	<td class="summary">Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#IsWithin">IsWithin (h1, h2, dist)</a></td>
+	<td class="summary">Returns true if the units are closer than the given distance of each other.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#IsTouching">IsTouching (h1, h2[, tolerance])</a></td>
+	<td class="summary">Returns true if the bounding spheres of the two game objects are within the specified tolerance.</td>
 	</tr>
 </table>
 <h2><a href="#Globals">Globals </a></h2>
@@ -575,21 +601,6 @@
 	<td class="summary">Returns true if game object "me" considers game object "him" an ally.</td>
 	</tr>
 </table>
-<h2><a href="#Distance">Distance </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GetDistance">GetDistance (h1, target[, point])</a></td>
-	<td class="summary">Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsWithin">IsWithin (h1, h2, dist)</a></td>
-	<td class="summary">Returns true if the units are closer than the given distance of each other.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsTouching">IsTouching (h1, h2[, tolerance])</a></td>
-	<td class="summary">Returns true if the bounding spheres of the two game objects are within the specified tolerance.</td>
-	</tr>
-</table>
 <h2><a href="#Nearest">Nearest </a></h2>
 <table class="function_list">
 	<tr>
@@ -750,17 +761,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#GetMaxScrap">GetMaxScrap (team)</a></td>
 	<td class="summary">Returns the team's maximum scrap count.</td>
-	</tr>
-</table>
-<h2><a href="#Deploy">Deploy </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#IsDeployed">IsDeployed (h)</a></td>
-	<td class="summary">Returns true if the game object is a deployed craft.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Deploy">Deploy (h)</a></td>
-	<td class="summary">Tells the game object to deploy.</td>
 	</tr>
 </table>
 <h2><a href="#Selection">Selection </a></h2>
@@ -1370,6 +1370,63 @@
 <br/>
 
 
+    <h2 class="section-header has-description"><a name="Deploy"></a>Deploy </h2>
+
+          <div class="section-description">
+           functions control deployable craft (such as Turret Tanks or Producer units).
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "IsDeployed"></a>
+    <strong>IsDeployed (h)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object is a deployed craft.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Deploy"></a>
+    <strong>Deploy (h)</strong>
+    </dt>
+    <dd>
+    Tells the game object to deploy.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Tug_Cargo"></a>Tug Cargo </h2>
 
           <div class="section-description">
@@ -2457,6 +2514,125 @@
         </li>
     </ul>
 
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Distance"></a>Distance </h2>
+
+          <div class="section-description">
+           functions measure and return the distance between a game object and a reference point.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetDistance"></a>
+    <strong>GetDistance (h1, target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h1</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "IsWithin"></a>
+    <strong>IsWithin (h1, h2, dist)</strong>
+    </dt>
+    <dd>
+    Returns true if the units are closer than the given distance of each other.  Returns false otherwise.
+ (This function is equivalent to GetDistance (h1, h2) < d)
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h1</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">h2</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">dist</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "IsTouching"></a>
+    <strong>IsTouching (h1, h2[, tolerance])</strong>
+    </dt>
+    <dd>
+    Returns true if the bounding spheres of the two game objects are within the specified tolerance.  The default tolerance is 1.3 meters if not specified.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h1</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">h2</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">tolerance</span>
+            <span class="types"><span class="type">number</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
 
 
 
@@ -4429,125 +4605,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Distance"></a>Distance </h2>
-
-          <div class="section-description">
-           functions measure and return the distance between a game object and a reference point.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "GetDistance"></a>
-    <strong>GetDistance (h1, target[, point])</strong>
-    </dt>
-    <dd>
-    Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h1</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">number</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "IsWithin"></a>
-    <strong>IsWithin (h1, h2, dist)</strong>
-    </dt>
-    <dd>
-    Returns true if the units are closer than the given distance of each other.  Returns false otherwise.
- (This function is equivalent to GetDistance (h1, h2) < d)
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h1</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">h2</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">dist</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "IsTouching"></a>
-    <strong>IsTouching (h1, h2[, tolerance])</strong>
-    </dt>
-    <dd>
-    Returns true if the bounding spheres of the two game objects are within the specified tolerance.  The default tolerance is 1.3 meters if not specified.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h1</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">h2</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">tolerance</span>
-            <span class="types"><span class="type">number</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Nearest"></a>Nearest </h2>
 
           <div class="section-description">
@@ -5876,63 +5933,6 @@
            <span class="types"><span class="type">integer</span></span>
 
     </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Deploy"></a>Deploy </h2>
-
-          <div class="section-description">
-           functions control deployable craft (such as Turret Tanks or Producer units).
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "IsDeployed"></a>
-    <strong>IsDeployed (h)</strong>
-    </dt>
-    <dd>
-    Returns true if the game object is a deployed craft.  Returns false otherwise.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Deploy"></a>
-    <strong>Deploy (h)</strong>
-    </dt>
-    <dd>
-    Tells the game object to deploy.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
 
 
 
@@ -10234,7 +10234,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 19:03:01 </i>
+<i style="float:right;">Last updated 2025-05-09 19:48:34 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -284,6 +284,31 @@ function M.GetConstructorGameObject(team)
 end
 
 -------------------------------------------------------------------------------
+-- Deploy
+-------------------------------------------------------------------------------
+-- @section
+-- These functions control deployable craft (such as Turret Tanks or Producer units).
+
+--- Returns true if the game object is a deployed craft. Returns false otherwise.
+--- @param self GameObject GameObject instance
+--- @return boolean
+--- @function IsDeployed
+function GameObject.IsDeployed(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return IsDeployed(self:GetHandle());
+end
+
+--- Tells the game object to deploy.
+--- @param self GameObject GameObject instance
+--- @function Deploy
+function GameObject.Deploy(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    Deploy(self:GetHandle());
+end
+
+-------------------------------------------------------------------------------
 -- Orders
 -------------------------------------------------------------------------------
 -- @section
@@ -344,7 +369,7 @@ end
 --- Order GameObject to Follow target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Follow(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -1166,6 +1191,73 @@ function GameObject.SetName(self, name)
     SetName(self:GetHandle(), name);
 end
 
+-------------------------------------------------------------------------------
+-- Distance
+-------------------------------------------------------------------------------
+-- @section
+-- These functions measure and return the distance between a game object and a reference point.
+
+--- Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
+--- @param self GameObject
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return number
+function GameObject.GetDistance(self, target, point)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        return GetDistance(self:GetHandle(), target:GetHandle(), point);
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
+        return GetDistance(self:GetHandle(), target, point);
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Returns true if the units are closer than the given distance of each other. Returns false otherwise.
+--- (This function is equivalent to GetDistance (h1, h2) < d)
+--- @param self GameObject
+--- @param target GameObject|Handle
+--- @param dist number
+--- @return boolean
+function GameObject.IsWithin(self, target, dist)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        return IsWithin(self:GetHandle(), target:GetHandle(), dist);
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        return IsWithin(self:GetHandle(), target, dist);
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
+end
+
+--- Returns true if the bounding spheres of the two game objects are within the specified tolerance. The default tolerance is 1.3 meters if not specified.
+--- [2.1+]
+--- @param self GameObject
+--- @param target GameObject|Handle
+--- @param tolerance? number
+--- @return boolean
+function GameObject.IsTouching(self, target, tolerance)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        return IsTouching(self:GetHandle(), target:GetHandle(), tolerance);
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        return IsTouching(self:GetHandle(), target, tolerance);
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
+end
 
 -------------------------------------------------------------------------------
 -- Other

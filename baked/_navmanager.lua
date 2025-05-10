@@ -48,7 +48,7 @@ local DisableAutomaticNavAdding = false; -- used to prevent navs from being adde
 
 --- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
---- @param odf string ODF of the nav to build, if nil uses the default nav ODF
+--- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
 --- @param team integer Team number of the nav to build
 --- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the location is a path this is the path point index, defaults to 0.

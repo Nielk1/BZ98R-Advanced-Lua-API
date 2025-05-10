@@ -450,7 +450,7 @@ end
 --- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
 --- @param name string Name of the StateMachineIter Template
 --- @param state_key any Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
---- @param init table Initial data
+--- @param init table? Initial data
 function M.Start( name, state_key, init )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
@@ -471,7 +471,7 @@ function M.Start( name, state_key, init )
 
     debugprint("Starting StateMachineIter Template '"..name.."' with state '"..tostring(state_key).."'");
 
-    return CreateStateMachineIter(name, nil, nil, state_key, init);
+    return CreateStateMachineIter(name, nil, nil, state_key, init or {});
 end
 
 --- Wait a set period of time on this state.
@@ -533,7 +533,7 @@ end
 
 --- Wait a set period of time on this state.
 --- @param seconds number How many seconds to wait
---- @param next_state string Next state when timer hits zero
+--- @param next_state string|nil Next state when timer hits zero
 --- @param early_exit? function Function to check if the state should be exited early, return false, true, or next state name
 function M.SleepSeconds(seconds, next_state, early_exit )
     if not utility.isnumber(seconds) then error("Parameter seconds must be a number."); end

@@ -47,23 +47,23 @@ M.Sets = {};
 
 --- @class StateSet
 --- @field template string Name of the StateSet template
+local StateSet = {};
+StateSet.__index = StateSet;
 
 --- @class StateSetRunner
 --- @field template string Name of the StateSet template the runner is using
 --- @field active_states table Table of active states, key is the state name and value is the state activation flag or permit count
 --- @field addonData table Custom context data stored in the StateSetRunner
 
-local StateSet = {};
-StateSet.__index = StateSet;
 
 --- Add a state to the StateSet.
 --- If the state is basic either active or inactive based on last on/off call.
 --- If the state is permit based it is active if the on count is greater than 0.
 --- @param self StateSet StateSet instance
 --- @param name string Name of the state
---- @param state function Function to be called when the state is active, should return true if the state did something.
+--- @param state function|StateMachineIter Function to be called when the state is active, should return true if the state did something.
 --- @param permitBased? boolean If true, the state is permit based
---- @treturn StateSet For function chaining
+--- @return StateSet self For function chaining
 function StateSet.Add(self, name, state, permitBased)
     debugprint("Add state '"..name.."' to StateSet '"..self.template.."'.", permitBased);
     if permitBased then
@@ -71,6 +71,7 @@ function StateSet.Add(self, name, state, permitBased)
     else
         M.Sets[self.template][name] = { f = state };
     end
+    --- @cast StateSet self
     return self;
 end
 
@@ -106,19 +107,21 @@ StateSetRunner.__type = "StateSetRunner";
 
 --- Create StateSetRunner
 --- @param name string StateSetRunner template
---- @param values table Table of values embeded in the StateSetRunner
+--- @param values table? Table of values embeded in the StateSetRunner
 local function CreateStateSetRunner(name, values)
-  local self = setmetatable({}, StateSetRunner);
-  self.template = name;
-  self.active_states = {};
-  
-  if utility.istable(values) then
-    for k, v in pairs(values) do
-      self[k] = v;
+    local self = setmetatable({}, StateSetRunner);
+    self.template = name;
+    self.active_states = {};
+
+    if values then
+        if utility.istable(values) then
+            for k, v in pairs(values) do
+                self[k] = v;
+            end
+        end
     end
-  end
-  
-  return self;
+
+    return self;
 end
 
 --- Run StateSetRunner.
@@ -214,7 +217,7 @@ end
 
 --- Starts an StateSetRunner based on the StateSetRunner Template with the given indentifier.
 --- @param name string Name of the StateSetRunner Template
---- @param init table Initial data
+--- @param init table? Initial data
 function M.Start( name, init )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end

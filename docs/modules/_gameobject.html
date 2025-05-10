@@ -35,6 +35,7 @@
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#Core">Core </a></li>
 <li><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></li>
+<li><a href="#Deploy">Deploy </a></li>
 <li><a href="#Orders">Orders </a></li>
 <li><a href="#Position___Velocity">Position & Velocity </a></li>
 <li><a href="#Condition_Checks">Condition Checks </a></li>
@@ -46,6 +47,7 @@
 <li><a href="#Team_Number">Team Number </a></li>
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
+<li><a href="#Distance">Distance </a></li>
 <li><a href="#Other">Other </a></li>
 </ul>
 
@@ -141,6 +143,17 @@
 	<tr>
 	<td class="name" nowrap><a href="#GetConstructorGameObject">GetConstructorGameObject ([team])</a></td>
 	<td class="summary">Get Factory GameObject of team.</td>
+	</tr>
+</table>
+<h2><a href="#Deploy">Deploy </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#IsDeployed">IsDeployed (self)</a></td>
+	<td class="summary">Returns true if the game object is a deployed craft.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Deploy">Deploy (self)</a></td>
+	<td class="summary">Tells the game object to deploy.</td>
 	</tr>
 </table>
 <h2><a href="#Orders">Orders </a></h2>
@@ -458,6 +471,21 @@
 	<tr>
 	<td class="name" nowrap><a href="#GameObject.SetName">GameObject.SetName (self, name)</a></td>
 	<td class="summary">Sets the game object's visible name.</td>
+	</tr>
+</table>
+<h2><a href="#Distance">Distance </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetDistance">GameObject.GetDistance (self, target[, point])</a></td>
+	<td class="summary">Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsWithin">GameObject.IsWithin (self, target, dist)</a></td>
+	<td class="summary">Returns true if the units are closer than the given distance of each other.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsTouching">GameObject.IsTouching (self, target[, tolerance])</a></td>
+	<td class="summary">Returns true if the bounding spheres of the two game objects are within the specified tolerance.</td>
 	</tr>
 </table>
 <h2><a href="#Other">Other </a></h2>
@@ -861,6 +889,63 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Deploy"></a>Deploy </h2>
+
+          <div class="section-description">
+           functions control deployable craft (such as Turret Tanks or Producer units).
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "IsDeployed"></a>
+    <strong>IsDeployed (self)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object is a deployed craft.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Deploy"></a>
+    <strong>Deploy (self)</strong>
+    </dt>
+    <dd>
+    Tells the game object to deploy.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Orders"></a>Orders </h2>
 
     <dl class="function">
@@ -976,7 +1061,7 @@
         </li>
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
-         Order priority, >0 removes user control
+        ? Order priority, >0 removes user control
         </li>
     </ul>
 
@@ -2890,6 +2975,125 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Distance"></a>Distance </h2>
+
+          <div class="section-description">
+           functions measure and return the distance between a game object and a reference point.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.GetDistance"></a>
+    <strong>GameObject.GetDistance (self, target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><span class="type">Vector</span>, <span class="type">Matrix</span>, <a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a>, <span class="type">Handle</span> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsWithin"></a>
+    <strong>GameObject.IsWithin (self, target, dist)</strong>
+    </dt>
+    <dd>
+    Returns true if the units are closer than the given distance of each other.  Returns false otherwise.
+ (This function is equivalent to GetDistance (h1, h2) < d)
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">Handle</span></span>
+
+        </li>
+        <li><span class="parameter">dist</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsTouching"></a>
+    <strong>GameObject.IsTouching (self, target[, tolerance])</strong>
+    </dt>
+    <dd>
+    Returns true if the bounding spheres of the two game objects are within the specified tolerance.  The default tolerance is 1.3 meters if not specified.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">Handle</span></span>
+
+        </li>
+        <li><span class="parameter">tolerance</span>
+            <span class="types"><span class="type">number</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header "><a name="Other"></a>Other </h2>
 
     <dl class="function">
@@ -3128,7 +3332,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-09 19:03:01 </i>
+<i style="float:right;">Last updated 2025-05-09 19:48:34 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

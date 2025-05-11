@@ -32,13 +32,14 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_ObjectiveManager">Class ObjectiveManager </a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_bit.html">_bit</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
@@ -65,7 +66,7 @@
 <p>BZ98R LUA Extended API Objective Manager.</p>
 <p>
 <p> Note that this module cannot manage manually created objectives.
-'</p>
+</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local objective = require(&quot;_objective&quot;);
@@ -77,34 +78,34 @@
     </ul>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Class_ObjectiveManager">Class ObjectiveManager </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#UpdateObjective">UpdateObjective (name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:UpdateObjective">ObjectiveManager:UpdateObjective (name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
 	<td class="summary">Updates the objective message with the given name.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ClearObjectives">ClearObjectives ()</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:ClearObjectives">ObjectiveManager:ClearObjectives ()</a></td>
 	<td class="summary">Clear all objectives except for persistant ones.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AddObjective">AddObjective (name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:AddObjective">ObjectiveManager:AddObjective (name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
 	<td class="summary">Adds an objective message with the given name and properties.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#RemoveObjective">RemoveObjective (name)</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:RemoveObjective">ObjectiveManager:RemoveObjective (name)</a></td>
 	<td class="summary">Removes the objective message with the given file name.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#SetObjectivePosition">SetObjectivePosition (name, position)</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:SetObjectivePosition">ObjectiveManager:SetObjectivePosition (name, position)</a></td>
 	<td class="summary">Set the objective position of the given name.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetObjectivePosition">GetObjectivePosition (name)</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:GetObjectivePosition">ObjectiveManager:GetObjectivePosition (name)</a></td>
 	<td class="summary">Get the objective position of the given name.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ReplaceObjective">ReplaceObjective (oldname, name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
+	<td class="name" nowrap><a href="#ObjectiveManager:ReplaceObjective">ObjectiveManager:ReplaceObjective (oldname, name[, color[, duration[, text[, position[, persistant]]]]])</a></td>
 	<td class="summary">Replaces the objective message with the given name.</td>
 	</tr>
 </table>
@@ -113,12 +114,12 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Class_ObjectiveManager"></a>Class ObjectiveManager </h2>
 
     <dl class="function">
     <dt>
-    <a name = "UpdateObjective"></a>
-    <strong>UpdateObjective (name[, color[, duration[, text[, position[, persistant]]]]])</strong>
+    <a name = "ObjectiveManager:UpdateObjective"></a>
+    <strong>ObjectiveManager:UpdateObjective (name[, color[, duration[, text[, position[, persistant]]]]])</strong>
     </dt>
     <dd>
     Updates the objective message with the given name.  If no objective exists with that name, it does nothing.
@@ -164,8 +165,8 @@
 
 </dd>
     <dt>
-    <a name = "ClearObjectives"></a>
-    <strong>ClearObjectives ()</strong>
+    <a name = "ObjectiveManager:ClearObjectives"></a>
+    <strong>ObjectiveManager:ClearObjectives ()</strong>
     </dt>
     <dd>
     Clear all objectives except for persistant ones.
@@ -179,8 +180,8 @@
 
 </dd>
     <dt>
-    <a name = "AddObjective"></a>
-    <strong>AddObjective (name[, color[, duration[, text[, position[, persistant]]]]])</strong>
+    <a name = "ObjectiveManager:AddObjective"></a>
+    <strong>ObjectiveManager:AddObjective (name[, color[, duration[, text[, position[, persistant]]]]])</strong>
     </dt>
     <dd>
     Adds an objective message with the given name and properties.
@@ -226,8 +227,8 @@
 
 </dd>
     <dt>
-    <a name = "RemoveObjective"></a>
-    <strong>RemoveObjective (name)</strong>
+    <a name = "ObjectiveManager:RemoveObjective"></a>
+    <strong>ObjectiveManager:RemoveObjective (name)</strong>
     </dt>
     <dd>
     Removes the objective message with the given file name.  Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
@@ -248,8 +249,8 @@
 
 </dd>
     <dt>
-    <a name = "SetObjectivePosition"></a>
-    <strong>SetObjectivePosition (name, position)</strong>
+    <a name = "ObjectiveManager:SetObjectivePosition"></a>
+    <strong>ObjectiveManager:SetObjectivePosition (name, position)</strong>
     </dt>
     <dd>
     Set the objective position of the given name.  If no objective exists with that name, it does nothing.
@@ -274,8 +275,8 @@
 
 </dd>
     <dt>
-    <a name = "GetObjectivePosition"></a>
-    <strong>GetObjectivePosition (name)</strong>
+    <a name = "ObjectiveManager:GetObjectivePosition"></a>
+    <strong>ObjectiveManager:GetObjectivePosition (name)</strong>
     </dt>
     <dd>
     Get the objective position of the given name.  If no objective exists with that name, it does nothing.
@@ -302,8 +303,8 @@
 
 </dd>
     <dt>
-    <a name = "ReplaceObjective"></a>
-    <strong>ReplaceObjective (oldname, name[, color[, duration[, text[, position[, persistant]]]]])</strong>
+    <a name = "ObjectiveManager:ReplaceObjective"></a>
+    <strong>ObjectiveManager:ReplaceObjective (oldname, name[, color[, duration[, text[, position[, persistant]]]]])</strong>
     </dt>
     <dd>
     Replaces the objective message with the given name.  If no objective exists with that name, it does nothing.
@@ -359,7 +360,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-10 22:47:49 </i>
+<i style="float:right;">Last updated 2025-05-11 08:19:35 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -85,11 +85,34 @@ local _api = require("_api");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 
+ReadOnly_MT = {};
+ReadOnly_MT.__newindex = function(dtable, key, value)
+    error("Attempt to update a read-only table.", 2)
+end
+
+--- @class StateMachineIterWrappedResult
+--- @field Abort boolean If true the machine should be considered aborted, allowing for cleanup
+
 local M = {};
 M.game_time = 0;
 
 M.Machines = {};
 M.MachineFlags = {};
+
+--- Create an Abort HookResult
+--- @vararg any Return values passed from hook function
+--- @return StateMachineIterWrappedResult
+function M.AbortResult(...)
+    return setmetatable({
+        Abort = true,
+        Return = { ... },
+        __type = "StateMachineIterWrappedResult" -- this could go in the metatable with some design control changes, but let's not
+    }, ReadOnly_MT);
+end
+
+function M.isstatemachineiterwrappedresult(object)
+    return (type(object) == "table" and object.__type == "StateMachineIterWrappedResult");
+end
 
 --- Is this object an instance of StateMachineIter?
 --- @param object any Object in question
@@ -179,8 +202,8 @@ end
 --- Run StateMachineIter.
 --- @param self StateMachineIter FuncArrayIter instance
 --- @vararg any Arguments to pass to the state function
---- @return boolean, any True if the state function was called, false if the state function was not found
---- @return any ... The return value of the state function, if it was called
+--- @return boolean|StateMachineIterWrappedResult status True if the state function was called, false if the state function was not found, a wrapper instance if the state function was called and returned a wrapper
+--- @return any ... The return value of the state function, if it was called. If the result was wrapped it's unwraped and returned here
 function StateMachineIter.run(self, ...)
     if not M.isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
 
@@ -189,7 +212,20 @@ function StateMachineIter.run(self, ...)
     if machine == nil then return false; end
 
     if utility.isfunction(machine[self.state_key]) then
-        return true, machine[self.state_key](self, ...);
+        
+        local retVal = {machine[self.state_key](self, ...)};
+        if #retVal > 0 and M.isstatemachineiterwrappedresult(retVal[1]) then
+            -- unbox the return value and remove it from the wrapper, send the wrapper along
+            if retVal[1].Abort then
+                -- ensure the state won't do anything, though we help the caller reacts to the abort and kills the StateMachineIter instead.
+                self.state_key = nil;
+            end
+            local actual_return = retVal[1].Return;
+            retVal[1].Return = nil; -- carve the return value out of the wrapper
+            return retVal[1], actual_return;
+        end
+
+        return true, table.unpack(retVal);
     elseif utility.istable(machine[self.state_key]) then
         if utility.isfunction(machine[self.state_key].f) then
             --debugprint("StateMachineIter state '"..self.state_key.."' is "..type(machine[self.state_key].f).." '"..table.show(machine[self.state_key].p).."'");
@@ -253,7 +289,7 @@ end
 
 --- Switch StateMachineIter State.
 --- @param self StateMachineIter StateMachineIter instance
---- @param key string|integer State to switch to (will also accept state index if the StateMachineIter is ordered)
+--- @param key string|integer|nil State to switch to (will also accept state index if the StateMachineIter is ordered)
 function StateMachineIter.switch(self, key)
     if utility.isinteger(key) then
         local flags = M.MachineFlags[ self.template ];
@@ -269,7 +305,7 @@ function StateMachineIter.switch(self, key)
 end
 
 --- Creates an StateMachineIter Template with the given indentifier.
---- @param name any Name of the StateMachineIter Template (string)
+--- @param name string Name of the StateMachineIter Template (string)
 --- @vararg StateMachineNamedState|StateMachineNamedStateTruncated|StateMachineStateOrderedSet|WrappedObjectForStateMachineIter|StateMachineFunction State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
 --- State descriptors are tables with the first element being the state name and the second element being the state function.
 --- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
@@ -489,6 +525,7 @@ end
 --- @param name string Name of the StateMachineIter Template
 --- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
 --- @param init table? Initial data
+--- @return StateMachineIter
 function M.Start( name, state_key, init )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
@@ -553,8 +590,9 @@ end
 --- Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
 --- @param self StateMachineIter StateMachineIter instance
 --- @param seconds? number How many seconds to wait
+--- @param lap? boolean If true the timer is will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
 --- @return boolean True if the time is up
-function StateMachineIter.SecondsHavePassed(self, seconds)
+function StateMachineIter.SecondsHavePassed(self, seconds, lap)
     if seconds == nil then
         self.target_time = nil;
         return true;
@@ -564,7 +602,11 @@ function StateMachineIter.SecondsHavePassed(self, seconds)
         return false; -- start sleeping
     elseif self.target_time <= M.game_time  then
         debugprint(M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
-        self.target_time = nil; -- ensure that the timer is reset
+        if lap then
+            self.target_time = self.target_time + seconds; -- reset the timer to the next lap
+        else
+            self.target_time = nil; -- ensure that the timer is reset
+        end
         return true; -- time is up
     end
     return false; -- still sleeping

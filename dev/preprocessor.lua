@@ -57,6 +57,12 @@ local function preprocess_file(input_file, output_file)
 
         line = line:gsub("%-%- \\@", "-- @")
 
+        -- 1. `--- @module 'name'` -> `-- @module name`
+        if transformed == 0 then
+            line, transformed = line:gsub("%-%- @module%s+'([a-zA-Z0-9_]+)'", "-- @module %1")
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
         -- 1. `--- @vararg any` -> `-- @param ...`
         if transformed == 0 then
             line, transformed = line:gsub("%-%- @vararg%s+any", "-- @param ...")
@@ -180,6 +186,12 @@ local function preprocess_file(input_file, output_file)
             else
                 table.insert(lines, line)
             end
+        else
+            if pendingblock then
+                table.insert(pendingblock, '');
+            else
+                table.insert(lines, '')
+            end
         end
     end
     if pendingblock then
@@ -192,6 +204,10 @@ local function preprocess_file(input_file, output_file)
 
     -- Write the transformed content to the output file
     file = io.open(output_file, "w")
+    if not file then
+        error("Error: Could not open output file " .. output_file)
+        return
+    end
     file:write(table.concat(lines, "\n"))
     file:close()
 

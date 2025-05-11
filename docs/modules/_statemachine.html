@@ -32,7 +32,7 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_StateMachineIterWrappedResult">Class StateMachineIterWrappedResult </a></li>
 <li><a href="#Class_StateMachineNamedStateTruncated">Class StateMachineNamedStateTruncated </a></li>
 <li><a href="#StateMachineIter___Core">StateMachineIter - Core </a></li>
 </ul>
@@ -41,6 +41,7 @@
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_bit.html">_bit</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
@@ -67,7 +68,7 @@
 <p>BZ98R LUA Extended API StateMachineIter.</p>
 <p>
 <p> State Machine and State Machine Iterator for serial event sequences across game turns.
-'</p>
+</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">local statemachine = require(&quot;_statemachine&quot;);
@@ -142,10 +143,14 @@ end);
     </ul>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Class_StateMachineIterWrappedResult">Class StateMachineIterWrappedResult </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#isstatemachineiter">isstatemachineiter (object)</a></td>
+	<td class="name" nowrap><a href="#StateMachineIterWrappedResult:AbortResult">StateMachineIterWrappedResult:AbortResult (...)</a></td>
+	<td class="summary">Create an Abort HookResult</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineIterWrappedResult:isstatemachineiter">StateMachineIterWrappedResult:isstatemachineiter (object)</a></td>
 	<td class="summary">Is this object an instance of StateMachineIter?</td>
 	</tr>
 </table>
@@ -176,7 +181,7 @@ end);
 	<td class="summary">Wait a set period of time on this state.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter.SecondsHavePassed">StateMachineIter.SecondsHavePassed (self[, seconds])</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter.SecondsHavePassed">StateMachineIter.SecondsHavePassed (self[, seconds[, lap]])</a></td>
 	<td class="summary">Check if a set period of time has passed.</td>
 	</tr>
 	<tr>
@@ -204,12 +209,39 @@ end);
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Class_StateMachineIterWrappedResult"></a>Class StateMachineIterWrappedResult </h2>
 
     <dl class="function">
     <dt>
-    <a name = "isstatemachineiter"></a>
-    <strong>isstatemachineiter (object)</strong>
+    <a name = "StateMachineIterWrappedResult:AbortResult"></a>
+    <strong>StateMachineIterWrappedResult:AbortResult (...)</strong>
+    </dt>
+    <dd>
+    Create an Abort HookResult
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         Return values passed from hook function
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIterWrappedResult">StateMachineIterWrappedResult</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineIterWrappedResult:isstatemachineiter"></a>
+    <strong>StateMachineIterWrappedResult:isstatemachineiter (object)</strong>
     </dt>
     <dd>
     Is this object an instance of StateMachineIter?
@@ -264,10 +296,10 @@ end);
     <h3>Returns:</h3>
     <ol>
         <li>
-           <span class="types"><span class="type">boolean,</span></span>
-        any True if the state function was called, false if the state function was not found</li>
+           <span class="types"><span class="type">boolean</span> or <a class="type" href="../modules/_statemachine.html#StateMachineIterWrappedResult">StateMachineIterWrappedResult</a></span>
+        status True if the state function was called, false if the state function was not found, a wrapper instance if the state function was called and returned a wrapper</li>
         <li>
-        ... The return value of the state function, if it was called</li>
+        ... The return value of the state function, if it was called. If the result was wrapped it's unwraped and returned here</li>
     </ol>
 
 
@@ -313,7 +345,7 @@ end);
          StateMachineIter instance
         </li>
         <li><span class="parameter">key</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">integer</span></span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">integer</span> or <span class="type">nil</span></span>
          State to switch to (will also accept state index if the StateMachineIter is ordered)
         </li>
     </ul>
@@ -335,6 +367,7 @@ end);
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Name of the StateMachineIter Template (string)
         </li>
         <li><span class="parameter">...</span>
@@ -377,6 +410,12 @@ end);
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
+
+    </ol>
 
 
 
@@ -421,7 +460,7 @@ end);
 </dd>
     <dt>
     <a name = "StateMachineIter.SecondsHavePassed"></a>
-    <strong>StateMachineIter.SecondsHavePassed (self[, seconds])</strong>
+    <strong>StateMachineIter.SecondsHavePassed (self[, seconds[, lap]])</strong>
     </dt>
     <dd>
     Check if a set period of time has passed.
@@ -439,6 +478,11 @@ end);
         <li><span class="parameter">seconds</span>
             <span class="types"><span class="type">number</span></span>
          How many seconds to wait
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">lap</span>
+            <span class="types"><span class="type">boolean</span></span>
+         If true the timer is will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
          (<em>optional</em>)
         </li>
     </ul>
@@ -592,7 +636,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-10 22:47:49 </i>
+<i style="float:right;">Last updated 2025-05-11 08:19:35 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

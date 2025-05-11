@@ -16,6 +16,7 @@ debugprint("_objective Loading");
 
 local hook = require("_hook");
 
+--- @class ObjectiveManager
 local M = {};
 
 local allObjectives = {};

@@ -1,11 +1,10 @@
 --- BZ98R LUA Extended API.
---
--- This API creates a full OOP wrapper and replacement the mission
--- functions with an event based system for easier expansion.
---
--- Dependencies: @{_utility}, @{_hook}, @{_gameobject}, @{_customsavetype}
--- @module _api
--- @author John "Nielk1" Klein
+---
+--- This API creates a full OOP wrapper and replacement the mission
+--- functions with an event based system for easier expansion.
+---
+--- @module '_api'
+--- @author John "Nielk1" Klein
 
 --- @diagnostic disable: undefined-global
 table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility

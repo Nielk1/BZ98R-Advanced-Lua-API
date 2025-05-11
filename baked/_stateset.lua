@@ -188,7 +188,17 @@ function StateSetRunner.run(self, ...)
             elseif utility.istable(state) then
                 --- @cast state WrappedObjectForStateSetRunner
                 if utility.isfunction(state.f) then
-                    foundState = foundState or state.f(self, name, state.p, ...);
+                    -- we only grab the machine status bool return, forget the rest
+                    local machine_return = state.f(self, name, state.p, ...);
+                    foundState = foundState or (machine_return and true); -- the machine status returned something other than false
+
+                    if statemachine.isstatemachineiterwrappedresult(machine_return) then
+                        --- @cast machine_return StateMachineIterWrappedResult
+                        if machine_return.Abort then
+                            debugprint("StateSetRunner state '"..self.template.."' StateMachineIter aborted, disabling StateSetRunner state.");
+                            self:off(name, true); -- force off the state as the machine aborted
+                        end
+                    end
                 end
             end
         end

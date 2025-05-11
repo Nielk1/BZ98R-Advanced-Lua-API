@@ -157,6 +157,49 @@ M.colorCodes = {
     DKCYAN   = 0x009999FF, -- 0x009999FF: <div style="background-color: #009999; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;">DKCYAN</div>
 }
 
+--- RAVE GUN! color cycle.
+--- Each color is represented as a hexadecimal number: 0xRRGGBB.
+--- @enum RAVE_COLOR
+M.RAVE_COLOR = {
+    [1] = 0xFF0000FF, -- 1: <div style="background-color: #FF0000; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [2] = 0xFF3300FF, -- 2: <div style="background-color: #FF3300; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [3] = 0xFF6600FF, -- 3: <div style="background-color: #FF6600; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [4] = 0xFF9900FF, -- 4: <div style="background-color: #FF9900; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [5] = 0xFFCC00FF, -- 5: <div style="background-color: #FFCC00; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [6] = 0xFFFF00FF, -- 6: <div style="background-color: #FFFF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [7] = 0xCCFF00FF, -- 7: <div style="background-color: #CCFF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [8] = 0x99FF00FF, -- 8: <div style="background-color: #99FF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [9] = 0x66FF00FF, -- 9: <div style="background-color: #66FF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [10] = 0x33FF00FF, -- 10: <div style="background-color: #33FF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [11] = 0x00FF00FF, -- 11: <div style="background-color: #00FF00; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [12] = 0x00FF33FF, -- 12: <div style="background-color: #00FF33; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [13] = 0x00FF66FF, -- 13: <div style="background-color: #00FF66; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [14] = 0x00FF99FF, -- 14: <div style="background-color: #00FF99; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [15] = 0x00FFCCFF, -- 15: <div style="background-color: #00FFCC; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [16] = 0x00FFFFFF, -- 16: <div style="background-color: #00FFFF; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [17] = 0x00CCFFFF, -- 17: <div style="background-color: #00CCFF; color: #000; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [18] = 0x0099FFFF, -- 18: <div style="background-color: #0099FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [19] = 0x0066FFFF, -- 19: <div style="background-color: #0066FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [20] = 0x0033FFFF, -- 20: <div style="background-color: #0033FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [21] = 0x0000FFFF, -- 21: <div style="background-color: #0000FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [22] = 0x3300FFFF, -- 22: <div style="background-color: #3300FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [23] = 0x6600FFFF, -- 23: <div style="background-color: #6600FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [24] = 0x9900FFFF, -- 24: <div style="background-color: #9900FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [25] = 0xCC00FFFF, -- 25: <div style="background-color: #CC00FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [26] = 0xFF00FFFF, -- 26: <div style="background-color: #FF00FF; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [27] = 0xFF00CCFF, -- 27: <div style="background-color: #FF00CC; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [28] = 0xFF0099FF, -- 28: <div style="background-color: #FF0099; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+
+    [29] = 0xFF0066FF, -- 29: <div style="background-color: #FF0066; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+    [30] = 0xFF0033FF, -- 30: <div style="background-color: #FF0033; color: #FFF; text-align: center; display: inline-block; margin-left: 4px; width: 100px; height: calc(1em + 2px); border: 1px solid black;"></div>
+}
+
 -------------------------------------------------------------------------------
 -- Type Check Functions
 -------------------------------------------------------------------------------

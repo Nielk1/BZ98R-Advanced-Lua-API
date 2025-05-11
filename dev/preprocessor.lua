@@ -57,6 +57,18 @@ local function preprocess_file(input_file, output_file)
 
         line = line:gsub("%-%- \\@", "-- @")
 
+        -- 1. `--- @vararg any` -> `-- @param ...`
+        if transformed == 0 then
+            line, transformed = line:gsub("%-%- @vararg%s+any", "-- @param ...")
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 2. `--- @vararg type` -> `-- @tparam ... type`
+        if transformed == 0 then
+            line, transformed = line:gsub("%-%- @vararg%s+([a-zA-Z0-9_]+)", "-- @tparam %1 ...")
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
         -- 1. `--- @param name any` -> `-- @param name`
         if transformed == 0 then
             line, transformed = line:gsub("%-%- @param%s+([a-zA-Z0-9_]+)%s+any", "-- @param %1")
@@ -135,6 +147,16 @@ local function preprocess_file(input_file, output_file)
         if transformed == 0 then
             --line, transformed = line:gsub("%-%-%- @cast .*", "")
             if string.match(line, "%-%-%- @cast .*") then
+                line = nil;
+                transformed = 1;
+            end
+            --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- 9. Blank lines starting with `--- @operator`
+        if transformed == 0 then
+            --line, transformed = line:gsub("%-%-%- @operator .*", "")
+            if string.match(line, "%-%- @operator .*") then
                 line = nil;
                 transformed = 1;
             end

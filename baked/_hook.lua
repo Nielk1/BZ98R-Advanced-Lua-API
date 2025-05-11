@@ -83,7 +83,7 @@ function M.isresult(object)
 end
 
 --- Create an Abort HookResult
---- @param ... any Return values passed from hook function
+--- @vararg any Return values passed from hook function
 --- @return HookResult
 --- @function _hook.AbortResult
 function M.AbortResult(...)
@@ -104,7 +104,7 @@ end
 --- detected but process fine if unwrapped.
 --- @see _hook.AbortResult
 --- @see _hook.CallAllPassReturn
---- @param ... any Return values passed from hook function
+--- @vararg any Return values passed from hook function
 --- @return HookResult?
 --- @function _hook.WrapResult
 function M.WrapResult(...)
@@ -268,7 +268,7 @@ end
 --- Calls hooks associated with the hook name ignoring any return values.
 --- @todo Consider redoing the return value as nothing uses it right now.
 --- @param event string Event to be hooked
---- @param ... any Parameters passed to every hooked function
+--- @vararg any Parameters passed to every hooked function
 --- @return boolean? Return true if stopped early, else nil
 --- @function _hook.CallAllNoReturn
 function M.CallAllNoReturn( event, ... )
@@ -302,7 +302,7 @@ end
 --- the AbortResult function. The best action here is to nil check and test your last
 --- Parameter with hook.isresult before processing it.
 --- @param event string Event to be hooked
---- @param ... any Parameters passed to every hooked function
+--- @vararg any Parameters passed to every hooked function
 --- @return nil|HookResult|any ... `nil` if no hooks are called, a `HookResult` if the chain is aborted, or the return values from the last hook function.
 --- @function _hook.CallAllPassReturn
 function M.CallAllPassReturn( event, ... )

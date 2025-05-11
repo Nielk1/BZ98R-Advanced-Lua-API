@@ -33,6 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Deploy">Deploy </a></li>
+<li><a href="#Unit_Commands">Unit Commands </a></li>
 <li><a href="#Tug_Cargo">Tug Cargo </a></li>
 <li><a href="#Pilot_Actions">Pilot Actions </a></li>
 <li><a href="#Weapon">Weapon </a></li>
@@ -70,7 +71,6 @@
 <li><a href="#Path_Type">Path Type </a></li>
 <li><a href="#Path_Points__2_0__">Path Points [2.0+] </a></li>
 <li><a href="#Path_Area__2_0__">Path Area [2.0+] </a></li>
-<li><a href="#Unit_Commands">Unit Commands </a></li>
 <li><a href="#Cinematic_Camera">Cinematic Camera </a></li>
 <li><a href="#Info_Display">Info Display </a></li>
 <li><a href="#Network">Network </a></li>
@@ -130,6 +130,113 @@
 	<tr>
 	<td class="name" nowrap><a href="#Deploy">Deploy (h)</a></td>
 	<td class="summary">Tells the game object to deploy.</td>
+	</tr>
+</table>
+<h2><a href="#Unit_Commands">Unit Commands </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AiCommand">AiCommand</a></td>
+	<td class="summary">This is a global table that converts between command numbers and command names.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CanCommand">CanCommand (me)</a></td>
+	<td class="summary">Returns true if the game object can be commanded.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CanBuild">CanBuild (me)</a></td>
+	<td class="summary">Returns true if the game object is a producer that can build at the moment.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#IsBusy">IsBusy (me)</a></td>
+	<td class="summary">Returns true if the game object is a producer and currently busy.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetCurrentCommand">GetCurrentCommand (me)</a></td>
+	<td class="summary">Returns the current command for the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetCurrentWho">GetCurrentWho (me)</a></td>
+	<td class="summary">Returns the target of the current command for the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetIndependence">GetIndependence (me)</a></td>
+	<td class="summary">Gets the independence of a unit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetIndependence">SetIndependence (me, independence)</a></td>
+	<td class="summary">Sets the independence of a unit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SetCommand">SetCommand (me, command[, priority][, who], where[, when[, param]])</a></td>
+	<td class="summary">Commands the unit using the given parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Attack">Attack (me, him[, priority])</a></td>
+	<td class="summary">Commands the unit to attack the given target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Goto">Goto (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to go to the position vector, transform matrix, game object location, or named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Mine">Mine (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to lay mines at the given position vector, transform matrix, or named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Follow">Follow (me, him[, priority])</a></td>
+	<td class="summary">Commands the unit to follow the given target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#IsFollowing">IsFollowing (me, him)</a></td>
+	<td class="summary">Returns true if the unit is currently following the given target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Defend">Defend (me[, priority])</a></td>
+	<td class="summary">Commands the unit to defend its current location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Defend2">Defend2 (me, him[, priority])</a></td>
+	<td class="summary">Commands the unit to defend the given target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Stop">Stop (me[, priority])</a></td>
+	<td class="summary">Commands the unit to stop at its current location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Patrol">Patrol (me, path[, priority])</a></td>
+	<td class="summary">Commands the unit to patrol along the named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Retreat">Retreat (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to retreat to the given target or named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetIn">GetIn (me, him[, priority])</a></td>
+	<td class="summary">Commands the pilot to get into the target vehicle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Pickup">Pickup (me, him[, priority])</a></td>
+	<td class="summary">Commands the unit to pick up the target object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Dropoff">Dropoff (me, target[, priority])</a></td>
+	<td class="summary">Commands the unit to drop off at the position vector, transform matrix, or named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Build">Build (me, odfname[, priority])</a></td>
+	<td class="summary">Commands a producer to build the given odf name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#BuildAt">BuildAt (me, odfname, target[, priority])</a></td>
+	<td class="summary">Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Formation">Formation (me, him[, priority])</a></td>
+	<td class="summary">Commands the unit to follow the given target closely.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Hunt">Hunt (me[, priority])</a></td>
+	<td class="summary">Commands the unit to hunt for targets autonomously.</td>
 	</tr>
 </table>
 <h2><a href="#Tug_Cargo">Tug Cargo </a></h2>
@@ -921,113 +1028,6 @@
 	<td class="summary">Returns true if the given position vector, transform matrix, or object is inside the area bounded by the named path.</td>
 	</tr>
 </table>
-<h2><a href="#Unit_Commands">Unit Commands </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#AiCommand">AiCommand</a></td>
-	<td class="summary">This is a global table that converts between command numbers and command names.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CanCommand">CanCommand (me)</a></td>
-	<td class="summary">Returns true if the game object can be commanded.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CanBuild">CanBuild (me)</a></td>
-	<td class="summary">Returns true if the game object is a producer that can build at the moment.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsBusy">IsBusy (me)</a></td>
-	<td class="summary">Returns true if the game object is a producer and currently busy.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetCurrentCommand">GetCurrentCommand (me)</a></td>
-	<td class="summary">Returns the current command for the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetCurrentWho">GetCurrentWho (me)</a></td>
-	<td class="summary">Returns the target of the current command for the game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetIndependence">GetIndependence (me)</a></td>
-	<td class="summary">Gets the independence of a unit.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetIndependence">SetIndependence (me, independence)</a></td>
-	<td class="summary">Sets the independence of a unit.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#SetCommand">SetCommand (me, command[, priority][, who], where[, when[, param]])</a></td>
-	<td class="summary">Commands the unit using the given parameters.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Attack">Attack (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to attack the given target.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Goto">Goto (me, target[, priority])</a></td>
-	<td class="summary">Commands the unit to go to the position vector, transform matrix, game object location, or named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Mine">Mine (me, target[, priority])</a></td>
-	<td class="summary">Commands the unit to lay mines at the given position vector, transform matrix, or named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Follow">Follow (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to follow the given target.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#IsFollowing">IsFollowing (me, him)</a></td>
-	<td class="summary">Returns true if the unit is currently following the given target.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Defend">Defend (me[, priority])</a></td>
-	<td class="summary">Commands the unit to defend its current location.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Defend2">Defend2 (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to defend the given target.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Stop">Stop (me[, priority])</a></td>
-	<td class="summary">Commands the unit to stop at its current location.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Patrol">Patrol (me, path[, priority])</a></td>
-	<td class="summary">Commands the unit to patrol along the named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Retreat">Retreat (me, target[, priority])</a></td>
-	<td class="summary">Commands the unit to retreat to the given target or named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetIn">GetIn (me, him[, priority])</a></td>
-	<td class="summary">Commands the pilot to get into the target vehicle.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Pickup">Pickup (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to pick up the target object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Dropoff">Dropoff (me, target[, priority])</a></td>
-	<td class="summary">Commands the unit to drop off at the position vector, transform matrix, or named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Build">Build (me, odfname[, priority])</a></td>
-	<td class="summary">Commands a producer to build the given odf name.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#BuildAt">BuildAt (me, odfname, target[, priority])</a></td>
-	<td class="summary">Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Formation">Formation (me, him[, priority])</a></td>
-	<td class="summary">Commands the unit to follow the given target closely.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Hunt">Hunt (me[, priority])</a></td>
-	<td class="summary">Commands the unit to hunt for targets autonomously.</td>
-	</tr>
-</table>
 <h2><a href="#Cinematic_Camera">Cinematic Camera </a></h2>
 <table class="function_list">
 	<tr>
@@ -1202,15 +1202,15 @@
 	<td class="summary">Returns the squared 3D distance of the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Vector.__unm">Vector.__unm (vector)</a></td>
+	<td class="name" nowrap><a href="#Vector.__unm">Vector.__unm (v)</a></td>
 	<td class="summary">Negate the vector.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Vector.__add">Vector.__add (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__add">Vector.__add (v1, v2)</a></td>
 	<td class="summary">Add two vectors.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Vector.__sub">Vector.__sub (vector1, vector2)</a></td>
+	<td class="name" nowrap><a href="#Vector.__sub">Vector.__sub (v1, v2)</a></td>
 	<td class="summary">Subtract two vectors.</td>
 	</tr>
 	<tr>
@@ -1418,6 +1418,997 @@
         <li><span class="parameter">h</span>
             <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
 
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Unit_Commands"></a>Unit Commands </h2>
+
+          <div class="section-description">
+           functions send commands to units or query their command state.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "AiCommand"></a>
+    <strong>AiCommand</strong>
+    </dt>
+    <dd>
+    This is a global table that converts between command numbers and command names.  For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">NONE</span>
+        0
+        </li>
+        <li><span class="parameter">SELECT</span>
+        1
+        </li>
+        <li><span class="parameter">STOP</span>
+        2
+        </li>
+        <li><span class="parameter">GO</span>
+        3
+        </li>
+        <li><span class="parameter">ATTACK</span>
+        4
+        </li>
+        <li><span class="parameter">FOLLOW</span>
+        5
+        </li>
+        <li><span class="parameter">FORMATION</span>
+        6
+        </li>
+        <li><span class="parameter">PICKUP</span>
+        7
+        </li>
+        <li><span class="parameter">DROPOFF</span>
+        8
+        </li>
+        <li><span class="parameter">NO_DROPOFF</span>
+        9
+        </li>
+        <li><span class="parameter">GET_REPAIR</span>
+        10
+        </li>
+        <li><span class="parameter">GET_RELOAD</span>
+        11
+        </li>
+        <li><span class="parameter">GET_WEAPON</span>
+        12
+        </li>
+        <li><span class="parameter">GET_CAMERA</span>
+        13
+        </li>
+        <li><span class="parameter">GET_BOMB</span>
+        14
+        </li>
+        <li><span class="parameter">DEFEND</span>
+        15
+        </li>
+        <li><span class="parameter">GO_TO_GEYSER</span>
+        16
+        </li>
+        <li><span class="parameter">RESCUE</span>
+        17
+        </li>
+        <li><span class="parameter">RECYCLE</span>
+        18
+        </li>
+        <li><span class="parameter">SCAVENGE</span>
+        19
+        </li>
+        <li><span class="parameter">HUNT</span>
+        20
+        </li>
+        <li><span class="parameter">BUILD</span>
+        21
+        </li>
+        <li><span class="parameter">PATROL</span>
+        22
+        </li>
+        <li><span class="parameter">STAGE</span>
+        23
+        </li>
+        <li><span class="parameter">SEND</span>
+        24
+        </li>
+        <li><span class="parameter">GET_IN</span>
+        25
+        </li>
+        <li><span class="parameter">LAY_MINES</span>
+        26
+        </li>
+        <li><span class="parameter">CLOAK</span>
+        27 [2.1+]
+        </li>
+        <li><span class="parameter">DECLOAK</span>
+        28 [2.1+]
+        </li>
+        <li><span class="parameter">[0]</span>
+        NONE
+        </li>
+        <li><span class="parameter">[1]</span>
+        SELECT
+        </li>
+        <li><span class="parameter">[2]</span>
+        STOP
+        </li>
+        <li><span class="parameter">[3]</span>
+        GO
+        </li>
+        <li><span class="parameter">[4]</span>
+        ATTACK
+        </li>
+        <li><span class="parameter">[5]</span>
+        FOLLOW
+        </li>
+        <li><span class="parameter">[6]</span>
+        FORMATION
+        </li>
+        <li><span class="parameter">[7]</span>
+        PICKUP
+        </li>
+        <li><span class="parameter">[8]</span>
+        DROPOFF
+        </li>
+        <li><span class="parameter">[9]</span>
+        NO_DROPOFF
+        </li>
+        <li><span class="parameter">[10]</span>
+        GET_REPAIR
+        </li>
+        <li><span class="parameter">[11]</span>
+        GET_RELOAD
+        </li>
+        <li><span class="parameter">[12]</span>
+        GET_WEAPON
+        </li>
+        <li><span class="parameter">[13]</span>
+        GET_CAMERA
+        </li>
+        <li><span class="parameter">[14]</span>
+        GET_BOMB
+        </li>
+        <li><span class="parameter">[15]</span>
+        DEFEND
+        </li>
+        <li><span class="parameter">[16]</span>
+        GO_TO_GEYSER
+        </li>
+        <li><span class="parameter">[17]</span>
+        RESCUE
+        </li>
+        <li><span class="parameter">[18]</span>
+        RECYCLE
+        </li>
+        <li><span class="parameter">[19]</span>
+        SCAVENGE
+        </li>
+        <li><span class="parameter">[20]</span>
+        HUNT
+        </li>
+        <li><span class="parameter">[21]</span>
+        BUILD
+        </li>
+        <li><span class="parameter">[22]</span>
+        PATROL
+        </li>
+        <li><span class="parameter">[23]</span>
+        STAGE
+        </li>
+        <li><span class="parameter">[24]</span>
+        SEND
+        </li>
+        <li><span class="parameter">[25]</span>
+        GET_IN
+        </li>
+        <li><span class="parameter">[26]</span>
+        LAY_MINES
+        </li>
+        <li><span class="parameter">[27]</span>
+        CLOAK [2.1+]
+        </li>
+        <li><span class="parameter">[28]</span>
+        DECLOAK [2.1+]
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CanCommand"></a>
+    <strong>CanCommand (me)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object can be commanded.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CanBuild"></a>
+    <strong>CanBuild (me)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object is a producer that can build at the moment.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "IsBusy"></a>
+    <strong>IsBusy (me)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object is a producer and currently busy.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetCurrentCommand"></a>
+    <strong>GetCurrentCommand (me)</strong>
+    </dt>
+    <dd>
+    Returns the current command for the game object.  Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetCurrentWho"></a>
+    <strong>GetCurrentWho (me)</strong>
+    </dt>
+    <dd>
+    Returns the target of the current command for the game object.  Returns nil if it has none.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetIndependence"></a>
+    <strong>GetIndependence (me)</strong>
+    </dt>
+    <dd>
+    Gets the independence of a unit.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetIndependence"></a>
+    <strong>SetIndependence (me, independence)</strong>
+    </dt>
+    <dd>
+    Sets the independence of a unit.  1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">independence</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "SetCommand"></a>
+    <strong>SetCommand (me, command[, priority][, who], where[, when[, param]])</strong>
+    </dt>
+    <dd>
+    Commands the unit using the given parameters.  Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
+ "Command" is the command to issue, normally chosen from the global AiCommand table (e.g. AiCommand.GO).
+ "Priority" is the command priority; a value of 0 leaves the unit commandable by the player while the default value of 1 makes it uncommandable.
+ "Who" is an optional target game object.
+ "Where" is an optional destination, and can be a matrix (transform), a vector (position), or a string (path name).
+ "When" is an optional absolute time value only used by command AiCommand.STAGE.
+ "Param" is an optional odf name only used by command AiCommand.BUILD.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">command</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">who</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">where</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+        ?
+        </li>
+        <li><span class="parameter">when</span>
+            <span class="types"><span class="type">number</span></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">param</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Attack"></a>
+    <strong>Attack (me, him[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to attack the given target.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Goto"></a>
+    <strong>Goto (me, target[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to go to the position vector, transform matrix, game object location, or named path.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Mine"></a>
+    <strong>Mine (me, target[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to lay mines at the given position vector, transform matrix, or named path.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Follow"></a>
+    <strong>Follow (me, him[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to follow the given target.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "IsFollowing"></a>
+    <strong>IsFollowing (me, him)</strong>
+    </dt>
+    <dd>
+    Returns true if the unit is currently following the given target.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Defend"></a>
+    <strong>Defend (me[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to defend its current location.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Defend2"></a>
+    <strong>Defend2 (me, him[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to defend the given target.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Stop"></a>
+    <strong>Stop (me[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to stop at its current location.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Patrol"></a>
+    <strong>Patrol (me, path[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to patrol along the named path.  This is equivalent to Goto with an independence of 1.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Retreat"></a>
+    <strong>Retreat (me, target[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to retreat to the given target or named path.
+ This is equivalent to Goto with an independence of 0.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetIn"></a>
+    <strong>GetIn (me, him[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the pilot to get into the target vehicle.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Pickup"></a>
+    <strong>Pickup (me, him[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to pick up the target object.  Deployed units pack up (ignoring the target), scavengers pick up scrap, and tugs pick up and carry objects.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Dropoff"></a>
+    <strong>Dropoff (me, target[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to drop off at the position vector, transform matrix, or named path.
+ Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Build"></a>
+    <strong>Build (me, odfname[, priority])</strong>
+    </dt>
+    <dd>
+    Commands a producer to build the given odf name.  The Armory and Construction Rig need an additional Dropoff to give them a location to build but first need at least one simulation update to process the Build.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">odfname</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "BuildAt"></a>
+    <strong>BuildAt (me, odfname, target[, priority])</strong>
+    </dt>
+    <dd>
+    Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.
+ A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">odfname</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Formation"></a>
+    <strong>Formation (me, him[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to follow the given target closely.  This function is equivalent to SetCommand(me, AiCommand.FORMATION, priority, him).
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">him</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Hunt"></a>
+    <strong>Hunt (me[, priority])</strong>
+    </dt>
+    <dd>
+    Commands the unit to hunt for targets autonomously.  This function is equivalent to SetCommand(me, AiCommand.HUNT, priority).
+ Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">me</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -6810,997 +7801,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Unit_Commands"></a>Unit Commands </h2>
-
-          <div class="section-description">
-           functions send commands to units or query their command state.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "AiCommand"></a>
-    <strong>AiCommand</strong>
-    </dt>
-    <dd>
-    This is a global table that converts between command numbers and command names.  For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
-
-    </ul>
-
-    <h3>Fields:</h3>
-    <ul>
-        <li><span class="parameter">NONE</span>
-        0
-        </li>
-        <li><span class="parameter">SELECT</span>
-        1
-        </li>
-        <li><span class="parameter">STOP</span>
-        2
-        </li>
-        <li><span class="parameter">GO</span>
-        3
-        </li>
-        <li><span class="parameter">ATTACK</span>
-        4
-        </li>
-        <li><span class="parameter">FOLLOW</span>
-        5
-        </li>
-        <li><span class="parameter">FORMATION</span>
-        6
-        </li>
-        <li><span class="parameter">PICKUP</span>
-        7
-        </li>
-        <li><span class="parameter">DROPOFF</span>
-        8
-        </li>
-        <li><span class="parameter">NO_DROPOFF</span>
-        9
-        </li>
-        <li><span class="parameter">GET_REPAIR</span>
-        10
-        </li>
-        <li><span class="parameter">GET_RELOAD</span>
-        11
-        </li>
-        <li><span class="parameter">GET_WEAPON</span>
-        12
-        </li>
-        <li><span class="parameter">GET_CAMERA</span>
-        13
-        </li>
-        <li><span class="parameter">GET_BOMB</span>
-        14
-        </li>
-        <li><span class="parameter">DEFEND</span>
-        15
-        </li>
-        <li><span class="parameter">GO_TO_GEYSER</span>
-        16
-        </li>
-        <li><span class="parameter">RESCUE</span>
-        17
-        </li>
-        <li><span class="parameter">RECYCLE</span>
-        18
-        </li>
-        <li><span class="parameter">SCAVENGE</span>
-        19
-        </li>
-        <li><span class="parameter">HUNT</span>
-        20
-        </li>
-        <li><span class="parameter">BUILD</span>
-        21
-        </li>
-        <li><span class="parameter">PATROL</span>
-        22
-        </li>
-        <li><span class="parameter">STAGE</span>
-        23
-        </li>
-        <li><span class="parameter">SEND</span>
-        24
-        </li>
-        <li><span class="parameter">GET_IN</span>
-        25
-        </li>
-        <li><span class="parameter">LAY_MINES</span>
-        26
-        </li>
-        <li><span class="parameter">CLOAK</span>
-        27 [2.1+]
-        </li>
-        <li><span class="parameter">DECLOAK</span>
-        28 [2.1+]
-        </li>
-        <li><span class="parameter">[0]</span>
-        NONE
-        </li>
-        <li><span class="parameter">[1]</span>
-        SELECT
-        </li>
-        <li><span class="parameter">[2]</span>
-        STOP
-        </li>
-        <li><span class="parameter">[3]</span>
-        GO
-        </li>
-        <li><span class="parameter">[4]</span>
-        ATTACK
-        </li>
-        <li><span class="parameter">[5]</span>
-        FOLLOW
-        </li>
-        <li><span class="parameter">[6]</span>
-        FORMATION
-        </li>
-        <li><span class="parameter">[7]</span>
-        PICKUP
-        </li>
-        <li><span class="parameter">[8]</span>
-        DROPOFF
-        </li>
-        <li><span class="parameter">[9]</span>
-        NO_DROPOFF
-        </li>
-        <li><span class="parameter">[10]</span>
-        GET_REPAIR
-        </li>
-        <li><span class="parameter">[11]</span>
-        GET_RELOAD
-        </li>
-        <li><span class="parameter">[12]</span>
-        GET_WEAPON
-        </li>
-        <li><span class="parameter">[13]</span>
-        GET_CAMERA
-        </li>
-        <li><span class="parameter">[14]</span>
-        GET_BOMB
-        </li>
-        <li><span class="parameter">[15]</span>
-        DEFEND
-        </li>
-        <li><span class="parameter">[16]</span>
-        GO_TO_GEYSER
-        </li>
-        <li><span class="parameter">[17]</span>
-        RESCUE
-        </li>
-        <li><span class="parameter">[18]</span>
-        RECYCLE
-        </li>
-        <li><span class="parameter">[19]</span>
-        SCAVENGE
-        </li>
-        <li><span class="parameter">[20]</span>
-        HUNT
-        </li>
-        <li><span class="parameter">[21]</span>
-        BUILD
-        </li>
-        <li><span class="parameter">[22]</span>
-        PATROL
-        </li>
-        <li><span class="parameter">[23]</span>
-        STAGE
-        </li>
-        <li><span class="parameter">[24]</span>
-        SEND
-        </li>
-        <li><span class="parameter">[25]</span>
-        GET_IN
-        </li>
-        <li><span class="parameter">[26]</span>
-        LAY_MINES
-        </li>
-        <li><span class="parameter">[27]</span>
-        CLOAK [2.1+]
-        </li>
-        <li><span class="parameter">[28]</span>
-        DECLOAK [2.1+]
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "CanCommand"></a>
-    <strong>CanCommand (me)</strong>
-    </dt>
-    <dd>
-    Returns true if the game object can be commanded.  Returns false otherwise.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "CanBuild"></a>
-    <strong>CanBuild (me)</strong>
-    </dt>
-    <dd>
-    Returns true if the game object is a producer that can build at the moment.  Returns false otherwise.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "IsBusy"></a>
-    <strong>IsBusy (me)</strong>
-    </dt>
-    <dd>
-    Returns true if the game object is a producer and currently busy.  Returns false otherwise.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetCurrentCommand"></a>
-    <strong>GetCurrentCommand (me)</strong>
-    </dt>
-    <dd>
-    Returns the current command for the game object.  Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">integer</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetCurrentWho"></a>
-    <strong>GetCurrentWho (me)</strong>
-    </dt>
-    <dd>
-    Returns the target of the current command for the game object.  Returns nil if it has none.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetIndependence"></a>
-    <strong>GetIndependence (me)</strong>
-    </dt>
-    <dd>
-    Gets the independence of a unit.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">integer</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetIndependence"></a>
-    <strong>SetIndependence (me, independence)</strong>
-    </dt>
-    <dd>
-    Sets the independence of a unit.  1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">independence</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "SetCommand"></a>
-    <strong>SetCommand (me, command[, priority][, who], where[, when[, param]])</strong>
-    </dt>
-    <dd>
-    Commands the unit using the given parameters.  Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
- "Command" is the command to issue, normally chosen from the global AiCommand table (e.g. AiCommand.GO).
- "Priority" is the command priority; a value of 0 leaves the unit commandable by the player while the default value of 1 makes it uncommandable.
- "Who" is an optional target game object.
- "Where" is an optional destination, and can be a matrix (transform), a vector (position), or a string (path name).
- "When" is an optional absolute time value only used by command AiCommand.STAGE.
- "Param" is an optional odf name only used by command AiCommand.BUILD.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">command</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">who</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">where</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-        ?
-        </li>
-        <li><span class="parameter">when</span>
-            <span class="types"><span class="type">number</span></span>
-
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">param</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Attack"></a>
-    <strong>Attack (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to attack the given target.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Goto"></a>
-    <strong>Goto (me, target[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to go to the position vector, transform matrix, game object location, or named path.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Mine"></a>
-    <strong>Mine (me, target[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to lay mines at the given position vector, transform matrix, or named path.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Follow"></a>
-    <strong>Follow (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to follow the given target.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "IsFollowing"></a>
-    <strong>IsFollowing (me, him)</strong>
-    </dt>
-    <dd>
-    Returns true if the unit is currently following the given target.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Defend"></a>
-    <strong>Defend (me[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to defend its current location.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Defend2"></a>
-    <strong>Defend2 (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to defend the given target.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Stop"></a>
-    <strong>Stop (me[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to stop at its current location.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Patrol"></a>
-    <strong>Patrol (me, path[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to patrol along the named path.  This is equivalent to Goto with an independence of 1.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Retreat"></a>
-    <strong>Retreat (me, target[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to retreat to the given target or named path.
- This is equivalent to Goto with an independence of 0.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetIn"></a>
-    <strong>GetIn (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the pilot to get into the target vehicle.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Pickup"></a>
-    <strong>Pickup (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to pick up the target object.  Deployed units pack up (ignoring the target), scavengers pick up scrap, and tugs pick up and carry objects.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Dropoff"></a>
-    <strong>Dropoff (me, target[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to drop off at the position vector, transform matrix, or named path.
- Tugs drop off their cargo and Construction Rigs build the selected item at the location using their current facing.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Build"></a>
-    <strong>Build (me, odfname[, priority])</strong>
-    </dt>
-    <dd>
-    Commands a producer to build the given odf name.  The Armory and Construction Rig need an additional Dropoff to give them a location to build but first need at least one simulation update to process the Build.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "BuildAt"></a>
-    <strong>BuildAt (me, odfname, target[, priority])</strong>
-    </dt>
-    <dd>
-    Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.
- A Construction Rig will build at the location and an Armory will launch the item to the location. Other producers will ignore the location.
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Formation"></a>
-    <strong>Formation (me, him[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to follow the given target closely.  This function is equivalent to SetCommand(me, AiCommand.FORMATION, priority, him).
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">him</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Hunt"></a>
-    <strong>Hunt (me[, priority])</strong>
-    </dt>
-    <dd>
-    Commands the unit to hunt for targets autonomously.  This function is equivalent to SetCommand(me, AiCommand.HUNT, priority).
- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">me</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">priority</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Cinematic_Camera"></a>Cinematic Camera </h2>
 
           <div class="section-description">
@@ -8239,7 +8239,7 @@
 
         </li>
         <li><span class="parameter">...</span>
-         any
+
         </li>
     </ul>
 
@@ -9013,7 +9013,7 @@
 </dd>
     <dt>
     <a name = "Vector.__unm"></a>
-    <strong>Vector.__unm (vector)</strong>
+    <strong>Vector.__unm (v)</strong>
     </dt>
     <dd>
     Negate the vector.
@@ -9023,12 +9023,18 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">vector</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+        v
+    </ol>
 
 
 
@@ -9036,7 +9042,7 @@
 </dd>
     <dt>
     <a name = "Vector.__add"></a>
-    <strong>Vector.__add (vector1, vector2)</strong>
+    <strong>Vector.__add (v1, v2)</strong>
     </dt>
     <dd>
     Add two vectors.
@@ -9046,16 +9052,22 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">vector1</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v1</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
-        <li><span class="parameter">vector2</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v2</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+        v
+    </ol>
 
 
 
@@ -9063,7 +9075,7 @@
 </dd>
     <dt>
     <a name = "Vector.__sub"></a>
-    <strong>Vector.__sub (vector1, vector2)</strong>
+    <strong>Vector.__sub (v1, v2)</strong>
     </dt>
     <dd>
     Subtract two vectors.
@@ -9073,16 +9085,22 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">vector1</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v1</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
-        <li><span class="parameter">vector2</span>
-            <span class="types"><span class="type">vector</span></span>
+        <li><span class="parameter">v2</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
 
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a></span>
+        v
+    </ol>
 
 
 
@@ -10209,7 +10227,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-10 04:00:15 </i>
+<i style="float:right;">Last updated 2025-05-10 22:47:49 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -32,6 +32,7 @@
 
 <h2>Contents</h2>
 <ul>
+<li><a href="#Class_WrappedObjectForStateSetRunner">Class WrappedObjectForStateSetRunner </a></li>
 <li><a href="#Class_StateSetRunner">Class StateSetRunner </a></li>
 <li><a href="#StateSetRunner___Core">StateSetRunner - Core </a></li>
 </ul>
@@ -101,16 +102,23 @@ end);
     </ul>
 
 
-<h2><a href="#Class_StateSetRunner">Class StateSetRunner </a></h2>
+<h2><a href="#Class_WrappedObjectForStateSetRunner">Class WrappedObjectForStateSetRunner </a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#StateSet.Add">StateSet.Add (self, name, state[, permitBased])</a></td>
 	<td class="summary">Add a state to the StateSet.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateSetRunner:isstatesetrunner">StateSetRunner:isstatesetrunner (object)</a></td>
+	<td class="name" nowrap><a href="#WrappedObjectForStateSetRunner:WrapStateMachine">WrappedObjectForStateSetRunner:WrapStateMachine (name, state_key, init)</a></td>
+	<td class="summary">Wrap a state machine definition so it can be used in a StateSet.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#WrappedObjectForStateSetRunner:isstatesetrunner">WrappedObjectForStateSetRunner:isstatesetrunner (object)</a></td>
 	<td class="summary">Is this object an instance of StateSetRunner?</td>
 	</tr>
+</table>
+<h2><a href="#Class_StateSetRunner">Class StateSetRunner </a></h2>
+<table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#StateSetRunner.run">StateSetRunner.run (self, ...)</a></td>
 	<td class="summary">Run StateSetRunner.</td>
@@ -148,7 +156,7 @@ end);
 <br/>
 
 
-    <h2 class="section-header "><a name="Class_StateSetRunner"></a>Class StateSetRunner </h2>
+    <h2 class="section-header "><a name="Class_WrappedObjectForStateSetRunner"></a>Class WrappedObjectForStateSetRunner </h2>
 
     <dl class="function">
     <dt>
@@ -173,7 +181,7 @@ end);
          Name of the state
         </li>
         <li><span class="parameter">state</span>
-            <span class="types"><span class="type">function</span> or <span class="type">StateMachineIter</span></span>
+            <span class="types"><a class="type" href="../modules/_stateset.html#StateSetFunction">StateSetFunction</a> or <a class="type" href="../modules/_stateset.html#WrappedObjectForStateSetRunner">WrappedObjectForStateSetRunner</a></span>
          Function to be called when the state is active, should return true if the state did something.
         </li>
         <li><span class="parameter">permitBased</span>
@@ -195,8 +203,48 @@ end);
 
 </dd>
     <dt>
-    <a name = "StateSetRunner:isstatesetrunner"></a>
-    <strong>StateSetRunner:isstatesetrunner (object)</strong>
+    <a name = "WrappedObjectForStateSetRunner:WrapStateMachine"></a>
+    <strong>WrappedObjectForStateSetRunner:WrapStateMachine (name, state_key, init)</strong>
+    </dt>
+    <dd>
+    Wrap a state machine definition so it can be used in a StateSet.
+ This causes the StateMachineIter to be constructed and run in the context of the StateSetRunner.
+ The first paramater to the StateMachineIter after the default paramaters is the StateSetRunner instance,
+ those after are the extras passed to the StateSetRunner's run function.
+ Externally the StateMachineIter's state can be accessed via the StateSetRunner's StateMachines table under the key of the StateSet's state name.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Name of the state machine
+        </li>
+        <li><span class="parameter">state_key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">integer</span> or <span class="type">nil</span></span>
+         Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
+        </li>
+        <li><span class="parameter">init</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        ? Initial data for the state machine, if nil uses empty table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_stateset.html#WrappedObjectForStateSetRunner">WrappedObjectForStateSetRunner</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "WrappedObjectForStateSetRunner:isstatesetrunner"></a>
+    <strong>WrappedObjectForStateSetRunner:isstatesetrunner (object)</strong>
     </dt>
     <dd>
     Is this object an instance of StateSetRunner?
@@ -221,6 +269,13 @@ end);
 
 
 </dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_StateSetRunner"></a>Class StateSetRunner </h2>
+
+          <div class="section-description">
+          An object containing all functions and data related to an StateSetRunner.
+          </div>
+    <dl class="function">
     <dt>
     <a name = "StateSetRunner.run"></a>
     <strong>StateSetRunner.run (self, ...)</strong>
@@ -237,7 +292,7 @@ end);
          StateSetRunner instance
         </li>
         <li><span class="parameter">...</span>
-         any Arguments to pass to the state function
+         Arguments to pass to the state function
         </li>
     </ul>
 
@@ -442,7 +497,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-10 04:00:15 </i>
+<i style="float:right;">Last updated 2025-05-10 22:47:49 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -98,15 +98,39 @@ function M.isstatemachineiter(object)
   return (type(object) == "table" and object.__type == "StateMachineIter");
 end
 
+--- An object containing all functions and data related to an StateMachineIter.
 --- @class StateMachineIter
 --- @field state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 --- @field template string StateMachineIter template name
 --- @field index_to_name table StateMachineIter index to name mapping, only if the StateMachineIter is ordered
+--- @field target_call integer? Timer's value, nil for not set
 --- @field target_time integer? Target time if sleeping, nil if not set
-
---- StateMachineIter.
---- An object containing all functions and data related to an StateMachineIter.
+--- @field addonData table? Table of values embeded in the StateMachineIter
 local StateMachineIter = {}; -- the table representing the class, which will double as the metatable for the instances
+
+--- @alias StateMachineFunction fun(self:StateMachineIter, ...:any):any
+
+--- @class WrappedObjectForStateMachineIter
+--- @field f function State function to call
+--- @field p table Parameters to pass to the state function
+
+--- A simple name-only set of states
+--- @class StateMachineStateUnorderedSet
+--- @field [string] StateMachineFunction|WrappedObjectForStateMachineIter State function
+
+--- A simple ordered set of states
+--- @class StateMachineStateOrderedSet
+--- @field [integer] StateMachineFunction|WrappedObjectForStateMachineIter|StateMachineNamedState|StateMachineNamedStateTruncated State function
+
+--- Simple construct for a state function with a name
+--- @class StateMachineNamedState
+--- @field [1] string|nil name
+--- @field [2] StateMachineFunction|WrappedObjectForStateMachineIter State function
+
+--- A truncated version without the name, name is constructed at runtime from index
+--- @class StateMachineNamedStateTruncated
+--- @field [1] StateMachineFunction|WrappedObjectForStateMachineIter State function
+
 
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 StateMachineIter.__index = function(table, key)
@@ -116,7 +140,7 @@ StateMachineIter.__index = function(table, key)
   return rawget(StateMachineIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
 end
 StateMachineIter.__newindex = function(table, key, value)
-  if key ~= "template" and key ~= "state_key" and key ~= "timer" and key ~= "target_time" and key ~= "addonData" then
+  if key ~= "template" and key ~= "state_key" and key ~= "target_call" and key ~= "target_time" and key ~= "addonData" then
     local addonData = rawget(table, "addonData");
     if addonData == nil then
       rawset(table, "addonData", {});
@@ -131,28 +155,32 @@ StateMachineIter.__type = "StateMachineIter";
 
 --- Create StateMachineIter
 --- @param name string StateMachineIter template
---- @param timer integer? Timer's value, nil for not set
+--- @param target_call integer? Timer's value, nil for not set
 --- @param target_time integer? TargetTurn's value, nil for not set
 --- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
---- @param values table Table of values embeded in the StateMachineIter
-local function CreateStateMachineIter(name, timer, target_time, state_key, values)
-  local self = setmetatable({}, StateMachineIter);
-  self.template = name;
-  self.timer = timer;
-  self.target_time = target_time;
-  self.state_key = state_key;
-  
-  if utility.istable(values) then
-    for k, v in pairs( values ) do
-      self[k] = v;
+--- @param values table? Table of values embeded in the StateMachineIter
+local function CreateStateMachineIter(name, target_call, target_time, state_key, values)
+    local self = setmetatable({}, StateMachineIter);
+    self.template = name;
+    self.target_call = target_call;
+    self.target_time = target_time;
+    self.state_key = state_key;
+    
+    if values and utility.istable(values) then
+        for k, v in pairs( values ) do
+            debugprint("StateMachineIter: Adding value '"..tostring(k).."' = '"..tostring(v).."' to StateMachineIter '"..name.."'");
+            self[k] = v;
+        end
     end
-  end
-  
-  return self;
+    
+    return self;
 end
 
 --- Run StateMachineIter.
 --- @param self StateMachineIter FuncArrayIter instance
+--- @vararg any Arguments to pass to the state function
+--- @return boolean, any True if the state function was called, false if the state function was not found
+--- @return any ... The return value of the state function, if it was called
 function StateMachineIter.run(self, ...)
     if not M.isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
 
@@ -162,10 +190,9 @@ function StateMachineIter.run(self, ...)
 
     if utility.isfunction(machine[self.state_key]) then
         return true, machine[self.state_key](self, ...);
-    end
-    if utility.istable(machine[self.state_key]) then
+    elseif utility.istable(machine[self.state_key]) then
         if utility.isfunction(machine[self.state_key].f) then
-            --print("StateMachineIter state '"..self.state_key.."' is "..type(machine[self.state_key].f).." '"..table.show(machine[self.state_key].p).."'");
+            --debugprint("StateMachineIter state '"..self.state_key.."' is "..type(machine[self.state_key].f).." '"..table.show(machine[self.state_key].p).."'");
             return true, machine[self.state_key].f(self, machine[self.state_key].p, ...);
         end
     end
@@ -226,7 +253,7 @@ end
 
 --- Switch StateMachineIter State.
 --- @param self StateMachineIter StateMachineIter instance
---- @param key string State to switch to (will also accept state index if the StateMachineIter is ordered)
+--- @param key string|integer State to switch to (will also accept state index if the StateMachineIter is ordered)
 function StateMachineIter.switch(self, key)
     if utility.isinteger(key) then
         local flags = M.MachineFlags[ self.template ];
@@ -243,10 +270,11 @@ end
 
 --- Creates an StateMachineIter Template with the given indentifier.
 --- @param name any Name of the StateMachineIter Template (string)
---- @param ... any State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
+--- @vararg StateMachineNamedState|StateMachineNamedStateTruncated|StateMachineStateOrderedSet|WrappedObjectForStateMachineIter|StateMachineFunction State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
 --- State descriptors are tables with the first element being the state name and the second element being the state function.
 --- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
 --- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
+--- The first paramater of the state function is the StateMachineIter itself where the current state may be accessed via `self.state_key`.
 function M.Create( name, ... )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     
@@ -265,13 +293,16 @@ function M.Create( name, ... )
         if utility.isfunction(v) then
             -- we are a bare function, so we are ordered but have no name
             -- func
+            --- @cast v function
             table.insert(super_states, {v}); -- wrap the state into an array of 1
         elseif utility.istable(v) then
             -- we have a table, it could be an array, a map, or a special state function like sleep
             -- { ... }
+            --- @cast v table
             if utility.isfunction(v.f) and utility.istable(v.p) then
                 -- this is a special state function like sleep, so we are ordered but have no name
                 -- { f = func, p = { ... } } -- special state function
+                --- @cast v WrappedObjectForStateMachineIter
                 table.insert(super_states, {v}); -- wrap the state into an array of 1
             elseif v[1] ~= nil then
                 -- this is probably an array so there's a few options
@@ -282,10 +313,12 @@ function M.Create( name, ... )
                     if utility.isfunction(v[1]) then
                         -- function wrapped in a state descriptor that lacks a name
                         -- { func }
+                        --- @cast v StateMachineNamedStateTruncated
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
                     elseif utility.isfunction(v[1].f) and utility.istable(v[1].p) then
                         -- special state function wrapped in a state descriptor that lacks a name
                         -- { { f = func, p = { ... } } } -- special state function
+                        --- @cast v StateMachineNamedStateTruncated
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
                     else
                         error("StateMachineIter state descriptor must be a function, a special state function, or collection there of.");
@@ -293,18 +326,22 @@ function M.Create( name, ... )
                 elseif #v == 2 then
                     -- two items
                     -- { ?, ? }
+                    --- @cast v table
                     if v[1] == nil then
                         -- actually the name is nil, so nevermind
                         -- { nil, ? }
+                        --- @cast v StateMachineNamedState
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
                     elseif utility.isstring(v[1]) then
                         -- the first item is a string so we are a named state descriptor
                         -- { "name", ? }
                         has_any_named = true;
+                        --- @cast v StateMachineNamedState
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
                     else
                         -- an array of items that happens to be length 2 and didn't fit another known structure
                         -- { ?, ? }
+                        --- @cast v table
                         table.insert(super_states, v); -- no need to wrap
 
                         -- double check if we have any named state descriptors in this array of state descriptors
@@ -320,6 +357,7 @@ function M.Create( name, ... )
                 else
                     -- we are an array of state descriptors
                     -- { ?, ?, ... }
+                    --- @cast v table
                     table.insert(super_states, v);
 
                     -- double check if we have any named state descriptors in this array of state descriptors
@@ -471,13 +509,14 @@ function M.Start( name, state_key, init )
 
     debugprint("Starting StateMachineIter Template '"..name.."' with state '"..tostring(state_key).."'");
 
-    return CreateStateMachineIter(name, nil, nil, state_key, init or {});
+    return CreateStateMachineIter(name, nil, nil, state_key, init);
 end
 
 --- Wait a set period of time on this state.
 --- @param calls integer How many calls to wait
 --- @param next_state string Next state when timer hits zero
 --- @param early_exit? function Function to check if the state should be exited early, return false, true, or next state name
+--- @return WrappedObjectForStateMachineIter
 function M.SleepCalls( calls, next_state, early_exit )
     if not utility.isinteger(calls) then error("Parameter calls must be an integer."); end
     if not utility.isstring(next_state) then error("Parameter next_state must be a string."); end
@@ -498,13 +537,13 @@ function M.SleepCalls( calls, next_state, early_exit )
                 return;
             end
         end
-        if state.timer == nil then
-            state.timer = calls;
-        elseif state.timer == 0 then
+        if state.target_call == nil then
+            state.target_call = calls;
+        elseif state.target_call == 0 then
             state:switch(next_state);
-            state.timer = nil; -- ensure that the timer is reset
+            state.target_call = nil; -- ensure that the timer is reset
         else
-            state.timer = state.timer - 1;
+            state.target_call = state.target_call - 1;
         end
     end, p = {calls, next_state, early_exit} };
 end
@@ -581,17 +620,25 @@ end
 --
 -- INTERNAL USE.
 -- @param self StateMachineIter instance
--- @return ...
+-- @return template string StateMachineIter template name
+-- @return target_call integer? Timer's value, nil for not set
+-- @return target_time integer? TargetTurn's value, nil for not set
+-- @return state_key string|integer|nil Current state, string name or integer index if state machine is ordered
+-- @return addonData table Addon data, if any
 function StateMachineIter.Save(self)
-    return self;
+    return self.template, self.target_call, self.target_time, self.state_key, self.addonData;
 end
 
 --- Load event function.
 --
 -- INTERNAL USE.
--- @param data
-function StateMachineIter.Load(data)
-    return CreateStateMachineIter(data.template, data.timer, data.target_time, data.state_key, data.addonData);
+-- @param template string StateMachineIter template name
+-- @param target_call integer? Timer's value, nil for not set
+-- @param target_time integer? TargetTurn's value, nil for not set
+-- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
+-- @param addonData table Addon data, if any
+function StateMachineIter.Load(template, target_call, target_time, state_key, addonData)
+    return CreateStateMachineIter(template, target_call, target_time, state_key, addonData);
 end
 
 --- BulkLoad event function.

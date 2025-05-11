@@ -1532,42 +1532,49 @@ AiCommand = {
 --- @param me Handle
 --- @return boolean
 --- @function CanCommand
+--- @deprecated use `GameObject.CanCommand` instead.
 function CanCommand(me) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is a producer that can build at the moment. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
 --- @function CanBuild
+--- @deprecated use `GameObject.CanBuild` instead.
 function CanBuild(me) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is a producer and currently busy. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
 --- @function IsBusy
+--- @deprecated use `GameObject.IsBusy` instead.
 function IsBusy(me) error("This function is provided by the engine."); end
 
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param me Handle
 --- @return integer
 --- @function GetCurrentCommand
+--- @deprecated use `GameObject.GetCurrentCommand` instead.
 function GetCurrentCommand(me) error("This function is provided by the engine."); end
 
 --- Returns the target of the current command for the game object. Returns nil if it has none.
 --- @param me Handle
 --- @return Handle
 --- @function GetCurrentWho
+--- @deprecated use `GameObject.GetCurrentWho` instead.
 function GetCurrentWho(me) error("This function is provided by the engine."); end
 
 --- Gets the independence of a unit.
 --- @param me Handle
 --- @return integer
 --- @function GetIndependence
+--- @deprecated use `GameObject.GetIndependence` instead.
 function GetIndependence(me) error("This function is provided by the engine."); end
 
 --- Sets the independence of a unit. 1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
 --- @param me Handle
 --- @param independence integer
 --- @function SetIndependence
+--- @deprecated use `GameObject.SetIndependence` instead.
 function SetIndependence(me, independence) end
 
 --- Commands the unit using the given parameters. Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
@@ -1585,6 +1592,7 @@ function SetIndependence(me, independence) end
 --- @param when? number
 --- @param param? string
 --- @function SetCommand
+--- @deprecated use `GameObject.SetCommand` instead.
 function SetCommand(me, command, priority, who, where, when, param) end
 
 --- Commands the unit to attack the given target.
@@ -2050,7 +2058,7 @@ function DisplayMessage(message) end
 --- </tbody></table>
 --- @param to integer
 --- @param type string
---- @param ... any
+--- @vararg any
 --- @function Send
 function Send(to, type, ...) end
 

@@ -47,21 +47,22 @@ M.Sets = {};
 
 --- @class StateSet
 --- @field template string Name of the StateSet template
+--- @field StateMachines table Table of StateMachineIter instances, key is the state name and value is the StateMachineIter instance
 local StateSet = {};
 StateSet.__index = StateSet;
 
---- @class StateSetRunner
---- @field template string Name of the StateSet template the runner is using
---- @field active_states table Table of active states, key is the state name and value is the state activation flag or permit count
---- @field addonData table Custom context data stored in the StateSetRunner
+--- @alias StateSetFunction fun(self:StateSetRunner, name:string, ...:any)
 
+--- @class WrappedObjectForStateSetRunner
+--- @field f fun(self:StateSetRunner, name:string, params:table, ...:any) Function to be called when the state is active, should return true if the state did something.
+--- @field p table Parameters to pass to the state machine, first parameter is the StateSetRunner instance
 
 --- Add a state to the StateSet.
 --- If the state is basic either active or inactive based on last on/off call.
 --- If the state is permit based it is active if the on count is greater than 0.
 --- @param self StateSet StateSet instance
 --- @param name string Name of the state
---- @param state function|StateMachineIter Function to be called when the state is active, should return true if the state did something.
+--- @param state StateSetFunction|WrappedObjectForStateSetRunner Function to be called when the state is active, should return true if the state did something.
 --- @param permitBased? boolean If true, the state is permit based
 --- @return StateSet self For function chaining
 function StateSet.Add(self, name, state, permitBased)
@@ -75,6 +76,47 @@ function StateSet.Add(self, name, state, permitBased)
     return self;
 end
 
+--- Wrap a state machine definition so it can be used in a StateSet.
+--- This causes the StateMachineIter to be constructed and run in the context of the StateSetRunner.
+--- The first paramater to the StateMachineIter after the default paramaters is the StateSetRunner instance,
+--- those after are the extras passed to the StateSetRunner's run function.
+--- Externally the StateMachineIter's state can be accessed via the StateSetRunner's StateMachines table under the key of the StateSet's state name.
+--- @param name string Name of the state machine
+--- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
+--- @param init table? Initial data for the state machine, if nil uses empty table
+--- @return WrappedObjectForStateSetRunner
+function M.WrapStateMachine(name, state_key, init )
+    if not utility.isstring(name) then error("Parameter name must be a string."); end
+
+    return { f = function(state, name, params, ...)
+        local statemachine_name = params[1];
+        local statemachine_state_key = params[2];
+        local statemachine_init = params[3];
+
+        -- prepare location to hold StateMachineIter instances
+        -- if state.StateMachines == nil then state.StateMachines = {}; end
+
+        -- construct the StateMachineIter if it does not exist yet
+        local existingStateMachineRecord = state.StateMachines[name];
+        if existingStateMachineRecord == nil or not statemachine.isstatemachineiter(existingStateMachineRecord) then
+            -- the existing data is either nil or not a StateMachineIter
+            -- if it's not a StateMachineIter it's initial state data as someone pre-stuffed its addondata
+            local init_data = existingStateMachineRecord or {};
+            local templated_init_data = statemachine_init or {};
+            for k, v in pairs(templated_init_data) do
+                -- copy the initial data from the template only if it doesn't conflict with the pre-pushed addonData
+                if not init_data[k] then
+                    init_data[k] = v;
+                end
+            end
+            state.StateMachines[name] = statemachine.Start(statemachine_name, statemachine_state_key, init_data);
+        end
+
+        -- run the StateMachineIter in the context of the StateSetRunner
+        state.StateMachines[name]:run(...);
+    end, p = {name, state_key, init} };
+end
+
 --- Is this object an instance of StateSetRunner?
 --- @param object any Object in question
 --- @treturn bool
@@ -82,8 +124,11 @@ function M.isstatesetrunner(object)
   return (type(object) == "table" and object.__type == "StateSetRunner");
 end
 
---- StateSetRunner.
 --- An object containing all functions and data related to an StateSetRunner.
+--- @class StateSetRunner
+--- @field template string Name of the StateSet template the runner is using
+--- @field active_states table Table of active states, key is the state name and value is the state activation flag or permit count
+--- @field addonData table Custom context data stored in the StateSetRunner
 local StateSetRunner = {}; -- the table representing the class, which will double as the metatable for the instances
 StateSetRunner.__index = function(table, key)
   local retVal = rawget(table, key);
@@ -112,6 +157,7 @@ local function CreateStateSetRunner(name, values)
     local self = setmetatable({}, StateSetRunner);
     self.template = name;
     self.active_states = {};
+    self.StateMachines = {};
 
     if values then
         if utility.istable(values) then
@@ -126,7 +172,7 @@ end
 
 --- Run StateSetRunner.
 --- @param self StateSetRunner StateSetRunner instance
---- @param ... any Arguments to pass to the state function
+--- @vararg any Arguments to pass to the state function
 --- @return boolean True if at least one state was found and executed and returned true
 function StateSetRunner.run(self, ...)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
@@ -138,9 +184,12 @@ function StateSetRunner.run(self, ...)
         if v then
             local state = sets[name].f;
             if utility.isfunction(state) then
-                foundState = foundState or state(self, ...);
-            elseif statemachine.isstatemachineiter(state) then
-                foundState = foundState or state:run(self, ...);
+                foundState = foundState or state(self, name, ...);
+            elseif utility.istable(state) then
+                --- @cast state WrappedObjectForStateSetRunner
+                if utility.isfunction(state.f) then
+                    foundState = foundState or state.f(self, name, state.p, ...);
+                end
             end
         end
     end

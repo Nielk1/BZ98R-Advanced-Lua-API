@@ -33,7 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
-<li><a href="#Class_StateMachineIter">Class StateMachineIter </a></li>
+<li><a href="#Class_StateMachineNamedStateTruncated">Class StateMachineNamedStateTruncated </a></li>
 <li><a href="#StateMachineIter___Core">StateMachineIter - Core </a></li>
 </ul>
 
@@ -149,10 +149,10 @@ end);
 	<td class="summary">Is this object an instance of StateMachineIter?</td>
 	</tr>
 </table>
-<h2><a href="#Class_StateMachineIter">Class StateMachineIter </a></h2>
+<h2><a href="#Class_StateMachineNamedStateTruncated">Class StateMachineNamedStateTruncated </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter.run">StateMachineIter.run (self)</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter.run">StateMachineIter.run (self, ...)</a></td>
 	<td class="summary">Run StateMachineIter.</td>
 	</tr>
 	<tr>
@@ -164,15 +164,15 @@ end);
 	<td class="summary">Switch StateMachineIter State.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter:Create">StateMachineIter:Create (name, ...)</a></td>
+	<td class="name" nowrap><a href="#StateMachineNamedStateTruncated:Create">StateMachineNamedStateTruncated:Create (name, ...)</a></td>
 	<td class="summary">Creates an StateMachineIter Template with the given indentifier.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter:Start">StateMachineIter:Start (name, state_key, init)</a></td>
+	<td class="name" nowrap><a href="#StateMachineNamedStateTruncated:Start">StateMachineNamedStateTruncated:Start (name, state_key, init)</a></td>
 	<td class="summary">Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter:SleepCalls">StateMachineIter:SleepCalls (calls, next_state[, early_exit])</a></td>
+	<td class="name" nowrap><a href="#StateMachineNamedStateTruncated:SleepCalls">StateMachineNamedStateTruncated:SleepCalls (calls, next_state[, early_exit])</a></td>
 	<td class="summary">Wait a set period of time on this state.</td>
 	</tr>
 	<tr>
@@ -180,7 +180,7 @@ end);
 	<td class="summary">Check if a set period of time has passed.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter:SleepSeconds">StateMachineIter:SleepSeconds (seconds, next_state[, early_exit])</a></td>
+	<td class="name" nowrap><a href="#StateMachineNamedStateTruncated:SleepSeconds">StateMachineNamedStateTruncated:SleepSeconds (seconds, next_state[, early_exit])</a></td>
 	<td class="summary">Wait a set period of time on this state.</td>
 	</tr>
 </table>
@@ -191,7 +191,7 @@ end);
 	<td class="summary">Save event function.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter.Load">StateMachineIter.Load (data)</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter.Load">StateMachineIter.Load (template, target_call, target_time, state_key, addonData)</a></td>
 	<td class="summary">Load event function.</td>
 	</tr>
 	<tr>
@@ -235,12 +235,15 @@ end);
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Class_StateMachineIter"></a>Class StateMachineIter </h2>
+    <h2 class="section-header has-description"><a name="Class_StateMachineNamedStateTruncated"></a>Class StateMachineNamedStateTruncated </h2>
 
+          <div class="section-description">
+          A truncated version without the name, name is constructed at runtime from index
+          </div>
     <dl class="function">
     <dt>
     <a name = "StateMachineIter.run"></a>
-    <strong>StateMachineIter.run (self)</strong>
+    <strong>StateMachineIter.run (self, ...)</strong>
     </dt>
     <dd>
     Run StateMachineIter.
@@ -253,8 +256,19 @@ end);
             <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineIter">StateMachineIter</a></span>
          FuncArrayIter instance
         </li>
+        <li><span class="parameter">...</span>
+         Arguments to pass to the state function
+        </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">boolean,</span></span>
+        any True if the state function was called, false if the state function was not found</li>
+        <li>
+        ... The return value of the state function, if it was called</li>
+    </ol>
 
 
 
@@ -299,7 +313,7 @@ end);
          StateMachineIter instance
         </li>
         <li><span class="parameter">key</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">integer</span></span>
          State to switch to (will also accept state index if the StateMachineIter is ordered)
         </li>
     </ul>
@@ -310,14 +324,11 @@ end);
 
 </dd>
     <dt>
-    <a name = "StateMachineIter:Create"></a>
-    <strong>StateMachineIter:Create (name, ...)</strong>
+    <a name = "StateMachineNamedStateTruncated:Create"></a>
+    <strong>StateMachineNamedStateTruncated:Create (name, ...)</strong>
     </dt>
     <dd>
     Creates an StateMachineIter Template with the given indentifier.
- State descriptors are tables with the first element being the state name and the second element being the state function.
- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
 
     </ul>
 
@@ -327,7 +338,12 @@ end);
          Name of the StateMachineIter Template (string)
         </li>
         <li><span class="parameter">...</span>
-         any State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineNamedState">StateMachineNamedState</a></span>
+        |StateMachineNamedStateTruncated|StateMachineStateOrderedSet|WrappedObjectForStateMachineIter|StateMachineFunction State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
+ State descriptors are tables with the first element being the state name and the second element being the state function.
+ If the second element is nil, the first element is considered the state function and the state name is generated automatically.
+ If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
+ The first paramater of the state function is the StateMachineIter itself where the current state may be accessed via `self.state_key`.
         </li>
     </ul>
 
@@ -337,8 +353,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "StateMachineIter:Start"></a>
-    <strong>StateMachineIter:Start (name, state_key, init)</strong>
+    <a name = "StateMachineNamedStateTruncated:Start"></a>
+    <strong>StateMachineNamedStateTruncated:Start (name, state_key, init)</strong>
     </dt>
     <dd>
     Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
@@ -367,8 +383,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "StateMachineIter:SleepCalls"></a>
-    <strong>StateMachineIter:SleepCalls (calls, next_state[, early_exit])</strong>
+    <a name = "StateMachineNamedStateTruncated:SleepCalls"></a>
+    <strong>StateMachineNamedStateTruncated:SleepCalls (calls, next_state[, early_exit])</strong>
     </dt>
     <dd>
     Wait a set period of time on this state.
@@ -392,6 +408,12 @@ end);
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_statemachine.html#WrappedObjectForStateMachineIter">WrappedObjectForStateMachineIter</a></span>
+
+    </ol>
 
 
 
@@ -433,8 +455,8 @@ end);
 
 </dd>
     <dt>
-    <a name = "StateMachineIter:SleepSeconds"></a>
-    <strong>StateMachineIter:SleepSeconds (seconds, next_state[, early_exit])</strong>
+    <a name = "StateMachineNamedStateTruncated:SleepSeconds"></a>
+    <strong>StateMachineNamedStateTruncated:SleepSeconds (seconds, next_state[, early_exit])</strong>
     </dt>
     <dd>
     Wait a set period of time on this state.
@@ -487,8 +509,21 @@ end);
 
     <h3>Returns:</h3>
     <ol>
-
-        ...
+        <li>
+           <span class="types"><span class="type">template</span></span>
+        string StateMachineIter template name</li>
+        <li>
+           <span class="types"><span class="type">target_call</span></span>
+        integer? Timer's value, nil for not set</li>
+        <li>
+           <span class="types"><span class="type">target_time</span></span>
+        integer? TargetTurn's value, nil for not set</li>
+        <li>
+           <span class="types"><span class="type">state_key</span></span>
+        string|integer|nil Current state, string name or integer index if state machine is ordered</li>
+        <li>
+           <span class="types"><span class="type">addonData</span></span>
+        table Addon data, if any</li>
     </ol>
 
 
@@ -497,7 +532,7 @@ end);
 </dd>
     <dt>
     <a name = "StateMachineIter.Load"></a>
-    <strong>StateMachineIter.Load (data)</strong>
+    <strong>StateMachineIter.Load (template, target_call, target_time, state_key, addonData)</strong>
     </dt>
     <dd>
     Load event function.
@@ -507,8 +542,25 @@ end);
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">data</span>
-
+        <li><span class="parameter">template</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         StateMachineIter template name
+        </li>
+        <li><span class="parameter">target_call</span>
+            <span class="types"><span class="type">integer</span></span>
+        ? Timer's value, nil for not set
+        </li>
+        <li><span class="parameter">target_time</span>
+            <span class="types"><span class="type">integer</span></span>
+        ? TargetTurn's value, nil for not set
+        </li>
+        <li><span class="parameter">state_key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">integer</span> or <span class="type">nil</span></span>
+         Current state, string name or integer index if state machine is ordered
+        </li>
+        <li><span class="parameter">addonData</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         Addon data, if any
         </li>
     </ul>
 
@@ -540,7 +592,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-10 04:00:15 </i>
+<i style="float:right;">Last updated 2025-05-10 22:47:49 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -117,10 +117,6 @@ M.hook_priority = {
         StateMachine = 8999,
         --GameObject = 9999,
     },
-    GameObject_SwapObjectReferences = {
-        Tracker = 8999,
-        GameObject = 9999,
-    },
 }
 
 dont_lock = false;

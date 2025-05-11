@@ -56,12 +56,15 @@ end
 local function AddTrackedObject(object, odf, sig, team)
     traceprint("AddTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
-    if next(Current_TrackerData_Filter_Teams) ~= nil and Current_TrackerData_Filter_Teams[team] == nil then
+    if next(Current_TrackerData_Filter_Teams) ~= nil and not Current_TrackerData_Filter_Teams[team] then
         traceprint("AddTrackedObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
         return;
     end
 
-    if next(Current_TrackerData_Filter_Classes) == nil or Current_TrackerData_Filter_Classes[sig] ~= nil then
+    local hasAnyFilters = next(Current_TrackerData_Filter_Classes) ~= nil or next(Current_TrackerData_Filter_Odfs) ~= nil;
+    local trackedObject = false;
+
+    if not hasAnyFilters or Current_TrackerData_Filter_Classes[sig] then
         TrackerData_Class[team]              = TrackerData_Class[team] or {};
         TrackerData_Class[team][sig]         = TrackerData_Class[team][sig] or {};
         TrackerData_Class[team][sig][object] = true;
@@ -71,9 +74,11 @@ local function AddTrackedObject(object, odf, sig, team)
         
         TrackerData_TotalClass[team]      = TrackerData_TotalClass[team] or {};
         TrackerData_TotalClass[team][sig] = (TrackerData_TotalClass[team][sig] or 0) + 1;
+
+        trackedObject = true;
     end
 
-    if next(Current_TrackerData_Filter_Odfs) == nil or Current_TrackerData_Filter_Odfs[odf] ~= nil then
+    if not hasAnyFilters or Current_TrackerData_Filter_Odfs[odf] then
         TrackerData_Odf[team]              = TrackerData_Odf[team] or {};
         TrackerData_Odf[team][odf]         = TrackerData_Odf[team][odf] or {};
         TrackerData_Odf[team][odf][object] = true;
@@ -83,12 +88,16 @@ local function AddTrackedObject(object, odf, sig, team)
 
         TrackerData_TotalOdf[team]        = TrackerData_TotalOdf[team] or {};
         TrackerData_TotalOdf[team][odf]   = (TrackerData_TotalOdf[team][odf] or 0) + 1;
+
+        trackedObject = true;
     end
 
-    object.tracker = unsaved(object.tracker)
-    object.tracker.odf = odf;
-    object.tracker.sig = sig;
-    object.tracker.team = team;
+    if trackedObject then
+        object.tracker = unsaved(object.tracker)
+        object.tracker.odf = odf;
+        object.tracker.sig = sig;
+        object.tracker.team = team;
+    end
 
     testprint();
 end
@@ -286,10 +295,11 @@ function M.setFilterClass(class, enabled)
     local classItem = utility.ClassLabel[class];
     if classItem == nil then error("Class does not exist") end
 
-    if classItem:match("^[A-Z]+%z{0,3}$") ~= nil then
+    if classItem:match("^[A-Z][A-Z][A-Z][A-Z%z]$") ~= nil then
         -- input was ClassName that was mapped to ClassSig, use Sig.
         class = classItem;
     end
+
     class = class .. string.rep("\0", 4 - #class); -- pad to 4 bytes
 
     Desired_TrackerData_Filter_Classes[class] = enabled or nil;
@@ -351,39 +361,15 @@ end,
 function(filter_teams, filter_classes, filter_odfs)
     Desired_TrackerData_Filter_Teams = filter_teams or {};
     Desired_TrackerData_Filter_Classes = filter_classes or {};
-    Current_TrackerData_Filter_Teams = utility.shallowCopy(Desired_TrackerData_Filter_Teams);
+    Desired_TrackerData_Filter_Odfs = filter_odfs or {};
+
     Current_TrackerData_Filter_Teams = {};
     Current_TrackerData_Filter_Classes = {};
     Current_TrackerData_Filter_Odfs = {};
+
     CheckUpdated();
     HaveStarted = true;
 end);
-
-hook.Add("GameObject:SwapObjectReferences", "GameObject:SwapObjectReferences_tracker", function(objectA, objectB)
-    local trackerA = objectA.tracker;
-    local odfA = trackerA and trackerA.odf or objectA:GetOdf()
-    local sigA = trackerA and trackerA.sig or objectA:GetClassSig()
-    local teamA = trackerA and trackerA.team or  objectA:GetTeamNum()
-
-    local trackerB = objectB.tracker;
-    local odfB = trackerB and trackerB.odf or objectB:GetOdf()
-    local sigB = trackerB and trackerB.sig or objectB:GetClassSig()
-    local teamB = trackerB and trackerB.team or objectB:GetTeamNum()
-
-    -- @todo consider implementing an update function that moves the item or something
-
-    if teamA == teamB and odfA == odfB and sigA == sigB then
-        -- reference swap is fine since keying data is the same
-        return;
-    end
-
-    -- delete the objects from the tracker, account for their swapped keys
-    DeleteTrackedObject(objectB, odfA, sigA, teamA, true)
-    DeleteTrackedObject(objectA, odfB, sigB, teamB, true)
-
-    AddTrackedObject(objectA, odfA, sigA, teamA)
-    AddTrackedObject(objectB, odfB, sigB, teamB)
-end, config.get("hook_priority.GameObject_SwapObjectReferences.Tracker"));
 
 debugprint("_tracker Loaded");
 

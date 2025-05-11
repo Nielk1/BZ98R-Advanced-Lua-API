@@ -36,7 +36,7 @@
 <li><a href="#Core">Core </a></li>
 <li><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></li>
 <li><a href="#Deploy">Deploy </a></li>
-<li><a href="#Orders">Orders </a></li>
+<li><a href="#Unit_Commands">Unit Commands </a></li>
 <li><a href="#Position___Velocity">Position & Velocity </a></li>
 <li><a href="#Condition_Checks">Condition Checks </a></li>
 <li><a href="#Tug_Cargo">Tug Cargo </a></li>
@@ -157,8 +157,40 @@
 	<td class="summary">Tells the game object to deploy.</td>
 	</tr>
 </table>
-<h2><a href="#Orders">Orders </a></h2>
+<h2><a href="#Unit_Commands">Unit Commands </a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.CanCommand">GameObject.CanCommand (self)</a></td>
+	<td class="summary">Returns true if the game object can be commanded.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.CanBuild">GameObject.CanBuild (self)</a></td>
+	<td class="summary">Returns true if the game object is a producer that can build at the moment.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.IsBusy">GameObject.IsBusy (self)</a></td>
+	<td class="summary">Returns true if the game object is a producer and currently busy.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetCurrentCommand">GameObject.GetCurrentCommand (self)</a></td>
+	<td class="summary">Returns the current command for the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetCurrentWho">GameObject.GetCurrentWho (self)</a></td>
+	<td class="summary">Returns the target of the current command for the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetIndependence">GameObject.GetIndependence (self)</a></td>
+	<td class="summary">Gets the independence of a unit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetIndependence">GameObject.SetIndependence (self, independence)</a></td>
+	<td class="summary">Sets the independence of a unit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetCommand">GameObject.SetCommand (self, command[, priority][, who], where[, when[, param]])</a></td>
+	<td class="summary">Commands the unit using the given parameters.</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GameObject.Attack">GameObject.Attack (self, target, priority)</a></td>
 	<td class="summary">Order GameObject to Attack target GameObject.</td>
@@ -970,9 +1002,262 @@
 
 </dd>
 </dl>
-    <h2 class="section-header "><a name="Orders"></a>Orders </h2>
+    <h2 class="section-header has-description"><a name="Unit_Commands"></a>Unit Commands </h2>
 
+          <div class="section-description">
+           functions send commands to units or query their command state.
+          </div>
     <dl class="function">
+    <dt>
+    <a name = "GameObject.CanCommand"></a>
+    <strong>GameObject.CanCommand (self)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object can be commanded.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.CanBuild"></a>
+    <strong>GameObject.CanBuild (self)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object is a producer that can build at the moment.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.IsBusy"></a>
+    <strong>GameObject.IsBusy (self)</strong>
+    </dt>
+    <dd>
+    Returns true if the game object is a producer and currently busy.  Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetCurrentCommand"></a>
+    <strong>GameObject.GetCurrentCommand (self)</strong>
+    </dt>
+    <dd>
+    Returns the current command for the game object.  Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetCurrentWho"></a>
+    <strong>GameObject.GetCurrentWho (self)</strong>
+    </dt>
+    <dd>
+    Returns the target of the current command for the game object.  Returns nil if it has none.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetIndependence"></a>
+    <strong>GameObject.GetIndependence (self)</strong>
+    </dt>
+    <dd>
+    Gets the independence of a unit.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetIndependence"></a>
+    <strong>GameObject.SetIndependence (self, independence)</strong>
+    </dt>
+    <dd>
+    Sets the independence of a unit.  1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">independence</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.SetCommand"></a>
+    <strong>GameObject.SetCommand (self, command[, priority][, who], where[, when[, param]])</strong>
+    </dt>
+    <dd>
+    Commands the unit using the given parameters.  Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
+ "Command" is the command to issue, normally chosen from the global AiCommand table (e.g. AiCommand.GO).
+ "Priority" is the command priority; a value of 0 leaves the unit commandable by the player while the default value of 1 makes it uncommandable.
+ "Who" is an optional target game object.
+ "Where" is an optional destination, and can be a matrix (transform), a vector (position), or a string (path name).
+ "When" is an optional absolute time value only used by command AiCommand.STAGE.
+ "Param" is an optional odf name only used by command AiCommand.BUILD.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">command</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">who</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">Handle</span></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">where</span>
+            <span class="types"><span class="type">Matrix</span>, <span class="type">Vector</span> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        ?
+        </li>
+        <li><span class="parameter">when</span>
+            <span class="types"><span class="type">number</span></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">param</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
     <dt>
     <a name = "GameObject.Attack"></a>
     <strong>GameObject.Attack (self, target, priority)</strong>
@@ -3485,7 +3770,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-10 04:00:15 </i>
+<i style="float:right;">Last updated 2025-05-10 22:47:49 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

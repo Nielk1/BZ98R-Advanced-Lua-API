@@ -310,9 +310,122 @@ function GameObject.Deploy(self)
 end
 
 -------------------------------------------------------------------------------
--- Orders
+-- Unit Commands
 -------------------------------------------------------------------------------
 -- @section
+-- These functions send commands to units or query their command state.
+
+--- Returns true if the game object can be commanded. Returns false otherwise.
+--- @param self GameObject
+--- @return boolean
+function GameObject.CanCommand(self)
+    if not M.isgameobject(self) then error("Parameter me must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return CanCommand(self:GetHandle());
+end
+
+--- Returns true if the game object is a producer that can build at the moment. Returns false otherwise.
+--- @param self GameObject
+--- @return boolean
+function GameObject.CanBuild(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return CanBuild(self:GetHandle());
+end
+
+--- Returns true if the game object is a producer and currently busy. Returns false otherwise.
+--- @param self GameObject
+--- @return boolean
+function GameObject.IsBusy(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return IsBusy(self:GetHandle());
+end
+
+--- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
+--- @param self GameObject
+--- @return integer
+function GameObject.GetCurrentCommand(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetCurrentCommand(self:GetHandle());
+end
+
+--- Returns the target of the current command for the game object. Returns nil if it has none.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetCurrentWho(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetCurrentWho(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Gets the independence of a unit.
+--- @param self GameObject
+--- @return integer
+function GameObject.GetIndependence(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetIndependence(self:GetHandle());
+end
+
+--- Sets the independence of a unit. 1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
+--- @param self GameObject
+--- @param independence integer
+function GameObject.SetIndependence(self, independence)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isnumber(independence) then error("Parameter independence must be a number") end
+    --- @diagnostic disable-next-line: deprecated
+    SetIndependence(self:GetHandle(), independence);
+end
+
+--- Commands the unit using the given parameters. Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
+--- "Command" is the command to issue, normally chosen from the global AiCommand table (e.g. AiCommand.GO).
+--- "Priority" is the command priority; a value of 0 leaves the unit commandable by the player while the default value of 1 makes it uncommandable.
+--- "Who" is an optional target game object.
+--- "Where" is an optional destination, and can be a matrix (transform), a vector (position), or a string (path name).
+--- "When" is an optional absolute time value only used by command AiCommand.STAGE.
+--- "Param" is an optional odf name only used by command AiCommand.BUILD.
+--- @param self GameObject
+--- @param command integer
+--- @param priority? integer
+--- @param who? GameObject|Handle
+--- @param where Matrix|Vector|string?
+--- @param when? number
+--- @param param? string
+function GameObject.SetCommand(self, command, priority, who, where, when, param)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isnumber(command) then error("Parameter command must be a number") end
+    if priority ~= nil and not utility.isnumber(priority) then error("Parameter priority must be a number") end
+    if who ~= nil and not (M.isgameobject(who) or utility.isstring(who)) then error("Parameter who must be GameObject or string") end
+    if where ~= nil and not (utility.ismatrix(where) or utility.isvector(where) or utility.isstring(where)) then error("Parameter where must be Matrix, Vector, or string") end
+    if when ~= nil and not utility.isnumber(when) then error("Parameter when must be a number") end
+    if param ~= nil and not utility.isstring(param) then error("Parameter param must be a string") end
+
+    if who ~= nil and M.isgameobject(who) then
+        --- @cast who GameObject
+        --- @diagnostic disable-next-line: deprecated
+        SetCommand(self:GetHandle(), command, priority, who:GetHandle(), where, when, param);
+        return;
+    end
+    --- @cast who Handle?
+    --- @diagnostic disable-next-line: deprecated
+    SetCommand(self:GetHandle(), command, priority, who, where, when, param);
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 --- Order GameObject to Attack target GameObject.
 --- @param self GameObject GameObject instance

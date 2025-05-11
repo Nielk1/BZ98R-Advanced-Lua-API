@@ -156,7 +156,7 @@ M.colorCodes = {
 }
 
 --- RAVE GUN! color cycle.
---- Each color is represented as a hexadecimal number: 0xRRGGBB.
+--- Each color is represented as a hexadecimal number: 0xRRGGBBFF.
 --- @enum RAVE_COLOR
 M.RAVE_COLOR = {
     [1]  = 0xFF0000FF, --  1: <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>
@@ -247,7 +247,7 @@ function M.isHandle(object)
         return false
     end
     local mt = getmetatable(object)
-    return mt and mt.__name == "BZHandle"
+    return mt and mt.__type == "BZHandle"
 end
 
 --- Is this object a Vector?
@@ -258,7 +258,7 @@ function M.isVector(object)
         return false
     end
     local mt = getmetatable(object)
-    return mt and mt.__name == "VECTOR_3D"
+    return mt and mt.__type == "VECTOR_3D"
 end
 
 --- Is this object a Matrix?
@@ -269,7 +269,7 @@ function M.isMatrix(object)
         return false
     end
     local mt = getmetatable(object)
-    return mt and mt.__name == "MAT_3D"
+    return mt and mt.__type == "MAT_3D"
 end
 
 -------------------------------------------------------------------------------

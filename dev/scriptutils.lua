@@ -198,14 +198,14 @@ function SetLabel(h, label) end
 
 --- Returns the four-character class signature of the game object (e.g. "WING"). Returns nil if none exists.
 --- @param h Handle
---- @return string
+--- @return string?
 --- @function GetClassSig
 --- @deprecated Use `_gameobject.GetClassSig` instead.
 function GetClassSig(h) error("This function is provided by the engine."); end
 
 --- Returns the class label of the game object (e.g. "wingman"). Returns nil if none exists.
 --- @param h Handle
---- @return string
+--- @return string?
 --- @function GetClassLabel
 --- @deprecated Use `_gameobject.GetClassLabel` instead.
 function GetClassLabel(h) error("This function is provided by the engine."); end
@@ -213,7 +213,7 @@ function GetClassLabel(h) error("This function is provided by the engine."); end
 --- Returns the numeric class identifier of the game object. Returns nil if none exists.
 --- Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
 --- @param h Handle
---- @return integer
+--- @return integer?
 --- @function GetClassId
 --- @deprecated Use `_gameobject.GetClassId` instead.
 function GetClassId(h) error("This function is provided by the engine."); end
@@ -1551,7 +1551,7 @@ function IsBusy(me) error("This function is provided by the engine."); end
 
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param me Handle
---- @return integer
+--- @return AiCommand
 --- @function GetCurrentCommand
 --- @deprecated use `GameObject.GetCurrentCommand` instead.
 function GetCurrentCommand(me) error("This function is provided by the engine."); end

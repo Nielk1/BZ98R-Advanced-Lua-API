@@ -344,7 +344,7 @@ end
 
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param self GameObject
---- @return integer
+--- @return AiCommand
 function GameObject.GetCurrentCommand(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -1505,21 +1505,42 @@ function GameObject.SetLabel(self, label)
     SetLabel(self:GetHandle(),label);
 end
 
---- Get nation of GameObject
+--- Returns the four-character class signature of the game object (e.g. "WING"). Returns nil if none exists.
+--- @param self GameObject GameObject instance
+--- @return string? ClassSig string
+function GameObject.GetClassSig(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetClassSig(self:GetHandle());
+end
+
+--- Returns the class label of the game object (e.g. "wingman"). Returns nil if none exists.
+--- @param self GameObject GameObject instance
+--- @return string? Class label string
+function GameObject.GetClassLabel(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetClassLabel(self:GetHandle());
+end
+
+--- Returns the numeric class identifier of the game object. Returns nil if none exists.
+--- Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
+--- @param self GameObject GameObject instance
+--- @return integer? ClassId number
+function GameObject.GetClassId(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetClassId(self:GetHandle());
+end
+
+--- Returns the one-letter nation code of the game object (e.g. "a" for American, "b" for Black Dog, "c" for Chinese, and "s" for Soviet).
+--- The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".
 --- @param self GameObject GameObject instance
 --- @return string character identifier for race
 function GameObject.GetNation(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
     return GetNation(self:GetHandle());
-end
-
---- Get ClassSig of GameObject
---- @param self GameObject GameObject instance
-function GameObject.GetClassSig(self)
-    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    --- @diagnostic disable-next-line: deprecated
-    return GetClassSig(self:GetHandle());
 end
 
 --- @diagnostic disable-next-line: undefined-global

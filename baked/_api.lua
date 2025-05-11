@@ -350,6 +350,7 @@ function Load(...)
         if entry.BulkLoad ~= nil and utility.isfunction(entry.BulkLoad) then
             traceprint("Loaded " .. entry.TypeName);
             entry.BulkLoad(DeSimplifyForLoad(table.unpack(data)));
+            traceprint("BulkLoad ran for " .. entry.TypeName);
         end
     end
     traceprint("Loaded custom types data");

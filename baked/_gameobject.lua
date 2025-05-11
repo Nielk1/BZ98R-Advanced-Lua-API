@@ -145,11 +145,18 @@ function GameObject.BulkLoad(data)
 -- Xparam dataDead Dead object data
 --function GameObject.BulkLoad(data,dataDead)
     local _ObjectiveObjects = {};
+
     --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
+        local lastObject = nil;
         --- @diagnostic disable-next-line: deprecated
         for h in ObjectiveObjects() do
+            if lastObject == h then
+                break; -- break out of inf loop issue
+            end
             _ObjectiveObjects[h] = true;
+            debugprint("BulkLoad GameObject ObjectiveObjects: "..tostring(h));
+            lastObject = h;
         end
     end
 
@@ -160,7 +167,7 @@ function GameObject.BulkLoad(data)
         -- IsObjectiveOn Memo
         local objectiveData = _ObjectiveObjects[k];
         if objectiveData ~= nil then
-            newGameObject.cache_memo = { IsObjectiveOn = true };
+            newGameObject.cache_memo = unsaved({ IsObjectiveOn = true });
             _ObjectiveObjects[k] = nil; -- does this speed things up or slow them down?
         end
     end

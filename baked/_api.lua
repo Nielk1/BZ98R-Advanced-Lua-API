@@ -6,9 +6,7 @@
 --- @module '_api'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable: undefined-global
-table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
-SetLabel = SetLabel or SettLabel; -- BZ1.5 compatibility
+require("_fix");
 
 local debugprint = debugprint or function(...) end;
 local traceprint = traceprint or function(...) end;
@@ -201,11 +199,15 @@ local CustomTypeMap = nil; -- maps name to ID number
 local _api = {};
 
 
+--- @vararg any data
+--- @return any ...
 function SimplifyForSave(...)
-    local output = {}; -- output array
-    local count = select ("#", ...); -- get count of params
-    for k = 1,count,1 do  -- loop params via count
-        local v = select(k,...); -- get Kth Parameter, store in v
+    local output = {...}; -- output array
+    local ArraySize = 0;
+    for k,v in pairs(output) do
+        if k > ArraySize then
+            ArraySize = k;
+        end
         if utility.istable(v) then -- it's a table, start special logic
             if not v.__nosave then
                 if customsavetype.CustomSavableTypes[v.__type] ~= nil then
@@ -217,27 +219,52 @@ function SimplifyForSave(...)
                     if customsavetype.CustomSavableTypes[v.__type].Save ~= nil then
                         specialTypeTable["*data"] = {SimplifyForSave(customsavetype.CustomSavableTypes[v.__type].Save(v))};
                     end
-                    table.insert(output, specialTypeTable);
+                    output[k] = specialTypeTable;
                 else
+                    -- we need to work with a clone of the table so we don't modify the original, as the mission will continue to run after saving so it must remain the same
                     local newTable = {};
-                    for k2, v2 in pairs( v ) do 
-                        newTable[k2] = SimplifyForSave(v2);
+
+                    -- might be better to just dumb replace all this shit with a pairs loop and say fuck-it to nils.
+
+                    -- Find the highest numeric index
+                    local max_index = 0;
+                    for k2, _ in pairs(v) do
+                        if utility.isnumber(k2) and k2 > max_index then
+                            max_index = k2;
+                        end
                     end
-                    table.insert(output, newTable);
+
+                    -- Copy array portion (including nil values)
+                    for i = 1, max_index do
+                        newTable[i] = SimplifyForSave(v[i]);
+                    end
+
+                    -- Copy non-array keys
+                    for k2, v2 in pairs(v) do
+                        if not utility.isnumber(k2) or k2 > max_index then
+                            newTable[k2] = SimplifyForSave(v2);
+                        end
+                    end
+
+                    output[k] = newTable;
                 end
+            else
+                output[k] = nil;
             end
-        else -- it's not a table, really simple
-            table.insert(output, v);
         end
     end
-    return table.unpack(output);
+    return table.unpack(output, 1, ArraySize);
 end
 
+--- @vararg any data
+--- @return any ...
 function DeSimplifyForLoad(...)
-    local output = {}; -- output array
-    local count = select ("#", ...); -- get count of params
-    for k = 1,count,1 do  -- loop params via count
-        local v = select(k,...); -- get Kth Parameter, store in v
+    local output = {...}; -- output array
+    local ArraySize = 0;
+    for k,v in pairs(output) do
+        if k > ArraySize then
+            ArraySize = k;
+        end
         if utility.istable(v) then -- it's a table, start special logic
             if v["*custom_type"] ~= nil then
                 if not CustomTypeMap then error("CustomTypeMap is nil") end
@@ -245,23 +272,28 @@ function DeSimplifyForLoad(...)
                 local typeObj = customsavetype.CustomSavableTypes[typeName];
                 if typeObj.Load ~= nil then
                     if v["*data"] ~= nil then
-                        table.insert(output, typeObj.Load(DeSimplifyForLoad(table.unpack(v["*data"]))));
+
+                        local args = v["*data"];
+                        local ArraySize_ = 0;
+                        for k,v in pairs(args) do if k > ArraySize_ then ArraySize_ = k; end end
+
+                        output[k] = typeObj.Load(DeSimplifyForLoad(table.unpack(args, 1, ArraySize_)));
                     else
-                        table.insert(output, typeObj.Load());
+                        output[k] = typeObj.Load();
                     end
                 end
             else
-                local newTable = {};
-                for k2, v2 in pairs( v ) do 
-                    newTable[k2] = DeSimplifyForLoad(v2);
+                -- since we're loading we don't have to worry about modifying the original, as the original came from the load function and will cease to exist after this
+                for k2, v2 in pairs( v ) do
+                    if v2 ~= nil then
+                        -- if the value isn't nil, let it try to DeSimplifyForLoad and just stuff it right back in the table
+                        v[k2] = DeSimplifyForLoad(v2);
+                    end
                 end
-                table.insert(output, newTable);
             end
-        else -- it's not a table, really simple
-            table.insert(output, v);
         end
     end
-    return table.unpack(output);
+    return table.unpack(output, 1, ArraySize);
 end
 
 -------------------------------------------------------------------------------
@@ -347,14 +379,22 @@ function Load(...)
         local entry = customsavetype.CustomSavableTypes[CustomTypeMap[idNum]];
         if entry.BulkLoad ~= nil and utility.isfunction(entry.BulkLoad) then
             traceprint("Loaded " .. entry.TypeName);
-            entry.BulkLoad(DeSimplifyForLoad(table.unpack(data)));
+
+            local ArraySize = 0;
+            for k,v in pairs(data) do if k > ArraySize then ArraySize = k; end end
+
+            entry.BulkLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));
             traceprint("BulkLoad ran for " .. entry.TypeName);
         end
     end
     traceprint("Loaded custom types data");
 
     traceprint("Calling all hooked load functions");
-    hook.CallLoad(DeSimplifyForLoad(table.unpack(args.HooksData)));
+
+    local ArraySize = 0;
+    for k,v in pairs(args.HooksData) do if k > ArraySize then ArraySize = k; end end
+
+    hook.CallLoad(DeSimplifyForLoad(table.unpack(args.HooksData, 1, ArraySize)));
     debugprint("_api::/Load");
 end
 
@@ -494,6 +534,12 @@ end
 -- @section Script Run
 
 debugprint("_api Loaded");
+
+if _VERSION ~= nil then
+    print(_VERSION .. " detected");
+else
+    print("Lua version unknown");
+end
 
 if GameVersion ~= nil then
     print("GameVersion " .. GameVersion .. " detected");

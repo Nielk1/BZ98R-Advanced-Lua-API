@@ -33,8 +33,8 @@ local M_MT = {};
 --- @function __call
 --- Creates a new table or augments the passed in table marking it as unsaved.
 --- @param table table The module table itself.
---- @param data table Table to augment with unsaved data. If nil, a new table is created.
---- @treturn table The unsavable table.
+--- @param data table? Table to augment with unsaved data. If nil, a new table is created.
+--- @return table
 M_MT.__call = function(table, data)
     --if data ~= nil then
     --    return setmetatable(data, unsaved_meta);

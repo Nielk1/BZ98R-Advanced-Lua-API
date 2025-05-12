@@ -69,8 +69,7 @@
 ---     MissionData.TestSMI2:run();
 --- end);
 
---- @diagnostic disable: undefined-global
-table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+require("_fix");
 
 local debugprint = debugprint or function(...) end;
 --- @diagnostic enable: undefined-global
@@ -188,6 +187,7 @@ local function CreateStateMachineIter(name, target_call, target_time, state_key,
     self.target_call = target_call;
     self.target_time = target_time;
     self.state_key = state_key;
+    debugprint("StateMachineIter '"..name.."' created with state '"..tostring(state_key).."'");
     
     if values and utility.istable(values) then
         for k, v in pairs( values ) do

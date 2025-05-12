@@ -41,8 +41,7 @@
 --     end
 -- end, 9999)
 
---- @diagnostic disable-next-line: undefined-global
-table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+require("_fix");
 
 --- @diagnostic disable-next-line: undefined-global
 local debugprint = debugprint or function(...) end;

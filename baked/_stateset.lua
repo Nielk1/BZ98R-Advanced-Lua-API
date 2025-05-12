@@ -29,8 +29,7 @@
 --     MissionData.TestSMI:run(1, 2);
 -- end);
 
---- @diagnostic disable: undefined-global
-table.unpack = table.unpack or unpack; -- Lua 5.1 compatibility
+require("_fix");
 
 local debugprint = debugprint or function(...) end;
 --- @diagnostic enable: undefined-global

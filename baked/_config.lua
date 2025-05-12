@@ -94,9 +94,6 @@ end
 --- Update                         .Tracker      =  4999
 --- Update                         .NavManager   =  5999
 --- Update                         .StateMachine =  8999
---- ----------------------------------------------------
---- GameObject_SwapObjectReferences.Tracker      =  8999
---- GameObject_SwapObjectReferences.GameObject   =  9999</pre>
 M.hook_priority = {
     DeleteObject = {
         GameObject = -9999,

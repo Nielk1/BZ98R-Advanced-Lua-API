@@ -11,6 +11,7 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_gameobject Loading");
 
+require("_fix");
 local utility = require("_utility");
 local config = require("_config");
 local hook = require("_hook");
@@ -122,7 +123,7 @@ function GameObject.BulkSave()
     -- store all the custom data we have for GameObjects by their handle keys
     local returnData = {};
     for k,v in pairs(GameObjectWeakList) do
-        if v.addonData ~= nil then
+        if v.addonData ~= nil and next(v.addonData) ~= nil then
             returnData[k] = v.addonData;
         end
     end
@@ -148,16 +149,16 @@ function GameObject.BulkLoad(data)
 
     --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
-        local lastObject = nil;
-        --- @diagnostic disable-next-line: deprecated
-        for h in ObjectiveObjects() do
-            if lastObject == h then
-                break; -- break out of inf loop issue
-            end
+            local lastObject = nil;
+            --- @diagnostic disable-next-line: deprecated
+            for h in ObjectiveObjects() do
+                if lastObject == h then
+                    break; -- break out of inf loop issue
+                end
             _ObjectiveObjects[h] = true;
-            debugprint("BulkLoad GameObject ObjectiveObjects: "..tostring(h));
-            lastObject = h;
-        end
+                debugprint("BulkLoad GameObject ObjectiveObjects: "..tostring(h));
+                lastObject = h;
+            end
     end
 
     for k,v in pairs(data) do

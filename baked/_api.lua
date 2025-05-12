@@ -207,9 +207,7 @@ function SimplifyForSave(...)
     for k = 1,count,1 do  -- loop params via count
         local v = select(k,...); -- get Kth Parameter, store in v
         if utility.istable(v) then -- it's a table, start special logic
-            if v.__nosave == true then
-                --debugprint("Skipping save of " .. v.__type .. " (marked as unsavable)");
-            else
+            if not v.__nosave then
                 if customsavetype.CustomSavableTypes[v.__type] ~= nil then
                     local specialTypeTable = {};
                     if not CustomTypeMap then error("CustomTypeMap is nil") end
@@ -217,7 +215,7 @@ function SimplifyForSave(...)
                     debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
                     specialTypeTable["*custom_type"] = typeIndex;
                     if customsavetype.CustomSavableTypes[v.__type].Save ~= nil then
-                        specialTypeTable["*data"] = {customsavetype.CustomSavableTypes[v.__type].Save(v)};
+                        specialTypeTable["*data"] = {SimplifyForSave(customsavetype.CustomSavableTypes[v.__type].Save(v))};
                     end
                     table.insert(output, specialTypeTable);
                 else
@@ -247,7 +245,7 @@ function DeSimplifyForLoad(...)
                 local typeObj = customsavetype.CustomSavableTypes[typeName];
                 if typeObj.Load ~= nil then
                     if v["*data"] ~= nil then
-                        table.insert(output, typeObj.Load(table.unpack(v["*data"])));
+                        table.insert(output, typeObj.Load(DeSimplifyForLoad(table.unpack(v["*data"]))));
                     else
                         table.insert(output, typeObj.Load());
                     end

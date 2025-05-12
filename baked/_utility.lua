@@ -77,47 +77,47 @@ M.ClassLabel = {
     ["WALK"] = "walker", -- walker
     ["SCRP"] = "scrap", -- scrap
 
-    ["producer"] = "PROD", -- producer
-    ["hover"] = "HOVR", -- hover
-    ["weapon"] = "WEPN", -- weapon
-    ["gameobject"] = "GOBJ", -- gameobject
-    ["ordnance"] = "ORDN", -- ordnance
-    ["apc"] = "APC\0", -- apc
-    ["armory"] = "ARMR", -- armory
-    ["constructionrig"] = "CNST", -- construction rig
-    ["factory"] = "FACT", -- factory
-    ["powerplant"] = "PLNT", -- power plant
-    ["recycler"] = "RCYC", -- recycler
-    ["scavenger"] = "SCAV", -- scavenger
-    ["dropoff"] = "SDRP", -- scrap dropoff
-    ["supplydepot"] = "SDEP", -- supply depot
-    ["tug"] = "TUG\0", -- tug
-    ["turrettank"] = "TTNK", -- turret tank
-    ["artifact"] = "ARTI", -- artifact
-    ["barracks"] = "BARR", -- barracks
-    ["i76building"] = "BLDG", -- building
-    ["commtower"] = "COMM", -- comm tower
-    ["craft"] = "CRFT", -- craft
-    ["daywrecker"] = "WRCK", -- daywrecker
-    ["geyser"] = "GEIZ", -- geyser
-    ["minelayer"] = "MLYR", -- minelayer
-    ["person"] = "PERS", -- person
-    ["powerup"] = "PWUP", -- powerup
-    ["camerapod"] = "CPOD", -- camera pod
-    ["ammopack"] = "AMMO", -- ammo pack
-    ["repairkit"] = "RKIT", -- repair kit
-    ["repairdepot"] = "RDEP", -- repair depot
-    ["sav"] = "SAV\0", -- sav
-    ["scrapfield"] = "SFLD", -- scrap field
-    ["scrapsilo"] = "SILO", -- scrap silo
-    ["shieldtower"] = "SHLD", -- shield tower
-    ["spawnpnt"] = "SPWN", -- spawn buoy
-    ["torpedo"] = "TORP", -- torpedo
-    ["wingman"] = "WING", -- wingman
-    ["howitzer"] = "HWTZ", -- howitzer
-    ["turret"] = "TURR", -- turret
-    ["walker"] = "WALK", -- walker
-    ["scrap"] = "SCRP", -- scrap
+    ["producer"] = "PROD", -- PROD
+    ["hover"] = "HOVR", -- HOVR
+    ["weapon"] = "WEPN", -- WEPN
+    ["gameobject"] = "GOBJ", -- GOBJ
+    ["ordnance"] = "ORDN", -- ORDN
+    ["apc"] = "APC\0", -- APC\0
+    ["armory"] = "ARMR", -- ARMR
+    ["constructionrig"] = "CNST", -- CNST
+    ["factory"] = "FACT", -- FACT
+    ["powerplant"] = "PLNT", -- PLNT
+    ["recycler"] = "RCYC", -- RCYC
+    ["scavenger"] = "SCAV", -- SCAV
+    ["dropoff"] = "SDRP", -- SDRP
+    ["supplydepot"] = "SDEP", -- SDEP
+    ["tug"] = "TUG\0", -- TUG\0
+    ["turrettank"] = "TTNK", -- TTNK
+    ["artifact"] = "ARTI", -- ARTI
+    ["barracks"] = "BARR", -- BARR
+    ["i76building"] = "BLDG", -- BLDG
+    ["commtower"] = "COMM", -- COMM
+    ["craft"] = "CRFT", -- CRFT
+    ["daywrecker"] = "WRCK", -- WRCK
+    ["geyser"] = "GEIZ", -- GEIZ
+    ["minelayer"] = "MLYR", -- MLYR
+    ["person"] = "PERS", -- PERS
+    ["powerup"] = "PWUP", -- PWUP
+    ["camerapod"] = "CPOD", -- CPOD
+    ["ammopack"] = "AMMO", -- AMMO
+    ["repairkit"] = "RKIT", -- RKIT
+    ["repairdepot"] = "RDEP", -- RDEP
+    ["sav"] = "SAV\0", -- SAV\0
+    ["scrapfield"] = "SFLD", -- SFLD
+    ["scrapsilo"] = "SILO", -- SILO
+    ["shieldtower"] = "SHLD", -- SHLD
+    ["spawnpnt"] = "SPWN", -- SPWN
+    ["torpedo"] = "TORP", -- TORP
+    ["wingman"] = "WING", -- WING
+    ["howitzer"] = "HWTZ", -- HWTZ
+    ["turret"] = "TURR", -- TURR
+    ["walker"] = "WALK", -- WALK
+    ["scrap"] = "SCRP", -- SCRP
 };
 
 --- Convert human readable color names to BZ98R color labels.
@@ -159,15 +159,15 @@ M.colorCodes = {
 --- Each color is represented as a hexadecimal number: 0xRRGGBBFF.
 --- @enum RAVE_COLOR
 M.RAVE_COLOR = {
-    [1]  = 0xFF0000FF, --  1: <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>
-    [2]  = 0xFF3300FF, --  2: <div style="background-color: #FF3300; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [2] = 0xFF3300FF</code></div>
-    [3]  = 0xFF6600FF, --  3: <div style="background-color: #FF6600; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [3] = 0xFF6600FF</code></div>
-    [4]  = 0xFF9900FF, --  4: <div style="background-color: #FF9900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [4] = 0xFF9900FF</code></div>
-    [5]  = 0xFFCC00FF, --  5: <div style="background-color: #FFCC00; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [5] = 0xFFCC00FF</code></div>
-    [6]  = 0xFFFF00FF, --  6: <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [6] = 0xFFFF00FF</code></div>
-    [7]  = 0xCCFF00FF, --  7: <div style="background-color: #CCFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [7] = 0xCCFF00FF</code></div>
-    [8]  = 0x99FF00FF, --  8: <div style="background-color: #99FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [8] = 0x99FF00FF</code></div>
-    [9]  = 0x66FF00FF, --  9: <div style="background-color: #66FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [9] = 0x66FF00FF</code></div>
+     [1] = 0xFF0000FF, --  1: <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>
+     [2] = 0xFF3300FF, --  2: <div style="background-color: #FF3300; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [2] = 0xFF3300FF</code></div>
+     [3] = 0xFF6600FF, --  3: <div style="background-color: #FF6600; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [3] = 0xFF6600FF</code></div>
+     [4] = 0xFF9900FF, --  4: <div style="background-color: #FF9900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [4] = 0xFF9900FF</code></div>
+     [5] = 0xFFCC00FF, --  5: <div style="background-color: #FFCC00; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [5] = 0xFFCC00FF</code></div>
+     [6] = 0xFFFF00FF, --  6: <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [6] = 0xFFFF00FF</code></div>
+     [7] = 0xCCFF00FF, --  7: <div style="background-color: #CCFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [7] = 0xCCFF00FF</code></div>
+     [8] = 0x99FF00FF, --  8: <div style="background-color: #99FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [8] = 0x99FF00FF</code></div>
+     [9] = 0x66FF00FF, --  9: <div style="background-color: #66FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [9] = 0x66FF00FF</code></div>
     [10] = 0x33FF00FF, -- 10: <div style="background-color: #33FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[10] = 0x33FF00FF</code></div>
     [11] = 0x00FF00FF, -- 11: <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[11] = 0x00FF00FF</code></div>
     [12] = 0x00FF33FF, -- 12: <div style="background-color: #00FF33; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[12] = 0x00FF33FF</code></div>
@@ -326,27 +326,27 @@ function M.CompareVersion(version1, version2)
     local g2_01, g2_02, g2_03, g2_04, g2_05, g2_06, g2_07, g2_08, g2_09, g2_10 = version2:match(version_pattern)
 
     local captures = {
-        {1, g1_01, g2_01}, -- (d).d.d.dad
-        {0, g1_02, g2_02}, -- d(.d.d.dad)
-        {1, g1_03, g2_03}, -- d.(d).d.dad
-        {0, g1_04, g2_04}, -- d.d(.d.dad)
-        {1, g1_05, g2_05}, -- d.d.(d).dad
-        {0, g1_06, g2_06}, -- d.d.d(.dad)
-        {1, g1_07, g2_07}, -- d.d.d.(d)ad
-        {0, g1_08, g2_08}, -- d.d.d.d(ad)
-        {2, g1_09, g2_09}, -- d.d.d.d(a)d
-        {1, g1_10, g2_10}, -- d.d.d.da(d)
+        {'d', g1_01, g2_01}, -- (d).d.d.dad
+        {' ', g1_02, g2_02}, -- d(.d.d.dad)
+        {'d', g1_03, g2_03}, -- d.(d).d.dad
+        {' ', g1_04, g2_04}, -- d.d(.d.dad)
+        {'d', g1_05, g2_05}, -- d.d.(d).dad
+        {' ', g1_06, g2_06}, -- d.d.d(.dad)
+        {'d', g1_07, g2_07}, -- d.d.d.(d)ad
+        {' ', g1_08, g2_08}, -- d.d.d.d(ad)
+        {'a', g1_09, g2_09}, -- d.d.d.d(a)d
+        {'d', g1_10, g2_10}, -- d.d.d.da(d)
     }
 
     for i = 1, #captures do
         local type = captures[i][1];
-        if type == 1 then
+        if type == 'd' then
             local v1 = tonumber(captures[i][2] or -1); -- version1 value
             local v2 = tonumber(captures[i][3] or -1); -- version2 value
             if v1 < v2 then return -1 end
             if v1 > v2 then return 1 end
         end
-        if type == 2 then
+        if type == 'a' then
             local v1 = captures[i][2] or ""; -- version1 value
             local v2 = captures[i][3] or ""; -- version2 value
             if v1 < v2 then return -1 end

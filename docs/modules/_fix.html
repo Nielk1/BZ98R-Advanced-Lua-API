@@ -38,13 +38,13 @@
   <li><a href="../modules/_bit.html">_bit</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
-  <li><a href="../modules/_fix.html">_fix</a></li>
+  <li><strong>_fix</strong></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
   <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
-  <li><strong>_printfix</strong></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
@@ -59,10 +59,15 @@
 
 <div id="content">
 
-<h1>Module <code>_printfix</code></h1>
-<p>BZ98R LUA Extended API Print Fix.</p>
+<h1>Module <code>_fix</code></h1>
+<p>BZ98R LUA Extended API Lua Bug Fixer
+<p> Contains fixes for bugs in the game's lua implementation and other polyfils.</p>
 <p>
-<p> Hot-patches print to decorate output for finding in the mess of a log file.
+<p> <ul>
+ <li><b>Polyfill:</b> <code>table.unpack</code> for Lua 5.1 compatibility</li>
+ <li><b>Fix/Polyfill:</b> Remap <code>SettLabel</code> to <code>SetLabel</code> for BZ1.5</li>
+ <li><b>Fix:</b> Works around the possible stuck iterator in <code>ObjectiveObjects</code></li>
+ </ul>
 </p>
     <h3>Info:</h3>
     <ul>

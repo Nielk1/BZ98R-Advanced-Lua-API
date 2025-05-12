@@ -35,6 +35,7 @@
 <li><a href="#Enumerations">Enumerations </a></li>
 <li><a href="#Type_Check_Functions">Type Check Functions </a></li>
 <li><a href="#Utility___Iterator_Operations">Utility - Iterator Operations </a></li>
+<li><a href="#Utility___Other">Utility - Other </a></li>
 </ul>
 
 
@@ -44,6 +45,7 @@
   <li><a href="../modules/_bit.html">_bit</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_fix.html">_fix</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
@@ -145,6 +147,13 @@ utility.Register(ObjectDef);
 	<tr>
 	<td class="name" nowrap><a href="#IteratorToArray">IteratorToArray (iterator)</a></td>
 	<td class="summary">Convert an iterator to an array.</td>
+	</tr>
+</table>
+<h2><a href="#Utility___Other">Utility - Other </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CompareVersion">CompareVersion (version1, version2)</a></td>
+	<td class="summary">Compare two version strings.</td>
 	</tr>
 </table>
 
@@ -300,127 +309,127 @@ utility.Register(ObjectDef);
         scrap
         </li>
         <li><span class="parameter">[producer]</span>
-        producer
+        PROD
         </li>
         <li><span class="parameter">[hover]</span>
-        hover
+        HOVR
         </li>
         <li><span class="parameter">[weapon]</span>
-        weapon
+        WEPN
         </li>
         <li><span class="parameter">[gameobject]</span>
-        gameobject
+        GOBJ
         </li>
         <li><span class="parameter">[ordnance]</span>
-        ordnance
+        ORDN
         </li>
         <li><span class="parameter">[apc]</span>
-        apc
+        APC\0
         </li>
         <li><span class="parameter">[armory]</span>
-        armory
+        ARMR
         </li>
         <li><span class="parameter">[constructionrig]</span>
-        construction rig
+        CNST
         </li>
         <li><span class="parameter">[factory]</span>
-        factory
+        FACT
         </li>
         <li><span class="parameter">[powerplant]</span>
-        power plant
+        PLNT
         </li>
         <li><span class="parameter">[recycler]</span>
-        recycler
+        RCYC
         </li>
         <li><span class="parameter">[scavenger]</span>
-        scavenger
+        SCAV
         </li>
         <li><span class="parameter">[dropoff]</span>
-        scrap dropoff
+        SDRP
         </li>
         <li><span class="parameter">[supplydepot]</span>
-        supply depot
+        SDEP
         </li>
         <li><span class="parameter">[tug]</span>
-        tug
+        TUG\0
         </li>
         <li><span class="parameter">[turrettank]</span>
-        turret tank
+        TTNK
         </li>
         <li><span class="parameter">[artifact]</span>
-        artifact
+        ARTI
         </li>
         <li><span class="parameter">[barracks]</span>
-        barracks
+        BARR
         </li>
         <li><span class="parameter">[i76building]</span>
-        building
+        BLDG
         </li>
         <li><span class="parameter">[commtower]</span>
-        comm tower
+        COMM
         </li>
         <li><span class="parameter">[craft]</span>
-        craft
+        CRFT
         </li>
         <li><span class="parameter">[daywrecker]</span>
-        daywrecker
+        WRCK
         </li>
         <li><span class="parameter">[geyser]</span>
-        geyser
+        GEIZ
         </li>
         <li><span class="parameter">[minelayer]</span>
-        minelayer
+        MLYR
         </li>
         <li><span class="parameter">[person]</span>
-        person
+        PERS
         </li>
         <li><span class="parameter">[powerup]</span>
-        powerup
+        PWUP
         </li>
         <li><span class="parameter">[camerapod]</span>
-        camera pod
+        CPOD
         </li>
         <li><span class="parameter">[ammopack]</span>
-        ammo pack
+        AMMO
         </li>
         <li><span class="parameter">[repairkit]</span>
-        repair kit
+        RKIT
         </li>
         <li><span class="parameter">[repairdepot]</span>
-        repair depot
+        RDEP
         </li>
         <li><span class="parameter">[sav]</span>
-        sav
+        SAV\0
         </li>
         <li><span class="parameter">[scrapfield]</span>
-        scrap field
+        SFLD
         </li>
         <li><span class="parameter">[scrapsilo]</span>
-        scrap silo
+        SILO
         </li>
         <li><span class="parameter">[shieldtower]</span>
-        shield tower
+        SHLD
         </li>
         <li><span class="parameter">[spawnpnt]</span>
-        spawn buoy
+        SPWN
         </li>
         <li><span class="parameter">[torpedo]</span>
-        torpedo
+        TORP
         </li>
         <li><span class="parameter">[wingman]</span>
-        wingman
+        WING
         </li>
         <li><span class="parameter">[howitzer]</span>
-        howitzer
+        HWTZ
         </li>
         <li><span class="parameter">[turret]</span>
-        turret
+        TURR
         </li>
         <li><span class="parameter">[walker]</span>
-        walker
+        WALK
         </li>
         <li><span class="parameter">[scrap]</span>
-        scrap
+        SCRP
         </li>
     </ul>
 
@@ -568,7 +577,7 @@ utility.Register(ObjectDef);
     </dt>
     <dd>
     RAVE GUN! color cycle.
- Each color is represented as a hexadecimal number: 0xRRGGBB.
+ Each color is represented as a hexadecimal number: 0xRRGGBBFF.
 
     </ul>
 
@@ -981,13 +990,51 @@ utility.Register(ObjectDef);
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Utility___Other"></a>Utility - Other </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "CompareVersion"></a>
+    <strong>CompareVersion (version1, version2)</strong>
+    </dt>
+    <dd>
+    Compare two version strings.
+ This function compares two version strings in the format `d`, `d.d`, `d.d.d`, `d.d.d.d`, `d.d.d.da`, and `d.d.d.dad` where d is a digit and a is an alphanumeric character.
+ It returns -1 if version1 is less than version2, 1 if version1 is greater than version2, and 0 if they are equal.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">version1</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The first version string
+        </li>
+        <li><span class="parameter">version2</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The second version string
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        -1, 0, or 1 depending on the comparison result
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-11 08:19:35 </i>
+<i style="float:right;">Last updated 2025-05-12 07:19:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

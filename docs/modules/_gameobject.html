@@ -59,6 +59,7 @@
   <li><a href="../modules/_bit.html">_bit</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_fix.html">_fix</a></li>
   <li><strong>_gameobject</strong></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
@@ -568,12 +569,20 @@
 	<td class="summary">Is the GameObject this odf?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.GetNation">GameObject.GetNation (self)</a></td>
-	<td class="summary">Get nation of GameObject</td>
+	<td class="name" nowrap><a href="#GameObject.GetClassSig">GameObject.GetClassSig (self)</a></td>
+	<td class="summary">Returns the four-character class signature of the game object (e.g.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.GetClassSig">GameObject.GetClassSig (self)</a></td>
-	<td class="summary">Get ClassSig of GameObject</td>
+	<td class="name" nowrap><a href="#GameObject.GetClassLabel">GameObject.GetClassLabel (self)</a></td>
+	<td class="summary">Returns the class label of the game object (e.g.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetClassId">GameObject.GetClassId (self)</a></td>
+	<td class="summary">Returns the numeric class identifier of the game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNation">GameObject.GetNation (self)</a></td>
+	<td class="summary">Returns the one-letter nation code of the game object (e.g.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#SetTeamSlot">SetTeamSlot (self, slot)</a></td>
@@ -1113,7 +1122,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">integer</span></span>
+           <span class="types"><span class="type">AiCommand</span></span>
 
     </ol>
 
@@ -3675,11 +3684,97 @@
 
 </dd>
     <dt>
+    <a name = "GameObject.GetClassSig"></a>
+    <strong>GameObject.GetClassSig (self)</strong>
+    </dt>
+    <dd>
+    Returns the four-character class signature of the game object (e.g.  "WING"). Returns nil if none exists.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">nil</span></span>
+        ClassSig string
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetClassLabel"></a>
+    <strong>GameObject.GetClassLabel (self)</strong>
+    </dt>
+    <dd>
+    Returns the class label of the game object (e.g.  "wingman"). Returns nil if none exists.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <span class="type">nil</span></span>
+        Class label string
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetClassId"></a>
+    <strong>GameObject.GetClassId (self)</strong>
+    </dt>
+    <dd>
+    Returns the numeric class identifier of the game object.  Returns nil if none exists.
+ Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+         GameObject instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span> or <span class="type">nil</span></span>
+        ClassId number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "GameObject.GetNation"></a>
     <strong>GameObject.GetNation (self)</strong>
     </dt>
     <dd>
-    Get nation of GameObject
+    Returns the one-letter nation code of the game object (e.g.  "a" for American, "b" for Black Dog, "c" for Chinese, and "s" for Soviet).
+ The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".
 
     </ul>
 
@@ -3697,28 +3792,6 @@
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
         character identifier for race
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GameObject.GetClassSig"></a>
-    <strong>GameObject.GetClassSig (self)</strong>
-    </dt>
-    <dd>
-    Get ClassSig of GameObject
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">self</span>
-            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
-         GameObject instance
-        </li>
-    </ul>
-
 
 
 
@@ -3771,7 +3844,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-11 08:19:35 </i>
+<i style="float:right;">Last updated 2025-05-12 07:19:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

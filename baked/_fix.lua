@@ -25,6 +25,8 @@ if utility.CompareVersion(GameVersion, "2.2.315") < 0 then
     _G.ObjectiveObjects = function ()
         return coroutine.wrap(function()
             local iter = old_ObjectiveObjects();
+            if not iter then error("ObjectiveObjects iterator is nil"); end
+
             local object1 = iter();
             --print("ObjectiveObjects[1]", object1, GetObjectiveName(handle));
             if object1 == nil then return nil; end

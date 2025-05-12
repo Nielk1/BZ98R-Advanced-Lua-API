@@ -8,6 +8,7 @@
 
 require("_fix");
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
 local traceprint = traceprint or function(...) end;
 --- @diagnostic enable: undefined-global
@@ -329,10 +330,10 @@ function Save()
     for idNum,name in ipairs(CustomSavableTypeTmpTable) do
         local entry = customsavetype.CustomSavableTypes[name];
         if entry.BulkSave ~= nil and utility.isfunction(entry.BulkSave) then
-            debugprint("Saved " .. entry.TypeName);
+            debugprint("Saved " .. entry.__type);
             CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.BulkSave())};
         else
-            debugprint("Saved " .. entry.TypeName .. " (nothing to save)");
+            debugprint("Saved " .. entry.__type .. " (nothing to save)");
             CustomSavableTypeDataTmpTable[idNum] = {};
         end
     end
@@ -378,13 +379,13 @@ function Load(...)
     for idNum,data in ipairs(args.CustomSavableTypeData) do
         local entry = customsavetype.CustomSavableTypes[CustomTypeMap[idNum]];
         if entry.BulkLoad ~= nil and utility.isfunction(entry.BulkLoad) then
-            traceprint("Loaded " .. entry.TypeName);
+            traceprint("Loaded " .. entry.__type);
 
             local ArraySize = 0;
             for k,v in pairs(data) do if k > ArraySize then ArraySize = k; end end
 
             entry.BulkLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));
-            traceprint("BulkLoad ran for " .. entry.TypeName);
+            traceprint("BulkLoad ran for " .. entry.__type);
         end
     end
     traceprint("Loaded custom types data");

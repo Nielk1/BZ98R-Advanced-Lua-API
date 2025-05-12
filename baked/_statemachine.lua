@@ -121,7 +121,7 @@ function M.isstatemachineiter(object)
 end
 
 --- An object containing all functions and data related to an StateMachineIter.
---- @class StateMachineIter
+--- @class StateMachineIter : CustomSavableType
 --- @field state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 --- @field template string StateMachineIter template name
 --- @field index_to_name table StateMachineIter index to name mapping, only if the StateMachineIter is ordered

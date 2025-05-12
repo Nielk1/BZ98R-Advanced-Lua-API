@@ -124,7 +124,7 @@ function M.isstatesetrunner(object)
 end
 
 --- An object containing all functions and data related to an StateSetRunner.
---- @class StateSetRunner
+--- @class StateSetRunner : CustomSavableType
 --- @field template string Name of the StateSet template the runner is using
 --- @field active_states table Table of active states, key is the state name and value is the state activation flag or permit count
 --- @field addonData table Custom context data stored in the StateSetRunner

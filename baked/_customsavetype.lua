@@ -8,9 +8,8 @@
 --- 
 --- customsavetype.Register(ObjectDef);
 
---- @diagnostic disable: undefined-global
+--- @diagnostic disable-next-line: undefined-global
 local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
 
 debugprint("_customsavetype Loading");
 
@@ -29,8 +28,18 @@ local M_MT = {};
 --customsavetype_meta.__type = "customsavetype";
 --customsavetype_meta.__nosave = true;
 
+--- @class CustomSavableType
+--- @field __type string The type name of the custom savable type.
+--- @field Save fun(...: any) | nil
+--- @field Load fun(): ... | nil
+--- @field BulkSave fun(): ... | nil
+--- @field BulkLoad fun(...: any) | nil
+
+--- @type table<string, CustomSavableType>
 M.CustomSavableTypes = {};
 
+--- Register a custom savable type.
+--- @param obj CustomSavableType
 function M.Register(obj)
     if obj == nil or obj.__type == nil then error("Custom type malformed, no __type"); end
     local typeT = {};
@@ -54,7 +63,7 @@ function M.Register(obj)
     --else
     --    typeT.BulkLoad = function() end
     end
-    typeT.TypeName = obj.__type;
+    typeT.__type = obj.__type;
     M.CustomSavableTypes[obj.__type] = typeT;
 end
 

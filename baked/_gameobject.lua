@@ -35,7 +35,7 @@ local GameObjectAltered = {}; -- used to strong-reference hold objects with cust
 
 --- GameObject
 --- An object containing all functions and data related to a game object.
---- @class GameObject
+--- @class GameObject : CustomSavableType
 --- @field id Handle Handle used by BZ98R
 --- @field addonData table Extended data saved into the object
 --- @field cache_memo table Unsaved data used for housekeeping that is regenerated at load

@@ -43,6 +43,7 @@
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_fix.html">_fix</a></li>
@@ -87,20 +88,20 @@ utility.Register(ObjectDef);
 <h2><a href="#Enumerations">Enumerations </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#ClassLabels">ClassLabels</a></td>
-	<td class="summary">This is a table that converts between class labels and class signatures.</td>
+	<td class="name" nowrap><a href="#ClassLabel">ClassLabel</a></td>
+	<td class="summary">ClassLabels</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ColorLabels">ColorLabels</a></td>
-	<td class="summary">Convert human readable color names to BZ98R color labels.</td>
+	<td class="name" nowrap><a href="#ClassSig">ClassSig</a></td>
+	<td class="summary">ClassSigs</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#ColorCodes">ColorCodes</a></td>
-	<td class="summary">Convert BZ98R color labels to RGB color codes.</td>
+	<td class="name" nowrap><a href="#GetClassLabel">GetClassLabel (input)</a></td>
+	<td class="summary">Get the ClassLabel string for any ClassSig or ClassLabel.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#RAVE_COLOR">RAVE_COLOR</a></td>
-	<td class="summary">RAVE GUN! color cycle.</td>
+	<td class="name" nowrap><a href="#GetClassSig">GetClassSig (input)</a></td>
+	<td class="summary">Get the ClassSig string for any ClassLabel or ClassSig.</td>
 	</tr>
 </table>
 <h2><a href="#Type_Check_Functions">Type Check Functions </a></h2>
@@ -165,12 +166,11 @@ utility.Register(ObjectDef);
 
     <dl class="function">
     <dt>
-    <a name = "ClassLabels"></a>
-    <strong>ClassLabels</strong>
+    <a name = "ClassLabel"></a>
+    <strong>ClassLabel</strong>
     </dt>
     <dd>
-    This is a table that converts between class labels and class signatures.
- For example, `ClassLabels["PROD"]` returns `"producer"`, and `ClassLabels["producer"]` returns `"PROD"`.
+    ClassLabels
 
     </ul>
 
@@ -195,7 +195,7 @@ utility.Register(ObjectDef);
         apc
         </li>
         <li><span class="parameter">[APC]</span>
-        apc (compatability)
+        apc <i>(compatability)</i>
         </li>
         <li><span class="parameter">[ARMR]</span>
         armory
@@ -225,7 +225,7 @@ utility.Register(ObjectDef);
         tug
         </li>
         <li><span class="parameter">[TUG]</span>
-        tug (compatability)
+        tug <i>(compatability)</i>
         </li>
         <li><span class="parameter">[TTNK]</span>
         turret tank
@@ -276,7 +276,7 @@ utility.Register(ObjectDef);
         sav
         </li>
         <li><span class="parameter">[SAV]</span>
-        sav (compatability)
+        sav <i>(compatability)</i>
         </li>
         <li><span class="parameter">[SFLD]</span>
         scrap field
@@ -308,6 +308,24 @@ utility.Register(ObjectDef);
         <li><span class="parameter">[SCRP]</span>
         scrap
         </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ClassSig"></a>
+    <strong>ClassSig</strong>
+    </dt>
+    <dd>
+    ClassSigs
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
         <li><span class="parameter">[producer]</span>
         PROD
         </li>
@@ -439,272 +457,60 @@ utility.Register(ObjectDef);
 
 </dd>
     <dt>
-    <a name = "ColorLabels"></a>
-    <strong>ColorLabels</strong>
+    <a name = "GetClassLabel"></a>
+    <strong>GetClassLabel (input)</strong>
     </dt>
     <dd>
-    Convert human readable color names to BZ98R color labels.
+    Get the ClassLabel string for any ClassSig or ClassLabel.
+ This will attempt to infer from the input what the desired ClassLabel is.
+ Note that some of the raw mapping tables have some illegal input mappings so these functions are the optimal converter to use.
 
     </ul>
 
-    <h3>Fields:</h3>
+    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">Black</span>
-            <span class="types"><span class="type">BLACK</span></span>
-            <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">     ["Black"] = "BLACK"   </code></div>
-        </li>
-        <li><span class="parameter">DarkGrey</span>
-            <span class="types"><span class="type">DKGREY</span></span>
-           <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">  ["DarkGrey"] = "DKGREY"  </code></div>
-        </li>
-        <li><span class="parameter">Grey</span>
-            <span class="types"><span class="type">GREY</span></span>
-             <div style="background-color: #999999; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">      ["Grey"] = "GREY"    </code></div>
-        </li>
-        <li><span class="parameter">White</span>
-            <span class="types"><span class="type">WHITE</span></span>
-            <div style="background-color: #FFFFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">     ["White"] = "WHITE"   </code></div>
-        </li>
-        <li><span class="parameter">Blue</span>
-            <span class="types"><span class="type">BLUE</span></span>
-             <div style="background-color: #007FFF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">      ["Blue"] = "BLUE"    </code></div>
-        </li>
-        <li><span class="parameter">DarkBlue</span>
-            <span class="types"><span class="type">DKBLUE</span></span>
-           <div style="background-color: #004C99; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">  ["DarkBlue"] = "DKBLUE"  </code></div>
-        </li>
-        <li><span class="parameter">Green</span>
-            <span class="types"><span class="type">GREEN</span></span>
-            <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">     ["Green"] = "GREEN"   </code></div>
-        </li>
-        <li><span class="parameter">DarkGreen</span>
-            <span class="types"><span class="type">DKGREEN</span></span>
-          <div style="background-color: #009900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> ["DarkGreen"] = "DKGREEN" </code></div>
-        </li>
-        <li><span class="parameter">Yellow</span>
-            <span class="types"><span class="type">YELLOW</span></span>
-           <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">    ["Yellow"] = "YELLOW"  </code></div>
-        </li>
-        <li><span class="parameter">DarkYellow</span>
-            <span class="types"><span class="type">DKYELLOW</span></span>
-         <div style="background-color: #999900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">["DarkYellow"] = "DKYELLOW"</code></div>
-        </li>
-        <li><span class="parameter">Red</span>
-            <span class="types"><span class="type">RED</span></span>
-              <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">       ["Red"] = "RED"     </code></div>
-        </li>
-        <li><span class="parameter">DarkRed</span>
-            <span class="types"><span class="type">DKRED</span></span>
-            <div style="background-color: #990000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">   ["DarkRed"] = "DKRED"   </code></div>
+        <li><span class="parameter">input</span>
+            <span class="types"><a class="type" href="../modules/_utility.html#ClassSig">ClassSig</a>, <a class="type" href="../modules/_utility.html#ClassLabel">ClassLabel</a> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The class label or class signature.
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_utility.html#ClassLabel">ClassLabel</a> or <span class="type">nil</span></span>
+        classLabel The class label.
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "ColorCodes"></a>
-    <strong>ColorCodes</strong>
+    <a name = "GetClassSig"></a>
+    <strong>GetClassSig (input)</strong>
     </dt>
     <dd>
-    Convert BZ98R color labels to RGB color codes.
- This probably isn't useful but it's here.
+    Get the ClassSig string for any ClassLabel or ClassSig.
+ This will attempt to infer from the input what the desired ClassSig is.
+ Note that some of the raw mapping tables have some illegal input mappings so these functions are the optimal converter to use.
 
     </ul>
 
-    <h3>Fields:</h3>
+    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">BLACK</span>
-            <span class="types"><span class="type">0x000000FF</span></span>
-         <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">   ["BLACK"] = 0x000000FF</code></div>
-        </li>
-        <li><span class="parameter">DKGREY</span>
-            <span class="types"><span class="type">0x4C4C4CFF</span></span>
-         <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">  ["DKGREY"] = 0x4C4C4CFF</code></div>
-        </li>
-        <li><span class="parameter">GREY</span>
-            <span class="types"><span class="type">0x999999FF</span></span>
-         <div style="background-color: #999999; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">    ["GREY"] = 0x999999FF</code></div>
-        </li>
-        <li><span class="parameter">WHITE</span>
-            <span class="types"><span class="type">0xFFFFFFFF</span></span>
-         <div style="background-color: #FFFFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">   ["WHITE"] = 0xFFFFFFFF</code></div>
-        </li>
-        <li><span class="parameter">BLUE</span>
-            <span class="types"><span class="type">0x007FFFFF</span></span>
-         <div style="background-color: #007FFF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">    ["BLUE"] = 0x007FFFFF</code></div>
-        </li>
-        <li><span class="parameter">DKBLUE</span>
-            <span class="types"><span class="type">0x004C99FF</span></span>
-         <div style="background-color: #004C99; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">  ["DKBLUE"] = 0x004C99FF</code></div>
-        </li>
-        <li><span class="parameter">GREEN</span>
-            <span class="types"><span class="type">0x00FF00FF</span></span>
-         <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">   ["GREEN"] = 0x00FF00FF</code></div>
-        </li>
-        <li><span class="parameter">DKGREEN</span>
-            <span class="types"><span class="type">0x009900FF</span></span>
-         <div style="background-color: #009900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> ["DKGREEN"] = 0x009900FF</code></div>
-        </li>
-        <li><span class="parameter">YELLOW</span>
-            <span class="types"><span class="type">0xFFFF00FF</span></span>
-         <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">  ["YELLOW"] = 0xFFFF00FF</code></div>
-        </li>
-        <li><span class="parameter">DKYELLOW</span>
-            <span class="types"><span class="type">0x999900FF</span></span>
-         <div style="background-color: #999900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">["DKYELLOW"] = 0x999900FF</code></div>
-        </li>
-        <li><span class="parameter">RED</span>
-            <span class="types"><span class="type">0xFF0000FF</span></span>
-         <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">     ["RED"] = 0xFF0000FF</code></div>
-        </li>
-        <li><span class="parameter">DKRED</span>
-            <span class="types"><span class="type">0x990000FF</span></span>
-         <div style="background-color: #990000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">   ["DKRED"] = 0x990000FF</code></div>
+        <li><span class="parameter">input</span>
+            <span class="types"><a class="type" href="../modules/_utility.html#ClassLabel">ClassLabel</a>, <a class="type" href="../modules/_utility.html#ClassSig">ClassSig</a> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The class label or class signature.
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
 
-
-
-
-</dd>
-    <dt>
-    <a name = "RAVE_COLOR"></a>
-    <strong>RAVE_COLOR</strong>
-    </dt>
-    <dd>
-    RAVE GUN! color cycle.
- Each color is represented as a hexadecimal number: 0xRRGGBBFF.
-
-    </ul>
-
-    <h3>Fields:</h3>
-    <ul>
-        <li><span class="parameter">[1]</span>
-            <span class="types"><span class="type">1</span></span>
-         <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>
-        </li>
-        <li><span class="parameter">[2]</span>
-            <span class="types"><span class="type">2</span></span>
-         <div style="background-color: #FF3300; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [2] = 0xFF3300FF</code></div>
-        </li>
-        <li><span class="parameter">[3]</span>
-            <span class="types"><span class="type">3</span></span>
-         <div style="background-color: #FF6600; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [3] = 0xFF6600FF</code></div>
-        </li>
-        <li><span class="parameter">[4]</span>
-            <span class="types"><span class="type">4</span></span>
-         <div style="background-color: #FF9900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [4] = 0xFF9900FF</code></div>
-        </li>
-        <li><span class="parameter">[5]</span>
-            <span class="types"><span class="type">5</span></span>
-         <div style="background-color: #FFCC00; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [5] = 0xFFCC00FF</code></div>
-        </li>
-        <li><span class="parameter">[6]</span>
-            <span class="types"><span class="type">6</span></span>
-         <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [6] = 0xFFFF00FF</code></div>
-        </li>
-        <li><span class="parameter">[7]</span>
-            <span class="types"><span class="type">7</span></span>
-         <div style="background-color: #CCFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [7] = 0xCCFF00FF</code></div>
-        </li>
-        <li><span class="parameter">[8]</span>
-            <span class="types"><span class="type">8</span></span>
-         <div style="background-color: #99FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [8] = 0x99FF00FF</code></div>
-        </li>
-        <li><span class="parameter">[9]</span>
-            <span class="types"><span class="type">9</span></span>
-         <div style="background-color: #66FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [9] = 0x66FF00FF</code></div>
-        </li>
-        <li><span class="parameter">[10]</span>
-            <span class="types"><span class="type">10</span></span>
-         <div style="background-color: #33FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[10] = 0x33FF00FF</code></div>
-        </li>
-        <li><span class="parameter">[11]</span>
-            <span class="types"><span class="type">11</span></span>
-         <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[11] = 0x00FF00FF</code></div>
-        </li>
-        <li><span class="parameter">[12]</span>
-            <span class="types"><span class="type">12</span></span>
-         <div style="background-color: #00FF33; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[12] = 0x00FF33FF</code></div>
-        </li>
-        <li><span class="parameter">[13]</span>
-            <span class="types"><span class="type">13</span></span>
-         <div style="background-color: #00FF66; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[13] = 0x00FF66FF</code></div>
-        </li>
-        <li><span class="parameter">[14]</span>
-            <span class="types"><span class="type">14</span></span>
-         <div style="background-color: #00FF99; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[14] = 0x00FF99FF</code></div>
-        </li>
-        <li><span class="parameter">[15]</span>
-            <span class="types"><span class="type">15</span></span>
-         <div style="background-color: #00FFCC; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[15] = 0x00FFCCFF</code></div>
-        </li>
-        <li><span class="parameter">[16]</span>
-            <span class="types"><span class="type">16</span></span>
-         <div style="background-color: #00FFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[16] = 0x00FFFFFF</code></div>
-        </li>
-        <li><span class="parameter">[17]</span>
-            <span class="types"><span class="type">17</span></span>
-         <div style="background-color: #00CCFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[17] = 0x00CCFFFF</code></div>
-        </li>
-        <li><span class="parameter">[18]</span>
-            <span class="types"><span class="type">18</span></span>
-         <div style="background-color: #0099FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[18] = 0x0099FFFF</code></div>
-        </li>
-        <li><span class="parameter">[19]</span>
-            <span class="types"><span class="type">19</span></span>
-         <div style="background-color: #0066FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[19] = 0x0066FFFF</code></div>
-        </li>
-        <li><span class="parameter">[20]</span>
-            <span class="types"><span class="type">20</span></span>
-         <div style="background-color: #0033FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[20] = 0x0033FFFF</code></div>
-        </li>
-        <li><span class="parameter">[21]</span>
-            <span class="types"><span class="type">21</span></span>
-         <div style="background-color: #0000FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[21] = 0x0000FFFF</code></div>
-        </li>
-        <li><span class="parameter">[22]</span>
-            <span class="types"><span class="type">22</span></span>
-         <div style="background-color: #3300FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[22] = 0x3300FFFF</code></div>
-        </li>
-        <li><span class="parameter">[23]</span>
-            <span class="types"><span class="type">23</span></span>
-         <div style="background-color: #6600FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[23] = 0x6600FFFF</code></div>
-        </li>
-        <li><span class="parameter">[24]</span>
-            <span class="types"><span class="type">24</span></span>
-         <div style="background-color: #9900FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[24] = 0x9900FFFF</code></div>
-        </li>
-        <li><span class="parameter">[25]</span>
-            <span class="types"><span class="type">25</span></span>
-         <div style="background-color: #CC00FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[25] = 0xCC00FFFF</code></div>
-        </li>
-        <li><span class="parameter">[26]</span>
-            <span class="types"><span class="type">26</span></span>
-         <div style="background-color: #FF00FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[26] = 0xFF00FFFF</code></div>
-        </li>
-        <li><span class="parameter">[27]</span>
-            <span class="types"><span class="type">27</span></span>
-         <div style="background-color: #FF00CC; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[27] = 0xFF00CCFF</code></div>
-        </li>
-        <li><span class="parameter">[28]</span>
-            <span class="types"><span class="type">28</span></span>
-         <div style="background-color: #FF0099; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[28] = 0xFF0099FF</code></div>
-        </li>
-        <li><span class="parameter">[29]</span>
-            <span class="types"><span class="type">29</span></span>
-         <div style="background-color: #FF0066; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[29] = 0xFF0066FF</code></div>
-        </li>
-        <li><span class="parameter">[30]</span>
-            <span class="types"><span class="type">30</span></span>
-         <div style="background-color: #FF0033; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[30] = 0xFF0033FF</code></div>
-        </li>
-    </ul>
-
+           <span class="types"><a class="type" href="../modules/_utility.html#ClassSig">ClassSig</a> or <span class="type">nil</span></span>
+        classSig The class signature.
+    </ol>
 
 
 
@@ -1034,7 +840,7 @@ utility.Register(ObjectDef);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-12 07:19:31 </i>
+<i style="float:right;">Last updated 2025-05-13 20:41:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

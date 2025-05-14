@@ -1,0 +1,709 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Ansi_Color_Escape_Codes">Ansi Color Escape Codes </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><strong>_color</strong></li>
+  <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_fix.html">_fix</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_objective.html">_objective</a></li>
+  <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_stateset.html">_stateset</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><a href="../modules/_tracker.html">_tracker</a></li>
+  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_color</code></h1>
+<p>BZ98R LUA Extended API Color.</p>
+<p>
+<p> Crude custom type to make data not save/load exploiting the custom type system.
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SplitColorValue">SplitColorValue (color)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetClosestColorCode">GetClosestColorCode (color)</a></td>
+	<td class="summary">Convert RGBA color to the closest game color code.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ColorLabel">ColorLabel</a></td>
+	<td class="summary">Convert human readable color names to BZ98R color labels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ColorValues">ColorValues</a></td>
+	<td class="summary">Convert BZ98R color labels to RGB color codes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RAVE_COLOR">RAVE_COLOR</a></td>
+	<td class="summary">RAVE GUN! color cycle.</td>
+	</tr>
+</table>
+<h2><a href="#Ansi_Color_Escape_Codes">Ansi Color Escape Codes </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AnsiColorEscapeMap">AnsiColorEscapeMap</a></td>
+	<td class="summary">Ansi color codes for terminal output sorted by game color codes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RGBAtoAnsi256">RGBAtoAnsi256 (color)</a></td>
+	<td class="summary">Convert RGBA color to ANSI 256 color escape code.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RGBAtoAnsi256Escape">RGBAtoAnsi256Escape (color)</a></td>
+	<td class="summary">Convert RGBA color to ANSI 256 color escape code.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RGBAtoAnsi24Escape">RGBAtoAnsi24Escape (color)</a></td>
+	<td class="summary">Convert RGBA color to ANSI 24-bit color escape code.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "SplitColorValue"></a>
+    <strong>SplitColorValue (color)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="../modules/_color.html#ColorValue">ColorValue</a></span>
+         The RGBA color value (0xRRGGBBAA)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">integer</span></span>
+        red The red component (0-255)</li>
+        <li>
+           <span class="types"><span class="type">integer</span></span>
+        green The green component (0-255)</li>
+        <li>
+           <span class="types"><span class="type">integer</span></span>
+        blue The blue component (0-255)</li>
+        <li>
+           <span class="types"><span class="type">integer</span></span>
+        alpha The alpha component (0-255)</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetClosestColorCode"></a>
+    <strong>GetClosestColorCode (color)</strong>
+    </dt>
+    <dd>
+    Convert RGBA color to the closest game color code.
+ This function takes an RGBA color and finds the closest game color code.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="../modules/_color.html#ColorValue">ColorValue</a> or <span class="type">integer</span></span>
+         The RGBA color value (0xRRGGBBAA)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_color.html#ColorLabel">ColorLabel</a></span>
+        color The closest game color code
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "ColorLabel"></a>
+    <strong>ColorLabel</strong>
+    </dt>
+    <dd>
+    Convert human readable color names to BZ98R color labels.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">Black</span>
+            <span class="types"><span class="type">BLACK</span></span>
+             <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["Black"] = "BLACK"    </code></div>
+        </li>
+        <li><span class="parameter">DarkGrey</span>
+            <span class="types"><span class="type">DKGREY</span></span>
+            <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">            ["DarkGrey"] = "DKGREY"   </code></div>
+        </li>
+        <li><span class="parameter">Grey</span>
+            <span class="types"><span class="type">GREY</span></span>
+              <div style="background-color: #999999; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">                ["Grey"] = "GREY"     </code></div>
+        </li>
+        <li><span class="parameter">White</span>
+            <span class="types"><span class="type">WHITE</span></span>
+             <div style="background-color: #FFFFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["White"] = "WHITE"    </code></div>
+        </li>
+        <li><span class="parameter">Blue</span>
+            <span class="types"><span class="type">BLUE</span></span>
+              <div style="background-color: #007FFF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">                ["Blue"] = "BLUE"     </code></div>
+        </li>
+        <li><span class="parameter">DarkBlue</span>
+            <span class="types"><span class="type">DKBLUE</span></span>
+            <div style="background-color: #004C99; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">            ["DarkBlue"] = "DKBLUE"   </code></div>
+        </li>
+        <li><span class="parameter">Green</span>
+            <span class="types"><span class="type">GREEN</span></span>
+             <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["Green"] = "GREEN"    </code></div>
+        </li>
+        <li><span class="parameter">DarkGreen</span>
+            <span class="types"><span class="type">DKGREEN</span></span>
+           <div style="background-color: #009900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">           ["DarkGreen"] = "DKGREEN"  </code></div>
+        </li>
+        <li><span class="parameter">Yellow</span>
+            <span class="types"><span class="type">YELLOW</span></span>
+            <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">              ["Yellow"] = "YELLOW"   </code></div>
+        </li>
+        <li><span class="parameter">DarkYellow</span>
+            <span class="types"><span class="type">DKYELLOW</span></span>
+          <div style="background-color: #999900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">          ["DarkYellow"] = "DKYELLOW" </code></div>
+        </li>
+        <li><span class="parameter">Red</span>
+            <span class="types"><span class="type">RED</span></span>
+               <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">                 ["Red"] = "RED"      </code></div>
+        </li>
+        <li><span class="parameter">DarkRed</span>
+            <span class="types"><span class="type">DKRED</span></span>
+             <div style="background-color: #990000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">             ["DarkRed"] = "DKRED"    </code></div>
+        </li>
+        <li><span class="parameter">Cyan</span>
+            <span class="types"><span class="type">CYAN</span></span>
+              [2.2.315+] <div style="background-color: #00FFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+         ["Cyan"] = "CYAN"     </code></div>
+        </li>
+        <li><span class="parameter">DarkCyan</span>
+            <span class="types"><span class="type">DKCYAN</span></span>
+            [2.2.315+] <div style="background-color: #009999; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+     ["DarkCyan"] = "DKCYAN"   </code></div>
+        </li>
+        <li><span class="parameter">Magenta</span>
+            <span class="types"><span class="type">MAGENTA</span></span>
+           [2.2.315+] <div style="background-color: #FF00FF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+      ["Magenta"] = "MAGENTA"  </code></div>
+        </li>
+        <li><span class="parameter">DarkMagenta</span>
+            <span class="types"><span class="type">DKMAGENTA</span></span>
+         [2.2.315+] <div style="background-color: #990099; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+  ["DarkMagenta"] = "DKMAGENTA"</code></div>
+        </li>
+        <li><span class="parameter">[Dark Grey]</span>
+            <span class="types"><span class="type">DKGREY</span></span>
+
+        </li>
+        <li><span class="parameter">[Dark Blue]</span>
+            <span class="types"><span class="type">DKBLUE</span></span>
+
+        </li>
+        <li><span class="parameter">[Dark Green]</span>
+            <span class="types"><span class="type">DKGREEN</span></span>
+
+        </li>
+        <li><span class="parameter">[Dark Yellow]</span>
+            <span class="types"><span class="type">DKYELLOW</span></span>
+
+        </li>
+        <li><span class="parameter">[Dark Red]</span>
+            <span class="types"><span class="type">DKRED</span></span>
+
+        </li>
+        <li><span class="parameter">[Dark Cyan]</span>
+            <span class="types"><span class="type">DKCYAN</span></span>
+            [2.2.315+]
+        </li>
+        <li><span class="parameter">[Dark Magenta]</span>
+            <span class="types"><span class="type">DKMAGENTA</span></span>
+         [2.2.315+]
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ColorValues"></a>
+    <strong>ColorValues</strong>
+    </dt>
+    <dd>
+    Convert BZ98R color labels to RGB color codes.
+ This probably isn't useful but it's here. : ColorValue
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">BLACK</span>
+            <span class="types"><span class="type">0x000000FF</span></span>
+         <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["BLACK"] = 0x000000FF</code></div>
+        </li>
+        <li><span class="parameter">DKGREY</span>
+            <span class="types"><span class="type">0x4C4C4CFF</span></span>
+         <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">              ["DKGREY"] = 0x4C4C4CFF</code></div>
+        </li>
+        <li><span class="parameter">GREY</span>
+            <span class="types"><span class="type">0x999999FF</span></span>
+         <div style="background-color: #999999; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">                ["GREY"] = 0x999999FF</code></div>
+        </li>
+        <li><span class="parameter">WHITE</span>
+            <span class="types"><span class="type">0xFFFFFFFF</span></span>
+         <div style="background-color: #FFFFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["WHITE"] = 0xFFFFFFFF</code></div>
+        </li>
+        <li><span class="parameter">BLUE</span>
+            <span class="types"><span class="type">0x007FFFFF</span></span>
+         <div style="background-color: #007FFF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">                ["BLUE"] = 0x007FFFFF</code></div>
+        </li>
+        <li><span class="parameter">DKBLUE</span>
+            <span class="types"><span class="type">0x004C99FF</span></span>
+         <div style="background-color: #004C99; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">              ["DKBLUE"] = 0x004C99FF</code></div>
+        </li>
+        <li><span class="parameter">GREEN</span>
+            <span class="types"><span class="type">0x00FF00FF</span></span>
+         <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["GREEN"] = 0x00FF00FF</code></div>
+        </li>
+        <li><span class="parameter">DKGREEN</span>
+            <span class="types"><span class="type">0x009900FF</span></span>
+         <div style="background-color: #009900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">             ["DKGREEN"] = 0x009900FF</code></div>
+        </li>
+        <li><span class="parameter">YELLOW</span>
+            <span class="types"><span class="type">0xFFFF00FF</span></span>
+         <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">              ["YELLOW"] = 0xFFFF00FF</code></div>
+        </li>
+        <li><span class="parameter">DKYELLOW</span>
+            <span class="types"><span class="type">0x999900FF</span></span>
+         <div style="background-color: #999900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">            ["DKYELLOW"] = 0x999900FF</code></div>
+        </li>
+        <li><span class="parameter">RED</span>
+            <span class="types"><span class="type">0xFF0000FF</span></span>
+         <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">                 ["RED"] = 0xFF0000FF</code></div>
+        </li>
+        <li><span class="parameter">DKRED</span>
+            <span class="types"><span class="type">0x990000FF</span></span>
+         <div style="background-color: #990000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["DKRED"] = 0x990000FF</code></div>
+        </li>
+        <li><span class="parameter">CYAN</span>
+            <span class="types"><span class="type">0x00FFFFFF</span></span>
+         [2.2.315+] <div style="background-color: #00FFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+        ["CYAN"] = 0x00FFFFFF</code></div>
+        </li>
+        <li><span class="parameter">DKCYAN</span>
+            <span class="types"><span class="type">0x009999FF</span></span>
+         [2.2.315+] <div style="background-color: #009999; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+      ["DKCYAN"] = 0x009999FF</code></div>
+        </li>
+        <li><span class="parameter">MAGENTA</span>
+            <span class="types"><span class="type">0xFF00FFFF</span></span>
+         [2.2.315+] <div style="background-color: #FF00FF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+     ["MAGENTA"] = 0xFF00FFFF</code></div>
+        </li>
+        <li><span class="parameter">DKMAGENTA</span>
+            <span class="types"><span class="type">0x990099FF</span></span>
+         [2.2.315+] <div style="background-color: #990099; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">2.2.315+   ["DKMAGENTA"] = 0x990099FF</code></div>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RAVE_COLOR"></a>
+    <strong>RAVE_COLOR</strong>
+    </dt>
+    <dd>
+    RAVE GUN! color cycle.
+ Each color is represented as a hexadecimal number: 0xRRGGBBFF.
+
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">[1]</span>
+            <span class="types"><span class="type">0xFF0000FF</span></span>
+         <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>
+        </li>
+        <li><span class="parameter">[2]</span>
+            <span class="types"><span class="type">0xFF3300FF</span></span>
+         <div style="background-color: #FF3300; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [2] = 0xFF3300FF</code></div>
+        </li>
+        <li><span class="parameter">[3]</span>
+            <span class="types"><span class="type">0xFF6600FF</span></span>
+         <div style="background-color: #FF6600; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [3] = 0xFF6600FF</code></div>
+        </li>
+        <li><span class="parameter">[4]</span>
+            <span class="types"><span class="type">0xFF9900FF</span></span>
+         <div style="background-color: #FF9900; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [4] = 0xFF9900FF</code></div>
+        </li>
+        <li><span class="parameter">[5]</span>
+            <span class="types"><span class="type">0xFFCC00FF</span></span>
+         <div style="background-color: #FFCC00; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [5] = 0xFFCC00FF</code></div>
+        </li>
+        <li><span class="parameter">[6]</span>
+            <span class="types"><span class="type">0xFFFF00FF</span></span>
+         <div style="background-color: #FFFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [6] = 0xFFFF00FF</code></div>
+        </li>
+        <li><span class="parameter">[7]</span>
+            <span class="types"><span class="type">0xCCFF00FF</span></span>
+         <div style="background-color: #CCFF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [7] = 0xCCFF00FF</code></div>
+        </li>
+        <li><span class="parameter">[8]</span>
+            <span class="types"><span class="type">0x99FF00FF</span></span>
+         <div style="background-color: #99FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [8] = 0x99FF00FF</code></div>
+        </li>
+        <li><span class="parameter">[9]</span>
+            <span class="types"><span class="type">0x66FF00FF</span></span>
+         <div style="background-color: #66FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [9] = 0x66FF00FF</code></div>
+        </li>
+        <li><span class="parameter">[10]</span>
+            <span class="types"><span class="type">0x33FF00FF</span></span>
+         <div style="background-color: #33FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[10] = 0x33FF00FF</code></div>
+        </li>
+        <li><span class="parameter">[11]</span>
+            <span class="types"><span class="type">0x00FF00FF</span></span>
+         <div style="background-color: #00FF00; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[11] = 0x00FF00FF</code></div>
+        </li>
+        <li><span class="parameter">[12]</span>
+            <span class="types"><span class="type">0x00FF33FF</span></span>
+         <div style="background-color: #00FF33; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[12] = 0x00FF33FF</code></div>
+        </li>
+        <li><span class="parameter">[13]</span>
+            <span class="types"><span class="type">0x00FF66FF</span></span>
+         <div style="background-color: #00FF66; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[13] = 0x00FF66FF</code></div>
+        </li>
+        <li><span class="parameter">[14]</span>
+            <span class="types"><span class="type">0x00FF99FF</span></span>
+         <div style="background-color: #00FF99; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[14] = 0x00FF99FF</code></div>
+        </li>
+        <li><span class="parameter">[15]</span>
+            <span class="types"><span class="type">0x00FFCCFF</span></span>
+         <div style="background-color: #00FFCC; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[15] = 0x00FFCCFF</code></div>
+        </li>
+        <li><span class="parameter">[16]</span>
+            <span class="types"><span class="type">0x00FFFFFF</span></span>
+         <div style="background-color: #00FFFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[16] = 0x00FFFFFF</code></div>
+        </li>
+        <li><span class="parameter">[17]</span>
+            <span class="types"><span class="type">0x00CCFFFF</span></span>
+         <div style="background-color: #00CCFF; color: #000; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[17] = 0x00CCFFFF</code></div>
+        </li>
+        <li><span class="parameter">[18]</span>
+            <span class="types"><span class="type">0x0099FFFF</span></span>
+         <div style="background-color: #0099FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[18] = 0x0099FFFF</code></div>
+        </li>
+        <li><span class="parameter">[19]</span>
+            <span class="types"><span class="type">0x0066FFFF</span></span>
+         <div style="background-color: #0066FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[19] = 0x0066FFFF</code></div>
+        </li>
+        <li><span class="parameter">[20]</span>
+            <span class="types"><span class="type">0x0033FFFF</span></span>
+         <div style="background-color: #0033FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[20] = 0x0033FFFF</code></div>
+        </li>
+        <li><span class="parameter">[21]</span>
+            <span class="types"><span class="type">0x0000FFFF</span></span>
+         <div style="background-color: #0000FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[21] = 0x0000FFFF</code></div>
+        </li>
+        <li><span class="parameter">[22]</span>
+            <span class="types"><span class="type">0x3300FFFF</span></span>
+         <div style="background-color: #3300FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[22] = 0x3300FFFF</code></div>
+        </li>
+        <li><span class="parameter">[23]</span>
+            <span class="types"><span class="type">0x6600FFFF</span></span>
+         <div style="background-color: #6600FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[23] = 0x6600FFFF</code></div>
+        </li>
+        <li><span class="parameter">[24]</span>
+            <span class="types"><span class="type">0x9900FFFF</span></span>
+         <div style="background-color: #9900FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[24] = 0x9900FFFF</code></div>
+        </li>
+        <li><span class="parameter">[25]</span>
+            <span class="types"><span class="type">0xCC00FFFF</span></span>
+         <div style="background-color: #CC00FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[25] = 0xCC00FFFF</code></div>
+        </li>
+        <li><span class="parameter">[26]</span>
+            <span class="types"><span class="type">0xFF00FFFF</span></span>
+         <div style="background-color: #FF00FF; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[26] = 0xFF00FFFF</code></div>
+        </li>
+        <li><span class="parameter">[27]</span>
+            <span class="types"><span class="type">0xFF00CCFF</span></span>
+         <div style="background-color: #FF00CC; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[27] = 0xFF00CCFF</code></div>
+        </li>
+        <li><span class="parameter">[28]</span>
+            <span class="types"><span class="type">0xFF0099FF</span></span>
+         <div style="background-color: #FF0099; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[28] = 0xFF0099FF</code></div>
+        </li>
+        <li><span class="parameter">[29]</span>
+            <span class="types"><span class="type">0xFF0066FF</span></span>
+         <div style="background-color: #FF0066; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[29] = 0xFF0066FF</code></div>
+        </li>
+        <li><span class="parameter">[30]</span>
+            <span class="types"><span class="type">0xFF0033FF</span></span>
+         <div style="background-color: #FF0033; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">[30] = 0xFF0033FF</code></div>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Ansi_Color_Escape_Codes"></a>Ansi Color Escape Codes </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "AnsiColorEscapeMap"></a>
+    <strong>AnsiColorEscapeMap</strong>
+    </dt>
+    <dd>
+    Ansi color codes for terminal output sorted by game color codes.
+
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">_</span>
+
+        </li>
+        <li><span class="parameter">BLACK</span>
+
+        </li>
+        <li><span class="parameter">DKGREY</span>
+
+        </li>
+        <li><span class="parameter">GREY</span>
+
+        </li>
+        <li><span class="parameter">WHITE</span>
+
+        </li>
+        <li><span class="parameter">BLUE</span>
+
+        </li>
+        <li><span class="parameter">DKBLUE</span>
+
+        </li>
+        <li><span class="parameter">GREEN</span>
+
+        </li>
+        <li><span class="parameter">DKGREEN</span>
+
+        </li>
+        <li><span class="parameter">YELLOW</span>
+
+        </li>
+        <li><span class="parameter">DKYELLOW</span>
+
+        </li>
+        <li><span class="parameter">RED</span>
+
+        </li>
+        <li><span class="parameter">DKRED</span>
+
+        </li>
+        <li><span class="parameter">CYAN</span>
+
+        </li>
+        <li><span class="parameter">DKCYAN</span>
+
+        </li>
+        <li><span class="parameter">MAGENTA</span>
+
+        </li>
+        <li><span class="parameter">DKMAGENTA</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RGBAtoAnsi256"></a>
+    <strong>RGBAtoAnsi256 (color)</strong>
+    </dt>
+    <dd>
+    Convert RGBA color to ANSI 256 color escape code.
+ This function takes an RGBA color and converts it to an ANSI 256 color code.
+ It uses a color cube and grayscale range to find the closest match.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="../modules/_color.html#ColorValue">ColorValue</a></span>
+         The RGBA color value (0xRRGGBBAA)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        pallet_index The ANSI 256 color code (0-255)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RGBAtoAnsi256Escape"></a>
+    <strong>RGBAtoAnsi256Escape (color)</strong>
+    </dt>
+    <dd>
+    Convert RGBA color to ANSI 256 color escape code.
+ This function takes an RGBA color and converts it to an ANSI 256 color escape code.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="../modules/_color.html#ColorValue">ColorValue</a> or <span class="type">integer</span></span>
+         The RGBA color value (0xRRGGBBAA)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        escape The ANSI 256 color escape code
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RGBAtoAnsi24Escape"></a>
+    <strong>RGBAtoAnsi24Escape (color)</strong>
+    </dt>
+    <dd>
+    Convert RGBA color to ANSI 24-bit color escape code.
+ This function takes an RGBA color and converts it to an ANSI 24-bit color escape code.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+            <span class="types"><a class="type" href="../modules/_color.html#ColorValue">ColorValue</a> or <span class="type">integer</span></span>
+         The RGBA color value (0xRRGGBBAA)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        escape The ANSI 24-bit color escape code
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-05-13 20:41:31 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

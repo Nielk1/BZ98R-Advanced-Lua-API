@@ -22,9 +22,9 @@ table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too 
     for _, k in ipairs(modPaths) do
         local relativePaths = {"../../workshop/content/301650/"..k.."/"..filename, "mods/"..k.."/"..filename};
         for _, relativePath in ipairs(relativePaths) do
-            local cfunc = loadfile(relativePath)
-            if (cfunc) then 
-                return cfunc; -- TODO test this
+            local lfunc = loadfile(relativePath)
+            if (lfunc) then 
+                return lfunc;
             else
                 errmsg = errmsg.."\n\tno mod asset '"..relativePath.."'";
             end

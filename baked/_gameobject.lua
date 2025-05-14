@@ -438,7 +438,7 @@ end
 --- Order GameObject to Attack target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Attack(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then

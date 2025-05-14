@@ -33,7 +33,6 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
-<li><a href="#Class_fun">Class fun </a></li>
 </ul>
 
 
@@ -41,6 +40,7 @@
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
   <li><strong>_bit</strong></li>
+  <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
   <li><a href="../modules/_fix.html">_fix</a></li>
@@ -94,51 +94,60 @@
 	<td class="name" nowrap><a href="#tobit">tobit (x)</a></td>
 	<td class="summary">Normalizes a number to the numeric range for bit operations and returns it.</td>
 	</tr>
-</table>
-<h2><a href="#Class_fun">Class fun </a></h2>
-<table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#fun:bnot">fun:bnot (a)</a></td>
+	<td class="name" nowrap><a href="#bxor">bxor (b, b)</a></td>
+	<td class="summary">Returns the bitwise xor of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bnot">bnot (a)</a></td>
 	<td class="summary">Returns the bitwise not of its argument.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:band">fun:band (a, b)</a></td>
+	<td class="name" nowrap><a href="#band">band (a, b)</a></td>
 	<td class="summary">Returns the bitwise and of its arguments.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:bor">fun:bor (a, b)</a></td>
+	<td class="name" nowrap><a href="#bor">bor (a, b)</a></td>
 	<td class="summary">Returns the bitwise or of its arguments.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:rshift">fun:rshift (a, disp)</a></td>
+	<td class="name" nowrap><a href="#rshift">rshift (a, disp)</a></td>
 	<td class="summary">Bitwise logical right-shift.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:lshift">fun:lshift (a, disp)</a></td>
+	<td class="name" nowrap><a href="#lshift">lshift (a, disp)</a></td>
 	<td class="summary">Bitwise logical left-shift.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:tohex">fun:tohex (x[, n])</a></td>
+	<td class="name" nowrap><a href="#tohex">tohex (x[, n])</a></td>
 	<td class="summary">Converts its first argument to a hex string.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:bswap">fun:bswap (x)</a></td>
+	<td class="name" nowrap><a href="#extract">extract (n, field[, width])</a></td>
+	<td class="summary">Extract bits</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#replace">replace (n, v, field[, width])</a></td>
+	<td class="summary">Replace bits</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bswap">bswap (x)</a></td>
 	<td class="summary">Swaps the bytes of its argument and returns it.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:rrotate">fun:rrotate (x, disp)</a></td>
+	<td class="name" nowrap><a href="#rrotate">rrotate (x, disp)</a></td>
 	<td class="summary">Bitwise left rotation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:lrotate">fun:lrotate (x, disp)</a></td>
+	<td class="name" nowrap><a href="#lrotate">lrotate (x, disp)</a></td>
 	<td class="summary">Bitwise right rotation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:arshift">fun:arshift (x, disp)</a></td>
+	<td class="name" nowrap><a href="#arshift">arshift (x, disp)</a></td>
 	<td class="summary">Bitwise arithmetic right-shift.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#fun:btest">fun:btest (x, y)</a></td>
+	<td class="name" nowrap><a href="#btest">btest (x, y)</a></td>
 	<td class="summary">Bitwise test.</td>
 	</tr>
 </table>
@@ -179,16 +188,36 @@
 
 
 </dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Class_fun"></a>Class fun </h2>
-
-          <div class="section-description">
-          Returns the bitwise xor of its arguments. (a: integer, b: integer): integer
-          </div>
-    <dl class="function">
     <dt>
-    <a name = "fun:bnot"></a>
-    <strong>fun:bnot (a)</strong>
+    <a name = "bxor"></a>
+    <strong>bxor (b, b)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise xor of its arguments.
+ (a,b)
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bnot"></a>
+    <strong>bnot (a)</strong>
     </dt>
     <dd>
     Returns the bitwise not of its argument.
@@ -215,8 +244,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:band"></a>
-    <strong>fun:band (a, b)</strong>
+    <a name = "band"></a>
+    <strong>band (a, b)</strong>
     </dt>
     <dd>
     Returns the bitwise and of its arguments.
@@ -247,8 +276,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:bor"></a>
-    <strong>fun:bor (a, b)</strong>
+    <a name = "bor"></a>
+    <strong>bor (a, b)</strong>
     </dt>
     <dd>
     Returns the bitwise or of its arguments.
@@ -279,8 +308,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:rshift"></a>
-    <strong>fun:rshift (a, disp)</strong>
+    <a name = "rshift"></a>
+    <strong>rshift (a, disp)</strong>
     </dt>
     <dd>
     Bitwise logical right-shift.
@@ -311,8 +340,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:lshift"></a>
-    <strong>fun:lshift (a, disp)</strong>
+    <a name = "lshift"></a>
+    <strong>lshift (a, disp)</strong>
     </dt>
     <dd>
     Bitwise logical left-shift.
@@ -343,8 +372,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:tohex"></a>
-    <strong>fun:tohex (x[, n])</strong>
+    <a name = "tohex"></a>
+    <strong>tohex (x[, n])</strong>
     </dt>
     <dd>
     Converts its first argument to a hex string.  The number of hex digits is given by the absolute value of the optional second argument. Positive numbers between 1 and 8 generate lowercase hex digits. Negative numbers generate uppercase hex digits. Only the least-significant 4*|n| bits are used. The default is to generate 8 lowercase hex digits.
@@ -385,8 +414,86 @@
 
 </dd>
     <dt>
-    <a name = "fun:bswap"></a>
-    <strong>fun:bswap (x)</strong>
+    <a name = "extract"></a>
+    <strong>extract (n, field[, width])</strong>
+    </dt>
+    <dd>
+    Extract bits
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to extract bits from.
+        </li>
+        <li><span class="parameter">field</span>
+            <span class="types"><span class="type">integer</span></span>
+         The starting bit position to extract from.
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to extract. Defaults to 1.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        extracted The extracted bits.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "replace"></a>
+    <strong>replace (n, v, field[, width])</strong>
+    </dt>
+    <dd>
+    Replace bits
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to replace bits in.
+        </li>
+        <li><span class="parameter">v</span>
+            <span class="types"><span class="type">integer</span></span>
+         The value to insert.
+        </li>
+        <li><span class="parameter">field</span>
+            <span class="types"><span class="type">integer</span></span>
+         The starting bit position to replace.
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to replace. Defaults to 1.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        replaced The number with the replaced bits.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bswap"></a>
+    <strong>bswap (x)</strong>
     </dt>
     <dd>
     Swaps the bytes of its argument and returns it.
@@ -414,8 +521,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:rrotate"></a>
-    <strong>fun:rrotate (x, disp)</strong>
+    <a name = "rrotate"></a>
+    <strong>rrotate (x, disp)</strong>
     </dt>
     <dd>
     Bitwise left rotation.
@@ -446,8 +553,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:lrotate"></a>
-    <strong>fun:lrotate (x, disp)</strong>
+    <a name = "lrotate"></a>
+    <strong>lrotate (x, disp)</strong>
     </dt>
     <dd>
     Bitwise right rotation.
@@ -478,8 +585,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:arshift"></a>
-    <strong>fun:arshift (x, disp)</strong>
+    <a name = "arshift"></a>
+    <strong>arshift (x, disp)</strong>
     </dt>
     <dd>
     Bitwise arithmetic right-shift.
@@ -510,8 +617,8 @@
 
 </dd>
     <dt>
-    <a name = "fun:btest"></a>
-    <strong>fun:btest (x, y)</strong>
+    <a name = "btest"></a>
+    <strong>btest (x, y)</strong>
     </dt>
     <dd>
     Bitwise test.
@@ -549,7 +656,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-12 07:19:31 </i>
+<i style="float:right;">Last updated 2025-05-13 20:41:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

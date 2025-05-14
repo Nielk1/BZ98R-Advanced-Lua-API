@@ -232,7 +232,7 @@ end
 --- @param team? integer Team number to count for.
 --- @todo add protections
 function M.countByClassName(classname, team)
-    local sig = utility.ClassLabel[classname];
+    local sig = utility.GetClassSig(classname);
     if team == nil then
         local count = 0;
         for i = 0, 15 do
@@ -286,23 +286,16 @@ end
 --- Note that items that no longer fit the filter will remain in the tracker.
 --- Note that on the next update if needed an AllObjects scan will be performed to update the tracker for new filtered items.
 --- Note that the odf and class filters are independent, so if you set a class filter to true and an odf filter to false, the class will be tracked but the odf will not.
---- @param class string Class name to track.
+--- @param class ClassSig|ClassLabel Class name to track.
 --- @param enabled? boolean Enable or disable tracking for the class. Defaults to true.
 function M.setFilterClass(class, enabled)
     if not utility.isstring(class) then error("Class must be a string") end
     if enabled == nil then enabled = true end
     if not utility.isboolean(enabled) then error("Enabled must be a boolean") end
-    local classItem = utility.ClassLabel[class];
+    local classItem = utility.GetClassSig(class);
     if classItem == nil then error("Class does not exist") end
 
-    if classItem:match("^[A-Z][A-Z][A-Z][A-Z%z]$") ~= nil then
-        -- input was ClassName that was mapped to ClassSig, use Sig.
-        class = classItem;
-    end
-
-    class = class .. string.rep("\0", 4 - #class); -- pad to 4 bytes
-
-    Desired_TrackerData_Filter_Classes[class] = enabled or nil;
+    Desired_TrackerData_Filter_Classes[classItem] = enabled or nil;
 end
 
 --- Enable tracking for an odf.

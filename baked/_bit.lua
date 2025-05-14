@@ -83,6 +83,9 @@ end
 
 --- Returns the bitwise xor of its arguments.
 --- @type fun(a: integer, b: integer): integer
+--- @function bxor(a,b)
+--- @tparam integer b
+--- @tparam integer b
 M.bxor = make_bitop {[0]={[0]=0,[1]=1},[1]={[0]=1,[1]=0}, n=4}
 local bxor = M.bxor
 
@@ -151,12 +154,23 @@ function M.tohex(x, n) -- BitOp style
 end
 local tohex = M.tohex
 
+--- Extract bits
+--- @param n integer The number to extract bits from.
+--- @param field integer The starting bit position to extract from.
+--- @param width? integer The number of bits to extract. Defaults to 1.
+--- @return integer extracted The extracted bits.
 function M.extract(n, field, width) -- Lua5.2 inspired
   width = width or 1
   return band(rshift(n, field), 2^width-1)
 end
 local extract = M.extract
 
+--- Replace bits
+--- @param n integer The number to replace bits in.
+--- @param v integer The value to insert.
+--- @param field integer The starting bit position to replace.
+--- @param width? integer The number of bits to replace. Defaults to 1.
+--- @return integer replaced The number with the replaced bits.
 function M.replace(n, v, field, width) -- Lua5.2 inspired
   width = width or 1
   local mask1 = 2^width-1

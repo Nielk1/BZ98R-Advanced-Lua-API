@@ -1304,7 +1304,7 @@ function ClearObjectives() end
 
 --- Adds an objective message with the given name and properties.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? string Default to WHITE. See @{_utility.ColorLabels};
+--- @param color? ColorLabel Default to "WHITE".
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
 --- @function AddObjective
@@ -1313,7 +1313,7 @@ function AddObjective(name, color, duration, text) end
 
 --- Updates the objective message with the given name. If no objective exists with that name, it does nothing.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? string Default to WHITE. See @{_utility.ColorLabels};
+--- @param color? ColorLabel Default to "WHITE".
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
 --- @function UpdateObjective

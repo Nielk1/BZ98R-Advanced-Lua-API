@@ -601,7 +601,7 @@ function StateMachineIter.SecondsHavePassed(self, seconds, lap)
         self.target_time = M.game_time + seconds;
         return false; -- start sleeping
     elseif self.target_time <= M.game_time  then
-        debugprint(M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
+        --debugprint(M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
         if lap then
             self.target_time = self.target_time + seconds; -- reset the timer to the next lap
         else

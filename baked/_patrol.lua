@@ -21,19 +21,38 @@ local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 
-local PatrolEngine -- Forward declaration of the class
+local PatrolEngine_MT -- Forward declaration of the class
 
 local M = {}
+
+
+local PatrolManagerWeakList_MT = {};
+PatrolManagerWeakList_MT.__mode = "k";
+local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
+
+
+
+
+--- Called when an object is added.
+--- @param path_map table<string, table>
+--- @param patrol_units table<GameObject, table>
+--- @param locations table<string>
+--- @param forcedAlert boolean
+--- @return PatrolEngine
+local function Construct(path_map, patrol_units, locations, forcedAlert)
+    local self = setmetatable({}, PatrolEngine_MT)
+    self.path_map = path_map
+    self.patrol_units = patrol_units
+    self.locations = locations
+    self.forcedAlert = forcedAlert
+    PatrolManagerWeakList[self] = true
+    return self
+end
 
 --- Creates a new PatrolEngine instance.
 --- @return PatrolEngine
 function M.new()
-    local self = setmetatable({}, PatrolEngine)
-    self.path_map = {}
-    self.patrol_units = {}
-    self.locations = {}
-    self.forcedAlert = false
-    return self
+    return Construct({}, {}, {}, false)
 end
 
 
@@ -44,42 +63,24 @@ end
 --- @field locations table<string>
 --- @field forcedAlert boolean
 local PatrolEngine = {}
+local PatrolEngine_MT = {}
+PatrolEngine_MT.__type = "PatrolEngine"
 PatrolEngine.__index = PatrolEngine
 
 
 
---- Called when an object is added.
---- @param path_map table<string, table>
---- @param patrol_units table<GameObject, table>
---- @param locations table<string>
---- @param forcedAlert boolean
-local function ConstructFromSave(path_map, patrol_units, locations, forcedAlert)
-    local self = setmetatable({}, PatrolEngine)
-    self.path_map = path_map
-    self.patrol_units = patrol_units
-    self.locations = locations
-    self.forcedAlert = forcedAlert
-    return self
-end
-
---- Called when an object is deleted.
---- @param self PatrolEngine
---- @param handle GameObject
-function PatrolEngine.onDeleteObject(self, handle)
-    PatrolEngine.removeHandle(self, handle)
-end
 
 --- Checks if the controller is alive.
 --- @param self PatrolEngine
 --- @return boolean
-function PatrolEngine.isAlive(self)
+function PatrolEngine_MT.isAlive(self)
     return true
 end
 
 --- Registers a location.
 --- @param self PatrolEngine
 --- @param locationName string
-function PatrolEngine.registerLocation(self, locationName)
+function PatrolEngine_MT.registerLocation(self, locationName)
     self.path_map[locationName] = {}
     table.insert(self.locations, locationName)
 end
@@ -87,7 +88,7 @@ end
 --- Registers multiple locations.
 --- @param self PatrolEngine
 --- @param locations string[]
-function PatrolEngine.registerLocations(self, locations)
+function PatrolEngine_MT.registerLocations(self, locations)
     for _, location in pairs(locations) do
         PatrolEngine.registerLocation(self, location)
     end
@@ -98,7 +99,7 @@ end
 --- @param startpoint string
 --- @param path string
 --- @param endpoint string
-function PatrolEngine._connectPaths(self, startpoint, path, endpoint)
+function PatrolEngine_MT._connectPaths(self, startpoint, path, endpoint)
     table.insert(self.path_map[startpoint], { path = path, location = endpoint })
 end
 
@@ -106,7 +107,7 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @param routes table<string, string>
-function PatrolEngine.defineRoutes(self, location, routes)
+function PatrolEngine_MT.defineRoutes(self, location, routes)
     for path, endpoint in pairs(routes) do
         PatrolEngine._connectPaths(self, location, path, endpoint)
     end
@@ -116,7 +117,7 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @return table
-function PatrolEngine.getRandomRoute(self, location)
+function PatrolEngine_MT.getRandomRoute(self, location)
     if #self.path_map[location] < 2 then
         return self.path_map[location][1]
     end
@@ -127,7 +128,7 @@ end
 --- Assigns a route to a patrol unit.
 --- @param self PatrolEngine
 --- @param handle GameObject
-function PatrolEngine.giveRoute(self, handle)
+function PatrolEngine_MT.giveRoute(self, handle)
     local unit = self.patrol_units[handle]
     local route = PatrolEngine.getRandomRoute(self,unit.location)
     local attempts = 0
@@ -154,7 +155,7 @@ end
 --- @param self PatrolEngine
 --- @param handle GameObject
 --- @function addGameObject
-function PatrolEngine.addGameObject(self, handle)
+function PatrolEngine_MT.addGameObject(self, handle)
     local nearestLocation = nil
     local location = nil
     local pos = handle:GetPosition()
@@ -181,21 +182,21 @@ end
 --- Gets all patrol unit handles.
 --- @param self PatrolEngine
 --- @return table
-function PatrolEngine.getGameObjects(self)
+function PatrolEngine_MT.getGameObjects(self)
     return self.patrol_units
 end
 
 --- Removes a handle from the patrol units.
 --- @param self PatrolEngine
 --- @param handle GameObject
-function PatrolEngine.removeHandle(self, handle)
+local function removeGameObject(self, handle)
     self.patrol_units[handle] = nil
 end
 
 -- INTERNAL USE.
 -- @param self PatrolController instance
 -- @return ...
-function PatrolEngine.Save(self)
+function PatrolEngine_MT.Save(self)
     return self.path_map, self.patrol_units, self.locations, self.forcedAlert
 end
 
@@ -206,8 +207,8 @@ end
 -- @param locations table
 -- @param path_map table
 -- @param forcedAlert boolean
-function PatrolEngine.Load(patrol_units, locations, path_map, forcedAlert)
-    return ConstructFromSave(path_map, patrol_units, locations, forcedAlert)
+function PatrolEngine_MT.Load(patrol_units, locations, path_map, forcedAlert)
+    return Construct(path_map, patrol_units, locations, forcedAlert)
 end
 
 --- Updates the patrol controller.
@@ -237,17 +238,22 @@ local function update(self, dtime)
     end
 end
 
-local PatrolManagerWeakList_MT = {};
-PatrolManagerWeakList_MT.__mode = "k";
-local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
-
 hook.Add("Update", "_patrol_Update", function(dtime, ttime)
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
             update(manager, dtime);
         end
     end
-end, 4999);
+end, config.get("hook_priority.Update.Patrol"));
+
+hook.Add("DeleteObject", "_patrol_DeleteObject", function(object)
+    for manager, _ in pairs(PatrolManagerWeakList) do
+        if manager then
+            removeGameObject(manager, object);
+        end
+    end
+end, config.get("hook_priority.DeleteObject.Patrol"));
+
 
 -- --- Initializes the patrol controller.
 -- --- @param self PatrolController
@@ -260,7 +266,6 @@ end, 4999);
 --     self.forcedAlert = not not forcedAlert
 -- end
 
-PatrolEngine.__type = "PatrolEngine"
 
 customsavetype.Register(PatrolEngine);
 

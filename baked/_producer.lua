@@ -431,11 +431,11 @@ hook.Add("CreateObject", "_producer_CreateObject", function(object, isMapObject)
     if not isMapObject then
         ProcessCreated(object);
     end
-end, 4999);
+end, config.get("hook_priority.CreateObject.Producer"));
 
 hook.Add("DeleteObject", "_producer_DeleteObject", function(object)
 
-end, 4999);
+end, config.get("hook_priority.DeleteObject.Producer"));
 
 hook.Add("Update", "_producer_Update", function(dtime, ttime)
     PostBuildCheck();
@@ -447,13 +447,13 @@ hook.Add("Update", "_producer_Update", function(dtime, ttime)
     end
 
     ProcessQueues();
-end, 4999);
+end, config.get("hook_priority.Update.Producer"));
 
 hook.Add("Start", "_producer_Start", function()
     for i = 0, 15 do
         ScanProducers(i);
     end
-end, 4999);
+end, config.get("hook_priority.Start.Producer"));
 
 hook.AddSaveLoad("_producer", function()
     return ProducerQueue, ProducerOrders, ProducerCommandHistory;

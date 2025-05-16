@@ -83,32 +83,44 @@ end
 ---
 --- <pre>
 --- DeleteObject                   .GameObject   = -9999
+--- DeleteObject                   .Producer     =  4999
 --- DeleteObject                   .NavManager   =  4999
 --- DeleteObject                   .Tracker      =  4999
+--- DeleteObject                   .Patrol       =  4999
 --- ----------------------------------------------------
+--- CreateObject                   .Producer     =  4999
 --- CreateObject                   .NavManager   =  4999
 --- CreateObject                   .Tracker      =  4999
 --- ----------------------------------------------------
 --- Start                          .Tracker      =  4999
+--- Start                          .Producer     =  4999
 --- ----------------------------------------------------
+--- Update                         .Producer     =  4999
+--- Update                         .Patrol       =  4999
 --- Update                         .Tracker      =  4999
 --- Update                         .NavManager   =  5999
 --- Update                         .StateMachine =  8999
 M.hook_priority = {
     DeleteObject = {
         GameObject = -9999,
+        Producer = 4999,
         NavManager = 4999,
         Tracker = 4999,
+        Patrol = 4999,
     },
     CreateObject = {
+        Producer = 4999,
         NavManager = 4999,
         Tracker = 4999,
     },
     Start = {
-        NavManager = 4999,
+        --NavManager = 4999,
         Tracker = 4999,
+        Producer = 4999,
     },
     Update = {
+        Producer = 4999,
+        Patrol = 4999,
         Tracker = 4999,
         NavManager = 5999,
         StateMachine = 8999,

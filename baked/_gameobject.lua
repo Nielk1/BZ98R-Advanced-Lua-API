@@ -343,6 +343,8 @@ function GameObject.CanBuild(self)
 end
 
 --- Returns true if the game object is a producer and currently busy. Returns false otherwise.
+--- An undeployed builder that needs to deploy will always indicate false.
+--- A deployed (if needed) producer with a buildClass set is considered busy. The buildClass may be cleared after the CreateObject call.
 --- @param self GameObject
 --- @return boolean
 function GameObject.IsBusy(self)

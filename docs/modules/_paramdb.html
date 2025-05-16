@@ -50,7 +50,7 @@
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
   <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
-  <li><a href="../modules/_paramdb.html">_paramdb</a></li>
+  <li><strong>_paramdb</strong></li>
   <li><a href="../modules/_patrol.html">_patrol</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_producer.html">_producer</a></li>
@@ -59,7 +59,7 @@
   <li><a href="../modules/_stateset.html">_stateset</a></li>
   <li><a href="../modules/_table_show.html">_table_show</a></li>
   <li><a href="../modules/_tracker.html">_tracker</a></li>
-  <li><strong>_unsaved</strong></li>
+  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
@@ -68,18 +68,11 @@
 
 <div id="content">
 
-<h1>Module <code>_unsaved</code></h1>
-<p>BZ98R LUA Extended API Unsaved.</p>
+<h1>Module <code>_paramdb</code></h1>
+<p>BZ98R LUA Extended API ODF Handler.</p>
 <p>
-<p> Crude custom type to make data not save/load exploiting the custom type system.
+<p> Tracks objects by class and odf.
 </p>
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">local unsaved = require(&quot;_unsaved&quot;);
-
-data.unsavable = unsaved(data.unsavable);
-</pre>
-    </ul>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: John "Nielk1" Klein</li>
@@ -89,8 +82,20 @@ data.unsavable = unsaved(data.unsavable);
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#__call">__call (table, data)</a></td>
-	<td class="summary">__call</td>
+	<td class="name" nowrap><a href="#GetClassLabel">GetClassLabel (odf)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetClassSig">GetClassSig (odf)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetScrapCost">GetScrapCost (odf)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetPilotCost">GetPilotCost (odf)</a></td>
+	<td class="summary"></td>
 	</tr>
 </table>
 
@@ -102,32 +107,111 @@ data.unsavable = unsaved(data.unsavable);
 
     <dl class="function">
     <dt>
-    <a name = "__call"></a>
-    <strong>__call (table, data)</strong>
+    <a name = "GetClassLabel"></a>
+    <strong>GetClassLabel (odf)</strong>
     </dt>
     <dd>
-    __call
- Creates a new table or augments the passed in table marking it as unsaved.
+
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">table</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         The module table itself.
-        </li>
-        <li><span class="parameter">data</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-        ? Table to augment with unsaved data. If nil, a new table is created.
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF file name
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           <span class="types"><span class="type">ClassLabel</span> or <span class="type">nil</span></span>
+        classlabel
+    </ol>
 
+
+
+
+</dd>
+    <dt>
+    <a name = "GetClassSig"></a>
+    <strong>GetClassSig (odf)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF file name
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">ClassSig</span> or <span class="type">nil</span></span>
+        classlabel
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetScrapCost"></a>
+    <strong>GetScrapCost (odf)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF file name
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        scrap cost
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetPilotCost"></a>
+    <strong>GetPilotCost (odf)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">odf</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         ODF file name
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        pilot cost
     </ol>
 
 

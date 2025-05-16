@@ -1,0 +1,399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_PatrolEngine">Class PatrolEngine </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><a href="../modules/_color.html">_color</a></li>
+  <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_deque.html">_deque</a></li>
+  <li><a href="../modules/_fix.html">_fix</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_objective.html">_objective</a></li>
+  <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><a href="../modules/_paramdb.html">_paramdb</a></li>
+  <li><strong>_patrol</strong></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_producer.html">_producer</a></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_stateset.html">_stateset</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><a href="../modules/_tracker.html">_tracker</a></li>
+  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_patrol</code></h1>
+<p>BZ98R LUA Extended API Patrol Engine.</p>
+<p>
+<p> Patrol Engine
+</p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local statemachine = require(&quot;_patrol&quot;);
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein,Janne Trollebø</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#new">new ()</a></td>
+	<td class="summary">Creates a new PatrolEngine instance.</td>
+	</tr>
+</table>
+<h2><a href="#Class_PatrolEngine">Class PatrolEngine </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.isAlive">PatrolEngine.isAlive (self)</a></td>
+	<td class="summary">Checks if the controller is alive.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.registerLocation">PatrolEngine.registerLocation (self, locationName)</a></td>
+	<td class="summary">Registers a location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.registerLocations">PatrolEngine.registerLocations (self, locations)</a></td>
+	<td class="summary">Registers multiple locations.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.defineRoutes">PatrolEngine.defineRoutes (self, location, routes)</a></td>
+	<td class="summary">Defines routes for a location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.getRandomRoute">PatrolEngine.getRandomRoute (self, location)</a></td>
+	<td class="summary">Gets a random route for a location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.giveRoute">PatrolEngine.giveRoute (self, handle)</a></td>
+	<td class="summary">Assigns a route to a patrol unit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine:addGameObject">PatrolEngine:addGameObject (self, handle)</a></td>
+	<td class="summary">Adds a handle to the patrol units.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PatrolEngine.getGameObjects">PatrolEngine.getGameObjects (self)</a></td>
+	<td class="summary">Gets all patrol unit handles.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "new"></a>
+    <strong>new ()</strong>
+    </dt>
+    <dd>
+    Creates a new PatrolEngine instance.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_PatrolEngine"></a>Class PatrolEngine </h2>
+
+          <div class="section-description">
+           : CustomSavableType
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "PatrolEngine.isAlive"></a>
+    <strong>PatrolEngine.isAlive (self)</strong>
+    </dt>
+    <dd>
+    Checks if the controller is alive.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine.registerLocation"></a>
+    <strong>PatrolEngine.registerLocation (self, locationName)</strong>
+    </dt>
+    <dd>
+    Registers a location.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+        <li><span class="parameter">locationName</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine.registerLocations"></a>
+    <strong>PatrolEngine.registerLocations (self, locations)</strong>
+    </dt>
+    <dd>
+    Registers multiple locations.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+        <li><span class="parameter">locations</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        []
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine.defineRoutes"></a>
+    <strong>PatrolEngine.defineRoutes (self, location, routes)</strong>
+    </dt>
+    <dd>
+    Defines routes for a location.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+        <li><span class="parameter">routes</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        <string, string>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine.getRandomRoute"></a>
+    <strong>PatrolEngine.getRandomRoute (self, location)</strong>
+    </dt>
+    <dd>
+    Gets a random route for a location.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine.giveRoute"></a>
+    <strong>PatrolEngine.giveRoute (self, handle)</strong>
+    </dt>
+    <dd>
+    Assigns a route to a patrol unit.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+        <li><span class="parameter">handle</span>
+            <span class="types"><span class="type">GameObject_patrol</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine:addGameObject"></a>
+    <strong>PatrolEngine:addGameObject (self, handle)</strong>
+    </dt>
+    <dd>
+    Adds a handle to the patrol units.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+        <li><span class="parameter">handle</span>
+            <span class="types"><span class="type">GameObject_patrol</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PatrolEngine.getGameObjects"></a>
+    <strong>PatrolEngine.getGameObjects (self)</strong>
+    </dt>
+    <dd>
+    Gets all patrol unit handles.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_patrol.html#PatrolEngine">PatrolEngine</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

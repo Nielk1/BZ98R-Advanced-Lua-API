@@ -1,0 +1,767 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_Deque">Class Deque </a></li>
+<li><a href="#Deque___Core">Deque - Core </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/_api.html">_api</a></li>
+  <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><a href="../modules/_color.html">_color</a></li>
+  <li><a href="../modules/_config.html">_config</a></li>
+  <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><strong>_deque</strong></li>
+  <li><a href="../modules/_fix.html">_fix</a></li>
+  <li><a href="../modules/_gameobject.html">_gameobject</a></li>
+  <li><a href="../modules/_hook.html">_hook</a></li>
+  <li><a href="../modules/_navmanager.html">_navmanager</a></li>
+  <li><a href="../modules/_objective.html">_objective</a></li>
+  <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><a href="../modules/_paramdb.html">_paramdb</a></li>
+  <li><a href="../modules/_patrol.html">_patrol</a></li>
+  <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_producer.html">_producer</a></li>
+  <li><a href="../modules/_requirefix.html">_requirefix</a></li>
+  <li><a href="../modules/_statemachine.html">_statemachine</a></li>
+  <li><a href="../modules/_stateset.html">_stateset</a></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
+  <li><a href="../modules/_tracker.html">_tracker</a></li>
+  <li><a href="../modules/_unsaved.html">_unsaved</a></li>
+  <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>_deque</code></h1>
+<p>BZ98R LUA Extended API dequeue library.</p>
+<p>
+<p> https://github.com/catwell/cw-lua/blob/master/deque/deque.lua
+<p>
+ Deque implementation by Pierre 'catwell' Chapuis
+<p> Copyright (C) by Pierre Chapuis
+<p> Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+<p> The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+<p> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>:  Pierre 'catwell' Chapuis</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#push_right">push_right (self, x)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#push_left">push_left (self, x)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#peek_right">peek_right (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#peek_left">peek_left (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pop_right">pop_right (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pop_left">pop_left (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rotate_right">rotate_right (self, n)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#rotate_left">rotate_left (self, n)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove_right">remove_right (self, x)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove_left">remove_left (self, x)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#length">length (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_empty">is_empty (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#contents">contents (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#iter_right">iter_right (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#iter_left">iter_left (self)</a></td>
+	<td class="summary"></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove_at_relative">remove_at_relative (self, relative_index)</a></td>
+	<td class="summary">Removes an element at the given relative index.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove_multiple_at_relative">remove_multiple_at_relative (self, relative_indexes)</a></td>
+	<td class="summary">Removes multiple elements at the given relative indexes.</td>
+	</tr>
+</table>
+<h2><a href="#Class_Deque">Class Deque </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Deque:new">Deque:new ()</a></td>
+	<td class="summary"></td>
+	</tr>
+</table>
+<h2><a href="#Deque___Core">Deque - Core </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#methods.Save">methods.Save (self)</a></td>
+	<td class="summary">Save event function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#methods.Load">methods.Load (contents)</a></td>
+	<td class="summary">Load event function.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "push_right"></a>
+    <strong>push_right (self, x)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+        <li><span class="parameter">x</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "push_left"></a>
+    <strong>push_left (self, x)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+        <li><span class="parameter">x</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "peek_right"></a>
+    <strong>peek_right (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "peek_left"></a>
+    <strong>peek_left (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pop_right"></a>
+    <strong>pop_right (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pop_left"></a>
+    <strong>pop_left (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rotate_right"></a>
+    <strong>rotate_right (self, n)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "rotate_left"></a>
+    <strong>rotate_left (self, n)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove_right"></a>
+    <strong>remove_right (self, x)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+        <li><span class="parameter">x</span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove_left"></a>
+    <strong>remove_left (self, x)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+        <li><span class="parameter">x</span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "length"></a>
+    <strong>length (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_empty"></a>
+    <strong>is_empty (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "contents"></a>
+    <strong>contents (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table<number,</a></span>
+        any>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "iter_right"></a>
+    <strong>iter_right (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">fun():any,</span></span>
+        integer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "iter_left"></a>
+    <strong>iter_left (self)</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">fun():any,</span></span>
+        integer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove_at_relative"></a>
+    <strong>remove_at_relative (self, relative_index)</strong>
+    </dt>
+    <dd>
+    Removes an element at the given relative index.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+         The deque instance.
+        </li>
+        <li><span class="parameter">relative_index</span>
+            <span class="types"><span class="type">number</span></span>
+         The relative index of the element to remove (1-based, as used by `contents` and iterators).
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        True if the element was successfully removed, false if the index is out of bounds.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "remove_multiple_at_relative"></a>
+    <strong>remove_multiple_at_relative (self, relative_indexes)</strong>
+    </dt>
+    <dd>
+    Removes multiple elements at the given relative indexes.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+         The deque instance.
+        </li>
+        <li><span class="parameter">relative_indexes</span>
+            <span class="types"><span class="type">number</span></span>
+        [] A list of relative indexes to remove (1-based, as used by `contents` and iterators).
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        True if at least one element was removed, false if no valid indexes were provided.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_Deque"></a>Class Deque </h2>
+
+          <div class="section-description">
+           : CustomSavableType
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "Deque:new"></a>
+    <strong>Deque:new ()</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_deque.html#Deque">Deque</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Deque___Core"></a>Deque - Core </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "methods.Save"></a>
+    <strong>methods.Save (self)</strong>
+    </dt>
+    <dd>
+    Save event function.
+<p> INTERNAL USE.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><span class="type">StateSetRunner</span></span>
+         instance
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ...
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "methods.Load"></a>
+    <strong>methods.Load (contents)</strong>
+    </dt>
+    <dd>
+    Load event function.
+<p> INTERNAL USE.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">contents</span>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

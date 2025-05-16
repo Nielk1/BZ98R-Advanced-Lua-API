@@ -43,6 +43,7 @@
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Distance">Distance </a></li>
+<li><a href="#Nearest">Nearest </a></li>
 <li><a href="#Iterators">Iterators </a></li>
 <li><a href="#Globals">Globals </a></li>
 <li><a href="#Audio_Messages">Audio Messages </a></li>
@@ -56,7 +57,6 @@
 <li><a href="#Position_Helpers">Position Helpers </a></li>
 <li><a href="#Shot">Shot </a></li>
 <li><a href="#Alliances">Alliances </a></li>
-<li><a href="#Nearest">Nearest </a></li>
 <li><a href="#Scrap_Management">Scrap Management </a></li>
 <li><a href="#Team_Slots">Team Slots </a></li>
 <li><a href="#Team_Pilots">Team Pilots </a></li>
@@ -96,13 +96,17 @@
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_deque.html">_deque</a></li>
   <li><a href="../modules/_fix.html">_fix</a></li>
   <li><a href="../modules/_gameobject.html">_gameobject</a></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
   <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><a href="../modules/_paramdb.html">_paramdb</a></li>
+  <li><a href="../modules/_patrol.html">_patrol</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_producer.html">_producer</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
@@ -437,6 +441,49 @@
 	<td class="summary">Returns true if the bounding spheres of the two game objects are within the specified tolerance.</td>
 	</tr>
 </table>
+<h2><a href="#Nearest">Nearest </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (target[, point])</a></td>
+	<td class="summary">Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (target[, point])</a></td>
+	<td class="summary">Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (target[, point])</a></td>
+	<td class="summary">Returns the building closest to a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (target[, point])</a></td>
+	<td class="summary">Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (target[, point])</a></td>
+	<td class="summary">Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (h, team)</a></td>
+	<td class="summary">Returns the craft or person on the given team closest to the given game object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (path[, point], team)</a></td>
+	<td class="summary">Returns the craft or person on the given team closest to a point on the path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (position, team)</a></td>
+	<td class="summary">Returns the craft or person on the given team closest to the position of the transform matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (transform, team)</a></td>
+	<td class="summary">Returns the craft or person on the given team closest to the position vector.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CountUnitsNearObject">CountUnitsNearObject (h, dist, team, odfname)</a></td>
+	<td class="summary">Returns how many objects with the given team and odf name are closer than the given distance.</td>
+	</tr>
+</table>
 <h2><a href="#Iterators">Iterators </a></h2>
 <table class="function_list">
 	<tr>
@@ -732,49 +779,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#IsAlly">IsAlly (me, him)</a></td>
 	<td class="summary">Returns true if game object "me" considers game object "him" an ally.</td>
-	</tr>
-</table>
-<h2><a href="#Nearest">Nearest </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestObject">GetNearestObject (target[, point])</a></td>
-	<td class="summary">Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestVehicle">GetNearestVehicle (target[, point])</a></td>
-	<td class="summary">Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestBuilding">GetNearestBuilding (target[, point])</a></td>
-	<td class="summary">Returns the building closest to a position vector, transform matrix, another object, or point on a named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestEnemy">GetNearestEnemy (target[, point])</a></td>
-	<td class="summary">Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestFriend">GetNearestFriend (target[, point])</a></td>
-	<td class="summary">Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (h, team)</a></td>
-	<td class="summary">Returns the craft or person on the given team closest to the given game object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (path[, point], team)</a></td>
-	<td class="summary">Returns the craft or person on the given team closest to a point on the path.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (position, team)</a></td>
-	<td class="summary">Returns the craft or person on the given team closest to the position of the transform matrix.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetNearestUnitOnTeam">GetNearestUnitOnTeam (transform, team)</a></td>
-	<td class="summary">Returns the craft or person on the given team closest to the position vector.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#CountUnitsNearObject">CountUnitsNearObject (h, dist, team, odfname)</a></td>
-	<td class="summary">Returns how many objects with the given team and odf name are closer than the given distance.</td>
 	</tr>
 </table>
 <h2><a href="#Scrap_Management">Scrap Management </a></h2>
@@ -3633,6 +3637,356 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Nearest"></a>Nearest </h2>
+
+          <div class="section-description">
+           functions find and return the game object of the requested type closest to a reference point.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetNearestObject"></a>
+    <strong>GetNearestObject (target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestVehicle"></a>
+    <strong>GetNearestVehicle (target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestBuilding"></a>
+    <strong>GetNearestBuilding (target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestEnemy"></a>
+    <strong>GetNearestEnemy (target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestFriend"></a>
+    <strong>GetNearestFriend (target[, point])</strong>
+    </dt>
+    <dd>
+    Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
+ [2.0+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+         Position vector, ransform matrix, Object, or path name.
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+         If the target is a path this is the path point index, defaults to 0.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestUnitOnTeam"></a>
+    <strong>GetNearestUnitOnTeam (h, team)</strong>
+    </dt>
+    <dd>
+    Returns the craft or person on the given team closest to the given game object.  Returns nil if none exists.
+ [2.0+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestUnitOnTeam"></a>
+    <strong>GetNearestUnitOnTeam (path[, point], team)</strong>
+    </dt>
+    <dd>
+    Returns the craft or person on the given team closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">point</span>
+            <span class="types"><span class="type">integer</span></span>
+
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestUnitOnTeam"></a>
+    <strong>GetNearestUnitOnTeam (position, team)</strong>
+    </dt>
+    <dd>
+    Returns the craft or person on the given team closest to the position of the transform matrix.  Returns nil if none exists.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">position</span>
+            <span class="types"><span class="type">vector</span></span>
+
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNearestUnitOnTeam"></a>
+    <strong>GetNearestUnitOnTeam (transform, team)</strong>
+    </dt>
+    <dd>
+    Returns the craft or person on the given team closest to the position vector.  Returns nil if none exists.
+ [2.1+]
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix:matrix">matrix</a></span>
+
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">int</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "CountUnitsNearObject"></a>
+    <strong>CountUnitsNearObject (h, dist, team, odfname)</strong>
+    </dt>
+    <dd>
+    Returns how many objects with the given team and odf name are closer than the given distance.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">dist</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
+
+        </li>
+        <li><span class="parameter">odfname</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Iterators"></a>Iterators </h2>
 
           <div class="section-description">
@@ -3668,7 +4022,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">function</span></span>
+           <span class="types"><span class="type">fun():Handle</span></span>
         iterator
     </ol>
 
@@ -3690,7 +4044,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">function</span></span>
+           <span class="types"><span class="type">fun():Handle</span></span>
         iterator
     </ol>
 
@@ -3711,7 +4065,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">function</span></span>
+           <span class="types"><span class="type">fun():Handle</span></span>
         iterator
     </ol>
 
@@ -3732,7 +4086,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">function</span></span>
+           <span class="types"><span class="type">fun():Handle</span></span>
         iterator
     </ol>
 
@@ -3753,7 +4107,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">function</span></span>
+           <span class="types"><span class="type">fun():Handle</span></span>
         iterator
     </ol>
 
@@ -4144,7 +4498,7 @@
 
         </li>
         <li><span class="parameter">teamnum</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">location</span>
@@ -4926,7 +5280,7 @@
 
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -5728,356 +6082,6 @@
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Nearest"></a>Nearest </h2>
-
-          <div class="section-description">
-           functions find and return the game object of the requested type closest to a reference point.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "GetNearestObject"></a>
-    <strong>GetNearestObject (target[, point])</strong>
-    </dt>
-    <dd>
-    Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestVehicle"></a>
-    <strong>GetNearestVehicle (target[, point])</strong>
-    </dt>
-    <dd>
-    Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestBuilding"></a>
-    <strong>GetNearestBuilding (target[, point])</strong>
-    </dt>
-    <dd>
-    Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestEnemy"></a>
-    <strong>GetNearestEnemy (target[, point])</strong>
-    </dt>
-    <dd>
-    Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestFriend"></a>
-    <strong>GetNearestFriend (target[, point])</strong>
-    </dt>
-    <dd>
-    Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">target</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Vector">Vector</a>, <a class="type" href="../modules/ScriptUtils.html#Matrix">Matrix</a>, <a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-         Position vector, ransform matrix, Object, or path name.
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-         If the target is a path this is the path point index, defaults to 0.
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestUnitOnTeam"></a>
-    <strong>GetNearestUnitOnTeam (h, team)</strong>
-    </dt>
-    <dd>
-    Returns the craft or person on the given team closest to the given game object.  Returns nil if none exists.
- [2.0+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestUnitOnTeam"></a>
-    <strong>GetNearestUnitOnTeam (path[, point], team)</strong>
-    </dt>
-    <dd>
-    Returns the craft or person on the given team closest to a point on the path.  It uses the start of the path if no point is given. Returns nil if none exists.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">path</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-        <li><span class="parameter">point</span>
-            <span class="types"><span class="type">integer</span></span>
-
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestUnitOnTeam"></a>
-    <strong>GetNearestUnitOnTeam (position, team)</strong>
-    </dt>
-    <dd>
-    Returns the craft or person on the given team closest to the position of the transform matrix.  Returns nil if none exists.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">position</span>
-            <span class="types"><span class="type">vector</span></span>
-
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetNearestUnitOnTeam"></a>
-    <strong>GetNearestUnitOnTeam (transform, team)</strong>
-    </dt>
-    <dd>
-    Returns the craft or person on the given team closest to the position vector.  Returns nil if none exists.
- [2.1+]
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">transform</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Matrix:matrix">matrix</a></span>
-
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">int</span></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "CountUnitsNearObject"></a>
-    <strong>CountUnitsNearObject (h, dist, team, odfname)</strong>
-    </dt>
-    <dd>
-    Returns how many objects with the given team and odf name are closer than the given distance.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">dist</span>
-            <span class="types"><span class="type">number</span></span>
-
-        </li>
-        <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
-
-        </li>
-        <li><span class="parameter">odfname</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">integer</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
     <h2 class="section-header has-description"><a name="Scrap_Management"></a>Scrap Management </h2>
 
           <div class="section-description">
@@ -6159,7 +6163,7 @@
     <h3>Fields:</h3>
     <ul>
         <li><span class="parameter">UNDEFINED</span>
-        1
+        invalid, -1
         </li>
         <li><span class="parameter">PLAYER</span>
         0
@@ -6241,6 +6245,9 @@
         </li>
         <li><span class="parameter">MAX_GUNTOWER</span>
         89
+        </li>
+        <li><span class="parameter">PORTAL</span>
+        90 [2.2.315+]
         </li>
         <li><span class="parameter">[-]</span>
         UNDEFINED
@@ -6326,6 +6333,9 @@
         <li><span class="parameter">[89]</span>
         MAX_GUNTOWER
         </li>
+        <li><span class="parameter">[90]</span>
+        PORTAL [2.2.315+]
+        </li>
     </ul>
 
 
@@ -6346,11 +6356,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamSlotInteger">TeamSlotInteger</a></span>
 
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -6380,7 +6390,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -6410,7 +6420,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -6440,7 +6450,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -6470,7 +6480,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -6500,7 +6510,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -6537,7 +6547,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6570,7 +6580,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6602,7 +6612,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -6631,7 +6641,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6664,7 +6674,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6696,7 +6706,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -6732,7 +6742,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6765,7 +6775,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6797,7 +6807,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -6826,7 +6836,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6859,7 +6869,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">count</span>
@@ -6891,7 +6901,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -7097,7 +7107,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">control</span>
@@ -7125,7 +7135,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
     </ul>
@@ -7153,7 +7163,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -7186,7 +7196,7 @@
 
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
          (<em>optional</em>)
         </li>
@@ -8316,7 +8326,7 @@
 
         </li>
         <li><span class="parameter">default</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+            <span class="types"><span class="type">boolean</span></span>
 
          (<em>optional</em>)
         </li>
@@ -8363,7 +8373,7 @@
 
         </li>
         <li><span class="parameter">default</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+            <span class="types"><span class="type">integer</span></span>
 
          (<em>optional</em>)
         </li>
@@ -8410,7 +8420,7 @@
 
         </li>
         <li><span class="parameter">default</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+            <span class="types"><span class="type">number</span></span>
 
          (<em>optional</em>)
         </li>
@@ -9934,7 +9944,7 @@
 
         </li>
         <li><span class="parameter">teamnum</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#TeamNum">TeamNum</a></span>
 
         </li>
         <li><span class="parameter">portal</span>
@@ -10230,7 +10240,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-13 20:41:31 </i>
+<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

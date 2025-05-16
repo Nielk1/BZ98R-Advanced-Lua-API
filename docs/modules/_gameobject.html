@@ -48,6 +48,7 @@
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Distance">Distance </a></li>
+<li><a href="#Nearest">Nearest </a></li>
 <li><a href="#Iterators">Iterators </a></li>
 <li><a href="#Other">Other </a></li>
 </ul>
@@ -60,13 +61,17 @@
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
+  <li><a href="../modules/_deque.html">_deque</a></li>
   <li><a href="../modules/_fix.html">_fix</a></li>
   <li><strong>_gameobject</strong></li>
   <li><a href="../modules/_hook.html">_hook</a></li>
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
   <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
+  <li><a href="../modules/_paramdb.html">_paramdb</a></li>
+  <li><a href="../modules/_patrol.html">_patrol</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
+  <li><a href="../modules/_producer.html">_producer</a></li>
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
@@ -195,7 +200,7 @@
 	<td class="summary">Commands the unit using the given parameters.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Attack">GameObject.Attack (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Attack">GameObject.Attack (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Attack target GameObject.</td>
 	</tr>
 	<tr>
@@ -203,11 +208,11 @@
 	<td class="summary">Order GameObject to Goto target Vector, Matrix, GameObject, or Path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Mine">GameObject.Mine (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Mine">GameObject.Mine (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Mine target Path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Follow">GameObject.Follow (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Follow">GameObject.Follow (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Follow target GameObject.</td>
 	</tr>
 	<tr>
@@ -215,51 +220,51 @@
 	<td class="summary">Is the GameObject following the target GameObject?</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Defend">GameObject.Defend (self, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Defend">GameObject.Defend (self[, priority])</a></td>
 	<td class="summary">Order GameObject to Defend area.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Defend2">GameObject.Defend2 (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Defend2">GameObject.Defend2 (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Defend2 target GameObject.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Stop">GameObject.Stop (self, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Stop">GameObject.Stop (self[, priority])</a></td>
 	<td class="summary">Order GameObject to Stop.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Patrol">GameObject.Patrol (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Patrol">GameObject.Patrol (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Patrol target path.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Retreat">GameObject.Retreat (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Retreat">GameObject.Retreat (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Retreat.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.GetIn">GameObject.GetIn (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.GetIn">GameObject.GetIn (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to GetIn target GameObject.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Pickup">GameObject.Pickup (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Pickup">GameObject.Pickup (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Pickup target GameObject.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Dropoff">GameObject.Dropoff (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Dropoff">GameObject.Dropoff (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Pickup target path name.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Build">GameObject.Build (self, odf, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Build">GameObject.Build (self, odf[, priority])</a></td>
 	<td class="summary">Order GameObject to Build target config.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.BuildAt">GameObject.BuildAt (self, odf, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.BuildAt">GameObject.BuildAt (self, odf, target[, priority])</a></td>
 	<td class="summary">Order GameObject to BuildAt target GameObject.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Formation">GameObject.Formation (self, target, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Formation">GameObject.Formation (self, target[, priority])</a></td>
 	<td class="summary">Order GameObject to Formation follow target GameObject.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GameObject.Hunt">GameObject.Hunt (self, priority)</a></td>
+	<td class="name" nowrap><a href="#GameObject.Hunt">GameObject.Hunt (self[, priority])</a></td>
 	<td class="summary">Order GameObject to Hunt area.</td>
 	</tr>
 </table>
@@ -524,6 +529,37 @@
 	<td class="summary">Returns true if the bounding spheres of the two game objects are within the specified tolerance.</td>
 	</tr>
 </table>
+<h2><a href="#Nearest">Nearest </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNearestObject">GameObject.GetNearestObject (self)</a></td>
+	<td class="summary">Returns the game object closest to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNearestVehicle">GameObject.GetNearestVehicle (self)</a></td>
+	<td class="summary">Returns the craft closest to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNearestBuilding">GameObject.GetNearestBuilding (self)</a></td>
+	<td class="summary">Returns the building closest to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNearestEnemy">GameObject.GetNearestEnemy (self)</a></td>
+	<td class="summary">Returns the enemy closest to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNearestFriend">GameObject.GetNearestFriend (self)</a></td>
+	<td class="summary">Returns the friend closest to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetNearestUnitOnTeam">GameObject.GetNearestUnitOnTeam (self)</a></td>
+	<td class="summary">Returns the friend closest to self.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.CountUnitsNearObject">GameObject.CountUnitsNearObject (self, dist, team, odfname)</a></td>
+	<td class="summary">Returns how many objects with the given team and odf name are closer than the given distance.</td>
+	</tr>
+</table>
 <h2><a href="#Iterators">Iterators </a></h2>
 <table class="function_list">
 	<tr>
@@ -649,7 +685,7 @@
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
 
     </ol>
 
@@ -705,7 +741,7 @@
          Object Definition File (without ".odf")
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number for the object, 0 to 15
         </li>
         <li><span class="parameter">pos</span>
@@ -791,11 +827,11 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamSlotInteger</span></span>
          Slot number, see TeamSlot
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number, 0 to 15
          (<em>optional</em>)
         </li>
@@ -822,7 +858,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -851,7 +887,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -880,7 +916,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -909,7 +945,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -938,7 +974,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          Team number of player
          (<em>optional</em>)
         </li>
@@ -1053,6 +1089,7 @@
     </dt>
     <dd>
     Returns true if the game object is a producer that can build at the moment.  Returns false otherwise.
+ The concept here is that the builder either A: Does not need to deploy or B: Does need to deploy but is deployed.
 
     </ul>
 
@@ -1081,6 +1118,8 @@
     </dt>
     <dd>
     Returns true if the game object is a producer and currently busy.  Returns false otherwise.
+ An undeployed builder that needs to deploy will always indicate false.
+ A deployed (if needed) producer with a buildClass set is considered busy. The buildClass may be cleared after the CreateObject call.
 
     </ul>
 
@@ -1271,7 +1310,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Attack"></a>
-    <strong>GameObject.Attack (self, target, priority)</strong>
+    <strong>GameObject.Attack (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Attack target GameObject.
@@ -1291,6 +1330,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1332,7 +1372,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Mine"></a>
-    <strong>GameObject.Mine (self, target, priority)</strong>
+    <strong>GameObject.Mine (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Mine target Path.
@@ -1352,6 +1392,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1362,7 +1403,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Follow"></a>
-    <strong>GameObject.Follow (self, target, priority)</strong>
+    <strong>GameObject.Follow (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Follow target GameObject.
@@ -1381,7 +1422,8 @@
         </li>
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
-        ? Order priority, >0 removes user control
+         Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1424,7 +1466,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Defend"></a>
-    <strong>GameObject.Defend (self, priority)</strong>
+    <strong>GameObject.Defend (self[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Defend area.
@@ -1440,6 +1482,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1450,7 +1493,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Defend2"></a>
-    <strong>GameObject.Defend2 (self, target, priority)</strong>
+    <strong>GameObject.Defend2 (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Defend2 target GameObject.
@@ -1470,6 +1513,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1480,7 +1524,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Stop"></a>
-    <strong>GameObject.Stop (self, priority)</strong>
+    <strong>GameObject.Stop (self[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Stop.
@@ -1496,6 +1540,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1506,7 +1551,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Patrol"></a>
-    <strong>GameObject.Patrol (self, target, priority)</strong>
+    <strong>GameObject.Patrol (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Patrol target path.
@@ -1526,6 +1571,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1536,7 +1582,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Retreat"></a>
-    <strong>GameObject.Retreat (self, target, priority)</strong>
+    <strong>GameObject.Retreat (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Retreat.
@@ -1556,6 +1602,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1566,7 +1613,7 @@
 </dd>
     <dt>
     <a name = "GameObject.GetIn"></a>
-    <strong>GameObject.GetIn (self, target, priority)</strong>
+    <strong>GameObject.GetIn (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to GetIn target GameObject.
@@ -1586,6 +1633,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1596,7 +1644,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Pickup"></a>
-    <strong>GameObject.Pickup (self, target, priority)</strong>
+    <strong>GameObject.Pickup (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Pickup target GameObject.
@@ -1616,6 +1664,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1626,7 +1675,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Dropoff"></a>
-    <strong>GameObject.Dropoff (self, target, priority)</strong>
+    <strong>GameObject.Dropoff (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Pickup target path name.
@@ -1646,6 +1695,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1656,7 +1706,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Build"></a>
-    <strong>GameObject.Build (self, odf, priority)</strong>
+    <strong>GameObject.Build (self, odf[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Build target config.
@@ -1677,6 +1727,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1687,7 +1738,7 @@
 </dd>
     <dt>
     <a name = "GameObject.BuildAt"></a>
-    <strong>GameObject.BuildAt (self, odf, target, priority)</strong>
+    <strong>GameObject.BuildAt (self, odf, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to BuildAt target GameObject.
@@ -1711,6 +1762,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1721,7 +1773,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Formation"></a>
-    <strong>GameObject.Formation (self, target, priority)</strong>
+    <strong>GameObject.Formation (self, target[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Formation follow target GameObject.
@@ -1741,6 +1793,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -1751,7 +1804,7 @@
 </dd>
     <dt>
     <a name = "GameObject.Hunt"></a>
-    <strong>GameObject.Hunt (self, priority)</strong>
+    <strong>GameObject.Hunt (self[, priority])</strong>
     </dt>
     <dd>
     Order GameObject to Hunt area.
@@ -1767,6 +1820,7 @@
         <li><span class="parameter">priority</span>
             <span class="types"><span class="type">integer</span></span>
          Order priority, >0 removes user control
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -3004,7 +3058,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          new team number
         </li>
     </ul>
@@ -3058,7 +3112,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">team</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamNum</span></span>
          new team number
         </li>
     </ul>
@@ -3406,6 +3460,221 @@
     <ol>
 
            <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Nearest"></a>Nearest </h2>
+
+          <div class="section-description">
+           functions find and return the game object of the requested type closest to a reference point.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.GetNearestObject"></a>
+    <strong>GameObject.GetNearestObject (self)</strong>
+    </dt>
+    <dd>
+    Returns the game object closest to self.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetNearestVehicle"></a>
+    <strong>GameObject.GetNearestVehicle (self)</strong>
+    </dt>
+    <dd>
+    Returns the craft closest to self.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetNearestBuilding"></a>
+    <strong>GameObject.GetNearestBuilding (self)</strong>
+    </dt>
+    <dd>
+    Returns the building closest to self.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetNearestEnemy"></a>
+    <strong>GameObject.GetNearestEnemy (self)</strong>
+    </dt>
+    <dd>
+    Returns the enemy closest to self.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetNearestFriend"></a>
+    <strong>GameObject.GetNearestFriend (self)</strong>
+    </dt>
+    <dd>
+    Returns the friend closest to self.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetNearestUnitOnTeam"></a>
+    <strong>GameObject.GetNearestUnitOnTeam (self)</strong>
+    </dt>
+    <dd>
+    Returns the friend closest to self.  Returns nil if none exists.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+        object closest friend, or nil if none exists.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.CountUnitsNearObject"></a>
+    <strong>GameObject.CountUnitsNearObject (self, dist, team, odfname)</strong>
+    </dt>
+    <dd>
+    Returns how many objects with the given team and odf name are closer than the given distance.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">dist</span>
+            <span class="types"><span class="type">number</span></span>
+
+        </li>
+        <li><span class="parameter">team</span>
+            <span class="types"><span class="type">TeamNum</span></span>
+
+        </li>
+        <li><span class="parameter">odfname</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
 
     </ol>
 
@@ -3818,7 +4087,7 @@
          GameObject instance
         </li>
         <li><span class="parameter">slot</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">TeamSlotInteger</span></span>
          Slot number, see TeamSlot
         </li>
     </ul>
@@ -3845,7 +4114,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-13 20:41:31 </i>
+<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

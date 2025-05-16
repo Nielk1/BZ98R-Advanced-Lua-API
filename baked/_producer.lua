@@ -456,14 +456,26 @@ hook.Add("Start", "_producer_Start", function()
 end, config.get("hook_priority.Start.Producer"));
 
 hook.AddSaveLoad("_producer", function()
-    return ProducerQueue, ProducerOrders, ProducerCommandHistory;
+    ProducerOrdersRemapped = {};
+    for producer, job in pairs(ProducerOrders) do
+        if producer then
+            ProducerOrdersRemapped[producer:GetHandle()] = job;
+        end
+    end
+    return ProducerQueue, ProducerOrdersRemapped, ProducerCommandHistory;
 end,
-function(_ProducerQueue, _ProducerEvents, _ProducerCommandHistory)
+function(_ProducerQueue, _ProducerOrdersRemapped, _ProducerCommandHistory)
     ProducerQueue = _ProducerQueue or {};
     for i = 0, 15 do
         ScanProducers(i);
     end
-    ProducerOrders = _ProducerEvents or {};
+    ProducerOrders = {};
+    for handle, job in pairs(_ProducerOrdersRemapped) do
+        local producer = gameobject.FromHandle(handle);
+        if producer then
+            ProducerOrders[producer] = job;
+        end
+    end
     ProducerCommandHistory = _ProducerCommandHistory or {};
 end);
 

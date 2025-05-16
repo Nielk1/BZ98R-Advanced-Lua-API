@@ -21,7 +21,6 @@ local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 
-local PatrolEngine_MT -- Forward declaration of the class
 
 local M = {}
 
@@ -31,6 +30,7 @@ PatrolManagerWeakList_MT.__mode = "k";
 local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
 
 
+local PatrolEngine = { __type = "PatrolEngine" }
 
 
 --- Called when an object is added.
@@ -45,7 +45,7 @@ local function Construct(path_map, patrol_units, locations, forcedAlert)
     self.patrol_units = patrol_units
     self.locations = locations
     self.forcedAlert = forcedAlert
-    self = setmetatable(self, PatrolEngine_MT)
+    self = setmetatable(self, { __index = PatrolEngine })
     PatrolManagerWeakList[self] = true
     return self
 end
@@ -56,31 +56,24 @@ function M.new()
     return Construct({}, {}, {}, false)
 end
 
-
-
 --- @class PatrolEngine : CustomSavableType
 --- @field path_map table<string, table>
 --- @field patrol_units table<GameObject, table>
 --- @field locations table<string>
 --- @field forcedAlert boolean
-local PatrolEngine_MT = {}
-PatrolEngine_MT.__type = "PatrolEngine"
-PatrolEngine_MT.__index = PatrolEngine_MT
-
-
 
 
 --- Checks if the controller is alive.
 --- @param self PatrolEngine
 --- @return boolean
-function PatrolEngine_MT.isAlive(self)
+function PatrolEngine.isAlive(self)
     return true
 end
 
 --- Registers a location.
 --- @param self PatrolEngine
 --- @param locationName string
-function PatrolEngine_MT.registerLocation(self, locationName)
+function PatrolEngine.registerLocation(self, locationName)
     self.path_map[locationName] = {}
     table.insert(self.locations, locationName)
 end
@@ -88,9 +81,9 @@ end
 --- Registers multiple locations.
 --- @param self PatrolEngine
 --- @param locations string[]
-function PatrolEngine_MT.registerLocations(self, locations)
+function PatrolEngine.registerLocations(self, locations)
     for _, location in pairs(locations) do
-        PatrolEngine_MT.registerLocation(self, location)
+        PatrolEngine.registerLocation(self, location)
     end
 end
 
@@ -99,7 +92,7 @@ end
 --- @param startpoint string
 --- @param path string
 --- @param endpoint string
-function PatrolEngine_MT._connectPaths(self, startpoint, path, endpoint)
+local function _connectPaths(self, startpoint, path, endpoint)
     table.insert(self.path_map[startpoint], { path = path, location = endpoint })
 end
 
@@ -107,9 +100,9 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @param routes table<string, string>
-function PatrolEngine_MT.defineRoutes(self, location, routes)
+function PatrolEngine.defineRoutes(self, location, routes)
     for path, endpoint in pairs(routes) do
-        PatrolEngine_MT._connectPaths(self, location, path, endpoint)
+        _connectPaths(self, location, path, endpoint)
     end
 end
 
@@ -117,7 +110,7 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @return table
-function PatrolEngine_MT.getRandomRoute(self, location)
+function PatrolEngine.getRandomRoute(self, location)
     if #self.path_map[location] < 2 then
         return self.path_map[location][1]
     end
@@ -128,13 +121,13 @@ end
 --- Assigns a route to a patrol unit.
 --- @param self PatrolEngine
 --- @param handle GameObject
-function PatrolEngine_MT.giveRoute(self, handle)
+function PatrolEngine.giveRoute(self, handle)
     local unit = self.patrol_units[handle]
-    local route = PatrolEngine_MT.getRandomRoute(self,unit.location)
+    local route = PatrolEngine.getRandomRoute(self,unit.location)
     local attempts = 0
 
     while route and route.location == unit.oldLocation and #self.path_map[unit.location] > 1 do
-        route = PatrolEngine_MT.getRandomRoute(self,unit.location)
+        route = PatrolEngine.getRandomRoute(self,unit.location)
         attempts = attempts + 1
         if attempts > 10 then
             break
@@ -155,7 +148,7 @@ end
 --- @param self PatrolEngine
 --- @param handle GameObject
 --- @function addGameObject
-function PatrolEngine_MT.addGameObject(self, handle)
+function PatrolEngine.addGameObject(self, handle)
     local nearestLocation = nil
     local location = nil
     local pos = handle:GetPosition()
@@ -176,13 +169,13 @@ function PatrolEngine_MT.addGameObject(self, handle)
         path = nil,
         busy = false
     }
-    PatrolEngine_MT.giveRoute(self,handle)
+    PatrolEngine.giveRoute(self,handle)
 end
 
 --- Gets all patrol unit handles.
 --- @param self PatrolEngine
 --- @return table
-function PatrolEngine_MT.getGameObjects(self)
+function PatrolEngine.getGameObjects(self)
     return self.patrol_units
 end
 
@@ -193,21 +186,24 @@ local function removeGameObject(self, handle)
     self.patrol_units[handle] = nil
 end
 
--- INTERNAL USE.
--- @param self PatrolController instance
--- @return ...
-function PatrolEngine_MT.Save(self)
+--- INTERNAL USE.
+--- @param self PatrolEngine instance
+--- @return ...
+--- @package
+function PatrolEngine.Save(self)
     return self.path_map, self.patrol_units, self.locations, self.forcedAlert
 end
 
 --- Load event function.
---
--- INTERNAL USE.
--- @param patrol_units table
--- @param locations table
--- @param path_map table
--- @param forcedAlert boolean
-function PatrolEngine_MT.Load(patrol_units, locations, path_map, forcedAlert)
+---
+--- INTERNAL USE.
+--- @param patrol_units table
+--- @param locations table
+--- @param path_map table
+--- @param forcedAlert boolean
+--- @return PatrolEngine
+--- @package
+function PatrolEngine.Load(patrol_units, locations, path_map, forcedAlert)
     return Construct(path_map, patrol_units, locations, forcedAlert)
 end
 
@@ -218,18 +214,18 @@ local function update(self, dtime)
     for handle, unit in pairs(self.patrol_units) do
         unit.timeout = unit.timeout - dtime
         if unit.timeout <= 0 then
-            local nearestEnemy = gameobject.FromHandle(GetNearestEnemy(handle:GetHandle()))
+            local nearestEnemy = handle:GetNearestEnemy()
             local currentCommand = handle:GetCurrentCommand()
 
             if self.forcedAlert then
-                if currentCommand ~= AiCommand["ATTACK"] and nearestEnemy:IsAlive() and handle:IsWithin(nearestEnemy, 125) then
+                if currentCommand ~= AiCommand["ATTACK"] and nearestEnemy and nearestEnemy:IsAlive() and handle:IsWithin(nearestEnemy, 125) then
                     handle:Attack(nearestEnemy)
                     unit.busy = true
                 end
             end
 
             if not unit.busy and currentCommand == AiCommand["NONE"] then
-                PatrolEngine_MT.giveRoute(self, handle)
+                PatrolEngine.giveRoute(self, handle)
             elseif unit.busy and currentCommand == AiCommand["NONE"] then
                 unit.busy = false
                 handle:Goto(unit.path)
@@ -267,7 +263,7 @@ end, config.get("hook_priority.DeleteObject.Patrol"));
 -- end
 
 
-customsavetype.Register(PatrolEngine_MT);
+customsavetype.Register(PatrolEngine);
 
 debugprint("_patrol Loaded");
 

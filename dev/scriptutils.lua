@@ -757,6 +757,7 @@ function IsTouching(h1, h2, tolerance) error("This function is provided by the e
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @function GetNearestObject
+--- @deprecated Use `_gameobject.GetNearestObject` instead.
 function GetNearestObject(target, point) error("This function is provided by the engine."); end
 
 --- Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
@@ -764,6 +765,7 @@ function GetNearestObject(target, point) error("This function is provided by the
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @function GetNearestVehicle
+--- @deprecated Use `_gameobject.GetNearestVehicle` instead.
 function GetNearestVehicle(target, point) error("This function is provided by the engine."); end
 
 --- Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
@@ -771,6 +773,7 @@ function GetNearestVehicle(target, point) error("This function is provided by th
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @function GetNearestBuilding
+--- @deprecated Use `_gameobject.GetNearestBuilding` instead.
 function GetNearestBuilding(target, point) error("This function is provided by the engine."); end
 
 --- Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
@@ -778,6 +781,7 @@ function GetNearestBuilding(target, point) error("This function is provided by t
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @function GetNearestEnemy
+--- @deprecated Use `_gameobject.GetNearestEnemy` instead.
 function GetNearestEnemy(target, point) error("This function is provided by the engine."); end
 
 --- Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
@@ -786,6 +790,7 @@ function GetNearestEnemy(target, point) error("This function is provided by the 
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @function GetNearestFriend
+--- @deprecated Use `_gameobject.GetNearestFriend` instead.
 function GetNearestFriend(target, point) error("This function is provided by the engine."); end
 
 --- Returns the friend closest to the given reference point. Returns nil if none exists.
@@ -803,6 +808,7 @@ function GetNearestFriend(target, point) error("This function is provided by the
 --- @return Handle? handle closest friend, or nil if none exists.
 --- @function GetNearestUnitOnTeam
 --- @diagnostic enable: undefined-doc-param
+--- @deprecated Use `_gameobject.GetNearestUnitOnTeam` instead.
 function GetNearestUnitOnTeam(...) end
 
 --- Returns the craft or person on the given team closest to the given game object. Returns nil if none exists.
@@ -841,6 +847,7 @@ function GetNearestUnitOnTeam(...) end
 --- @param odfname string
 --- @return integer
 --- @function CountUnitsNearObject
+--- @deprecated Use `_gameobject.CountUnitsNearObject` instead.
 function CountUnitsNearObject(h, dist, team, odfname) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------

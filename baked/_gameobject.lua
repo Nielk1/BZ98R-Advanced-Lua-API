@@ -79,7 +79,7 @@ GameObject.__type = "GameObject";
 
 --- Create new GameObject Intance.
 --- @param handle Handle Handle from BZ98R
---- @return GameObject
+--- @return GameObject?
 function M.FromHandle(handle)
     local objectId = handle;--string.sub(tostring(handle),4);
     if GameObjectWeakList[objectId] ~= nil then
@@ -1382,6 +1382,278 @@ function GameObject.IsTouching(self, target, tolerance)
     else
         error("Parameter target must be GameObject or Handle.");
     end
+end
+
+-------------------------------------------------------------------------------
+-- Nearest
+-------------------------------------------------------------------------------
+-- @section
+-- These functions find and return the game object of the requested type closest to a reference point.
+
+--- Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
+--- @overload fun(target: Vector): GameObject?
+--- @overload fun(target: Matrix): GameObject?
+--- @overload fun(target: GameObject): GameObject?
+--- @overload fun(target: Handle): GameObject?
+--- @overload fun(target: string, point?: integer): GameObject?
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return GameObject?
+function M.GetNearestObject(target, point)
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestObject(target:GetHandle(), point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestObject(target, point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Returns the game object closest to self.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetNearestObject(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetNearestObject(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
+--- @overload fun(target: Vector): GameObject?
+--- @overload fun(target: Matrix): GameObject?
+--- @overload fun(target: GameObject): GameObject?
+--- @overload fun(target: Handle): GameObject?
+--- @overload fun(target: string, point?: integer): GameObject?
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return GameObject?
+function M.GetNearestVehicle(target, point)
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        local handle =  GetNearestVehicle(target:GetHandle(), point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
+        local handle =  GetNearestVehicle(target, point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Returns the craft closest to self.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetNearestVehicle(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetNearestVehicle(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
+--- @overload fun(target: Vector): GameObject?
+--- @overload fun(target: Matrix): GameObject?
+--- @overload fun(target: GameObject): GameObject?
+--- @overload fun(target: Handle): GameObject?
+--- @overload fun(target: string, point?: integer): GameObject?
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return GameObject?
+function M.GetNearestBuilding(target, point)
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestBuilding(target:GetHandle(), point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestBuilding(target, point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Returns the building closest to self.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetNearestBuilding(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetNearestBuilding(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
+--- @overload fun(target: Vector): GameObject?
+--- @overload fun(target: Matrix): GameObject?
+--- @overload fun(target: GameObject): GameObject?
+--- @overload fun(target: Handle): GameObject?
+--- @overload fun(target: string, point?: integer): GameObject?
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return GameObject?
+function M.GetNearestEnemy(target, point)
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestEnemy(target:GetHandle(), point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestEnemy(target, point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Returns the enemy closest to self.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetNearestEnemy(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetNearestEnemy(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
+--- [2.0+]
+--- @overload fun(target: Vector): GameObject?
+--- @overload fun(target: Matrix): GameObject?
+--- @overload fun(target: GameObject): GameObject?
+--- @overload fun(target: Handle): GameObject?
+--- @overload fun(target: string, point?: integer): GameObject?
+--- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
+--- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @return GameObject?
+function M.GetNearestFriend(target, point)
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestFriend(target:GetHandle(), point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    elseif target ~= nil then
+        --- @cast target Vector|Matrix|Handle|string
+        --- @diagnostic disable-next-line: deprecated
+        local handle = GetNearestFriend(target, point);
+        if handle == nil then return nil end;
+        return M.FromHandle(handle);
+    else
+        error("Parameter target must be Vector, Matrix, GameObject, Handle, or path name.");
+    end
+end
+
+--- Returns the friend closest to self.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetNearestFriend(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetNearestFriend(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns the friend closest to the given reference point. Returns nil if none exists.
+--- [2.1+]
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(h: GameObject): GameObject? --- [2.0+]
+--- @overload fun(h: Handle): GameObject? --- [2.0+]
+--- @overload fun(path: string, point?: integer): GameObject? --- [2.1+]
+--- @overload fun(position: Vector): GameObject? --- [2.1+]
+--- @overload fun(transform: Matrix): GameObject? --- [2.1+]
+--- @param h Handle The reference game object.
+--- @param path string The path name.
+--- @param point? integer The point on the path (optional).
+--- @param position Vector The position vector.
+--- @param transform Matrix The transform matrix.
+--- @return GameObject? object closest friend, or nil if none exists.
+--- @diagnostic enable: undefined-doc-param
+function M.GetNearestUnitOnTeam(...)
+    local args = {...}
+    if #args == 1 then
+        if M.isgameobject(args[1]) then
+            local self = args[1]
+            --- @cast self GameObject
+            --- @diagnostic disable-next-line: deprecated
+            local handle = GetNearestUnitOnTeam(self:GetHandle());
+            if handle == nil then return nil end;
+            return M.FromHandle(handle);
+        else
+            local location = args[1]
+            --- @cast location Vector|Matrix|Handle|string
+            --- @diagnostic disable-next-line: deprecated
+            local handle = GetNearestUnitOnTeam(location);
+            if handle == nil then return nil end;
+            return M.FromHandle(handle);
+        end
+    elseif #args == 2 then
+        if utility.isstring(args[1]) then
+            local path = args[1]
+            --- @cast path string
+            --- @diagnostic disable-next-line: deprecated
+            local handle = GetNearestUnitOnTeam(path, args[2]);
+            if handle == nil then return nil end;
+            return M.FromHandle(handle);
+        else
+            error("Parameter path must be string.");
+        end
+    else
+        error("Invalid number of arguments.");
+    end
+end
+
+--- Returns the friend closest to self. Returns nil if none exists.
+--- @param self GameObject
+--- @return GameObject? object closest friend, or nil if none exists.
+function GameObject.GetNearestUnitOnTeam(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetNearestUnitOnTeam(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns how many objects with the given team and odf name are closer than the given distance.
+--- @param self GameObject
+--- @param dist number
+--- @param team TeamNum
+--- @param odfname string
+--- @return integer
+function GameObject.CountUnitsNearObject(self, dist, team, odfname)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isnumber(dist) then error("Parameter dist must be number."); end
+    if not utility.isnumber(team) then error("Parameter team must be number."); end
+    if not utility.isstring(odfname) then error("Parameter odfname must be string."); end
+    --- @diagnostic disable-next-line: deprecated
+    return CountUnitsNearObject(self:GetHandle(), dist, team, odfname);
 end
 
 -------------------------------------------------------------------------------

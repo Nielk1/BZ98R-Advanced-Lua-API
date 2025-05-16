@@ -333,6 +333,7 @@ function GameObject.CanCommand(self)
 end
 
 --- Returns true if the game object is a producer that can build at the moment. Returns false otherwise.
+--- The concept here is that the builder either A: Does not need to deploy or B: Does need to deploy but is deployed.
 --- @param self GameObject
 --- @return boolean
 function GameObject.CanBuild(self)

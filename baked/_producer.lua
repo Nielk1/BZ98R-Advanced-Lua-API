@@ -31,7 +31,7 @@ local color = require("_color");
 -- @event Producer:BuildComplete
 -- @param object GameObject The object that was built.
 -- @param producer GameObject The producer that built the object.
--- @param job ProductionQueue The job that was completed.
+-- @param data any? The event data to be fired with the creation event.
 -- @see _hook.Add
 
 local M = {};
@@ -52,7 +52,7 @@ local ProducerTeamSlots = {
 --- @class ProductionQueue
 --- @field odf string The ODF of the object to be built.
 --- @field location Vector|string The location where the object should be built, or "0 0 0" if not specified.
---- @field event table|true|nil The event data to be fired with the creation event, or true if simple event, or nil if no event needed.
+--- @field data any? The event data to be fired with the creation event.
 
 --- A table mapping teams (0–15) to ProductionQueue lists.
 --- This should be scanned every update if any producers are not busy to look for work for said producer.
@@ -104,34 +104,8 @@ local ProducersDirty = {};
 -- @section
 local c = color.AnsiColorEscapeMap;
 
-local function UpdateProducerCommandHistory()
-    -- loop ProducerCache to look at all objects and check their LastOrder
-    for team, data in pairs(ProducerCache) do
-        for slot, producer in pairs(data) do
-            if producer and producer:IsValid() then
-                --- @todo check if the producer team has changed and if it has look at treating it like it died and then like it's new
-
-                if producer._producer == nil then
-                    producer._producer = {};
-                end
-                if producer._producer.commandHistory == nil then
-                    producer._producer.commandHistory = deque.new();
-                end
-                local lastOrder = producer._producer.commandHistory:peek_right();
-                local currentCommand = producer:GetCurrentCommand();
-                if lastOrder ~= currentCommand then
-                    producer._producer.commandHistory:push_right(currentCommand);
-                end
-            else
-                --- @todo grab any pending building tasks for this item and re-add them to the head of the queue
-                data[slot] = nil; -- remove the producer since it's invalid
-            end
-        end
-    end
-end
-
 --- Process the queues for each team.
-local function ProcessQueues(ttime)
+local function ProcessQueues()
     -- iterate the queue until either the end of the queue or all producers are busy
     for team, queue in pairs(ProducerQueue) do
         --debugprint(table.show(queue:contents(), "queue["..tostring(team).."]"));
@@ -160,6 +134,9 @@ local function ProcessQueues(ttime)
                     --debugprint("\27[34m"..table.show(MemoOfProducersByProduced).."\27[0m")
                     --- @cast job ProductionQueue
                     local hasPosition = job.location and job.location ~= "" and true or false;
+                    if not hasPosition then
+                        job.location = nil;
+                    end
                     local possibleProducers = MemoOfProducersByProduced[job.odf];
                     if possibleProducers and next(producerTypes) then
                         for producerOdf, _ in pairs(possibleProducers) do
@@ -234,14 +211,6 @@ local function ProcessQueues(ttime)
     end
 end
 
-local function join(array, delimiter)
-    local result = {}
-    for _, v in ipairs(array) do
-        table.insert(result, tostring(v)) -- Convert each element to a string
-    end
-    return table.concat(result, delimiter or ", ")
-end
-
 local function ProcessCreated(object)
     -- try to figure out which producer made it so if it is part of our system
 
@@ -249,48 +218,92 @@ local function ProcessCreated(object)
     --local distance =  2^53;
     local distance =  100; -- if we're over 100 away we likely weren't produced by the producer
     local closestProducer = nil;
+    local matchingJob = nil;
 
     for producer, job in pairs(ProducerOrders) do
         if not producer or not producer:IsValid() then
             ProducerOrders[producer] = nil; -- remove the producer from the list
             --- @todo eject jobs waiting on this producer?
         else
-            --local currentCommand = producer:GetCurrentCommand();
-            --if currentCommand ~= ProducerCommandHistory[producer] then
-            --    ProducerCommandHistory[producer] = currentCommand;
-            --end
-
             if job.odf == odf then
-                local dist = producer:GetDistance(object);
-                if dist < distance then
-                    distance = dist;
-                    closestProducer = producer;
+                -- attempt to double check producer is valid by if a destination was set, as that's a diff kind of build
+                local producerSig = producer:GetClassSig();
+                local valid = true;
+                if job.location then
+                    valid = producerSig == utility.ClassSig.armory or producerSig == utility.ClassSig.constructionrig and true or false;
+                else
+                    valid = producerSig == utility.ClassSig.recycler or producerSig == utility.ClassSig.factory and true or false;
+                end
+                if valid then
+                    local dist = producer:GetDistance(object);
+                    if dist < distance then
+                        distance = dist;
+                        closestProducer = producer;
+                        matchingJob = job;
+                    end
                 end
             end
         end
     end
 
-    if closestProducer then
-        local currentCommand = closestProducer:GetCurrentCommand();
-        local lastCommand = closestProducer._producer and closestProducer._producer.commandHistory and join(closestProducer._producer.commandHistory:contents(),",") or nil
-        debugprint(c.GREEN.."BuildComplete["..tostring(lastCommand).."]["..tostring(currentCommand).."] ("..tostring(math.floor(distance)).."m) "..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
+    if closestProducer and matchingJob then
+        local currentBusy = closestProducer:IsBusy();
+        local currentCanBuild = closestProducer:CanBuild();
+        local producerSig = closestProducer:GetClassSig();
+        if currentCanBuild then
+            if producerSig == utility.ClassSig.armory and not currentBusy then
+                -- armories are special and somehow aren't still busy after a build
+                debugprint(c.GREEN.."BuildComplete FIND&DONE ("..tostring(math.floor(distance)).."m)"..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
+                hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, matchingJob.data);
+                ProducerOrders[closestProducer] = nil; -- remove the producer from the list
+            elseif currentBusy then
+                -- Recycler, Factory, and Construction Rig change Busy flag on a delay
+                debugprint(c.DKGREEN.."BuildComplete FIND ("..tostring(math.floor(distance)).."m) "..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
 
-        hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, ProducerOrders[closestProducer]);
-
-        if closestProducer._producer == nil then
-            closestProducer._producer = {};
+                --hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, ProducerOrders[closestProducer]);
+    
+                if closestProducer._producer == nil then
+                    closestProducer._producer = {};
+                end
+                closestProducer._producer.post_build_check = object;
+                --ProducerOrders[closestProducer] = nil; -- remove the producer from the list
+            end
         end
-        closestProducer._producer.sleepUntil = GetTime() + 1;
+    end
+end
 
-        ProducerOrders[closestProducer] = nil; -- remove the producer from the list
+local function PostBuildCheck()
+    -- confirm builds because the producer is now no longer busy 1 frame later
+    for producer, job in pairs(ProducerOrders) do
+        if not producer or not producer:IsValid() then
+            ProducerOrders[producer] = nil; -- remove the producer from the list
+            if producer._producer and producer._producer.post_build_check then
+                --debugprint(c.RED..table.show(job)..job.odf..c.RESET);
+                local object = producer._producer.post_build_check;
+                --- @cast object GameObject
+                producer._producer.post_build_check = nil;
+                debugprint(c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                hook.CallAllNoReturn("Producer:BuildComplete", object, producer, job.data);
+                ProducerOrders[producer] = nil; -- remove the producer from the list
+            end
+        elseif not producer:IsBusy() then
+            ProducerOrders[producer] = nil; -- remove the producer from the list
+            if producer._producer and producer._producer.post_build_check then
+                --debugprint(c.RED..table.show(job)..job.odf..c.RESET);
+                local object = producer._producer.post_build_check;
+                --- @cast object GameObject
+                producer._producer.post_build_check = nil;
+                debugprint(c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                hook.CallAllNoReturn("Producer:BuildComplete", object, producer, job.data);
+                ProducerOrders[producer] = nil; -- remove the producer from the list
+            end
+        end
     end
 end
 
 --- Update the producer memo cache if needed for the given team.
 --- @param team TeamNum
 local function ScanProducers(team)
-    UpdateProducerCommandHistory();
-
     for _, p in pairs(ProducerTeamSlots) do
         local producer = gameobject.GetTeamSlot(p, team); -- Ensure the producer is loaded
         if not ProducerCache[team] then
@@ -337,14 +350,13 @@ local function ScanProducers(team)
     end
 
     ProducersDirty[team] = nil;
-    UpdateProducerCommandHistory();
 end
 
 --- @param odf string Object to build.
 --- @param team TeamNum Team number to build the object.
 --- @param location Vector|string|nil Location to build the object if from an armory or constructor.
---- @param event table|true|nil Data to fire with creation event, or true if simple event, or nil if no event needed.
-function M.QueueJob(odf, team, location, event)
+--- @param data any? Event data to be fired with the creation event.
+function M.QueueJob(odf, team, location, data)
     if not odf or not team then
         error("QueueJob requires an odf and a team number.");
     end
@@ -391,7 +403,7 @@ function M.QueueJob(odf, team, location, event)
     queue:push_right({
         odf = odf,
         location = location,
-        event = event,
+        data = data,
     });
     --for i = 0, 15 do
     --    if ProducerQueue[i] then
@@ -417,9 +429,7 @@ hook.Add("CreateObject", "_producer_CreateObject", function(object, isMapObject)
     end
 
     if not isMapObject then
-        UpdateProducerCommandHistory();
         ProcessCreated(object);
-        UpdateProducerCommandHistory();
     end
 end, 4999);
 
@@ -428,18 +438,18 @@ hook.Add("DeleteObject", "_producer_DeleteObject", function(object)
 end, 4999);
 
 hook.Add("Update", "_producer_Update", function(dtime, ttime)
+    PostBuildCheck();
+
     for i = 0, 15 do
         if ProducersDirty[i] then
             ScanProducers(i);
         end
     end
 
-    UpdateProducerCommandHistory();
-    ProcessQueues(ttime);
-    UpdateProducerCommandHistory();
+    ProcessQueues();
 end, 4999);
 
-hook.Add("Start", "_producer_Start", function(dtime, ttime)
+hook.Add("Start", "_producer_Start", function()
     for i = 0, 15 do
         ScanProducers(i);
     end

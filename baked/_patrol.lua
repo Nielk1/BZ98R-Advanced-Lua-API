@@ -40,11 +40,12 @@ local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
 --- @param forcedAlert boolean
 --- @return PatrolEngine
 local function Construct(path_map, patrol_units, locations, forcedAlert)
-    local self = setmetatable({}, PatrolEngine_MT)
+    local self = {};
     self.path_map = path_map
     self.patrol_units = patrol_units
     self.locations = locations
     self.forcedAlert = forcedAlert
+    self = setmetatable(self, PatrolEngine_MT)
     PatrolManagerWeakList[self] = true
     return self
 end
@@ -62,10 +63,9 @@ end
 --- @field patrol_units table<GameObject, table>
 --- @field locations table<string>
 --- @field forcedAlert boolean
-local PatrolEngine = {}
 local PatrolEngine_MT = {}
 PatrolEngine_MT.__type = "PatrolEngine"
-PatrolEngine.__index = PatrolEngine
+PatrolEngine_MT.__index = PatrolEngine_MT
 
 
 
@@ -90,7 +90,7 @@ end
 --- @param locations string[]
 function PatrolEngine_MT.registerLocations(self, locations)
     for _, location in pairs(locations) do
-        PatrolEngine.registerLocation(self, location)
+        PatrolEngine_MT.registerLocation(self, location)
     end
 end
 
@@ -109,7 +109,7 @@ end
 --- @param routes table<string, string>
 function PatrolEngine_MT.defineRoutes(self, location, routes)
     for path, endpoint in pairs(routes) do
-        PatrolEngine._connectPaths(self, location, path, endpoint)
+        PatrolEngine_MT._connectPaths(self, location, path, endpoint)
     end
 end
 
@@ -130,11 +130,11 @@ end
 --- @param handle GameObject
 function PatrolEngine_MT.giveRoute(self, handle)
     local unit = self.patrol_units[handle]
-    local route = PatrolEngine.getRandomRoute(self,unit.location)
+    local route = PatrolEngine_MT.getRandomRoute(self,unit.location)
     local attempts = 0
 
     while route and route.location == unit.oldLocation and #self.path_map[unit.location] > 1 do
-        route = PatrolEngine.getRandomRoute(self,unit.location)
+        route = PatrolEngine_MT.getRandomRoute(self,unit.location)
         attempts = attempts + 1
         if attempts > 10 then
             break
@@ -176,7 +176,7 @@ function PatrolEngine_MT.addGameObject(self, handle)
         path = nil,
         busy = false
     }
-    PatrolEngine.giveRoute(self,handle)
+    PatrolEngine_MT.giveRoute(self,handle)
 end
 
 --- Gets all patrol unit handles.
@@ -229,7 +229,7 @@ local function update(self, dtime)
             end
 
             if not unit.busy and currentCommand == AiCommand["NONE"] then
-                PatrolEngine.giveRoute(self, handle)
+                PatrolEngine_MT.giveRoute(self, handle)
             elseif unit.busy and currentCommand == AiCommand["NONE"] then
                 unit.busy = false
                 handle:Goto(unit.path)
@@ -267,7 +267,7 @@ end, config.get("hook_priority.DeleteObject.Patrol"));
 -- end
 
 
-customsavetype.Register(PatrolEngine);
+customsavetype.Register(PatrolEngine_MT);
 
 debugprint("_patrol Loaded");
 

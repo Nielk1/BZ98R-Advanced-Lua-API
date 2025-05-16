@@ -185,7 +185,7 @@ end
 
 --- Build Object.
 --- @param odf string Object Definition File (without ".odf")
---- @param team integer Team number for the object, 0 to 15
+--- @param team TeamNum Team number for the object, 0 to 15
 --- @param pos Vector|Matrix|GameObject|Handle|string Vector, Matrix, GameObject, or pathpoint by name
 --- @param point? integer index
 --- @return GameObject? object Newly built GameObject
@@ -225,9 +225,9 @@ function M.GetGameObject(key)
 end
 
 --- Get the game object in the specified team slot.
---- @param slot integer Slot number, see TeamSlot
+--- @param slot TeamSlotInteger Slot number, see TeamSlot
 --- @see ScriptUtils.TeamSlot
---- @param team? integer Team number, 0 to 15
+--- @param team? TeamNum Team number, 0 to 15
 function M.GetTeamSlot(slot, team)
     if not utility.isnumber(slot) then error("Parameter slot must be a number") end
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number") end
@@ -238,7 +238,7 @@ function M.GetTeamSlot(slot, team)
 end
 
 --- Get Player GameObject of team.
---- @param team? integer Team number of player
+--- @param team? TeamNum Team number of player
 --- @return GameObject? player GameObject of player or nil
 function M.GetPlayerGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -249,7 +249,7 @@ function M.GetPlayerGameObject(team)
 end
 
 --- Get Recycler GameObject of team.
---- @param team? integer Team number of player
+--- @param team? TeamNum Team number of player
 --- @return GameObject? recycler GameObject of recycler or nil
 function M.GetRecyclerGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -260,7 +260,7 @@ function M.GetRecyclerGameObject(team)
 end
 
 --- Get Factory GameObject of team.
---- @param team? integer Team number of player
+--- @param team? TeamNum Team number of player
 --- @return GameObject? factory GameObject of factory or nil
 function M.GetFactoryGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -271,7 +271,7 @@ function M.GetFactoryGameObject(team)
 end
 
 --- Get Armory GameObject of team.
---- @param team? integer Team number of player
+--- @param team? TeamNum Team number of player
 --- @return GameObject? armory of armory or nil
 function M.GetArmoryGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -282,7 +282,7 @@ function M.GetArmoryGameObject(team)
 end
 
 --- Get Factory GameObject of team.
---- @param team? integer Team number of player
+--- @param team? TeamNum Team number of player
 --- @return GameObject? constructor of constructor or nil
 function M.GetConstructorGameObject(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -477,7 +477,7 @@ end
 --- Order GameObject to Mine target Path.
 --- @param self GameObject GameObject instance
 --- @param target Vector|Matrix|string Target Vector, Matrix, or Path name
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Mine(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if target ~= nil then
@@ -491,7 +491,7 @@ end
 --- Order GameObject to Follow target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority integer? Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Follow(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -528,7 +528,7 @@ end
 
 --- Order GameObject to Defend area.
 --- @param self GameObject GameObject instance
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Defend(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -538,7 +538,7 @@ end
 --- Order GameObject to Defend2 target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Defend2(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -556,7 +556,7 @@ end
 
 --- Order GameObject to Stop.
 --- @param self GameObject GameObject instance
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Stop(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -566,7 +566,7 @@ end
 --- Order GameObject to Patrol target path.
 --- @param self GameObject GameObject instance
 --- @param target string Target Path name
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Patrol(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(target) then error("Parameter target must be a string") end
@@ -577,7 +577,7 @@ end
 --- Order GameObject to Retreat.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle|string Target GameObject or Path name
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Retreat(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -596,7 +596,7 @@ end
 --- Order GameObject to GetIn target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.GetIn(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -615,7 +615,7 @@ end
 --- Order GameObject to Pickup target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Pickup(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -634,7 +634,7 @@ end
 --- Order GameObject to Pickup target path name.
 --- @param self GameObject GameObject instance
 --- @param target Vector|Matrix|string Target vector, matrix, or path name
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Dropoff(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if target ~= nil then
@@ -649,7 +649,7 @@ end
 --- Oddly this function does not include a location for the action, might want to use the far more powerful orders system.
 --- @param self GameObject GameObject instance
 --- @param odf string Object Definition
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Build(self, odf, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(odf) then error("Parameter odf must be a string") end
@@ -661,7 +661,7 @@ end
 --- @param self GameObject GameObject instance
 --- @param odf string Object Definition
 --- @param target Vector|Matrix|GameObject|Handle|string Target GameObject instance, vector, matrix, or path name
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.BuildAt(self, odf, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -680,7 +680,7 @@ end
 --- Order GameObject to Formation follow target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Formation(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -698,7 +698,7 @@ end
 
 --- Order GameObject to Hunt area.
 --- @param self GameObject GameObject instance
---- @param priority integer Order priority, >0 removes user control
+--- @param priority? integer Order priority, >0 removes user control
 function GameObject.Hunt(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -1179,7 +1179,7 @@ end
 
 --- Sets the game object's team number.
 --- @param self GameObject GameObject instance
---- @param team integer new team number
+--- @param team TeamNum new team number
 function GameObject.SetTeamNum(self, team)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
@@ -1198,7 +1198,7 @@ end
 
 --- Set perceived team number of the GameObject.
 --- @param self GameObject GameObject instance
---- @param team integer new team number
+--- @param team TeamNum new team number
 function GameObject.SetPerceivedTeam(self, team)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(team) then error("Parameter amt must be number."); end
@@ -1461,6 +1461,67 @@ function M.ObjectiveObjects()
 end
 
 -------------------------------------------------------------------------------
+-- Other - Custom Functions
+-------------------------------------------------------------------------------
+-- @section
+
+-- Returns the scrap cost of the game object.
+-- @param self GameObject GameObject instance
+-- @return integer scrap cost
+--function M.GetScrapCost(self)
+--    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+--    
+--    --- @todo move this to a cached ODF data handler
+--    local odf = self:GetOdf();
+--    if odf == nil then error("GetOdf() returned nil."); end
+--    local odfHandle = OpenODF(odf);
+--    if odfHandle == nil then error("OpenODF() returned nil."); end
+--
+--    local scrap = 2147483647; -- GameObject default
+--    
+--    local sig = self:GetClassSig();
+--    if sig == utility.ClassSig.person then
+--        scrap = 0;
+--    end
+--
+--    scrap = GetODFInt(odfHandle, "GameObjectClass", "scrapCost", scrap);
+--    return scrap;
+--end
+
+-- Returns the pilot cost of the game object.
+-- @param self GameObject GameObject instance
+-- @return integer pilot cost
+--function M.GetPilotCost(self)
+--    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+--    
+--    --- @todo move this to a cached ODF data handler
+--    local odf = self:GetOdf();
+--    if odf == nil then error("GetOdf() returned nil."); end
+--    local odfHandle = OpenODF(odf);
+--    if odfHandle == nil then error("OpenODF() returned nil."); end
+--
+--    local pilot = 0; -- GameObject default
+--
+--    local sig = self:GetClassSig();
+--    if sig == utility.ClassSig.craft then
+--        pilot = 1;
+--    elseif sig == utility.ClassSig.person then
+--        pilot = 1;
+--    elseif sig == utility.ClassSig.producer then
+--        pilot = 0;
+--    elseif sig == utility.ClassSig.sav then
+--        pilot = 0;
+--    elseif sig == utility.ClassSig.torpedo then
+--        pilot = 0;
+--    elseif sig == utility.ClassSig.turret then
+--        pilot = 0;
+--    end
+--
+--    local pilot = GetODFInt(odfHandle, "GameObjectClass", "pilotCost", pilot);
+--    return pilot;
+--end
+
+-------------------------------------------------------------------------------
 -- Other
 -------------------------------------------------------------------------------
 -- @section
@@ -1559,10 +1620,10 @@ if utility.isfunction(SetTeamSlot) then
     --- This function may be nil if the base function is not available in the game.
     --- 
     --- @param self GameObject GameObject instance
-    --- @param slot integer Slot number, see TeamSlot
+    --- @param slot TeamSlotInteger Slot number, see TeamSlot
     --- @return GameObject? old_object The new game object formerly in the slot, or nil if the slot was empty
     --- @see ScriptUtils.TeamSlot
-    function M:SetTeamSlot(self, slot)
+    function M.SetTeamSlot(self, slot)
         if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
         if not utility.isnumber(slot) then error("Parameter slot must be a number") end
         

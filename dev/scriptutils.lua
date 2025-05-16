@@ -17,7 +17,7 @@
 --- @alias AudioMessage integer
 
 --- Team Number
---- @alias TeamNum integer
+--- @alias TeamNum 0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15
 
 --- ODF ParameterDB
 --- @class ParameterDB
@@ -144,7 +144,7 @@ function GetHandle(label) error("This function is provided by the engine."); end
 
 --- Creates a game object with the given odf name, team number, and location.
 --- @param odfname string
---- @param teamnum integer
+--- @param teamnum TeamNum
 --- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the location is a path this is the path point index, defaults to 0.
 --- @return Handle?
@@ -373,7 +373,7 @@ function IsDamaged(h, threshold) error("This function is provided by the engine.
 --- Returns true if the game object was recycled by a Construction Rig on the given team.
 --- [2.1+]
 --- @param h Handle
---- @param team integer
+--- @param team TeamNum
 --- @return boolean
 --- @function IsRecycledByTeam
 function IsRecycledByTeam(h, team) error("This function is provided by the engine."); end
@@ -837,7 +837,7 @@ function GetNearestUnitOnTeam(...) end
 --- Returns how many objects with the given team and odf name are closer than the given distance.
 --- @param h Handle
 --- @param dist number
---- @param team integer
+--- @param team TeamNum
 --- @param odfname string
 --- @return integer
 --- @function CountUnitsNearObject
@@ -854,32 +854,32 @@ function CountUnitsNearObject(h, dist, team, odfname) error("This function is pr
 --- @param dist number
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
---- @return function iterator
+--- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.ObjectsInRange` instead.
 function ObjectsInRange(dist, target, point) error("This function is provided by the engine."); end
 
 --- Enumerates all game objects.
 --- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
 --- @function AllObjects
---- @return function iterator
+--- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.AllObjects` instead.
 function AllObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all craft.
 --- @function AllCraft
---- @return function iterator
+--- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.AllCraft` instead.
 function AllCraft() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects currently selected by the local player.
 --- @function SelectedObjects
---- @return function iterator
+--- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.SelectedObjects` instead.
 function SelectedObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects marked as objectives.
 --- @function ObjectiveObjects
---- @return function iterator
+--- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.ObjectiveObjects` instead.
 function ObjectiveObjects() error("This function is provided by the engine."); end
 
@@ -910,9 +910,9 @@ function ClearScrapAround(distance, target, point) end
 
 --- This is a global table that converts between team slot numbers and team slot names. For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
 --- Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
---- @table TeamSlot
+--- @enum TeamSlot
 TeamSlot = {
-    UNDEFINED = -1, -- -1
+    UNDEFINED = -1, -- invalid, -1
     PLAYER = 0, -- 0
 
     RECYCLER = 1, -- 1
@@ -944,6 +944,8 @@ TeamSlot = {
     MAX_BARRACKS = 79, -- 79
     MIN_GUNTOWER = 80, -- 80
     MAX_GUNTOWER = 89, -- 89
+
+    PORTAL = 90, -- 90 [2.2.315+]
 
     [-1] = "UNDEFINED", -- UNDEFINED
     [0] = "PLAYER", -- PLAYER
@@ -977,12 +979,14 @@ TeamSlot = {
     [79] = "MAX_BARRACKS", -- MAX_BARRACKS
     [80] = "MIN_GUNTOWER", -- MIN_GUNTOWER
     [89] = "MAX_GUNTOWER", -- MAX_GUNTOWER
+
+    [90] = "PORTAL", -- PORTAL [2.2.315+]
 }
 
 --- Get the game object in the specified team slot.
 --- It uses the local player team if no team is given.
---- @param slot integer
---- @param team? integer
+--- @param slot TeamSlotInteger
+--- @param team? TeamNum
 --- @return Handle
 --- @function GetTeamSlot
 --- @deprecated Use `_gameobject.GetTeamSlot` instead.
@@ -990,7 +994,7 @@ function GetTeamSlot(slot, team) error("This function is provided by the engine.
 
 --- Returns the game object controlled by the player on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? integer
+--- @param team? TeamNum
 --- @return Handle
 --- @function GetPlayerHandle
 --- @deprecated Use `_gameobject.GetPlayerHandle` instead.
@@ -998,7 +1002,7 @@ function GetPlayerHandle(team) error("This function is provided by the engine.")
 
 --- Returns the Recycler on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? integer
+--- @param team? TeamNum
 --- @return Handle
 --- @function GetRecyclerHandle
 --- @deprecated Use `_gameobject.GetRecyclerGameObject` instead.
@@ -1006,7 +1010,7 @@ function GetRecyclerHandle(team) error("This function is provided by the engine.
 
 --- Returns the Factory on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? integer
+--- @param team? TeamNum
 --- @return Handle
 --- @function GetFactoryHandle
 --- @deprecated Use `_gameobject.GetFactoryGameObject` instead.
@@ -1014,7 +1018,7 @@ function GetFactoryHandle(team) error("This function is provided by the engine."
 
 --- Returns the Armory on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? integer
+--- @param team? TeamNum
 --- @return Handle
 --- @function GetArmoryHandle
 --- @deprecated Use `_gameobject.GetArmoryGameObject` instead.
@@ -1022,7 +1026,7 @@ function GetArmoryHandle(team) error("This function is provided by the engine.")
 
 --- Returns the Constructor on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? integer
+--- @param team? TeamNum
 --- @return Handle
 --- @function GetConstructorHandle
 --- @deprecated Use `_gameobject.GetConstructorGameObject` instead.
@@ -1036,7 +1040,7 @@ function GetConstructorHandle(team) error("This function is provided by the engi
 
 --- Adds pilots to the team's pilot count, clamped between zero and maximum count.
 --- Returns the new pilot count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function AddPilot
@@ -1044,21 +1048,21 @@ function AddPilot(team, count) error("This function is provided by the engine.")
 
 --- Sets the team's pilot count, clamped between zero and maximum count.
 --- Returns the new pilot count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function SetPilot
 function SetPilot(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's pilot count.
---- @param team integer
+--- @param team TeamNum
 --- @return integer
 --- @function GetPilot
 function GetPilot(team) error("This function is provided by the engine."); end
 
 --- Adds pilots to the team's maximum pilot count.
 --- Returns the new pilot count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function AddMaxPilot
@@ -1066,14 +1070,14 @@ function AddMaxPilot(team, count) error("This function is provided by the engine
 
 --- Sets the team's maximum pilot count.
 --- Returns the new pilot count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function SetMaxPilot
 function SetMaxPilot(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's maximum pilot count.
---- @param team integer
+--- @param team TeamNum
 --- @return integer
 --- @function GetMaxPilot
 function GetMaxPilot(team) error("This function is provided by the engine."); end
@@ -1086,7 +1090,7 @@ function GetMaxPilot(team) error("This function is provided by the engine."); en
 
 --- Adds to the team's scrap count, clamped between zero and maximum count.
 --- Returns the new scrap count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function AddScrap
@@ -1094,21 +1098,21 @@ function AddScrap(team, count) error("This function is provided by the engine.")
 
 --- Sets the team's scrap count, clamped between zero and maximum count.
 --- Returns the new scrap count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function SetScrap
 function SetScrap(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's scrap count.
---- @param team integer
+--- @param team TeamNum
 --- @return integer
 --- @function GetScrap
 function GetScrap(team) error("This function is provided by the engine."); end
 
 --- Adds to the team's maximum scrap count.
 --- Returns the new maximum scrap count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function AddMaxScrap
@@ -1116,14 +1120,14 @@ function AddMaxScrap(team, count) error("This function is provided by the engine
 
 --- Sets the team's maximum scrap count.
 --- Returns the new maximum scrap count.
---- @param team integer
+--- @param team TeamNum
 --- @param count integer
 --- @return integer
 --- @function SetMaxScrap
 function SetMaxScrap(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's maximum scrap count.
---- @param team integer
+--- @param team TeamNum
 --- @return integer
 --- @function GetMaxScrap
 function GetMaxScrap(team) error("This function is provided by the engine."); end
@@ -1256,27 +1260,27 @@ function GetTimeNow() error("This function is provided by the engine."); end
 
 --- Enables (or disables) strategic AI control for a given team. As of version 1.5.2.7, mission scripts must enable AI control for any team that intends to use an AIP.
 --- IMPORTANT SAFETY TIP: only call this function from the "root" of the Lua mission script! The strategic AI gets set up shortly afterward and attempting to use SetAIControl later will crash the game.
---- @param team integer
+--- @param team TeamNum
 --- @param control? boolean, defaults to true
 --- @function SetAIControl
 function SetAIControl(team, control) end
 
 --- Returns true if a given team is AI controlled. Returns false otherwise.
 --- Unlike SetAIControl, this function may be called at any time.
---- @param team integer
+--- @param team TeamNum
 --- @return boolean
 --- @function GetAIControl
 function GetAIControl(team) error("This function is provided by the engine."); end
 
 --- Returns the current AIP for the team. It uses team 2 if no team number is given.
---- @param team? integer
+--- @param team? TeamNum
 --- @return string
 --- @function GetAIP 
 function GetAIP(team) error("This function is provided by the engine."); end
 
 --- Switches the team's AI plan. It uses team 2 if no team number is given.
 --- @param aipname string
---- @param team? integer
+--- @param team? TeamNum
 --- @function SetAIP
 function SetAIP(aipname, team) end
 
@@ -2083,7 +2087,7 @@ function OpenODF(filename) error("This function is provided by the engine."); en
 --- @param odf ParameterDB
 --- @param section? string
 --- @param label string
---- @param default? string
+--- @param default? boolean
 --- @return boolean
 --- @return boolean
 --- @function GetODFBool
@@ -2095,7 +2099,7 @@ function GetODFBool(odf, section, label, default) error("This function is provid
 --- @param odf ParameterDB
 --- @param section? string
 --- @param label string
---- @param default? string
+--- @param default? integer
 --- @return integer
 --- @return boolean
 --- @function GetODFInt
@@ -2107,7 +2111,7 @@ function GetODFInt(odf, section, label, default) error("This function is provide
 --- @param odf ParameterDB
 --- @param section? string
 --- @param label string
---- @param default? string
+--- @param default? number
 --- @return number
 --- @return boolean
 --- @function GetODFFloat
@@ -2571,7 +2575,7 @@ function isPortalActive(portal) error("This function is provided by the engine."
 --- The object is created at the location of the visual effect and given a 50 m/s initial velocity.
 --- [2.1+]
 --- @param odfname string
---- @param teamnum integer
+--- @param teamnum TeamNum
 --- @param portal Handle
 --- @return Handle
 --- @function BuildObjectAtPortal
@@ -2661,3 +2665,5 @@ function UnHide(h) end
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @function MakeExplosion
 function MakeExplosion(odfname, target) end
+
+--- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90

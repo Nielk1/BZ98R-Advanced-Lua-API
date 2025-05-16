@@ -131,7 +131,7 @@ local function preprocess_file(input_file, output_file)
 
         -- 8. `--- @alias name type` -> `-- @type name`
         if transformed == 0 then
-            line, transformed = line:gsub("%-%- @alias%s+([a-zA-Z0-9_]+)%s+([a-zA-Z0-9_]+)", "-- @type %1")
+            line, transformed = line:gsub("%-%- @alias%s+([a-zA-Z0-9_]+)%s+([a-zA-Z0-9_|-]+)", "-- @type %1")
             --if transformed > 0 then print("Processing line: " .. line) end
         end
 

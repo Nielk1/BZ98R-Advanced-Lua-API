@@ -383,7 +383,7 @@ function M.Create( name, ... )
                         -- double check if we have any named state descriptors in this array of state descriptors
                         if not has_any_named then
                             for _, v2 in ipairs(v) do
-                                if utility.isstring(v2[1]) then
+                                if utility.istable(v2) and utility.isstring(v2[1]) then
                                     has_any_named = true;
                                     break;
                                 end
@@ -399,7 +399,7 @@ function M.Create( name, ... )
                     -- double check if we have any named state descriptors in this array of state descriptors
                     if not has_any_named then
                         for _, v2 in ipairs(v) do
-                            if utility.isstring(v2[1]) then
+                            if utility.istable(v2) and utility.isstring(v2[1]) then
                                 has_any_named = true;
                                 break;
                             end

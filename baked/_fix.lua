@@ -6,6 +6,7 @@
 --- <li><b>Polyfill:</b> <code>table.unpack</code> for Lua 5.1 compatibility</li>
 --- <li><b>Fix/Polyfill:</b> Remap <code>SettLabel</code> to <code>SetLabel</code> for BZ1.5</li>
 --- <li><b>Fix:</b> Works around the possible stuck iterator in <code>ObjectiveObjects</code></li>
+--- <li><b>Fix/Polyfill:</b> TeamSlot missing "PORTAL" = 90</li>
 --- </ul>
 ---
 --- @module '_fix'
@@ -86,4 +87,10 @@ if utility.CompareVersion(GameVersion, "2.2.315") < 0 then
             end
         end);
     end;
+end
+
+if not TeamSlot.PORTAL then
+    --- @diagnostic disable-next-line: inject-field
+    TeamSlot.PORTAL = 90;
+    TeamSlot[90] = "PORTAL";
 end

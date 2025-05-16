@@ -32,7 +32,7 @@ debugprint("_deque Loading");
 local customsavetype = require("_customsavetype");
 
 --- @param self Deque
---- @param x T
+--- @param x any
 --- @function push_right
 local push_right = function(self, x)
     assert(x ~= nil)
@@ -41,7 +41,7 @@ local push_right = function(self, x)
 end
 
 --- @param self Deque
---- @param x T
+--- @param x any
 --- @function push_left
 local push_left = function(self, x)
     assert(x ~= nil)
@@ -50,7 +50,7 @@ local push_left = function(self, x)
 end
 
 --- @param self Deque
---- @return T
+--- @return any
 --- @function peek_right
 local peek_right = function(self)
     return self[self.tail]
@@ -58,13 +58,13 @@ end
 
 --- @param self Deque
 --- @function peek_left
---- @return T
+--- @return any
 local peek_left = function(self)
     return self[self.head+1]
 end
 
 --- @param self Deque
---- @return T
+--- @return any
 --- @function pop_right
 local pop_right = function(self)
     if self:is_empty() then return nil end
@@ -75,13 +75,13 @@ local pop_right = function(self)
 end
 
 --- @param self Deque
---- @return T
+--- @return any
 --- @function pop_left
 local pop_left = function(self)
     if self:is_empty() then return nil end
-    local r = self[self.head+1]
+    local r = self[self.head + 1]
     self.head = self.head + 1
-    local r = self[self.head]
+    --local r = self[self.head]
     self[self.head] = nil
     return r
 end
@@ -110,7 +110,7 @@ local _remove_at_internal = function(self, idx)
 end
 
 --- @param self Deque
---- @param x T
+--- @param x any
 --- @return boolean
 --- @function remove_right
 local remove_right = function(self, x)
@@ -124,7 +124,7 @@ local remove_right = function(self, x)
 end
 
 --- @param self Deque
---- @param x T
+--- @param x any
 --- @return boolean
 --- @function remove_left
 local remove_left = function(self, x)
@@ -152,7 +152,7 @@ local is_empty = function(self)
 end
 
 --- @param self Deque
---- @return table<number, T>
+--- @return table<number, any>
 --- @function contents
 local contents = function(self)
     local r = {}
@@ -163,36 +163,112 @@ local contents = function(self)
 end
 
 --- @param self Deque
---- @return function
+--- @return fun():any, integer
 --- @function iter_right
 local iter_right = function(self)
     local i = self.tail+1
     return function()
         if i > self.head+1 then
             i = i-1
-            return self[i]
+            return self[i], i - self.head
         end
+        --- @diagnostic disable-next-line: missing-return-value
+        return nil;
     end
 end
 
 --- @param self Deque
---- @return function
+--- @return fun():any, integer
 --- @function iter_left
 local iter_left = function(self)
     local i = self.head
     return function()
         if i < self.tail then
             i = i+1
-            return self[i]
+            return self[i], i - self.head
         end
+        --- @diagnostic disable-next-line: missing-return-value
+        return nil;
     end
 end
 
---- @generic T
---- @class Deque<T> : CustomSavableType
+--- Removes an element at the given relative index.
+--- @param self Deque The deque instance.
+--- @param relative_index number The relative index of the element to remove (1-based, as used by `contents` and iterators).
+--- @return boolean True if the element was successfully removed, false if the index is out of bounds.
+--- @function remove_at_relative
+--- @todo untested AI generated
+local remote_at = function(self, relative_index)
+    local absolute_index = self.head + relative_index
+    if absolute_index > self.tail or absolute_index <= self.head then
+        return false -- Index is out of bounds
+    end
+    _remove_at_internal(self, absolute_index)
+    return true
+end
+
+--- Internal function to remove multiple indexes from the deque.
+--- @param self Deque The deque instance.
+--- @param indexes number[] A sorted list of absolute indexes to remove.
+--- @todo untested AI generated
+local _remove_multiple_at_internal = function(self, indexes)
+    local shift = 0 -- Tracks how far elements need to be shifted
+    local next_index_to_remove = 1 -- Pointer to the current index in the `indexes` array
+
+    for i = self.head + 1, self.tail do
+        if next_index_to_remove <= #indexes and i == indexes[next_index_to_remove] then
+            -- Skip this index (it's being removed)
+            shift = shift + 1
+            next_index_to_remove = next_index_to_remove + 1
+        else
+            -- Shift the current element left by the accumulated shift amount
+            self[i - shift] = self[i]
+        end
+    end
+
+    -- Clear the now-unused tail elements
+    for i = self.tail - shift + 1, self.tail do
+        self[i] = nil
+    end
+
+    -- Update the tail pointer
+    self.tail = self.tail - shift
+end
+
+--- Removes multiple elements at the given relative indexes.
+--- @param self Deque The deque instance.
+--- @param relative_indexes number[] A list of relative indexes to remove (1-based, as used by `contents` and iterators).
+--- @return boolean True if at least one element was removed, false if no valid indexes were provided.
+--- @function remove_multiple_at_relative
+--- @todo untested AI generated
+local remove_multiple = function(self, relative_indexes)
+    -- Convert relative indexes to absolute indexes
+    local absolute_indexes = {}
+    for _, relative_index in ipairs(relative_indexes) do
+        local absolute_index = self.head + relative_index
+        if absolute_index > self.head and absolute_index <= self.tail then
+            table.insert(absolute_indexes, absolute_index)
+        end
+    end
+
+    -- If no valid indexes, return false
+    if #absolute_indexes == 0 then
+        return false
+    end
+
+    -- Sort the absolute indexes in ascending order
+    table.sort(absolute_indexes)
+
+    -- Call the internal function to remove the elements
+    _remove_multiple_at_internal(self, absolute_indexes)
+
+    return true
+end
+
+--- @class Deque : CustomSavableType
 --- @field head number The index of the first element.
 --- @field tail number The index of the last element.
---- @field [number] T The elements stored in the deque.
+--- @field [number] any The elements stored in the deque.
 local methods = {
     push_right = push_right,
     push_left = push_left,
@@ -204,6 +280,8 @@ local methods = {
     rotate_left = rotate_left,
     remove_right = remove_right,
     remove_left = remove_left,
+    remote_at = remote_at,
+    remove_multiple = remove_multiple,
     iter_right = iter_right,
     iter_left = iter_left,
     length = length,
@@ -213,8 +291,7 @@ local methods = {
 
 methods.__type = "Deque";
 
---- @generic T
---- @return Deque<T>
+--- @return Deque
 --- @function new
 local new = function()
     local r = {head = 0, tail = 0}
@@ -238,9 +315,7 @@ end
 --- Load event function.
 --
 -- INTERNAL USE.
--- @param template
--- @param active_states
--- @param addonData
+-- @param contents
 function methods.Load(contents)
     local queue = new();
     for i = 1, #contents do

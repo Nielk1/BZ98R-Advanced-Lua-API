@@ -227,24 +227,28 @@ function SimplifyForSave(...)
 
                     -- might be better to just dumb replace all this shit with a pairs loop and say fuck-it to nils.
 
-                    -- Find the highest numeric index
-                    local max_index = 0;
-                    for k2, _ in pairs(v) do
-                        if utility.isnumber(k2) and k2 > max_index then
-                            max_index = k2;
-                        end
-                    end
+                    -- -- Find the highest numeric index
+                    -- local max_index = 0;
+                    -- for k2, _ in pairs(v) do
+                    --     if utility.isnumber(k2) and k2 > max_index then
+                    --         max_index = k2;
+                    --     end
+                    -- end
+                    -- 
+                    -- -- Copy array portion (including nil values)
+                    -- for i = 1, max_index do
+                    --     newTable[i] = SimplifyForSave(v[i]);
+                    -- end
+                    -- 
+                    -- -- Copy non-array keys
+                    -- for k2, v2 in pairs(v) do
+                    --     if not utility.isnumber(k2) or k2 > max_index then
+                    --         newTable[k2] = SimplifyForSave(v2);
+                    --     end
+                    -- end
 
-                    -- Copy array portion (including nil values)
-                    for i = 1, max_index do
-                        newTable[i] = SimplifyForSave(v[i]);
-                    end
-
-                    -- Copy non-array keys
                     for k2, v2 in pairs(v) do
-                        if not utility.isnumber(k2) or k2 > max_index then
-                            newTable[k2] = SimplifyForSave(v2);
-                        end
+                        newTable[SimplifyForSave(k2)] = SimplifyForSave(v2);
                     end
 
                     output[k] = newTable;
@@ -284,13 +288,21 @@ function DeSimplifyForLoad(...)
                     end
                 end
             else
-                -- since we're loading we don't have to worry about modifying the original, as the original came from the load function and will cease to exist after this
+                -- -- since we're loading we don't have to worry about modifying the original, as the original came from the load function and will cease to exist after this
+                -- for k2, v2 in pairs( v ) do
+                --     if v2 ~= nil then
+                --         -- if the value isn't nil, let it try to DeSimplifyForLoad and just stuff it right back in the table
+                --         v[k2] = DeSimplifyForLoad(v2);
+                --     end
+                -- end
+                local newTable = {};
                 for k2, v2 in pairs( v ) do
                     if v2 ~= nil then
                         -- if the value isn't nil, let it try to DeSimplifyForLoad and just stuff it right back in the table
-                        v[k2] = DeSimplifyForLoad(v2);
+                        newTable[DeSimplifyForLoad(k2)] = DeSimplifyForLoad(v2);
                     end
                 end
+                output[k] = newTable;
             end
         end
     end

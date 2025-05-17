@@ -30,6 +30,8 @@ local M_MT = {};
 
 --- @class CustomSavableType
 --- @field __type string The type name of the custom savable type.
+--- @field __nosave boolean? If true, the type will not be saved or loaded, a nil will be saved instead.
+--- @field __noref boolean? If true, the type will not undergo checks for shared or looped references when saving.
 --- @field Save fun(...: any) | nil
 --- @field Load fun(): ... | nil
 --- @field BulkSave fun(): ... | nil

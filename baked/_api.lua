@@ -196,9 +196,27 @@ local customsavetype = require("_customsavetype");
 -- @section
 
 local CustomTypeMap = nil; -- maps name to ID number
+--local DuplicateAntiLoopMemo = nil;
+--local DuplicateAntiLoopLookupMemo = nil;
+--local DuplicateSourceReferenceMemo = nil;
+--local DuplicateDestReferenceMemo = nil;
+
+-- reset these when starting a save and ending a save
+local RefUUIID = 0;
+
+--- map of references to their UUIDs
+--- @type table<table, integer>
+local SaveUUIDMap = nil;
+
+--- set of references that have started processing already
+--- @type table<table, boolean>
+local SaveLoopCheck = nil;
+
+--- map of references that have finished first pass to their output table
+--- @type table<table, table>
+local SavePostCheck = nil;
 
 local _api = {};
-
 
 --- @vararg any data
 --- @return any ...
@@ -211,48 +229,40 @@ function SimplifyForSave(...)
         end
         if utility.istable(v) then -- it's a table, start special logic
             if not v.__nosave then
-                if customsavetype.CustomSavableTypes[v.__type] ~= nil then
-                    local specialTypeTable = {};
-                    if not CustomTypeMap then error("CustomTypeMap is nil") end
-                    local typeIndex = CustomTypeMap[v.__type];
-                    debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
-                    specialTypeTable["*custom_type"] = typeIndex;
-                    if customsavetype.CustomSavableTypes[v.__type].Save ~= nil then
-                        specialTypeTable["*data"] = {SimplifyForSave(customsavetype.CustomSavableTypes[v.__type].Save(v))};
+                local ORIG = v;
+                local existingUUID = SaveUUIDMap[ORIG];
+                local newTable = {};
+                if existingUUID and not v.__noref then
+                    if SavePostCheck[ORIG] then
+                        SavePostCheck[ORIG].__refid = existingUUID;
+                    else
+                        SaveLoopCheck[ORIG] = true;
                     end
-                    output[k] = specialTypeTable;
+                    newTable = { __ref = existingUUID };
                 else
-                    -- we need to work with a clone of the table so we don't modify the original, as the mission will continue to run after saving so it must remain the same
-                    local newTable = {};
-
-                    -- might be better to just dumb replace all this shit with a pairs loop and say fuck-it to nils.
-
-                    -- -- Find the highest numeric index
-                    -- local max_index = 0;
-                    -- for k2, _ in pairs(v) do
-                    --     if utility.isnumber(k2) and k2 > max_index then
-                    --         max_index = k2;
-                    --     end
-                    -- end
-                    -- 
-                    -- -- Copy array portion (including nil values)
-                    -- for i = 1, max_index do
-                    --     newTable[i] = SimplifyForSave(v[i]);
-                    -- end
-                    -- 
-                    -- -- Copy non-array keys
-                    -- for k2, v2 in pairs(v) do
-                    --     if not utility.isnumber(k2) or k2 > max_index then
-                    --         newTable[k2] = SimplifyForSave(v2);
-                    --     end
-                    -- end
-
-                    for k2, v2 in pairs(v) do
-                        newTable[SimplifyForSave(k2)] = SimplifyForSave(v2);
+                    local currentUUID = RefUUIID;
+                    RefUUIID = RefUUIID + 1;
+                    SaveUUIDMap[ORIG] = currentUUID;
+                    if customsavetype.CustomSavableTypes[v.__type] ~= nil then
+                    if not CustomTypeMap then error("CustomTypeMap is nil") end
+                        local typeIndex = CustomTypeMap[v.__type];
+                        debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
+                        newTable["*custom_type"] = typeIndex;
+                        if customsavetype.CustomSavableTypes[v.__type].Save ~= nil then
+                            newTable["*data"] = {SimplifyForSave(customsavetype.CustomSavableTypes[v.__type].Save(v))};
+                        end
+                    else
+                        -- we need to work with a clone of the table so we don't modify the original, as the mission will continue to run after saving so it must remain the same
+                        for k2, v2 in pairs(v) do
+                            newTable[SimplifyForSave(k2)] = SimplifyForSave(v2);
+                        end
                     end
-
-                    output[k] = newTable;
+                    if SaveLoopCheck[ORIG] then
+                        newTable.__refid = currentUUID;
+                    end
+                    SavePostCheck[ORIG] = newTable;
                 end
+                output[k] = newTable;
             else
                 output[k] = nil;
             end
@@ -260,6 +270,10 @@ function SimplifyForSave(...)
     end
     return table.unpack(output, 1, ArraySize);
 end
+
+--- map UUIDs to their tables as they are encountered
+--- @type table<integer, table>
+local LoadUUIDToTable = nil;
 
 --- @vararg any data
 --- @return any ...
@@ -271,6 +285,9 @@ function DeSimplifyForLoad(...)
             ArraySize = k;
         end
         if utility.istable(v) then -- it's a table, start special logic
+            local PriorData = v.__refid and LoadUUIDToTable[v.__refid] or v.__ref and LoadUUIDToTable[v.__ref] or nil;
+            local TableFromLoad = nil;
+            local metatableToApply = nil;
             if v["*custom_type"] ~= nil then
                 if not CustomTypeMap then error("CustomTypeMap is nil") end
                 local typeName = CustomTypeMap[v["*custom_type"]];
@@ -282,27 +299,39 @@ function DeSimplifyForLoad(...)
                         local ArraySize_ = 0;
                         for k,v in pairs(args) do if k > ArraySize_ then ArraySize_ = k; end end
 
-                        output[k] = typeObj.Load(DeSimplifyForLoad(table.unpack(args, 1, ArraySize_)));
+                        TableFromLoad = typeObj.Load(DeSimplifyForLoad(table.unpack(args, 1, ArraySize_)));
                     else
-                        output[k] = typeObj.Load();
+                        TableFromLoad = typeObj.Load();
                     end
+                    metatableToApply = getmetatable(TableFromLoad);
                 end
             else
-                -- -- since we're loading we don't have to worry about modifying the original, as the original came from the load function and will cease to exist after this
-                -- for k2, v2 in pairs( v ) do
-                --     if v2 ~= nil then
-                --         -- if the value isn't nil, let it try to DeSimplifyForLoad and just stuff it right back in the table
-                --         v[k2] = DeSimplifyForLoad(v2);
-                --     end
-                -- end
-                local newTable = {};
+                -- since we're loading we don't have to worry about modifying the original, as the original came from the load function and will cease to exist after this
+                TableFromLoad = {};
                 for k2, v2 in pairs( v ) do
                     if v2 ~= nil then
                         -- if the value isn't nil, let it try to DeSimplifyForLoad and just stuff it right back in the table
-                        newTable[DeSimplifyForLoad(k2)] = DeSimplifyForLoad(v2);
+                        TableFromLoad[DeSimplifyForLoad(k2)] = DeSimplifyForLoad(v2);
                     end
                 end
-                output[k] = newTable;
+            end
+            if TableFromLoad then
+                -- merge the tables, taking in the new metatable too
+                local CompositeTable = PriorData or {};
+                for k2, v2 in pairs(TableFromLoad) do
+                    CompositeTable[k2] = v2;
+                end
+                if metatableToApply then
+                    setmetatable(CompositeTable, metatableToApply);
+                end
+                output[k] = CompositeTable;
+
+                local refID = v.__refid or v.__ref;
+                if refID and not LoadUUIDToTable[refID] then
+                    LoadUUIDToTable[refID] = CompositeTable;
+                end
+            else
+                output[k] = nil;
             end
         end
     end
@@ -319,6 +348,10 @@ end
 function Save()
     debugprint("_api::Save()");
     CustomTypeMap = {};
+    RefUUIID = 1;
+    SaveUUIDMap = {};
+    SaveLoopCheck = {};
+    SavePostCheck = {};
 
     debugprint("Beginning save code");
 
@@ -365,6 +398,14 @@ function Save()
     
     debugprint(table.show(saveData));
     
+    CustomTypeMap = nil;
+    RefUUIID = 0;
+    --- @diagnostic disable: cast-local-type
+    SaveUUIDMap = nil;
+    SaveLoopCheck = nil;
+    SavePostCheck = nil;
+    --- @diagnostic enable: cast-local-type
+
     debugprint("_api::/Save");
     return saveData;
 end
@@ -383,6 +424,8 @@ function Load(...)
 
 --    debugprint("Beginning load code");
 
+    LoadUUIDToTable = {};
+
     traceprint("Loading custom types map");
     CustomTypeMap = args.CustomSavableTypes
     traceprint("Loaded custom types map");
@@ -396,6 +439,7 @@ function Load(...)
             local ArraySize = 0;
             for k,v in pairs(data) do if k > ArraySize then ArraySize = k; end end
 
+            -- maybe we should load DeSimplifyForLoad multiple times until we know for sure the data has no more refs?
             entry.BulkLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));
             traceprint("BulkLoad ran for " .. entry.__type);
         end
@@ -405,9 +449,24 @@ function Load(...)
     traceprint("Calling all hooked load functions");
 
     local ArraySize = 0;
-    for k,v in pairs(args.HooksData) do if k > ArraySize then ArraySize = k; end end
+    for k,_ in pairs(args.HooksData) do if utility.isinteger(k) and k > ArraySize then ArraySize = k; end end
 
-    hook.CallLoad(DeSimplifyForLoad(table.unpack(args.HooksData, 1, ArraySize)));
+    local loadParams = { DeSimplifyForLoad(table.unpack(args.HooksData, 1, ArraySize)) };
+
+    -- clean up the old references
+    for _, dat in pairs(LoadUUIDToTable) do
+        dat.__refid = nil;
+        dat.__ref = nil;
+    end
+
+    ArraySize = 0;
+    for k,_ in pairs(loadParams) do if utility.isinteger(k) and k > ArraySize then ArraySize = k; end end
+    hook.CallLoad(table.unpack(loadParams, 1, ArraySize));
+
+    CustomTypeMap = nil;
+    --- @diagnostic disable-next-line: unused-local, cast-local-type
+    LoadUUIDToTable = nil;
+
     debugprint("_api::/Load");
 end
 

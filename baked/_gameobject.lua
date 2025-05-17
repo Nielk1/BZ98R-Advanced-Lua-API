@@ -71,6 +71,7 @@ function GameObject.__newindex(dtable, key, value)
     end
 end
 GameObject.__type = "GameObject";
+GameObject.__noref = true;
 
 -------------------------------------------------------------------------------
 -- Core

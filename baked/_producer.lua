@@ -65,7 +65,7 @@ local ProducerQueue = {}
 --- Map producer to job it was ordered to build
 --- We could store this into the GameObject instead but
 ---   it needs to detect when this object is removed so the order can be re-added, probably a the top of the queue
---- @type table<GameObject, ProductionQueue>
+--- @type table<GameObject_producer, ProductionQueue>
 local ProducerOrders = {};
 
 
@@ -482,3 +482,23 @@ end);
 debugprint("_producer Loaded");
 
 return M;
+
+--- @class ProducerData
+--- @field post_build_check GameObject?
+
+--- @class GameObject_producer : GameObject
+--- @field _producer ProducerData?
+
+--- @class RBD01_Mission_state : StateMachineIter
+--- @field recy GameObject?
+--- @field nav1 GameObject?
+--- @field command GameObject?
+--- @field nav_solar1 GameObject?
+--- @field nav_solar2 GameObject?
+--- @field handles GameObject[]?
+--- @field target_l1 string[]
+--- @field target_l2 string[]
+--- @field research_enemies_still_exist boolean?
+--- @field targets GameObject[]?
+--- @field camTarget GameObject?
+

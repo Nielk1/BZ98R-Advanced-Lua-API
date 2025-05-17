@@ -33,7 +33,7 @@ PatrolManagerWeakList_MT.__mode = "k";
 local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
 
 
-local PatrolEngine = { __type = "PatrolEngine" }
+local PatrolEngine;
 
 
 --- Called when an object is added.
@@ -64,6 +64,7 @@ end
 --- @field patrol_units table<GameObject_patrol, boolean>
 --- @field locations table<string>
 --- @field forcedAlert boolean
+PatrolEngine = { __type = "PatrolEngine" };
 
 
 --- Checks if the controller is alive.
@@ -150,7 +151,6 @@ end
 --- Adds a handle to the patrol units.
 --- @param self PatrolEngine
 --- @param handle GameObject_patrol
---- @function addGameObject
 function PatrolEngine.addGameObject(self, handle)
     local nearestLocation = nil
     local location = nil

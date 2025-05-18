@@ -15,37 +15,66 @@ debugprint("_requirefix Loading");
 local modPaths = {};
 local modPathSet ={};
 local moduleTable = {};
+local modFileExistCache = {};
+
+--- Abuses the loadfile function to check if a file exists.
+local function FileExists(filename)
+    local cached = modFileExistCache[filename];
+    if cached ~= nil then
+        return cached; -- Return the cached result
+    end
+    local file, err = loadfile(filename)
+    if file then
+        modFileExistCache[filename] = true; -- Cache the result
+        return true -- File exists and is a valid Lua file
+    elseif err then
+        if err:match("cannot open") then
+            modFileExistCache[filename] = false; -- Cache the result
+            return false -- File does not exist
+        else
+            modFileExistCache[filename] = true; -- Cache the result
+            return true -- File does not exist
+        end
+    else
+        modFileExistCache[filename] = false; -- Cache the result
+        return false -- File exists but contains invalid Lua code
+    end
+end
 
 table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too high?
     local errmsg = "";
-    local filename = modulename .. ".lua";
     for _, k in ipairs(modPaths) do
-        local relativePaths = {"../../workshop/content/301650/"..k.."/"..filename, "mods/"..k.."/"..filename};
+        local relativePaths = {"addon/"..k.."/", "../../workshop/content/301650/"..k.."/", "mods/"..k.."/", "packaged_mods/"..k.."/"};
         for _, relativePath in ipairs(relativePaths) do
-            local lfunc = loadfile(relativePath)
-            if (lfunc) then 
-                return lfunc;
-            else
-                errmsg = errmsg.."\n\tno mod asset '"..relativePath.."'";
+            if FileExists(relativePath .. k .. ".ini") then -- is the mod valid?
+                local lfile = relativePath..modulename.. ".lua";
+                local lfunc = loadfile(lfile)
+                if (lfunc) then 
+                    return lfunc;
+                else
+                    errmsg = errmsg.."\n\tno mod asset '"..lfile.."'";
+                end
             end
         end
     end
-    filename = modulename .. ".dll";
     for _, k in ipairs(modPaths) do
-        local relativePaths = {"../../workshop/content/301650/"..k.."/"..filename, "mods/"..k.."/"..filename};
+        local relativePaths = {"addon/"..k.."/", "../../workshop/content/301650/"..k.."/", "mods/"..k.."/"};
         for _, relativePath in ipairs(relativePaths) do
-            local cfunc = package.loadlib(relativePath, "luaopen_"..modulename)
-            if (cfunc) then 
-                return cfunc;
-            else
-                errmsg = errmsg.."\n\tno mod asset '"..relativePath.."'";
+            if FileExists(relativePath .. k .. ".ini") then -- is the mod valid?
+                local cfile = relativePath..modulename.. ".dll";
+                local cfunc = package.loadlib(cfile, "luaopen_"..modulename)
+                if (cfunc) then 
+                    return cfunc;
+                else
+                    errmsg = errmsg.."\n\tno mod asset '"..cfile.."'";
+                end
             end
         end
     end
     return errmsg;
 end);
 
-moduleTable.addmod = function(mod_id)
+function moduleTable.addmod(mod_id)
     debugprint("Add module require path '"..mod_id.."'");
 	if not modPathSet[mod_id] then
 		table.insert(modPaths, mod_id);

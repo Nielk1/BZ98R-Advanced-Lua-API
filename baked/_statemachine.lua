@@ -91,6 +91,7 @@ end
 
 --- @class StateMachineIterWrappedResult
 --- @field Abort boolean If true the machine should be considered aborted, allowing for cleanup
+--- @field Fast boolean If true the machine will attempt to run the next state immediately
 
 local M = {};
 M.game_time = 0;
@@ -104,6 +105,14 @@ M.MachineFlags = {};
 function M.AbortResult(...)
     return setmetatable({
         Abort = true,
+        Return = { ... },
+        __type = "StateMachineIterWrappedResult" -- this could go in the metatable with some design control changes, but let's not
+    }, ReadOnly_MT);
+end
+
+function M.FastResult(...)
+    return setmetatable({
+        Fast = true,
         Return = { ... },
         __type = "StateMachineIterWrappedResult" -- this could go in the metatable with some design control changes, but let's not
     }, ReadOnly_MT);
@@ -211,25 +220,58 @@ function StateMachineIter.run(self, ...)
     local machine = M.Machines[self.template];
     if machine == nil then return false; end
 
-    if utility.isfunction(machine[self.state_key]) then
-        
-        local retVal = {machine[self.state_key](self, ...)};
-        if #retVal > 0 and M.isstatemachineiterwrappedresult(retVal[1]) then
-            -- unbox the return value and remove it from the wrapper, send the wrapper along
-            if retVal[1].Abort then
-                -- ensure the state won't do anything, though we help the caller reacts to the abort and kills the StateMachineIter instead.
-                self.state_key = nil;
+    local statesCalled = nil;
+
+
+
+    local runNext = true;
+    while self.state_key and runNext do
+        runNext = false;
+        local currentState = self.state_key;
+        if not currentState then break; end -- safety check
+        local retValBuffer1, retValBuffer2 = false, {};
+        if utility.isfunction(machine[currentState]) then
+            local retVal = {machine[currentState](self, ...)};
+            if #retVal > 0 and M.isstatemachineiterwrappedresult(retVal[1]) then
+                -- unbox the return value and remove it from the wrapper, send the wrapper along
+                if retVal[1].Abort then
+                    -- ensure the state won't do anything, though we help the caller reacts to the abort and kills the StateMachineIter instead.
+                    self.state_key = nil;
+                end
+                if retVal[1].Fast then
+                    runNext = true;
+                    
+                    -- buffer the return value in case something fucky makes us abort anyway despite fast recall
+                    local actual_return = retVal[1].Return;
+                    retVal[1].Return = nil;
+                    retValBuffer1, retValBuffer2 =  retVal[1], actual_return;
+                else
+                    local actual_return = retVal[1].Return;
+                    retVal[1].Return = nil; -- carve the return value out of the wrapper
+                    return retVal[1], table.unpack(actual_return);
+                end
             end
-            local actual_return = retVal[1].Return;
-            retVal[1].Return = nil; -- carve the return value out of the wrapper
-            return retVal[1], actual_return;
+
+            return true, table.unpack(retVal);
+        elseif utility.istable(machine[currentState]) then
+            if utility.isfunction(machine[currentState].f) then
+                --debugprint("StateMachineIter state '"..currentState.."' is "..type(machine[currentState].f).." '"..table.show(machine[currentState].p).."'");
+                return true, machine[currentState].f(self, machine[currentState].p, ...);
+            end
         end
 
-        return true, table.unpack(retVal);
-    elseif utility.istable(machine[self.state_key]) then
-        if utility.isfunction(machine[self.state_key].f) then
-            --debugprint("StateMachineIter state '"..self.state_key.."' is "..type(machine[self.state_key].f).." '"..table.show(machine[self.state_key].p).."'");
-            return true, machine[self.state_key].f(self, machine[self.state_key].p, ...);
+        if runNext then
+            -- we are in a tight state run, which means the next state will run immediately and we will eat the prior state's return value
+            if currentState == self.state_key then
+                -- we never targeted a diff state, so a fast loop is unacceptable
+                return retValBuffer1, table.unpack(retValBuffer2);
+            end
+            statesCalled = statesCalled or {};
+            if statesCalled[self.state_key] then
+                -- we already ran the next state, so we might be in an infinate loop
+                return retValBuffer1, table.unpack(retValBuffer2);
+            end
+            statesCalled[currentState] = true; -- remember we ran the current state before
         end
     end
     return false;
@@ -615,12 +657,13 @@ end
 --- Wait a set period of time on this state.
 --- @param seconds number How many seconds to wait
 --- @param next_state string|nil Next state when timer hits zero
---- @param early_exit? function Function to check if the state should be exited early, return false, true, or next state name
+--- @param early_exit? StateMachineFunction Function to check if the state should be exited early, return false, true, or next state name
 function M.SleepSeconds(seconds, next_state, early_exit )
     if not utility.isnumber(seconds) then error("Parameter seconds must be a number."); end
     if next_state ~= nil and not utility.isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
     if early_exit ~= nil and not utility.isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
+    --- @todo change this to use closures instead of passing the params in an array, as there's actually no need
     return { f = function(state, params, ...)
         local seconds = params[1];
         local next_state = params[2];

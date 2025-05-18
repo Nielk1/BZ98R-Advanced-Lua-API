@@ -188,8 +188,6 @@ function GetBase(h) error("This function is provided by the engine."); end
 function GetLabel(h) error("This function is provided by the engine."); end
 
 --- Set the label of the game object (e.g. "tank1").
---- <p>Note: this function was misspelled as SettLabel in 1.5. It can be renamed compatibly with a short snippet of code at the top of the mission script:</p>
---- <pre>SetLabel = SetLabel or SettLabel</pre>
 --- @param h Handle
 --- @param label string
 --- @function SetLabel
@@ -450,8 +448,9 @@ function GetTarget(h) error("This function is provided by the engine."); end
 -- These functions get and set owner. The default owner for a game object is the game object that created it.
 
 --- Sets the game object's owner.
+--- @todo confirm o can be nil
 --- @param h Handle
---- @param o Handle
+--- @param o Handle?
 --- @function SetOwner
 function SetOwner(h, o) end
 

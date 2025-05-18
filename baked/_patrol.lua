@@ -150,8 +150,9 @@ end
 
 --- Adds a handle to the patrol units.
 --- @param self PatrolEngine
---- @param handle GameObject_patrol
+--- @param handle GameObject
 function PatrolEngine.addGameObject(self, handle)
+    --- @cast handle GameObject_patrol
     local nearestLocation = nil
     local location = nil
     local pos = handle:GetPosition()

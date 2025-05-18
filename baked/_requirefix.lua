@@ -46,7 +46,7 @@ table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too 
     for _, k in ipairs(modPaths) do
         local relativePaths = {"addon/"..k.."/", "../../workshop/content/301650/"..k.."/", "mods/"..k.."/", "packaged_mods/"..k.."/"};
         for _, relativePath in ipairs(relativePaths) do
-            if FileExists(relativePath .. k .. ".ini") then -- is the mod valid?
+            if FileExists(relativePath .. k .. ".ini") then -- does this look like a mod folder?
                 local lfile = relativePath..modulename.. ".lua";
                 local lfunc = loadfile(lfile)
                 if (lfunc) then 
@@ -60,7 +60,7 @@ table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too 
     for _, k in ipairs(modPaths) do
         local relativePaths = {"addon/"..k.."/", "../../workshop/content/301650/"..k.."/", "mods/"..k.."/"};
         for _, relativePath in ipairs(relativePaths) do
-            if FileExists(relativePath .. k .. ".ini") then -- is the mod valid?
+            if FileExists(relativePath .. k .. ".ini") then -- does this look like a mod folder?
                 local cfile = relativePath..modulename.. ".dll";
                 local cfunc = package.loadlib(cfile, "luaopen_"..modulename)
                 if (cfunc) then 

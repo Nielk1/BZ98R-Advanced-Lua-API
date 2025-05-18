@@ -1211,6 +1211,38 @@ function GameObject.SetPerceivedTeam(self, team)
 end
 
 -------------------------------------------------------------------------------
+-- Owner
+-------------------------------------------------------------------------------
+-- @section
+-- These functions get and set owner. The default owner for a game object is the game object that created it.
+
+--- Sets the game object's owner.
+--- @param self GameObject
+--- @param owner GameObject?
+function GameObject.SetOwner(self, owner)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if owner ~= nil and not M.isgameobject(owner) then error("Parameter owner must be GameObject instance or nil."); end
+    if owner == nil then
+        --- @diagnostic disable-next-line: deprecated
+        SetOwner(self:GetHandle(), nil);
+        return;
+    end
+    --- @diagnostic disable-next-line: deprecated
+    SetOwner(self:GetHandle(), owner:GetHandle());
+end
+
+--- Returns the game object's owner. Returns nil if it has none.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetOwner(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetOwner(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+-------------------------------------------------------------------------------
 -- Pilot Class
 -------------------------------------------------------------------------------
 -- @section

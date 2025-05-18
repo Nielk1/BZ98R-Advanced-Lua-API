@@ -312,7 +312,7 @@ local function ScanProducers(team)
         ProducerCache[team][p] = producer; -- save it now so it's free
         if producer then
             local producerOdf = producer:GetOdf();
-            if not ProducerOdfsScanned[producerOdf] then
+            if producerOdf and not ProducerOdfsScanned[producerOdf] then
                 local label = producer:GetClassSig();
                 if label == utility.ClassSig.recycler
                 or label == utility.ClassSig.factory
@@ -354,7 +354,7 @@ end
 
 --- @param odf string Object to build.
 --- @param team TeamNum Team number to build the object.
---- @param location Vector|string|nil Location to build the object if from an armory or constructor.
+--- @param location Vector|string|GameObject|Handle|nil Location to build the object if from an armory or constructor.
 --- @param data any? Event data to be fired with the creation event.
 function M.QueueJob(odf, team, location, data)
     if not odf or not team then

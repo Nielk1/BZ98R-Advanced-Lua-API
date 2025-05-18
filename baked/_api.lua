@@ -20,6 +20,8 @@ local hook = require("_hook");
 local gameobject = require("_gameobject");
 local customsavetype = require("_customsavetype");
 
+--local updateDelta;
+
 --- Called when saving state to a save game file, allowing the script to preserve its state.
 --
 -- Any values returned by this function will be passed as parameters to Load when loading the save game file. Save supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
@@ -534,9 +536,16 @@ end
 --- @local
 function Update(dtime)
     traceprint("_api::Update()");
+
+    --local start = GetTimeNow();
+
     local ttime = GetTime();
     hook.CallAllNoReturn( "Update", dtime, ttime);
     traceprint("_api::/Update");
+    --local delta = GetTimeNow() - start;
+
+    --print("Script Update Load: "..string.format("%.2f%%", (updateDelta or delta) / dtime / 10));
+    --updateDelta = delta;
 end
 
 --- Called when a player joins the game world.

@@ -135,7 +135,8 @@ end
 --- @field template string StateMachineIter template name
 --- @field index_to_name table StateMachineIter index to name mapping, only if the StateMachineIter is ordered
 --- @field target_call integer? Timer's value, nil for not set
---- @field target_time integer? Target time if sleeping, nil if not set
+--- @field target_time number? Target time if sleeping, nil if not set
+--- @field set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
 --- @field addonData table? Table of values embeded in the StateMachineIter
 local StateMachineIter = {}; -- the table representing the class, which will double as the metatable for the instances
 
@@ -171,7 +172,7 @@ StateMachineIter.__index = function(table, key)
   return rawget(StateMachineIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
 end
 StateMachineIter.__newindex = function(table, key, value)
-  if key ~= "template" and key ~= "state_key" and key ~= "target_call" and key ~= "target_time" and key ~= "addonData" then
+  if key ~= "template" and key ~= "state_key" and key ~= "target_call" and key ~= "target_time" and key ~= "set_wait_time" and key ~= "addonData" then
     local addonData = rawget(table, "addonData");
     if addonData == nil then
       rawset(table, "addonData", {});
@@ -187,14 +188,16 @@ StateMachineIter.__type = "StateMachineIter";
 --- Create StateMachineIter
 --- @param name string StateMachineIter template
 --- @param target_call integer? Timer's value, nil for not set
---- @param target_time integer? TargetTurn's value, nil for not set
+--- @param target_time number? TargetTurn's value, nil for not set
+--- @param set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
 --- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 --- @param values table? Table of values embeded in the StateMachineIter
-local function CreateStateMachineIter(name, target_call, target_time, state_key, values)
+local function CreateStateMachineIter(name, target_call, target_time, set_wait_time, state_key, values)
     local self = setmetatable({}, StateMachineIter);
     self.template = name;
     self.target_call = target_call;
     self.target_time = target_time;
+    self.set_wait_time = set_wait_time;
     self.state_key = state_key;
     debugprint("StateMachineIter '"..name.."' created with state '"..tostring(state_key).."'");
     
@@ -588,7 +591,7 @@ function M.Start( name, state_key, init )
 
     debugprint("Starting StateMachineIter Template '"..name.."' with state '"..tostring(state_key).."'");
 
-    return CreateStateMachineIter(name, nil, nil, state_key, init);
+    return CreateStateMachineIter(name, nil, nil, nil, state_key, init);
 end
 
 --- Wait a set period of time on this state.
@@ -637,10 +640,20 @@ end
 function StateMachineIter.SecondsHavePassed(self, seconds, lap)
     if seconds == nil then
         self.target_time = nil;
+        self.set_wait_time = nil;
         return true;
     end
+
+    if self.target_time and self.set_wait_time ~= seconds then
+        -- we are already sleeping, but the time has changed
+        local delta = seconds - self.set_wait_time;
+        self.set_wait_time = seconds;
+        self.target_time = self.target_time + delta;
+    end
+
     if self.target_time == nil then
         self.target_time = M.game_time + seconds;
+        self.set_wait_time = seconds;
         return false; -- start sleeping
     elseif self.target_time <= M.game_time  then
         --debugprint(M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
@@ -648,6 +661,7 @@ function StateMachineIter.SecondsHavePassed(self, seconds, lap)
             self.target_time = self.target_time + seconds; -- reset the timer to the next lap
         else
             self.target_time = nil; -- ensure that the timer is reset
+            self.set_wait_time = nil;
         end
         return true; -- time is up
     end
@@ -707,11 +721,12 @@ end
 -- @param self StateMachineIter instance
 -- @return template string StateMachineIter template name
 -- @return target_call integer? Timer's value, nil for not set
--- @return target_time integer? TargetTurn's value, nil for not set
+-- @return target_time number? TargetTurn's value, nil for not set
+-- @return set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
 -- @return state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 -- @return addonData table Addon data, if any
 function StateMachineIter.Save(self)
-    return self.template, self.target_call, self.target_time, self.state_key, self.addonData;
+    return self.template, self.target_call, self.target_time, self.set_wait_time, self.state_key, self.addonData;
 end
 
 --- Load event function.
@@ -719,11 +734,12 @@ end
 -- INTERNAL USE.
 -- @param template string StateMachineIter template name
 -- @param target_call integer? Timer's value, nil for not set
--- @param target_time integer? TargetTurn's value, nil for not set
+-- @param target_time number? TargetTurn's value, nil for not set
+-- @param set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
 -- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
 -- @param addonData table Addon data, if any
-function StateMachineIter.Load(template, target_call, target_time, state_key, addonData)
-    return CreateStateMachineIter(template, target_call, target_time, state_key, addonData);
+function StateMachineIter.Load(template, target_call, target_time, set_wait_time, state_key, addonData)
+    return CreateStateMachineIter(template, target_call, target_time, set_wait_time, state_key, addonData);
 end
 
 --- BulkLoad event function.

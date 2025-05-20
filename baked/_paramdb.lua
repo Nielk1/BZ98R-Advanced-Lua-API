@@ -5,6 +5,8 @@
 --- @module '_paramdb'
 --- @author John "Nielk1" Klein
 
+local debugprint = debugprint or function(...) end;
+
 debugprint("_paramdb Loading");
 
 local M = {};

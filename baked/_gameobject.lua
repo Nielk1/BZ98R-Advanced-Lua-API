@@ -216,7 +216,7 @@ function GameObject.RemoveObject(self)
 end
 
 --- Get GameObject by Label.
---- @param key any Label
+--- @param key string Label
 --- @return GameObject? object GameObject with Label or nil if none found
 function M.GetGameObject(key)
     --- @diagnostic disable-next-line: deprecated

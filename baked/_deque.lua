@@ -27,6 +27,8 @@
 --- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 --- THE SOFTWARE.
 
+local debugprint = debugprint or function(...) end;
+
 debugprint("_deque Loading");
 
 local customsavetype = require("_customsavetype");

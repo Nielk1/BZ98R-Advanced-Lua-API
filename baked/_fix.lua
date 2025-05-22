@@ -12,15 +12,17 @@
 --- @module '_fix'
 --- @author John "Nielk1" Klein
 
-
 local utility = require("_utility");
 
+-- [Polyfill] table.unpack for Lua 5.1 compatibility
 _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
 
+-- [Polyfill] Remap SettLabel to SetLabel for BZ1.5
 --- @diagnostic disable-next-line: undefined-field
 _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
 
-if utility.CompareVersion(GameVersion, "2.2.315") < 0 then
+-- [Fix] Broken ObjectiveObjects iterator
+if utility.CompareVersion(_G.GameVersion, "2.2.315") < 0 then
     local old_ObjectiveObjects = _G.ObjectiveObjects;
 
     _G.ObjectiveObjects = function ()
@@ -55,14 +57,14 @@ if utility.CompareVersion(GameVersion, "2.2.315") < 0 then
                 local Objectified = {};
                 table.insert(Objectified, object1);
                 --- @diagnostic disable-next-line: deprecated
-                SetObjectiveOff(object1);
+                _G.SetObjectiveOff(object1);
 
                 local handle = iter();
                 while handle ~= nil do
                     --print("ObjectiveObjects[*in*]", handle, GetObjectiveName(handle));
                     table.insert(Objectified, handle);
                     --- @diagnostic disable-next-line: deprecated
-                    SetObjectiveOff(handle);
+                    _G.SetObjectiveOff(handle);
                     handle = iter();
                 end
 
@@ -72,7 +74,7 @@ if utility.CompareVersion(GameVersion, "2.2.315") < 0 then
                     if handle ~= nil then
                         --print("ObjectiveObjects[*fix*]", handle, GetObjectiveName(handle));
                         --- @diagnostic disable-next-line: deprecated
-                        SetObjectiveOn(handle);
+                        _G.SetObjectiveOn(handle);
                     end
                 end
 
@@ -89,8 +91,18 @@ if utility.CompareVersion(GameVersion, "2.2.315") < 0 then
     end;
 end
 
-if not TeamSlot.PORTAL then
+-- [Fix][Polyfill] TeamSlot missing "PORTAL" = 90 / ["90"] = "PORTAL"
+if not _G.TeamSlot.PORTAL then
     --- @diagnostic disable-next-line: inject-field
-    TeamSlot.PORTAL = 90;
-    TeamSlot[90] = "PORTAL";
+    _G.TeamSlot.PORTAL = 90;
+    _G.TeamSlot[90] = "PORTAL";
 end
+
+-- if tug dropping doesn't work because of a bad flag, use this to fix that flag
+--local function fixTugs()
+--    for v in AllCraft() do
+--        if(HasCargo(v)) then
+--            Deploy(v);
+--        end
+--    end
+--end

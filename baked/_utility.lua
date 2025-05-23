@@ -491,7 +491,7 @@ function M.IteratePath(path)
         if i < count then
             local position = GetPosition(path, i);
             i = i + 1;
-            return i - 1, position;
+            return i, position;
         end
         return nil;
     end
@@ -501,17 +501,26 @@ end
 
 --- Convert an iterator to an array.
 --- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
+--- Sparse numeric indices will result in `nil` values in the array.
+--- Duplicate numeric indices will overwrite previous values.
+--- An empty iterator will return an empty array.
 --- @param iterator function The iterator to convert
 --- @return any[] array An array containing the values from the iterator
 function M.IteratorToArray(iterator)
+    if type(iterator) ~= "function" then
+        error("IteratorToArray expects a function as the iterator", 2)
+    end
+
     local array = {}
+    local appendIndex = #array + 1
     for index, value in iterator do
         if type(index) == "number" and index > 0 and math.floor(index) == index then
             -- Use the index directly if it's a positive integer
             array[index] = value
         else
-            -- Fallback to table.insert for non-array-like indexes
-            table.insert(array, value)
+            -- Append to the array for non-array-like indexes
+            array[appendIndex] = value
+            appendIndex = appendIndex + 1
         end
     end
     return array

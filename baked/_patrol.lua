@@ -195,8 +195,9 @@ end
 
 --- Removes a handle from the patrol units.
 --- @param self PatrolEngine
---- @param handle GameObject_patrol
-local function removeGameObject(self, handle)
+--- @param handle GameObject
+function PatrolEngine.removeGameObject(self, handle)
+    --- @cast handle GameObject_patrol
     handle._patrol = nil
     self.patrol_units[handle] = nil
 end
@@ -264,7 +265,7 @@ end, config.get("hook_priority.Update.Patrol"));
 hook.Add("DeleteObject", "_patrol_DeleteObject", function(object)
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
-            removeGameObject(manager, object);
+            PatrolEngine.removeGameObject(manager, object);
         end
     end
 end, config.get("hook_priority.DeleteObject.Patrol"));

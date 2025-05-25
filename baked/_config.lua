@@ -99,6 +99,7 @@ end
 --- Update                         .Patrol       =  4999
 --- Update                         .Tracker      =  4999
 --- Update                         .NavManager   =  5999
+--- Update                         .Camera       =  8989
 --- Update                         .StateMachine =  8999
 M.hook_priority = {
     DeleteObject = {
@@ -123,6 +124,7 @@ M.hook_priority = {
         Patrol = 4999,
         Tracker = 4999,
         NavManager = 5999,
+        Camera = 8989,
         StateMachine = 8999,
         --GameObject = 9999,
     },

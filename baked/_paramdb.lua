@@ -82,6 +82,18 @@ function M.GetPilotCost(odf)
     return pilot;
 end
 
+--- @param odf string ODF file name
+--- @return number time
+function M.GetBuildTime(odf)
+    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    
+    local odfHandle = OpenODF(odf);
+    if odfHandle == nil then error("OpenODF() returned nil."); end
+
+    local buildTime = GetODFFloat(odfHandle, "GameObjectClass", "buildTime", 5.0);
+    return buildTime;
+end
+
 debugprint("_paramdb Loaded");
 
 return M;

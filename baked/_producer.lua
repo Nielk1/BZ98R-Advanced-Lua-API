@@ -24,8 +24,6 @@ local color = require("_color");
 
 --- Called when a producer as completed building an object.
 --
--- Use this function to perform any one-time script initialization.
---
 -- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
 --
 -- @event Producer:BuildComplete
@@ -52,6 +50,7 @@ local ProducerTeamSlots = {
 --- @class ProductionQueue
 --- @field odf string The ODF of the object to be built.
 --- @field location Vector|string The location where the object should be built, or "0 0 0" if not specified.
+--- @field builder TeamSlotInteger? The producer that will build the object.
 --- @field data any? The event data to be fired with the creation event.
 
 --- A table mapping teams (0–15) to ProductionQueue lists.
@@ -137,7 +136,18 @@ local function ProcessQueues()
                     if not hasPosition then
                         job.location = nil;
                     end
-                    local possibleProducers = MemoOfProducersByProduced[job.odf];
+                    local possibleProducers = nil;
+                    if job.builder and ProducerCache[team] then
+                        local builder = ProducerCache[team][job.builder];
+                        --- @cast builder GameObject?
+                        if builder then
+                            possibleProducers = {};
+                            possibleProducers[builder:GetOdf()] = true;
+                        end
+                    end
+                    if not possibleProducers then
+                        possibleProducers = MemoOfProducersByProduced[job.odf];
+                    end
                     if possibleProducers and next(producerTypes) then
                         for producerOdf, _ in pairs(possibleProducers) do
                             --debugprint("\27[34m".."Candidate Builder "..producerOdf.."\27[0m")
@@ -355,9 +365,10 @@ end
 
 --- @param odf string Object to build.
 --- @param team TeamNum Team number to build the object.
---- @param location Vector|string|GameObject|Handle|nil Location to build the object if from an armory or constructor.
+--- @param location Vector|Matrix|string|GameObject|Handle|nil Location to build the object if from an armory or constructor.
+--- @param builder TeamSlotInteger? The producer that will build the object.
 --- @param data any? Event data to be fired with the creation event.
-function M.QueueJob(odf, team, location, data)
+function M.QueueJob(odf, team, location, builder, data)
     if not odf or not team then
         error("QueueJob requires an odf and a team number.");
     end
@@ -404,6 +415,7 @@ function M.QueueJob(odf, team, location, data)
     queue:push_right({
         odf = odf,
         location = location,
+        builder = builder,
         data = data,
     });
     --for i = 0, 15 do

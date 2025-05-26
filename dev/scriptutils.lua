@@ -74,30 +74,25 @@ LastGameKey = "Ctrl+Z";
 -- Audio messages use the Voice Volume setting from the Audio Options menu.
 
 --- Repeat the last audio message.
---- @function RepeatAudioMessage
 function RepeatAudioMessage() end
 
 --- Plays the given audio file, which must be an uncompressed RIFF WAVE (.WAV) file.
 --- Returns an audio message handle.
 --- @param filename string
 --- @return AudioMessage
---- @function AudioMessage
 function AudioMessage(filename) error("This function is provided by the engine."); end
 
 --- Returns true if the audio message has stopped. Returns false otherwise.
 --- @param msg AudioMessage
 --- @return boolean
---- @function IsAudioMessageDone
 function IsAudioMessageDone(msg) error("This function is provided by the engine."); end
 
 --- Stops the given audio message.
 --- @param msg AudioMessage
---- @function StopAudioMessage
 function StopAudioMessage(msg) end
 
 --- Returns true if <em>any</em> audio message is playing. Returns false otherwise.
 --- @return boolean
---- @function IsAudioMessagePlaying
 function IsAudioMessagePlaying() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -119,13 +114,11 @@ function IsAudioMessagePlaying() error("This function is provided by the engine.
 --- @param loop? boolean
 --- @param volume? integer
 --- @param rate? integer
---- @function StartSound
 function StartSound(filename, h, priority, loop, volume, rate) end
 
 --- Stops the sound using the given filename and associated with the given object. Use a handle of none or nil to stop a global 2D sound.
 --- @param filename string
 --- @param h? Handle
---- @function StopSound
 function StopSound(filename, h) end
 
 -------------------------------------------------------------------------------
@@ -138,7 +131,6 @@ function StopSound(filename, h) end
 --- Returns the handle of the game object with the given label. Returns nil if none exists.
 --- @param label string
 --- @return Handle?
---- @function GetHandle
 --- @deprecated Use `_gameobject.GetGameObject` instead.
 function GetHandle(label) error("This function is provided by the engine."); end
 
@@ -148,13 +140,11 @@ function GetHandle(label) error("This function is provided by the engine."); end
 --- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the location is a path this is the path point index, defaults to 0.
 --- @return Handle?
---- @function BuildObject
 --- @deprecated Use `_gameobject.BuildGameObject` instead.
 function BuildObject(odfname, teamnum, location, point) error("This function is provided by the engine."); end
 
 --- Removes the game object with the given handle.
 --- @param h Handle
---- @function RemoveObject
 --- @deprecated Use `_gameobject.RemoveObject` instead.
 function RemoveObject(h) end
 
@@ -162,49 +152,42 @@ function RemoveObject(h) end
 --- @param h Handle
 --- @param odfname string
 --- @return boolean
---- @function IsOdf
 --- @deprecated Use `_gameobject.IsOdf` instead.
 function IsOdf(h, odfname) error("This function is provided by the engine."); end
 
 --- Returns the odf name of the game object. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @function GetOdf
 --- @deprecated Use `_gameobject.GetOdf` instead.
 function GetOdf(h) error("This function is provided by the engine."); end
 
 --- Returns the base config of the game object which determines what VDF/SDF model it uses. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @function GetBase
 --- @deprecated Use `_gameobject.GetBase` instead.
 function GetBase(h) error("This function is provided by the engine."); end
 
 --- Returns the label of the game object (e.g. "avtank0_wingman"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @function GetLabel
 --- @deprecated Use `_gameobject.GetLabel` instead.
 function GetLabel(h) error("This function is provided by the engine."); end
 
 --- Set the label of the game object (e.g. "tank1").
 --- @param h Handle
 --- @param label string
---- @function SetLabel
 --- @deprecated Use `_gameobject.SetLabel` instead.
 function SetLabel(h, label) end
 
 --- Returns the four-character class signature of the game object (e.g. "WING"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @function GetClassSig
 --- @deprecated Use `_gameobject.GetClassSig` instead.
 function GetClassSig(h) error("This function is provided by the engine."); end
 
 --- Returns the class label of the game object (e.g. "wingman"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @function GetClassLabel
 --- @deprecated Use `_gameobject.GetClassLabel` instead.
 function GetClassLabel(h) error("This function is provided by the engine."); end
 
@@ -212,7 +195,6 @@ function GetClassLabel(h) error("This function is provided by the engine."); end
 --- Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
 --- @param h Handle
 --- @return integer?
---- @function GetClassId
 --- @deprecated Use `_gameobject.GetClassId` instead.
 function GetClassId(h) error("This function is provided by the engine."); end
 
@@ -315,49 +297,42 @@ ClassId = {
 --- The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".
 --- @param h Handle
 --- @return string
---- @function GetNation
 --- @deprecated Use `GameObject.GetNation` instead.
 function GetNation(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsValid
 --- @deprecated Use `GameObject.IsValid` instead.
 function IsValid(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsAlive
 --- @deprecated Use `GameObject.IsAlive` instead.
 function IsAlive(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled and piloted. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsAliveAndPilot
 --- @deprecated Use `GameObject.IsAliveAndPilot` instead.
 function IsAliveAndPilot(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and is a vehicle. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsCraft
 --- @deprecated Use `GameObject.IsCraft` instead.
 function IsCraft(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and is a building. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsBuilding
 --- @deprecated Use `GameObject.IsBuilding` instead.
 function IsBuilding(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and is a person. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsPerson
 --- @deprecated Use `GameObject.IsPerson` instead.
 function IsPerson(h) error("This function is provided by the engine."); end
 
@@ -365,7 +340,6 @@ function IsPerson(h) error("This function is provided by the engine."); end
 --- @param h Handle
 --- @param threshold? number float
 --- @return boolean
---- @function IsDamaged
 function IsDamaged(h, threshold) error("This function is provided by the engine."); end
 
 --- Returns true if the game object was recycled by a Construction Rig on the given team.
@@ -373,7 +347,6 @@ function IsDamaged(h, threshold) error("This function is provided by the engine.
 --- @param h Handle
 --- @param team TeamNum
 --- @return boolean
---- @function IsRecycledByTeam
 function IsRecycledByTeam(h, team) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -385,14 +358,12 @@ function IsRecycledByTeam(h, team) error("This function is provided by the engin
 --- Returns the game object's team number.
 --- @param h Handle
 --- @return TeamNum
---- @function GetTeamNum
 --- @deprecated Use `GameObject.GetTeamNum` instead.
 function GetTeamNum(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's team number.
 --- @param h Handle
 --- @param team TeamNum
---- @function SetTeamNum
 --- @deprecated Use `GameObject.SetTeamNum` instead.
 function SetTeamNum(h, team) end
 
@@ -400,7 +371,6 @@ function SetTeamNum(h, team) end
 --- The perceived team will differ from the real team when a player enters an empty enemy vehicle without being seen until they attack something.
 --- @param h Handle
 --- @return TeamNum
---- @function GetPerceivedTeam
 --- @deprecated Use `GameObject.GetPerceivedTeam` instead.
 function GetPerceivedTeam(h) error("This function is provided by the engine."); end
 
@@ -409,7 +379,6 @@ function GetPerceivedTeam(h) error("This function is provided by the engine."); 
 --- Units on the game object's real team will treat it as friendly regardless of its perceived team.
 --- @param h Handle
 --- @param t TeamNum
---- @function SetPerceivedTeam
 --- @deprecated Use `GameObject.SetPerceivedTeam` instead.
 function SetPerceivedTeam(h, t) end
 
@@ -421,24 +390,20 @@ function SetPerceivedTeam(h, t) end
 
 --- Sets the local player's target.
 --- @param t Handle
---- @function SetUserTarget
 function SetUserTarget(t) end
 
 --- Returns the local player's target. Returns nil if it has none.
 --- @return Handle?
---- @function GetUserTarget
 function GetUserTarget() error("This function is provided by the engine."); end
 
 --- Sets the game object's target.
 --- @param h Handle
 --- @param t Handle
---- @function SetTarget
 function SetTarget(h, t) end
 
 --- Returns the game object's target. Returns nil if it has none.
 --- @param h Handle
 --- @return Handle?
---- @function GetTarget
 function GetTarget(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -451,13 +416,11 @@ function GetTarget(h) error("This function is provided by the engine."); end
 --- @todo confirm o can be nil
 --- @param h Handle
 --- @param o Handle?
---- @function SetOwner
 function SetOwner(h, o) end
 
 --- Returns the game object's owner. Returns nil if it has none.
 --- @param h Handle
 --- @return Handle?
---- @function GetOwner
 function GetOwner(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -469,14 +432,12 @@ function GetOwner(h) error("This function is provided by the engine."); end
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
 --- @param h Handle
 --- @param odfname string?
---- @function SetPilotClass
 --- @deprecated Use `GameObject.SetPilotClass` instead.
 function SetPilotClass(h, odfname) end
 
 --- Returns the odf name of the vehicle's pilot class. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @function GetPilotClass
 --- @deprecated Use `GameObject.GetPilotClass` instead.
 function GetPilotClass(h) error("This function is provided by the engine."); end
 
@@ -490,7 +451,6 @@ function GetPilotClass(h) error("This function is provided by the engine."); end
 --- @param h Handle
 --- @param target Vector|Matrix|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
---- @function SetPosition
 --- @deprecated Use `GameObject.SetPosition` instead.
 function SetPosition(h, target, point) end
 
@@ -498,28 +458,24 @@ function SetPosition(h, target, point) end
 --- @param target Handle|string
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Vector?
---- @function GetPosition
 --- @todo Can't depricate this because it's used for paths too, at least for now
 function GetPosition(target, point) error("This function is provided by the engine."); end
 
 --- Returns the game object's front vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector?
---- @function GetFront
 --- @deprecated Use `GameObject.GetFront` instead.
 function GetFront(h) error("This function is provided by the engine."); end
 
 --- Teleports the game object to the given transform matrix.
 --- @param h Handle
 --- @param transform Matrix
---- @function SetTransform
 --- @deprecated Use `GameObject.SetTransform` instead.
 function SetTransform(h, transform) end
 
 --- Returns the game object's transform matrix. Returns nil if none exists.
 --- @param h Handle
 --- @return Matrix?
---- @function GetTransform
 --- @deprecated Use `GameObject.GetTransform` instead.
 function GetTransform(h) error("This function is provided by the engine."); end
 
@@ -532,14 +488,12 @@ function GetTransform(h) error("This function is provided by the engine."); end
 --- Returns the game object's linear velocity vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector
---- @function GetVelocity
 --- @deprecated Use `GameObject.GetVelocity` instead.
 function GetVelocity(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's angular velocity vector. 
 --- @param h Handle
 --- @param velocity Vector
---- @function SetVelocity
 --- @deprecated Use `GameObject.SetVelocity` instead.
 function SetVelocity(h, velocity) end
 
@@ -552,14 +506,12 @@ function SetVelocity(h, velocity) end
 --- Returns the game object's angular velocity vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector
---- @function GetOmega
 --- @deprecated Use `GameObject.GetOmega` instead.
 function GetOmega(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's angular velocity vector.
 --- @param h Handle
 --- @param omega Vector
---- @function SetOmega
 --- @deprecated Use `GameObject.SetOmega` instead.
 function SetOmega(h, omega) end
 
@@ -577,7 +529,6 @@ function SetOmega(h, omega) end
 --- @param radius? number
 --- @param angle? number
 --- @return Vector
---- @function GetCircularPos
 function GetCircularPos(center, radius, angle) error("This function is provided by the engine."); end
 
 --- Returns a ground position in a ring around the center between minradius and maxradius with roughly the same terrain height as the terrain height at the center.
@@ -587,7 +538,6 @@ function GetCircularPos(center, radius, angle) error("This function is provided 
 --- @param minradius? number
 --- @param maxradius? number
 --- @return Vector
---- @function GetPositionNear
 function GetPositionNear(center, minradius, maxradius) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -599,19 +549,16 @@ function GetPositionNear(center, minradius, maxradius) error("This function is p
 --- Returns who scored the most recent hit on the game object. Returns nil if none exists.
 --- @param h Handle
 --- @return Handle
---- @function GetWhoShotMe
 function GetWhoShotMe(h) error("This function is provided by the engine."); end
 
 --- Returns the last time an enemy shot the game object.
 --- @param h Handle
 --- @return number float
---- @function GetLastEnemyShot
 function GetLastEnemyShot(h) error("This function is provided by the engine."); end
 
 --- Returns the last time a friend shot the game object.
 --- @param h Handle
 --- @return number float
---- @function GetLastFriendShot
 function GetLastFriendShot(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -623,26 +570,22 @@ function GetLastFriendShot(h) error("This function is provided by the engine.");
 -- Unless specifically overridden, every team is friendly with itself, neutral with team 0, and hostile to everyone else.
 
 --- Sets team alliances back to default.
---- @function DefaultAllies
 function DefaultAllies() end
 
 --- Sets whether team alliances are locked. Locking alliances prevents players from allying or un-allying, preserving alliances set up by the mission script.
 --- @param lock boolean
---- @function LockAllies
 function LockAllies(lock) end
 
 --- Makes the two teams allies of each other.
 --- This function affects both teams so Ally(1, 2) and Ally(2, 1) produces the identical results, unlike the "half-allied" state created by the "ally" game key.
 --- @param team1 integer
 --- @param team2 integer
---- @function Ally
 function Ally(team1, team2) end
 
 --- Makes the two teams enemies of each other.
 --- This function affects both teams so UnAlly(1, 2) and UnAlly(2, 1) produces the identical results, unlike the "half-enemy" state created by the "unally" game key.
 --- @param team1 integer
 --- @param team2 integer
---- @function UnAlly
 function UnAlly(team1, team2) end
 
 --- Returns true if team1 considers team2 an ally. Returns false otherwise.
@@ -650,7 +593,6 @@ function UnAlly(team1, team2) end
 --- @param team1 integer
 --- @param team2 integer
 --- @return boolean
---- @function IsTeamAllied
 function IsTeamAllied(team1, team2) error("This function is provided by the engine."); end
 
 --- Returns true if game object "me" considers game object "him" an ally. Returns false otherwise.
@@ -658,7 +600,6 @@ function IsTeamAllied(team1, team2) error("This function is provided by the engi
 --- @param me Handle
 --- @param him Handle
 --- @return boolean
---- @function IsAlly
 function IsAlly(me, him) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -670,13 +611,11 @@ function IsAlly(me, him) error("This function is provided by the engine."); end
 
 --- Sets the game object as an objective to all teams.
 --- @param h Handle
---- @function SetObjectiveOn
 --- @deprecated Use `GameObject.SetObjectiveOn` instead.
 function SetObjectiveOn(h) end
 
 --- Sets the game object back to normal.
 --- @param h Handle
---- @function SetObjectiveOff
 --- @deprecated Use `GameObject.SetObjectiveOff` instead.
 function SetObjectiveOff(h) end
 
@@ -684,21 +623,18 @@ function SetObjectiveOff(h) end
 --- [UNRELEASED]
 --- @param h Handle
 --- @return boolean
---- @function IsObjectiveOn
 --- @deprecated Use `GameObject.IsObjectiveOn` instead.
 function IsObjectiveOn(h) error("This function is provided by the engine."); end
 
 --- Gets the game object's visible name.
 --- @param h Handle
 --- @return string
---- @function GetObjectiveName
 --- @deprecated Use `GameObject.GetObjectiveName` instead.
 function GetObjectiveName(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's visible name.
 --- @param h Handle
 --- @param name string
---- @function SetObjectiveName
 --- @deprecated Use `GameObject.SetObjectiveName` instead.
 function SetObjectiveName(h, name) end
 
@@ -706,7 +642,6 @@ function SetObjectiveName(h, name) end
 --- [2.1+]
 --- @param h Handle
 --- @param name string
---- @function SetName
 --- @deprecated Use `GameObject.SetName` instead.
 function SetName(h, name) end
 
@@ -721,7 +656,6 @@ function SetName(h, name) end
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return number
---- @function GetDistance
 --- @deprecated Use `GameObject.GetDistance` instead.
 function GetDistance(h1, target, point) error("This function is provided by the engine."); end
 
@@ -731,7 +665,6 @@ function GetDistance(h1, target, point) error("This function is provided by the 
 --- @param h2 Handle
 --- @param dist number
 --- @return boolean
---- @function IsWithin
 --- @deprecated Use `GameObject.IsWithin` instead.
 function IsWithin(h1, h2, dist) error("This function is provided by the engine."); end
 
@@ -741,7 +674,6 @@ function IsWithin(h1, h2, dist) error("This function is provided by the engine."
 --- @param h2 Handle
 --- @param tolerance? number
 --- @return boolean
---- @function IsTouching
 --- @deprecated Use `GameObject.IsTouching` instead.
 function IsTouching(h1, h2, tolerance) error("This function is provided by the engine."); end
 
@@ -755,7 +687,6 @@ function IsTouching(h1, h2, tolerance) error("This function is provided by the e
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @function GetNearestObject
 --- @deprecated Use `_gameobject.GetNearestObject` instead.
 function GetNearestObject(target, point) error("This function is provided by the engine."); end
 
@@ -763,7 +694,6 @@ function GetNearestObject(target, point) error("This function is provided by the
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @function GetNearestVehicle
 --- @deprecated Use `_gameobject.GetNearestVehicle` instead.
 function GetNearestVehicle(target, point) error("This function is provided by the engine."); end
 
@@ -771,7 +701,6 @@ function GetNearestVehicle(target, point) error("This function is provided by th
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @function GetNearestBuilding
 --- @deprecated Use `_gameobject.GetNearestBuilding` instead.
 function GetNearestBuilding(target, point) error("This function is provided by the engine."); end
 
@@ -779,7 +708,6 @@ function GetNearestBuilding(target, point) error("This function is provided by t
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @function GetNearestEnemy
 --- @deprecated Use `_gameobject.GetNearestEnemy` instead.
 function GetNearestEnemy(target, point) error("This function is provided by the engine."); end
 
@@ -788,7 +716,6 @@ function GetNearestEnemy(target, point) error("This function is provided by the 
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @function GetNearestFriend
 --- @deprecated Use `_gameobject.GetNearestFriend` instead.
 function GetNearestFriend(target, point) error("This function is provided by the engine."); end
 
@@ -805,7 +732,6 @@ function GetNearestFriend(target, point) error("This function is provided by the
 --- @param position Vector The position vector.
 --- @param transform Matrix The transform matrix.
 --- @return Handle? handle closest friend, or nil if none exists.
---- @function GetNearestUnitOnTeam
 --- @diagnostic enable: undefined-doc-param
 --- @deprecated Use `_gameobject.GetNearestUnitOnTeam` instead.
 function GetNearestUnitOnTeam(...) end
@@ -845,7 +771,6 @@ function GetNearestUnitOnTeam(...) end
 --- @param team TeamNum
 --- @param odfname string
 --- @return integer
---- @function CountUnitsNearObject
 --- @deprecated Use `_gameobject.CountUnitsNearObject` instead.
 function CountUnitsNearObject(h, dist, team, odfname) error("This function is provided by the engine."); end
 
@@ -856,7 +781,6 @@ function CountUnitsNearObject(h, dist, team, odfname) error("This function is pr
 -- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
 
 --- Enumerates game objects within the given distance a target.
---- @function ObjectsInRange
 --- @param dist number
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
@@ -866,25 +790,21 @@ function ObjectsInRange(dist, target, point) error("This function is provided by
 
 --- Enumerates all game objects.
 --- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
---- @function AllObjects
 --- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.AllObjects` instead.
 function AllObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all craft.
---- @function AllCraft
 --- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.AllCraft` instead.
 function AllCraft() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects currently selected by the local player.
---- @function SelectedObjects
 --- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.SelectedObjects` instead.
 function SelectedObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects marked as objectives.
---- @function ObjectiveObjects
 --- @return fun():Handle iterator
 --- @deprecated Use `_gameobject.ObjectiveObjects` instead.
 function ObjectiveObjects() error("This function is provided by the engine."); end
@@ -897,7 +817,6 @@ function ObjectiveObjects() error("This function is provided by the engine."); e
 
 --- While the global scrap count is above the limit, remove the oldest scrap piece. It no limit is given, it uses the default limit of 300.
 --- @param limit? integer
---- @function GetRidOfSomeScrap
 function GetRidOfSomeScrap(limit) end
 
 --- Clear all scrap within the given distance of a position vector, transform matrix, game object, or named path.
@@ -905,7 +824,6 @@ function GetRidOfSomeScrap(limit) end
 --- @param distance number
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer
---- @function ClearScrapAround
 function ClearScrapAround(distance, target, point) end
 
 -------------------------------------------------------------------------------
@@ -994,7 +912,6 @@ TeamSlot = {
 --- @param slot TeamSlotInteger
 --- @param team? TeamNum
 --- @return Handle
---- @function GetTeamSlot
 --- @deprecated Use `_gameobject.GetTeamSlot` instead.
 function GetTeamSlot(slot, team) error("This function is provided by the engine."); end
 
@@ -1002,7 +919,6 @@ function GetTeamSlot(slot, team) error("This function is provided by the engine.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @function GetPlayerHandle
 --- @deprecated Use `_gameobject.GetPlayerHandle` instead.
 function GetPlayerHandle(team) error("This function is provided by the engine."); end
 
@@ -1010,7 +926,6 @@ function GetPlayerHandle(team) error("This function is provided by the engine.")
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @function GetRecyclerHandle
 --- @deprecated Use `_gameobject.GetRecyclerGameObject` instead.
 function GetRecyclerHandle(team) error("This function is provided by the engine."); end
 
@@ -1018,7 +933,6 @@ function GetRecyclerHandle(team) error("This function is provided by the engine.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @function GetFactoryHandle
 --- @deprecated Use `_gameobject.GetFactoryGameObject` instead.
 function GetFactoryHandle(team) error("This function is provided by the engine."); end
 
@@ -1026,7 +940,6 @@ function GetFactoryHandle(team) error("This function is provided by the engine."
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @function GetArmoryHandle
 --- @deprecated Use `_gameobject.GetArmoryGameObject` instead.
 function GetArmoryHandle(team) error("This function is provided by the engine."); end
 
@@ -1034,7 +947,6 @@ function GetArmoryHandle(team) error("This function is provided by the engine.")
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @function GetConstructorHandle
 --- @deprecated Use `_gameobject.GetConstructorGameObject` instead.
 function GetConstructorHandle(team) error("This function is provided by the engine."); end
 
@@ -1049,7 +961,6 @@ function GetConstructorHandle(team) error("This function is provided by the engi
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function AddPilot
 function AddPilot(team, count) error("This function is provided by the engine."); end
 
 --- Sets the team's pilot count, clamped between zero and maximum count.
@@ -1057,13 +968,11 @@ function AddPilot(team, count) error("This function is provided by the engine.")
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function SetPilot
 function SetPilot(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's pilot count.
 --- @param team TeamNum
 --- @return integer
---- @function GetPilot
 function GetPilot(team) error("This function is provided by the engine."); end
 
 --- Adds pilots to the team's maximum pilot count.
@@ -1071,7 +980,6 @@ function GetPilot(team) error("This function is provided by the engine."); end
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function AddMaxPilot
 function AddMaxPilot(team, count) error("This function is provided by the engine."); end
 
 --- Sets the team's maximum pilot count.
@@ -1079,13 +987,11 @@ function AddMaxPilot(team, count) error("This function is provided by the engine
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function SetMaxPilot
 function SetMaxPilot(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's maximum pilot count.
 --- @param team TeamNum
 --- @return integer
---- @function GetMaxPilot
 function GetMaxPilot(team) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1099,7 +1005,6 @@ function GetMaxPilot(team) error("This function is provided by the engine."); en
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function AddScrap
 function AddScrap(team, count) error("This function is provided by the engine."); end
 
 --- Sets the team's scrap count, clamped between zero and maximum count.
@@ -1107,13 +1012,11 @@ function AddScrap(team, count) error("This function is provided by the engine.")
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function SetScrap
 function SetScrap(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's scrap count.
 --- @param team TeamNum
 --- @return integer
---- @function GetScrap
 function GetScrap(team) error("This function is provided by the engine."); end
 
 --- Adds to the team's maximum scrap count.
@@ -1121,7 +1024,6 @@ function GetScrap(team) error("This function is provided by the engine."); end
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function AddMaxScrap
 function AddMaxScrap(team, count) error("This function is provided by the engine."); end
 
 --- Sets the team's maximum scrap count.
@@ -1129,13 +1031,11 @@ function AddMaxScrap(team, count) error("This function is provided by the engine
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
---- @function SetMaxScrap
 function SetMaxScrap(team, count) error("This function is provided by the engine."); end
 
 --- Returns the team's maximum scrap count.
 --- @param team TeamNum
 --- @return integer
---- @function GetMaxScrap
 function GetMaxScrap(team) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1147,13 +1047,11 @@ function GetMaxScrap(team) error("This function is provided by the engine."); en
 --- Returns true if the game object is a deployed craft. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsDeployed
 --- @deprecated use `GameObject.IsDeployed` instead.
 function IsDeployed(h) error("This function is provided by the engine."); end
 
 --- Tells the game object to deploy.
 --- @param h Handle
---- @function Deploy
 --- @deprecated use `GameObject.Deploy` instead.
 function Deploy(h) end
 
@@ -1166,7 +1064,6 @@ function Deploy(h) end
 --- Returns true if the game object is selected. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsSelected
 function IsSelected(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1179,7 +1076,6 @@ function IsSelected(h) error("This function is provided by the engine."); end
 --- [2.0+]
 --- @param h Handle
 --- @return boolean
---- @function IsCritical
 function IsCritical(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's mission-critical status.
@@ -1187,7 +1083,6 @@ function IsCritical(h) error("This function is provided by the engine."); end
 --- [2.0+]
 --- @param h Handle
 --- @param critical? boolean
---- @function SetCritical
 function SetCritical(h, critical) end
 
 -------------------------------------------------------------------------------
@@ -1201,7 +1096,6 @@ function SetCritical(h, critical) end
 --- weaponHard1: 1 weaponHard2: 2 weaponHard3: 4 weaponHard4: 8 weaponHard5: 16
 --- @param h Handle
 --- @param mask integer
---- @function SetWeaponMask
 --- @deprecated use `GameObject.SetWeaponMask` instead.
 function SetWeaponMask(h, mask) end
 
@@ -1210,7 +1104,6 @@ function SetWeaponMask(h, mask) end
 --- @param h Handle
 --- @param weaponname? string
 --- @param slot? integer
---- @function GiveWeapon
 --- @deprecated use `GameObject.GiveWeapon` instead.
 function GiveWeapon(h, weaponname, slot) end
 
@@ -1219,21 +1112,18 @@ function GiveWeapon(h, weaponname, slot) end
 --- @param h Handle
 --- @param slot integer
 --- @return string
---- @function GetWeaponClass
 --- @deprecated use `GameObject.GetWeaponClass` instead.
 function GetWeaponClass(h, slot) error("This function is provided by the engine."); end
 
 --- Tells the game object to fire at the given target.
 --- @param me Handle
 --- @param him Handle
---- @function FireAt
 --- @deprecated use `GameObject.FireAt` instead.
 function FireAt(me, him) end
 
 --- Applies damage to the game object.
 --- @param h Handle
 --- @param amount number
---- @function Damage
 --- @deprecated use `GameObject.Damage` instead.
 function Damage(h, amount) end
 
@@ -1245,17 +1135,14 @@ function Damage(h, amount) end
 
 --- Returns the elapsed time in seconds since the start of the mission.
 --- @return number
---- @function GetTime
 function GetTime() error("This function is provided by the engine."); end
 
 --- Returns the simulation time step in seconds.
 --- @return number
---- @function GetTimeStep
 function GetTimeStep() error("This function is provided by the engine."); end
 
 --- Returns the current system time in milliseconds. This is mostly useful for performance profiling.
 --- @return number
---- @function GetTimeNow
 function GetTimeNow() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1268,14 +1155,12 @@ function GetTimeNow() error("This function is provided by the engine."); end
 --- IMPORTANT SAFETY TIP: only call this function from the "root" of the Lua mission script! The strategic AI gets set up shortly afterward and attempting to use SetAIControl later will crash the game.
 --- @param team TeamNum
 --- @param control? boolean, defaults to true
---- @function SetAIControl
 function SetAIControl(team, control) end
 
 --- Returns true if a given team is AI controlled. Returns false otherwise.
 --- Unlike SetAIControl, this function may be called at any time.
 --- @param team TeamNum
 --- @return boolean
---- @function GetAIControl
 function GetAIControl(team) error("This function is provided by the engine."); end
 
 --- Returns the current AIP for the team. It uses team 2 if no team number is given.
@@ -1287,19 +1172,16 @@ function GetAIP(team) error("This function is provided by the engine."); end
 --- Switches the team's AI plan. It uses team 2 if no team number is given.
 --- @param aipname string
 --- @param team? TeamNum
---- @function SetAIP
 function SetAIP(aipname, team) end
 
 --- Fails the mission after the given time elapses. If supplied with a filename (usually a .des), it sets the failure message to text from that file.
 --- @param time number
 --- @param filename? string
---- @function FailMission
 function FailMission(time, filename) end
 
 --- Succeeds the mission after the given time elapses. If supplied with a filename (usually a .des), it sets the success message to text from that file.
 --- @param time number
 --- @param filename? string
---- @function SucceedMission
 function SucceedMission(time, filename) end
 
 -------------------------------------------------------------------------------
@@ -1317,7 +1199,6 @@ function ClearObjectives() end
 --- @param color? ColorLabel Default to "WHITE".
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
---- @function AddObjective
 --- @deprecated use `_objective.AddObjective` instead.
 function AddObjective(name, color, duration, text) end
 
@@ -1326,13 +1207,11 @@ function AddObjective(name, color, duration, text) end
 --- @param color? ColorLabel Default to "WHITE".
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
---- @function UpdateObjective
 --- @deprecated use `_objective.UpdateObjective` instead.
 function UpdateObjective(name, color, duration, text) end
 
 --- Removes the objective message with the given file name. Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
 --- @param name string
---- @function RemoveObjective
 --- @deprecated use `_objective.RemoveObjective` instead.
 function RemoveObjective(name) end
 
@@ -1347,7 +1226,6 @@ function RemoveObjective(name) end
 --- @param time integer
 --- @param warn? integer
 --- @param alert? integer
---- @function StartCockpitTimer
 function StartCockpitTimer(time, warn, alert) end
 
 --- Starts the cockpit timer counting up from the given time. If a warn time is given, the timer will turn yellow when it reaches that value. If an alert time is given, the timer will turn red when it reaches that value. All time values are in seconds.
@@ -1355,20 +1233,16 @@ function StartCockpitTimer(time, warn, alert) end
 --- @param time integer
 --- @param warn? integer
 --- @param alert? integer
---- @function StartCockpitTimerUp
 function StartCockpitTimerUp(time, warn, alert) end
 
 --- Stops the cockpit timer.
---- @function StopCockpitTimer
 function StopCockpitTimer() end
 
 --- Hides the cockpit timer.
---- @function HideCockpitTimer
 function HideCockpitTimer() end
 
 --- Returns the current time in seconds on the cockpit timer.
 --- @return integer
---- @function GetCockpitTimer
 function GetCockpitTimer() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1379,17 +1253,14 @@ function GetCockpitTimer() error("This function is provided by the engine."); en
 
 --- Starts a global earthquake effect.
 --- @param magnitude number
---- @function StartEarthquake
 function StartEarthquake(magnitude) end
 
 --- Changes the magnitude of an existing earthquake effect.
 --- Important: note the inconsistent capitalization, which matches the internal C++ script utility functions.
 --- @param magnitude number
---- @function UpdateEarthQuake
 function UpdateEarthQuake(magnitude) end
 
 --- Stops the global earthquake effect.
---- @function StopEarthquake
 function StopEarthquake() end
 
 -------------------------------------------------------------------------------
@@ -1408,29 +1279,24 @@ function StopEarthquake() end
 --- [2.0+]
 --- @param path string
 --- @param type integer
---- @function SetPathType
 function SetPathType(path, type) end
 
 --- Returns the type of the named path.
 --- [2.0+]
 --- @param path string
 --- @return integer
---- @function GetPathType
 function GetPathType(path) error("This function is provided by the engine."); end
 
 --- Changes the named path to one-way. Once a unit reaches the end of the path, it will stop.
 --- @param path string
---- @function SetPathOneWay
 function SetPathOneWay(path) end
 
 --- Changes the named path to round-trip. Once a unit reaches the end of the path, it will follow the path backwards to the start and begin again.
 --- @param path string
---- @function SetPathRoundTrip
 function SetPathRoundTrip(path) end
 
 --- Changes the named path to looping. Once a unit reaches the end of the path, it will continue along to the start and begin again.
 --- @param path string
---- @function SetPathLoop
 function SetPathLoop(path) end
 
 -------------------------------------------------------------------------------
@@ -1442,7 +1308,6 @@ function SetPathLoop(path) end
 --- [2.0+]
 --- @param path string
 --- @return integer
---- @function GetPathPointCount
 function GetPathPointCount(path) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1457,7 +1322,6 @@ function GetPathPointCount(path) error("This function is provided by the engine.
 --- @param path string
 --- @param target Vector|Matrix|string
 --- @return integer
---- @function GetWindingNumber
 function GetWindingNumber(path, target) error("This function is provided by the engine."); end
 
 --- Returns true if the given position vector, transform matrix, or object is inside the area bounded by the named path. Returns false otherwise.
@@ -1466,14 +1330,13 @@ function GetWindingNumber(path, target) error("This function is provided by the 
 --- @param path string
 --- @param target Vector|Matrix|Handle
 --- @return boolean
---- @function IsInsideArea
 function IsInsideArea(path, target) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
--- Unit Commands
+--- Unit Commands
 -------------------------------------------------------------------------------
--- @section
--- These functions send commands to units or query their command state.
+-- @section 
+-- These These functions send commands to units or query their command state.
 
 --- This is a global table that converts between command numbers and command names. For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
 --- @enum AiCommand
@@ -1541,49 +1404,42 @@ AiCommand = {
 --- Returns true if the game object can be commanded. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
---- @function CanCommand
 --- @deprecated use `GameObject.CanCommand` instead.
 function CanCommand(me) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is a producer that can build at the moment. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
---- @function CanBuild
 --- @deprecated use `GameObject.CanBuild` instead.
 function CanBuild(me) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is a producer and currently busy. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
---- @function IsBusy
 --- @deprecated use `GameObject.IsBusy` instead.
 function IsBusy(me) error("This function is provided by the engine."); end
 
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param me Handle
 --- @return AiCommand
---- @function GetCurrentCommand
 --- @deprecated use `GameObject.GetCurrentCommand` instead.
 function GetCurrentCommand(me) error("This function is provided by the engine."); end
 
 --- Returns the target of the current command for the game object. Returns nil if it has none.
 --- @param me Handle
 --- @return Handle
---- @function GetCurrentWho
 --- @deprecated use `GameObject.GetCurrentWho` instead.
 function GetCurrentWho(me) error("This function is provided by the engine."); end
 
 --- Gets the independence of a unit.
 --- @param me Handle
 --- @return integer
---- @function GetIndependence
 --- @deprecated use `GameObject.GetIndependence` instead.
 function GetIndependence(me) error("This function is provided by the engine."); end
 
 --- Sets the independence of a unit. 1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
 --- @param me Handle
 --- @param independence integer
---- @function SetIndependence
 --- @deprecated use `GameObject.SetIndependence` instead.
 function SetIndependence(me, independence) end
 
@@ -1601,7 +1457,6 @@ function SetIndependence(me, independence) end
 --- @param where Matrix|Vector|string?
 --- @param when? number
 --- @param param? string
---- @function SetCommand
 --- @deprecated use `GameObject.SetCommand` instead.
 function SetCommand(me, command, priority, who, where, when, param) end
 
@@ -1610,7 +1465,6 @@ function SetCommand(me, command, priority, who, where, when, param) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @function Attack
 --- @deprecated Use `GameObject.Attack` instead.
 function Attack(me, him, priority) end
 
@@ -1619,7 +1473,6 @@ function Attack(me, him, priority) end
 --- @param me Handle
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param priority? integer
---- @function Goto
 --- @deprecated Use `GameObject.Goto` instead.
 function Goto(me, target, priority) end
 
@@ -1628,7 +1481,6 @@ function Goto(me, target, priority) end
 --- @param me Handle
 --- @param target Vector|Matrix|string
 --- @param priority? integer
---- @function Mine
 --- @deprecated Use `GameObject.Mine` instead.
 function Mine(me, target, priority) end
 
@@ -1637,7 +1489,6 @@ function Mine(me, target, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @function Follow
 --- @deprecated Use `GameObject.Follow` instead.
 function Follow(me, him, priority) end
 
@@ -1646,7 +1497,6 @@ function Follow(me, him, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @return boolean
---- @function IsFollowing
 --- @deprecated Use `GameObject.IsFollowing` instead.
 function IsFollowing(me, him) error("This function is provided by the engine."); end
 
@@ -1654,7 +1504,6 @@ function IsFollowing(me, him) error("This function is provided by the engine.");
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param priority? integer
---- @function Defend
 --- @deprecated Use `GameObject.Defend` instead.
 function Defend(me, priority) end
 
@@ -1671,7 +1520,6 @@ function Defend2(me, him, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param priority? integer
---- @function Stop
 --- @deprecated Use `GameObject.Stop` instead.
 function Stop(me, priority) end
 
@@ -1680,7 +1528,6 @@ function Stop(me, priority) end
 --- @param me Handle
 --- @param path string
 --- @param priority? integer
---- @function Patrol
 --- @deprecated Use `GameObject.Patrol` instead.
 function Patrol(me, path, priority) end
 
@@ -1690,7 +1537,6 @@ function Patrol(me, path, priority) end
 --- @param me Handle
 --- @param target Handle|string
 --- @param priority? integer
---- @function Retreat
 --- @deprecated Use `GameObject.Retreat` instead.
 function Retreat(me, target, priority) end
 
@@ -1699,7 +1545,6 @@ function Retreat(me, target, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @function GetIn
 --- @deprecated Use `GameObject.GetIn` instead.
 function GetIn(me, him, priority) end
 
@@ -1708,7 +1553,6 @@ function GetIn(me, him, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @function Pickup
 --- @deprecated Use `GameObject.Pickup` instead.
 function Pickup(me, him, priority) end
 
@@ -1718,7 +1562,6 @@ function Pickup(me, him, priority) end
 --- @param me Handle
 --- @param target Vector|Matrix|string
 --- @param priority? integer
---- @function Dropoff
 --- @deprecated Use `GameObject.Dropoff` instead.
 function Dropoff(me, target, priority) end
 
@@ -1727,7 +1570,6 @@ function Dropoff(me, target, priority) end
 --- @param me Handle
 --- @param odfname string
 --- @param priority? integer
---- @function Build
 --- @deprecated Use `GameObject.Build` instead.
 function Build(me, odfname, priority) end
 
@@ -1738,7 +1580,6 @@ function Build(me, odfname, priority) end
 --- @param odfname string
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param priority? integer
---- @function BuildAt
 --- @deprecated Use `GameObject.BuildAt` instead.
 function BuildAt(me, odfname, target, priority) end
 
@@ -1748,7 +1589,6 @@ function BuildAt(me, odfname, target, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @function Formation
 --- @deprecated Use `GameObject.Formation` instead.
 function Formation(me, him, priority) end
 
@@ -1757,7 +1597,6 @@ function Formation(me, him, priority) end
 --- [2.1+]
 --- @param me Handle
 --- @param priority? integer
---- @function Hunt
 --- @deprecated Use `GameObject.Hunt` instead.
 function Hunt(me, priority) end
 
@@ -1770,7 +1609,6 @@ function Hunt(me, priority) end
 --- Returns true if the unit is a tug carrying cargo.
 --- @param tug Handle
 --- @return boolean
---- @function HasCargo
 --- @deprecated use `GameObject.HasCargo` instead.
 function HasCargo(tug) error("This function is provided by the engine."); end
 
@@ -1778,14 +1616,12 @@ function HasCargo(tug) error("This function is provided by the engine."); end
 --- [2.1+]
 --- @param tug Handle
 --- @return Handle?
---- @function GetCargo
 --- @deprecated use `GameObject.GetCargo` instead.
 function GetCargo(tug) error("This function is provided by the engine."); end
 
 --- Returns the handle of the tug carrying the object. Returns nil if not carried.
 --- @param cargo Handle
 --- @return Handle
---- @function GetTug
 --- @deprecated use `GameObject.GetTug` instead.
 function GetTug(cargo) error("This function is provided by the engine."); end
 
@@ -1797,32 +1633,27 @@ function GetTug(cargo) error("This function is provided by the engine."); end
 
 --- Commands the vehicle's pilot to eject.
 --- @param h Handle
---- @function EjectPilot
 --- @deprecated use `GameObject.EjectPilot` instead.
 function EjectPilot(h) end
 
 --- Commands the vehicle's pilot to hop out.
 --- @param h Handle
---- @function HopOut
 --- @deprecated use `GameObject.HopOut` instead.
 function HopOut(h) end
 
 --- Kills the vehicle's pilot as if sniped.
 --- @param h Handle
---- @function KillPilot
 --- @deprecated use `GameObject.KillPilot` instead.
 function KillPilot(h) end
 
 --- Removes the vehicle's pilot cleanly.
 --- @param h Handle
---- @function RemovePilot
 --- @deprecated use `GameObject.RemovePilot` instead.
 function RemovePilot(h) end
 
 --- Returns the vehicle that the pilot most recently hopped out of.
 --- @param h Handle
 --- @return Handle
---- @function HoppedOutOf
 --- @deprecated use `GameObject.HoppedOutOf` instead.
 function HoppedOutOf(h) error("This function is provided by the engine."); end
 
@@ -1835,49 +1666,42 @@ function HoppedOutOf(h) error("This function is provided by the engine."); end
 --- Returns the fractional health of the game object between 0 and 1.
 --- @param h Handle
 --- @return number
---- @function GetHealth
 --- @deprecated use `GameObject.GetHealth` instead.
 function GetHealth(h) error("This function is provided by the engine."); end
 
 --- Returns the current health value of the game object.
 --- @param h Handle
 --- @return number
---- @function GetCurHealth
 --- @deprecated use `GameObject.GetCurHealth` instead.
 function GetCurHealth(h) error("This function is provided by the engine."); end
 
 --- Returns the maximum health value of the game object.
 --- @param h Handle
 --- @return number
---- @function GetMaxHealth
 --- @deprecated use `GameObject.GetMaxHealth` instead.
 function GetMaxHealth(h) error("This function is provided by the engine."); end
 
 --- Sets the current health of the game object.
 --- @param h Handle
 --- @param health number
---- @function SetCurHealth
 --- @deprecated use `GameObject.SetCurHealth` instead.
 function SetCurHealth(h, health) end
 
 --- Sets the maximum health of the game object.
 --- @param h Handle
 --- @param health number
---- @function SetMaxHealth
 --- @deprecated use `GameObject.SetMaxHealth` instead.
 function SetMaxHealth(h, health) end
 
 --- Adds to the current health of the game object.
 --- @param h Handle
 --- @param health number
---- @function AddHealth
 --- @deprecated use `GameObject.AddHealth` instead.
 function AddHealth(h, health) end
 
 --- Sets the unit's current health to maximum.
 --- [2.1+]
 --- @param h Handle
---- @function GiveMaxHealth
 --- @deprecated use `GameObject.GiveMaxHealth` instead.
 function GiveMaxHealth(h) end
 
@@ -1890,49 +1714,42 @@ function GiveMaxHealth(h) end
 --- Returns the fractional ammo of the game object between 0 and 1.
 --- @param h Handle
 --- @return number
---- @function GetAmmo
 --- @deprecated use `GameObject.GetAmmo` instead.
 function GetAmmo(h) error("This function is provided by the engine."); end
 
 --- Returns the current ammo value of the game object.
 --- @param h Handle
 --- @return number
---- @function GetCurAmmo
 --- @deprecated use `GameObject.GetCurAmmo` instead.
 function GetCurAmmo(h) error("This function is provided by the engine."); end
 
 --- Returns the maximum ammo value of the game object.
 --- @param h Handle
 --- @return number
---- @function GetMaxAmmo
 --- @deprecated use `GameObject.GetMaxAmmo` instead.
 function GetMaxAmmo(h) error("This function is provided by the engine."); end
 
 --- Sets the current ammo of the game object.
 --- @param h Handle
 --- @param ammo number
---- @function SetCurAmmo
 --- @deprecated use `GameObject.SetCurAmmo` instead.
 function SetCurAmmo(h, ammo) end
 
 --- Sets the maximum ammo of the game object.
 --- @param h Handle
 --- @param ammo number
---- @function SetMaxAmmo
 --- @deprecated use `GameObject.SetMaxAmmo` instead.
 function SetMaxAmmo(h, ammo) end
 
 --- Adds to the current ammo of the game object.
 --- @param h Handle
 --- @param ammo number
---- @function AddAmmo
 --- @deprecated use `GameObject.AddAmmo` instead.
 function AddAmmo(h, ammo) end
 
 --- Sets the unit's current ammo to maximum.
 --- [2.1+]
 --- @param h Handle
---- @function GiveMaxAmmo
 --- @deprecated use `GameObject.GiveMaxAmmo` instead.
 function GiveMaxAmmo(h) end
 
@@ -1945,7 +1762,7 @@ function GiveMaxAmmo(h) end
 --- Starts the cinematic camera and disables normal input.
 --- Always returns true.
 --- @return boolean
---- @function CameraReady
+--- @deprecated use `_camera.CameraReady` instead.
 function CameraReady() error("This function is provided by the engine."); end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
@@ -1955,7 +1772,7 @@ function CameraReady() error("This function is provided by the engine."); end
 --- @param speed integer
 --- @param target Handle
 --- @return boolean
---- @function CameraPath
+--- @deprecated use `_camera.CameraPath` instead.
 function CameraPath(path, height, speed, target) error("This function is provided by the engine."); end
 
 --- Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
@@ -1964,12 +1781,22 @@ function CameraPath(path, height, speed, target) error("This function is provide
 --- @param height integer
 --- @param speed integer
 --- @return boolean
---- @function CameraPathDir
+--- @deprecated use `_camera.CameraPathDir` instead.
 function CameraPathDir(path, height, speed) error("This function is provided by the engine."); end
+
+--- Moves a cinematic camera along a path at a given height and speed while looking at a target path.
+--- Returns true when the camera arrives at its destination. Returns false otherwise.
+--- @param path string
+--- @param height integer
+--- @param speed integer
+--- @param target string
+--- @return boolean
+--- @deprecated use `_camera.CameraPathPath` instead.
+function CameraPathPath(path, height, speed, target) error("This function is provided by the engine."); end
 
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @return boolean
---- @function PanDone
+--- @deprecated use `_camera.PanDone` instead.
 function PanDone() error("This function is provided by the engine."); end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object. The right, up, and forward offsets are in centimeters.
@@ -1980,18 +1807,18 @@ function PanDone() error("This function is provided by the engine."); end
 --- @param forward integer
 --- @param target Handle
 --- @return boolean
---- @function CameraObject
+--- @deprecated use `_camera.CameraObject` instead.
 function CameraObject(base, right, up, forward, target) error("This function is provided by the engine."); end
 
 --- Finishes the cinematic camera and enables normal input.
 --- Always returns true.
 --- @return boolean
---- @function CameraFinish
+--- @deprecated use `_camera.CameraFinish` instead.
 function CameraFinish() error("This function is provided by the engine."); end
 
 --- Returns true if the player canceled the cinematic. Returns false otherwise.
 --- @return boolean
---- @function CameraCancelled
+--- @deprecated use `_camera.CameraCancelled` instead.
 function CameraCancelled() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2002,7 +1829,6 @@ function CameraCancelled() error("This function is provided by the engine."); en
 --- Returns true if the game object inspected by the info display matches the given odf name.
 --- @param odfname string
 --- @return boolean
---- @function IsInfo
 function IsInfo(odfname) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2013,34 +1839,28 @@ function IsInfo(odfname) error("This function is provided by the engine."); end
 
 --- Returns true if the game is a network game. Returns false otherwise.
 --- @return boolean
---- @function IsNetGame
 function IsNetGame() error("This function is provided by the engine."); end
 
 --- Returns true if the local machine is hosting a network game. Returns false otherwise.
 --- @return boolean
---- @function IsHosting
 function IsHosting() error("This function is provided by the engine."); end
 
 --- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote. Important safety tip: only call this on one machine at a time!
 --- @param h Handle
---- @function SetLocal
 function SetLocal(h) end
 
 --- Returns true if the game is local to the machine the script is running on. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsLocal
 function IsLocal(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is remote to the machine the script is running on. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @function IsRemote
 function IsRemote(h) error("This function is provided by the engine."); end
 
 --- Adds a system text message to the chat window on the local machine.
 --- @param message string
---- @function DisplayMessage
 function DisplayMessage(message) end
 
 --- Send a script-defined message across the network.
@@ -2069,7 +1889,6 @@ function DisplayMessage(message) end
 --- @param to integer
 --- @param type string
 --- @vararg any
---- @function Send
 function Send(to, type, ...) end
 
 -------------------------------------------------------------------------------
@@ -2083,7 +1902,6 @@ function Send(to, type, ...) end
 --- Returns the file handle if it succeeded. Returns nil if it failed.
 --- @param filename string
 --- @return ParameterDB
---- @function OpenODF
 function OpenODF(filename) error("This function is provided by the engine."); end
 
 --- Reads a boolean value from the named label in the named section of the ODF file. Use a nil section to read labels that aren't in a section.
@@ -2096,7 +1914,6 @@ function OpenODF(filename) error("This function is provided by the engine."); en
 --- @param default? boolean
 --- @return boolean
 --- @return boolean
---- @function GetODFBool
 function GetODFBool(odf, section, label, default) error("This function is provided by the engine."); end
 
 --- Reads an integer value from the named label in the named section of the ODF file. Use nil as the section to read labels that aren't in a section. 
@@ -2108,7 +1925,6 @@ function GetODFBool(odf, section, label, default) error("This function is provid
 --- @param default? integer
 --- @return integer
 --- @return boolean
---- @function GetODFInt
 function GetODFInt(odf, section, label, default) error("This function is provided by the engine."); end
 
 --- Reads a floating-point value from the named label in the named section of the ODF file. Use nil as the section to read labels that aren't in a section.
@@ -2120,7 +1936,6 @@ function GetODFInt(odf, section, label, default) error("This function is provide
 --- @param default? number
 --- @return number
 --- @return boolean
---- @function GetODFFloat
 function GetODFFloat(odf, section, label, default) error("This function is provided by the engine."); end
 
 --- Reads a string value from the named label in the named section of the ODF file. Use nil as the section to read labels that aren't in a section.
@@ -2132,7 +1947,6 @@ function GetODFFloat(odf, section, label, default) error("This function is provi
 --- @param default? string
 --- @return string
 --- @return boolean
---- @function GetODFString
 function GetODFString(odf, section, label, default) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2146,7 +1960,6 @@ function GetODFString(odf, section, label, default) error("This function is prov
 --- @param point? integer
 --- @return number
 --- @return Vector
---- @function GetTerrainHeightAndNormal
 function GetTerrainHeightAndNormal(target, point) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2160,7 +1973,6 @@ function GetTerrainHeightAndNormal(target, point) error("This function is provid
 --- @param point? integer
 --- @return number
 --- @return Vector
---- @function GetFloorHeightAndNormal
 function GetFloorHeightAndNormal(target, point) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2171,12 +1983,10 @@ function GetFloorHeightAndNormal(target, point) error("This function is provided
 --- Returns the name of the BZN file for the map. This can be used to generate an ODF name for mission settings.
 --- [2.0+]
 --- @return string
---- @function GetMissionFilename
 function GetMissionFilename() error("This function is provided by the engine."); end
 
 --- Returns the name of the TRN file for the map. This can be used with OpenODF() to read values from the TRN file.
 --- @return string
---- @function GetMapTRNFilename
 function GetMapTRNFilename() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2205,7 +2015,6 @@ function UseItem(filename) end
 --- @param r integer
 --- @param g integer
 --- @param b integer
---- @function ColorFade
 function ColorFade(ratio, rate, r, g, b) end
 
 -------------------------------------------------------------------------------
@@ -2230,7 +2039,6 @@ local Vector = {}
 --- @param y? number
 --- @param z? number
 --- @return Vector
---- @function SetVector
 function SetVector(x, y, z) error("This function is provided by the engine."); end
 
 --- Returns the <a href="http://en.wikipedia.org/wiki/Dot_product">dot product</a> between vectors a and b.
@@ -2238,7 +2046,6 @@ function SetVector(x, y, z) error("This function is provided by the engine."); e
 --- @param a Vector
 --- @param b Vector
 --- @return number
---- @function DotProduct
 function DotProduct(a, b) error("This function is provided by the engine."); end
 
 --- Returns the <a href="http://en.wikipedia.org/wiki/Cross_product">cross product</a> between vectors a and b.
@@ -2246,28 +2053,24 @@ function DotProduct(a, b) error("This function is provided by the engine."); end
 --- @param a Vector
 --- @param b Vector
 --- @return Vector
---- @function CrossProduct
 function CrossProduct(a, b) error("This function is provided by the engine."); end
 
 --- Returns the vector scaled to unit length.
 --- Equivalent to SetVector(v.x * scale, v.y * scale, v.z * scale) where scale is 1.0f / sqrt(v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>).
 --- @param v Vector
 --- @return Vector
---- @function Normalize
 function Normalize(v) error("This function is provided by the engine."); end
 
 --- Returns the length of the vector.
 --- Equivalent to sqrt(v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>).
 --- @param v Vector
 --- @return number
---- @function Length
 function Length(v) error("This function is provided by the engine."); end
 
 --- Returns the squared length of the vector.
 --- Equivalent to v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>.
 --- @param v Vector
 --- @return number
---- @function LengthSquared
 function LengthSquared(v) error("This function is provided by the engine."); end
 
 --- Returns the 2D distance between vectors a and b.
@@ -2451,7 +2254,6 @@ function Vector.__eq(v1, v2) error("This function is provided by the engine."); 
 --- @param posit_y? number
 --- @param posit_z? number
 --- @return Matrix
---- @function SetMatrix
 function SetMatrix(right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z) error("This function is provided by the engine."); end
 
 local Matrix = {}
@@ -2468,14 +2270,12 @@ function IdentityMatrix() error("This function is provided by the engine."); end
 --- @param axis_y? number
 --- @param axis_z? number
 --- @return Matrix
---- @function BuildAxisRotationMatrix
 function BuildAxisRotationMatrix(angle, axis_x, axis_y, axis_z) error("This function is provided by the engine."); end
 
 --- Build a matrix representing a rotation by an angle around an axis. The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
 --- @param angle? number
 --- @param axis Vector
 --- @return Matrix
---- @function BuildAxisRotationMatrix
 function BuildAxisRotationMatrix(angle, axis) error("This function is provided by the engine."); end
 
 --- Build a matrix with the given pitch, yaw, and roll angles and position. The angles are in radians. If no value is given for a component, the default value is zero.
@@ -2486,7 +2286,6 @@ function BuildAxisRotationMatrix(angle, axis) error("This function is provided b
 --- @param posit_y? number
 --- @param posit_z? number
 --- @return Matrix
---- @function BuildPositionRotationMatrix
 function BuildPositionRotationMatrix(pitch, yaw, roll, posit_x, posit_y, posit_z) error("This function is provided by the engine."); end
 
 --- Build a matrix with the given pitch, yaw, and roll angles and position. The angles are in radians. If no value is given for a component, the default value is zero.
@@ -2495,21 +2294,18 @@ function BuildPositionRotationMatrix(pitch, yaw, roll, posit_x, posit_y, posit_z
 --- @param roll? number
 --- @param position Vector
 --- @return Matrix
---- @function BuildPositionRotationMatrix
 function BuildPositionRotationMatrix(pitch, yaw, roll, position) error("This function is provided by the engine."); end
 
 --- Build a matrix with zero position, its up axis along the specified up vector, oriented so that its front axis points as close as possible to the heading vector. If up is not specified, the default value is the Y axis. If heading is not specified, the default value is the Z axis.
 --- @param up? Vector
 --- @param heading? Vector
 --- @return Matrix
---- @function BuildOrthogonalMatrix
 function BuildOrthogonalMatrix(up, heading) error("This function is provided by the engine."); end
 
 --- Build a matrix with the given position vector, its front axis pointing along the direction vector, and zero roll. If position is not specified, the default value is a zero vector. If direction is not specified, the default value is the Z axis.
 --- @param position? Vector
 --- @param direction? Vector
 --- @return Matrix
---- @function BuildDirectionalMatrix
 function BuildDirectionalMatrix(position, direction) error("This function is provided by the engine."); end
 
 --- Multiply two matrices.
@@ -2540,32 +2336,27 @@ function Matrix:__mul(a, b) error("This function is provided by the engine."); e
 --- Sets the specified Portal direction to "out", indicated by a blue visual effect while active.
 --- [2.1+]
 --- @param portal Handle
---- @function PortalOut
 function PortalOut(portal) end
 
 --- Sets the specified Portal direction to "in", indicated by an orange visual effect while active.
 --- [2.1+]
 --- @param portal Handle
---- @function PortalIn
 function PortalIn(portal) end
 
 --- Deactivates the specified Portal, stopping the visual effect.
 --- [2.1+]
 --- @param portal Handle
---- @function DeactivatePortal
 function DeactivatePortal(portal) end
 
 --- Activates the specified Portal, starting the visual effect.
 --- [2.1+]
 --- @param portal Handle
---- @function ActivatePortal
 function ActivatePortal(portal) end
 
 --- Returns true if the specified Portal direction is "in". Returns false otherwise.
 --- [2.1+]
 --- @param portal Handle
 --- @return boolean
---- @function IsIn
 function IsIn(portal) error("This function is provided by the engine."); end
 
 --- Returns true if the specified Portal is active. Returns false otherwise.
@@ -2573,7 +2364,6 @@ function IsIn(portal) error("This function is provided by the engine."); end
 --- [2.1+]
 --- @param portal Handle
 --- @return boolean
---- @function isPortalActive
 --- @diagnostic disable-next-line: lowercase-global
 function isPortalActive(portal) error("This function is provided by the engine."); end
 
@@ -2584,7 +2374,6 @@ function isPortalActive(portal) error("This function is provided by the engine."
 --- @param teamnum TeamNum
 --- @param portal Handle
 --- @return Handle
---- @function BuildObjectAtPortal
 function BuildObjectAtPortal(odfname, teamnum, portal) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -2597,33 +2386,28 @@ function BuildObjectAtPortal(odfname, teamnum, portal) error("This function is p
 --- Note: unlike SetCommand(h, AiCommand.CLOAK), this does not change the unit's current command.
 --- [2.1+]
 --- @param h Handle
---- @function Cloak
 function Cloak(h) end
 
 --- Makes the specified unit de-cloak if it can.
 --- Note: unlike SetCommand(h, AiCommand.DECLOAK), this does not change the unit's current command.
 --- [2.1+]
 --- @param h Handle
---- @function Decloak
 function Decloak(h) end
 
 --- Instantly sets the unit as cloaked (with no fade out).
 --- [2.1+]
 --- @param h Handle
---- @function SetCloaked
 function SetCloaked(h) end
 
 --- Instant sets the unit as uncloaked (with no fade in).
 --- [2.1+]
 --- @param h Handle
---- @function SetDecloaked
 function SetDecloaked(h) end
 
 --- Returns true if the unit is cloaked. Returns false otherwise
 --- [2.1+]
 --- @param h Handle
 --- @return boolean
---- @function IsCloaked
 function IsCloaked(h) error("This function is provided by the engine."); end
 
 --- Enable or disable cloaking for a specified cloaking-capable unit.
@@ -2631,14 +2415,12 @@ function IsCloaked(h) error("This function is provided by the engine."); end
 --- [2.1+]
 --- @param h Handle
 --- @param enable boolean
---- @function EnableCloaking
 function EnableCloaking(h, enable) end
 
 --- Enable or disable cloaking for all cloaking-capable units.
 --- Note: this does not grant a non-cloaking-capable unit the ability to cloak.
 --- [2.1+]
 --- @param enable boolean
---- @function EnableAllCloaking
 function EnableAllCloaking(enable) end
 
 -------------------------------------------------------------------------------
@@ -2650,13 +2432,11 @@ function EnableAllCloaking(enable) end
 --- Hides a game object.
 --- [2.1+]
 --- @param h Handle
---- @function Hide
 function Hide(h) end
 
 --- Un-hides a game object.
 --- [2.1+]
 --- @param h Handle
---- @function UnHide
 function UnHide(h) end
 
 -------------------------------------------------------------------------------
@@ -2669,7 +2449,6 @@ function UnHide(h) end
 --- [2.1+]
 --- @param odfname string
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @function MakeExplosion
 function MakeExplosion(odfname, target) end
 
 --- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90

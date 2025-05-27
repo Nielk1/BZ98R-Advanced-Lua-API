@@ -246,7 +246,7 @@ function SimplifyForSave(...)
                     RefUUIID = RefUUIID + 1;
                     SaveUUIDMap[ORIG] = currentUUID;
                     if customsavetype.CustomSavableTypes[v.__type] ~= nil then
-                    if not CustomTypeMap then error("CustomTypeMap is nil") end
+                        if not CustomTypeMap then error("CustomTypeMap is nil") end
                         local typeIndex = CustomTypeMap[v.__type];
                         debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
                         newTable["*custom_type"] = typeIndex;
@@ -318,19 +318,25 @@ function DeSimplifyForLoad(...)
                 end
             end
             if TableFromLoad then
-                -- merge the tables, taking in the new metatable too
-                local CompositeTable = PriorData or {};
-                for k2, v2 in pairs(TableFromLoad) do
-                    CompositeTable[k2] = v2;
-                end
-                if metatableToApply then
-                    setmetatable(CompositeTable, metatableToApply);
-                end
-                output[k] = CompositeTable;
+                if TableFromLoad.__noref then
+                    -- This table is not a reference, so we can just return it as is.
+                    -- If we didn't do this, we would break the reference that types like GameObject hold lists of.
+                    output[k] = TableFromLoad;
+                else
+                    -- merge the tables, taking in the new metatable too
+                    local CompositeTable = PriorData or {};
+                    for k2, v2 in pairs(TableFromLoad) do
+                        CompositeTable[k2] = v2;
+                    end
+                    if metatableToApply then
+                        setmetatable(CompositeTable, metatableToApply);
+                    end
+                    output[k] = CompositeTable;
 
-                local refID = v.__refid or v.__ref;
-                if refID and not LoadUUIDToTable[refID] then
-                    LoadUUIDToTable[refID] = CompositeTable;
+                    local refID = v.__refid or v.__ref;
+                    if refID and not LoadUUIDToTable[refID] then
+                        LoadUUIDToTable[refID] = CompositeTable;
+                    end
                 end
             else
                 output[k] = nil;

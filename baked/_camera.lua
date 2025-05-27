@@ -24,6 +24,7 @@ local CameraType = nil;
 local CameraParams = nil;
 local CameraTime = 0; -- time the last camera param set was applied
 local CameraTargetDummy = nil;
+local CameraWasCancelled = nil;
 
 local function arrayEquals(a, b)
     if a == nil and b == nil then return true; end -- if both are nil, they are equal
@@ -355,8 +356,6 @@ end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object.
 -- Returns true if the base or handle game object does not exist. Returns false otherwise.
---- @overload fun(base: GameObject|Handle, right: number, up: number, foward: number, target: GameObject|Handle): boolean
---- @overload fun(base: GameObject|Handle, offset:Vector, target: GameObject|Handle): boolean
 -- @param base GameObject|Handle
 -- @param right number Meters to the right of the base object. (0.01 resolution)
 -- @param up number Meters above the base object. (0.01 resolution)
@@ -380,13 +379,25 @@ function M.CameraFinish()
     CheckCameraType(nil, nil);
     --- @diagnostic disable-next-line: deprecated
     CameraFinish();
+    CameraWasCancelled = nil;
 end
 
 --- Returns true if the player canceled the cinematic. Returns false otherwise.
 --- @return boolean
 function M.CameraCancelled()
+    if not InCamera then
+        -- if not in camera, cannot be cancelled, just call original just in case
+        --- @diagnostic disable-next-line: deprecated
+        return CameraCancelled();
+    end
     --- @diagnostic disable-next-line: deprecated
-    return CameraCancelled();
+    CameraWasCancelled = CameraWasCancelled or CameraCancelled();
+    return CameraWasCancelled;
+end
+
+--- Resets the camera cancelled flag.
+function M.ResetCameraCancelled()
+    CameraWasCancelled = nil;
 end
 
 --- Camera is currently active

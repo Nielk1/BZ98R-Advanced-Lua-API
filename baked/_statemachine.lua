@@ -635,8 +635,9 @@ end
 --- @param self StateMachineIter StateMachineIter instance
 --- @param seconds? number How many seconds to wait
 --- @param lap? boolean If true the timer is will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
+--- @param first? boolean If true the timer returns true when it starts, requires lap to be true.
 --- @return boolean True if the time is up
-function StateMachineIter.SecondsHavePassed(self, seconds, lap)
+function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)
     if seconds == nil then
         self.target_time = nil;
         self.set_wait_time = nil;
@@ -653,7 +654,7 @@ function StateMachineIter.SecondsHavePassed(self, seconds, lap)
     if self.target_time == nil then
         self.target_time = M.game_time + seconds;
         self.set_wait_time = seconds;
-        return false; -- start sleeping
+        return lap and first and true or false; -- start sleeping
     elseif self.target_time <= M.game_time  then
         --debugprint(M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
         if lap then

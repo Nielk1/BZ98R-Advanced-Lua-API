@@ -216,14 +216,14 @@ function M.Add( event, identifier, func, priority )
     --- @diagnostic disable-next-line: undefined-global
     priority = (_api_hook_priority_override and _api_hook_priority_override[event]) and _api_hook_priority_override[event][identifier] or priority;
 
-    if (M.Hooks[ event ] == nil) then
+    if M.Hooks[ event ] == nil then
         M.Hooks[ event ] = {};
     end
-    if (M.HookLookup[ event ] == nil) then
+    if M.HookLookup[ event ] == nil then
         M.HookLookup[ event ] = {};
     end
     
-    if (M.HookLookup[ event ][ identifier ] ~= nil) then
+    if M.HookLookup[ event ][ identifier ] ~= nil then
         local found = M.HookLookup[ event ][ identifier ];
         M.HookLookup[ event ][ identifier ] = nil;
 		
@@ -252,7 +252,7 @@ function M.Remove( event, identifier )
     if not utility.isstring(event) then error("Parameter event must be a string."); end
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
 
-    if (M.HookLookup[ event ][ identifier ] ~= nil) then
+    if M.HookLookup[ event ][ identifier ] ~= nil then
         if HookCallCounts[event] then
             -- this event is currently being processed so buffer the removal
             table.insert(RemoveAfterStack, { event = event, identifier = identifier });
@@ -275,7 +275,7 @@ function M.AddSaveLoad( identifier, save, load )
     if save ~= nil and not utility.isfunction(save) then error("Parameter save must be a function."); end
     if load ~= nil and not utility.isfunction(load) then error("Parameter load must be a function."); end
     
-    if (M.SaveLoadHooks[ identifier ] == nil) then
+    if M.SaveLoadHooks[ identifier ] == nil then
         M.SaveLoadHooks[identifier ] = {};
     end
 
@@ -290,7 +290,7 @@ end
 --- @function _hook.RemoveSaveLoad
 function M.RemoveSaveLoad( identifier )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
-    if ( not M.SaveLoadHooks[ identifier ] ) then return; end
+    if not M.SaveLoadHooks[ identifier ] then return; end
 
     -- This should be safe since they are stored by identifier, no arrays being looped
     -- Ff it does become an issue having the execution loop use a copy of the key list would solve it
@@ -302,14 +302,12 @@ end
 --- Calls hooks associated with Save.
 --- @function _hook.CallSave
 function M.CallSave()
-    if ( M.SaveLoadHooks ~= nil ) then
+    if M.SaveLoadHooks ~= nil then
         HookCallCounts["Save"] = (HookCallCounts["Save"] or 0) + 1;
         local ret = {};
         for k, v in pairs( M.SaveLoadHooks ) do 
             if v.Save ~= nil and utility.isfunction(v.Save) then
                 ret[k] = {v.Save()};
-            else
-                ret[k] = {};
             end
         end
         HookCallCounts["Save"] = (HookCallCounts["Save"] or 1) - 1;
@@ -323,12 +321,14 @@ end
 --- Calls hooks associated with Load.
 --- @function _hook.CallLoad
 function M.CallLoad(SaveData)
-    if ( M.SaveLoadHooks ~= nil ) then
+    if M.SaveLoadHooks ~= nil then
         HookCallCounts["Load"] = (HookCallCounts["Load"] or 0) + 1;
         local ret = {};
         for k, v in pairs( M.SaveLoadHooks ) do
             if v.Load ~= nil and utility.isfunction(v.Load) then
-                v.Load(table.unpack(SaveData[k]));
+                if SaveData[k] ~= nil then
+                    v.Load(table.unpack(SaveData[k]));
+                end
             end
         end
         HookCallCounts["Load"] = (HookCallCounts["Load"] or 1) - 1;

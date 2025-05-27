@@ -63,20 +63,27 @@ end
 --bool FreeCamera()
 --bool FreeFinish()
 
+--- @param path string
+--- @param speed integer
+--- @param time integer
+--- @return Vector pos
+--- @return Vector dir
+--- @return boolean end
 local function GetPathVectorAfterTime(path, speed, time)
     --- @todo edge case when path as 1 point
 
     local pathLength = GetPathPointCount(path);
-    if pathLength == 0 then return SetVector(), SetVector(); end
-    if pathLength == 1 then return GetPosition(path, 0), SetVector(); end
+    if pathLength == 0 then return SetVector(), SetVector(), true; end
+    --- @diagnostic disable-next-line: return-type-mismatch
+    if pathLength == 1 then return GetPosition(path, 0), SetVector(), true; end
 
     local distance = speed * time / 100;
 
-    local currentDistance = 0
-    local lastPosition = nil
-    local direction = SetVector()
+    local currentDistance = 0;
+    local lastPosition = nil;
+    local direction = SetVector();
     for i = 0, pathLength - 1 do
-        local currentPosition = GetPosition(path, i)
+        local currentPosition = GetPosition(path, i);
         if currentPosition == nil then
             error("GetPosition returned nil for path: " .. tostring(path) .. " at index: " .. tostring(i))
         end
@@ -87,12 +94,12 @@ local function GetPathVectorAfterTime(path, speed, time)
             local d = currentPosition - lastPosition;
 
             -- Calculate the distance between the two points
-            local segmentLength = Length(d)
+            local segmentLength = Length(d);
 
             -- Check if the desired distance is within this segment
             if currentDistance + segmentLength >= distance then
                 -- Calculate the remaining distance to travel in this segment
-                local remainingDistance = distance - currentDistance
+                local remainingDistance = distance - currentDistance;
 
                 -- Normalize the direction vector
                 direction = Normalize(d);
@@ -100,23 +107,23 @@ local function GetPathVectorAfterTime(path, speed, time)
                 -- Calculate the position at the desired distance
                 local position = lastPosition + direction * remainingDistance;
 
-                return position, direction
+                return position, direction, false;
             end
 
             -- Update the current distance traveled
-            currentDistance = currentDistance + segmentLength
+            currentDistance = currentDistance + segmentLength;
 
             -- Update the direction vector to the current segment's direction
             --direction = { x = dx / segmentLength, y = dy / segmentLength, z = dz / segmentLength }
         end
 
         -- Update the last position to the current position
-        lastPosition = currentPosition
+        lastPosition = currentPosition;
     end
 
     -- If we reach here, we've traveled the entire path
     -- Return the last point and the last direction vector
-    return lastPosition, direction
+    return lastPosition, direction, true;
 end
 
 --- @todo this function badly needs testing
@@ -162,16 +169,17 @@ function M.GetCameraPosition()
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
     elseif CameraType == "CameraPathPathFollow" then
-        if not CameraParams or #CameraParams < 5 then
-            error("CameraPathPathFollow requires 5 parameters: path, height, speed, target");
+        if not CameraParams or #CameraParams < 6 then
+            error("CameraPathPathFollow requires 6 parameters: path, height, speed, target, target_speed");
         end
         local path = CameraParams[1];
         local height = CameraParams[2];
         local speed = CameraParams[3];
         local target = CameraParams[4];
         local target_height = CameraParams[5];
+        local target_speed = CameraParams[6];
         local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
-        local target_pos = GetPathVectorAfterTime(target, speed, WorldTime - CameraTime);
+        local target_pos = GetPathVectorAfterTime(target, target_speed, WorldTime - CameraTime);
         target_pos.y = GetTerrainHeightAndNormal (target_pos) + target_height;
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
@@ -229,10 +237,12 @@ end
 --- @param speed integer
 --- @param target string
 --- @param target_height integer?
+--- @param target_speed integer? defaults to the same as speed
 --- @return boolean
-function M.CameraPathPathFollow(path, height, speed, target, target_height)
+function M.CameraPathPathFollow(path, height, speed, target, target_height, target_speed)
     target_height = target_height or 0;
-    CheckCameraType("CameraPathPathFollow", {path, height, speed, target, target_height});
+    target_speed = target_speed or speed;
+    CheckCameraType("CameraPathPathFollow", {path, height, speed, target, target_height, target_speed});
     local target_pos = GetPosition(target);
     if not target_pos then
         error("Target position is nil for target: " .. tostring(target));
@@ -390,21 +400,24 @@ hook.Add("Update", "_camera:Update", function(dtime, ttime)
     if InCamera then
         if CameraType == "CameraPathPathFollow" then
             if CameraTargetDummy then
-                if not CameraParams or #CameraParams < 5 then
-                    error("CameraPathPathFollow requires 5 parameters: path, height, speed, target");
+                if not CameraParams or #CameraParams < 6 then
+                    error("CameraPathPathFollow requires 6 parameters: path, height, speed, target, target_speed");
                 end
                 --local path = CameraParams[1];
                 --local height = CameraParams[2];
-                local speed = CameraParams[3];
+                --local speed = CameraParams[3];
                 local target = CameraParams[4];
                 local target_height = CameraParams[5];
-                local target_pos, direction = GetPathVectorAfterTime(target, speed, WorldTime - CameraTime);
+                local target_speed = CameraParams[6];
+                local target_pos, direction, over = GetPathVectorAfterTime(target, target_speed, WorldTime - CameraTime);
                 target_pos.y = (GetTerrainHeightAndNormal (target_pos) or 0) + target_height;
                 --print("Target Position:", target_pos.x, target_pos.y, target_pos.z, WorldTime - CameraTime);
                 --- @diagnostic disable-next-line: deprecated
                 SetPosition(CameraTargetDummy, target_pos);
-                --- @diagnostic disable-next-line: deprecated
-                --SetVelocity(CameraTargetDummy, direction * speed / 100);
+                if not over then
+                    --- @diagnostic disable-next-line: deprecated
+                    SetVelocity(CameraTargetDummy, direction * target_speed / 100);
+                end
             end
         end
     end

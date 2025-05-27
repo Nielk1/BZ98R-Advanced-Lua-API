@@ -69,7 +69,6 @@
 ---     MissionData.TestSMI2:run();
 --- end);
 
-require("_fix");
 
 local debugprint = debugprint or function(...) end;
 --- @diagnostic enable: undefined-global

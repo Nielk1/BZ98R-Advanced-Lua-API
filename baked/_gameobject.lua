@@ -11,7 +11,6 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_gameobject Loading");
 
-require("_fix");
 local utility = require("_utility");
 local config = require("_config");
 local hook = require("_hook");

@@ -7,12 +7,14 @@
 --- <li><b>Fix/Polyfill:</b> Remap <code>SettLabel</code> to <code>SetLabel</code> for BZ1.5</li>
 --- <li><b>Fix:</b> Works around the possible stuck iterator in <code>ObjectiveObjects</code></li>
 --- <li><b>Fix/Polyfill:</b> TeamSlot missing "PORTAL" = 90</li>
+--- <li><b>Fix:</b> Tugs not respecting DropOff command due to invalid deploy state</li>
 --- </ul>
 ---
 --- @module '_fix'
 --- @author John "Nielk1" Klein
 
 local utility = require("_utility");
+local hook = require("_hook");
 
 -- [Polyfill] table.unpack for Lua 5.1 compatibility
 _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
@@ -98,11 +100,24 @@ if not _G.TeamSlot.PORTAL then
     _G.TeamSlot[90] = "PORTAL";
 end
 
--- if tug dropping doesn't work because of a bad flag, use this to fix that flag
---local function fixTugs()
---    for v in AllCraft() do
---        if(HasCargo(v)) then
---            Deploy(v);
---        end
---    end
---end
+-- [Fix] Tugs not respecting DropOff command due to invalid deploy state
+local function fixTugs()
+    --- @diagnostic disable: deprecated
+    for v in AllCraft() do
+        if(HasCargo(v)) then
+            Deploy(v);
+        end
+    end
+    --- @diagnostic enable: deprecated
+end
+
+hook.Add("Start", "Fix:Start", function ()
+    fixTugs();
+    hook.Remove("Start", "Fix:Start");
+    hook.RemoveSaveLoad("Fix");
+end);
+hook.AddSaveLoad("Fix", nil, function()
+    fixTugs();
+    hook.Remove("Start", "Fix:Start");
+    hook.RemoveSaveLoad("Fix");
+end);

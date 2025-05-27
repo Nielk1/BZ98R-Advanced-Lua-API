@@ -41,8 +41,6 @@
 --     end
 -- end, 9999)
 
-require("_fix");
-
 --- @diagnostic disable-next-line: undefined-global
 local debugprint = debugprint or function(...) end;
 
@@ -52,10 +50,64 @@ local utility = require("_utility");
 
 local M = {};
 
+--- @alias event_name string
+--- @alias event_hook_identifier string
+
+--- @class HookHandler
+--- @field identifier event_hook_identifier Identifier for this hook observer.
+--- @field priority number Higher numbers are higher priority.
+--- @field func function Function to be executed when the event is triggered.
+
+--- @type table<event_name, HookHandler[]>
 M.Hooks = {};
+
+--- @type table<event_name, table<event_hook_identifier, HookHandler>>
 M.HookLookup = {};
 
+--- @type table<event_hook_identifier, {Save: function, Load: function}>
 M.SaveLoadHooks = {};
+
+--- Stack of hooks as they are called
+local HookStack = {};
+
+--- Events to remove after the HookStack is empty.
+local RemoveAfterStack = {};
+
+local function InternalRemove( event, identifier )
+    -- deal with existing hook before replacing it?
+    local found = M.HookLookup[ event ][ identifier ];
+    M.HookLookup[ event ][ identifier ] = nil;
+
+    -- delete the item from the sorted array
+    --for i, v in ipairs(M.Hooks[ event ]) do
+    --	if v.identifier == identifier then
+    --		table.remove(M.Hooks[ event ], i)
+    --		break;
+    --	end
+    --end
+
+    -- Delete the item from the sorted array
+    for i = #M.Hooks[event], 1, -1 do -- Iterate backward
+        if M.Hooks[event][i].identifier == identifier then
+            table.remove(M.Hooks[event], i)
+            break
+        end
+    end
+end
+
+local function ProcPendingRemovals()
+    if next(HookStack) then
+        -- If the stack is not empty, we cannot remove hooks yet.
+        return;
+    end
+    if #RemoveAfterStack > 0 then
+        for i = #RemoveAfterStack, 1, -1 do -- Iterate backward
+            local item = RemoveAfterStack[i];
+            InternalRemove(item.event, item.identifier);
+            table.remove(RemoveAfterStack, i);
+        end
+    end
+end
 
 --- @class HookResult
 --- @field Abort boolean Flag to abort the hook chain.
@@ -184,17 +236,12 @@ function M.Remove( event, identifier )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
 
     if (M.HookLookup[ event ][ identifier ] ~= nil) then
-        -- deal with existing hook before replacing it?
-        local found = M.HookLookup[ event ][ identifier ];
-        M.HookLookup[ event ][ identifier ] = nil;
-		
-		-- delete the item from the sorted array
-		for i, v in ipairs(M.Hooks[ event ]) do
-			if v.identifier == identifier then
-				table.remove(M.Hooks[ event ], i)
-				break;
-			end
-		end
+        if next(HookStack) then
+            -- buffer the removal until the stack is empty
+            table.insert(RemoveAfterStack, { event = event, identifier = identifier });
+        else
+            InternalRemove(event, identifier);
+        end
     end
 
     debugprint("Removed " .. event .. " hook for " .. identifier);
@@ -227,6 +274,9 @@ end
 function M.RemoveSaveLoad( identifier )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if ( not M.SaveLoadHooks[ identifier ] ) then return; end
+
+    -- This should be safe since they are stored by identifier, no arrays being looped
+    -- Ff it does become an issue having the execution loop use a copy of the key list would solve it
     M.SaveLoadHooks[ identifier ] = nil;
     
     debugprint("Removed Save/Load hooks for " .. identifier);
@@ -236,6 +286,7 @@ end
 --- @function _hook.CallSave
 function M.CallSave()
     if ( M.SaveLoadHooks ~= nil ) then
+        table.insert(HookStack, "Save");
         local ret = {};
         for k, v in pairs( M.SaveLoadHooks ) do 
             if v.Save ~= nil and utility.isfunction(v.Save) then
@@ -244,6 +295,8 @@ function M.CallSave()
                 ret[k] = {};
             end
         end
+        table.remove(HookStack);
+        ProcPendingRemovals();
         return ret
     end
     return
@@ -253,12 +306,15 @@ end
 --- @function _hook.CallLoad
 function M.CallLoad(SaveData)
     if ( M.SaveLoadHooks ~= nil ) then
+        table.insert(HookStack, "Load");
         local ret = {};
         for k, v in pairs( M.SaveLoadHooks ) do
             if v.Load ~= nil and utility.isfunction(v.Load) then
                 v.Load(table.unpack(SaveData[k]));
             end
         end
+        table.remove(HookStack);
+        ProcPendingRemovals();
         return ret
     end
     return
@@ -273,6 +329,7 @@ end
 function M.CallAllNoReturn( event, ... )
     local HookTable = M.Hooks[ event ]
     if ( HookTable ~= nil ) then
+        table.insert(HookStack, event);
         for i, v in ipairs(HookTable) do
 			local lastreturn = { v.func( ... ) };
 			-- ignore the result value and just check Abort flag
@@ -280,6 +337,8 @@ function M.CallAllNoReturn( event, ... )
 				return true;
 			end
         end
+        table.remove(HookStack);
+        ProcPendingRemovals();
     end
     return nil;
 end
@@ -308,6 +367,7 @@ function M.CallAllPassReturn( event, ... )
     local HookTable = M.Hooks[ event ]
     local lastreturn = nil;
     if ( HookTable ~= nil ) then
+        table.insert(HookStack, event);
         for i, v in ipairs(HookTable) do
 			lastreturn = { v.func(appendvargs(M.WrapResult(lastreturn), ... )) };
 			-- preserve the Abort flag, then unwrap the result
@@ -319,6 +379,8 @@ function M.CallAllPassReturn( event, ... )
 				end
 			end
         end
+        table.remove(HookStack);
+        ProcPendingRemovals();
     end
     if lastreturn ~= nil then
         return table.unpack(lastreturn);

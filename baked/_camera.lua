@@ -5,8 +5,6 @@
 --- @module '_camera'
 --- @author John "Nielk1" Klein
 
-require("_fix");
-
 --- @diagnostic disable-next-line: undefined-global
 local debugprint = debugprint or function(...) end;
 
@@ -25,6 +23,7 @@ local InCamera = false;
 local CameraType = nil;
 local CameraParams = nil;
 local CameraTime = 0; -- time the last camera param set was applied
+local CameraTargetDummy = nil;
 
 local function arrayEquals(a, b)
     if a == nil and b == nil then return true; end -- if both are nil, they are equal
@@ -45,6 +44,11 @@ local function CheckCameraType(type, params)
         CameraType = type;
         CameraParams = params;
         CameraTime = WorldTime;
+        if CameraTargetDummy then
+            --- @diagnostic disable-next-line: deprecated
+            RemoveObject(CameraTargetDummy);
+        end
+        CameraTargetDummy = nil; -- reset the dummy object if the camera type changes
         return true;
     end
     return false;
@@ -61,16 +65,16 @@ end
 
 local function GetPathVectorAfterTime(path, speed, time)
     --- @todo edge case when path as 1 point
-    
+
     local pathLength = GetPathPointCount(path);
     if pathLength == 0 then return SetVector(), SetVector(); end
     if pathLength == 1 then return GetPosition(path, 0), SetVector(); end
 
-    local distance = speed * time;
+    local distance = speed * time / 100;
 
     local currentDistance = 0
     local lastPosition = nil
-    local direction = { x = 0, y = 0, z = 0 }
+    local direction = SetVector()
     for i = 0, pathLength - 1 do
         local currentPosition = GetPosition(path, i)
         if currentPosition == nil then
@@ -80,12 +84,10 @@ local function GetPathVectorAfterTime(path, speed, time)
         -- If this is not the first point, calculate the direction and distance
         if lastPosition then
             -- Calculate the vector difference between the current and last points
-            local dx = currentPosition.x - lastPosition.x
-            local dy = currentPosition.y - lastPosition.y
-            local dz = currentPosition.z - lastPosition.z
+            local d = currentPosition - lastPosition;
 
             -- Calculate the distance between the two points
-            local segmentLength = math.sqrt(dx * dx + dy * dy + dz * dz)
+            local segmentLength = Length(d)
 
             -- Check if the desired distance is within this segment
             if currentDistance + segmentLength >= distance then
@@ -93,24 +95,19 @@ local function GetPathVectorAfterTime(path, speed, time)
                 local remainingDistance = distance - currentDistance
 
                 -- Normalize the direction vector
-                local magnitude = math.sqrt(dx * dx + dy * dy + dz * dz)
-                direction = { x = dx / magnitude, y = dy / magnitude, z = dz / magnitude }
+                direction = Normalize(d);
 
                 -- Calculate the position at the desired distance
-                local position = {
-                    x = lastPosition.x + direction.x * remainingDistance,
-                    y = lastPosition.y + direction.y * remainingDistance,
-                    z = lastPosition.z + direction.z * remainingDistance
-                }
+                local position = lastPosition + direction * remainingDistance;
 
-                return direction, position
+                return position, direction
             end
 
             -- Update the current distance traveled
             currentDistance = currentDistance + segmentLength
 
             -- Update the direction vector to the current segment's direction
-            direction = { x = dx / segmentLength, y = dy / segmentLength, z = dz / segmentLength }
+            --direction = { x = dx / segmentLength, y = dy / segmentLength, z = dz / segmentLength }
         end
 
         -- Update the last position to the current position
@@ -119,7 +116,7 @@ local function GetPathVectorAfterTime(path, speed, time)
 
     -- If we reach here, we've traveled the entire path
     -- Return the last point and the last direction vector
-    return direction, lastPosition
+    return lastPosition, direction
 end
 
 --- @todo this function badly needs testing
@@ -140,7 +137,7 @@ function M.GetCameraPosition()
         local target = CameraParams[4];
         local target_pos = GetPosition(target);
         local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
-        pos.y = GetFloorHeightAndNormal(pos) + height;
+        pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
     elseif CameraType == "CameraPathDir" then
         if not CameraParams or #CameraParams < 3 then
@@ -150,7 +147,7 @@ function M.GetCameraPosition()
         local height = CameraParams[2];
         local speed = CameraParams[3];
         local pos, dir = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
-        pos.y = GetFloorHeightAndNormal(pos) + height;
+        pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, dir;
     elseif CameraType == "CameraPathPath" then
         if not CameraParams or #CameraParams < 4 then
@@ -161,8 +158,22 @@ function M.GetCameraPosition()
         local speed = CameraParams[3];
         local target = CameraParams[4];
         local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
+        local target_pos = GetPosition(target, 0);
+        pos.y = GetTerrainHeightAndNormal (pos) + height;
+        return pos, Normalize(target_pos - pos);
+    elseif CameraType == "CameraPathPathFollow" then
+        if not CameraParams or #CameraParams < 5 then
+            error("CameraPathPathFollow requires 5 parameters: path, height, speed, target");
+        end
+        local path = CameraParams[1];
+        local height = CameraParams[2];
+        local speed = CameraParams[3];
+        local target = CameraParams[4];
+        local target_height = CameraParams[5];
+        local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
         local target_pos = GetPathVectorAfterTime(target, speed, WorldTime - CameraTime);
-        pos.y = GetFloorHeightAndNormal(pos) + height;
+        target_pos.y = GetTerrainHeightAndNormal (target_pos) + target_height;
+        pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
     elseif CameraType == "CameraObject" then
         if not CameraParams or #CameraParams < 5 then
@@ -211,6 +222,35 @@ function M.CameraPath(path, height, speed, target)
     return CameraPath(path, height, speed, target);
 end
 
+--- Moves a cinematic camera along a path at a given height and speed while looking at a target path.
+--- Returns true when the camera arrives at its destination. Returns false otherwise.
+--- @param path string
+--- @param height integer
+--- @param speed integer
+--- @param target string
+--- @param target_height integer?
+--- @return boolean
+function M.CameraPathPathFollow(path, height, speed, target, target_height)
+    target_height = target_height or 0;
+    CheckCameraType("CameraPathPathFollow", {path, height, speed, target, target_height});
+    local target_pos = GetPosition(target);
+    if not target_pos then
+        error("Target position is nil for target: " .. tostring(target));
+    end
+    target_pos.y = GetTerrainHeightAndNormal (target_pos) + target_height;
+    if not CameraTargetDummy then
+        --- @diagnostic disable-next-line: deprecated
+        CameraTargetDummy = BuildObject("apcamr", 0, target_pos);
+        if not CameraTargetDummy then
+            error("Failed to create camera target dummy for target: " .. tostring(target));
+        end
+        --- @diagnostic disable-next-line: deprecated
+        Hide(CameraTargetDummy);
+    end
+    --- @diagnostic disable-next-line: deprecated
+    return CameraPath(path, height, speed, CameraTargetDummy);
+end
+
 --- Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @param path string
@@ -223,7 +263,7 @@ function M.CameraPathDir(path, height, speed)
     return CameraPathDir(path, height, speed);
 end
 
---- Moves a cinematic camera along a path at a given height and speed while looking at a target path.
+--- Moves a cinematic camera along a path at a given height and speed while looking at a target path point.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @param path string
 --- @param height integer
@@ -345,8 +385,29 @@ function M.InCamera()
     return InCamera;
 end
 
-hook.Add("Update", "_camera.Update", function(dtime, ttime)
+hook.Add("Update", "_camera:Update", function(dtime, ttime)
     WorldTime = ttime;
+    if InCamera then
+        if CameraType == "CameraPathPathFollow" then
+            if CameraTargetDummy then
+                if not CameraParams or #CameraParams < 5 then
+                    error("CameraPathPathFollow requires 5 parameters: path, height, speed, target");
+                end
+                --local path = CameraParams[1];
+                --local height = CameraParams[2];
+                local speed = CameraParams[3];
+                local target = CameraParams[4];
+                local target_height = CameraParams[5];
+                local target_pos, direction = GetPathVectorAfterTime(target, speed, WorldTime - CameraTime);
+                target_pos.y = (GetTerrainHeightAndNormal (target_pos) or 0) + target_height;
+                --print("Target Position:", target_pos.x, target_pos.y, target_pos.z, WorldTime - CameraTime);
+                --- @diagnostic disable-next-line: deprecated
+                SetPosition(CameraTargetDummy, target_pos);
+                --- @diagnostic disable-next-line: deprecated
+                --SetVelocity(CameraTargetDummy, direction * speed / 100);
+            end
+        end
+    end
 end, config.get("hook_priority.Update.Camera"));
 
 debugprint("_camera Loaded");

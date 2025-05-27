@@ -13,7 +13,6 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_waves Loading");
 
-require("_fix");
 local utility = require("_utility");
 local config = require("_config");
 local _api = require("_api");

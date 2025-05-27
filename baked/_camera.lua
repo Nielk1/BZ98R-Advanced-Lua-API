@@ -434,6 +434,15 @@ hook.Add("Update", "_camera:Update", function(dtime, ttime)
     end
 end, config.get("hook_priority.Update.Camera"));
 
+hook.AddSaveLoad("_camera", function()
+    return CameraTargetDummy;
+end, function(_CameraTargetDummy)
+    if _CameraTargetDummy then
+        --- @diagnostic disable-next-line: deprecated
+        RemoveObject(_CameraTargetDummy);
+    end
+end);
+
 debugprint("_camera Loaded");
 
 return M;

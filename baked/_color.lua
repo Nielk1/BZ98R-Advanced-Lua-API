@@ -5,7 +5,10 @@
 --- @module '_color'
 --- @author John "Nielk1" Klein
 
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+local traceprint = traceprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_color Loading");
 
@@ -276,6 +279,89 @@ function M.RGBAtoAnsi24Escape(color)
 
     return "\27[38;2;"..r..";"..g..";"..b.."m"
 end
+
+
+-- Print Color Tests
+traceprint("COLOR TEST Exact ["..
+    M.RGBAtoAnsi24Escape(M.ColorValues.BLACK    ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKGREY   ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.GREY     ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.WHITE    ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.BLUE     ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKBLUE   ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.GREEN    ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKGREEN  ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.YELLOW   ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKYELLOW ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.RED      ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKRED    ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.CYAN     ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKCYAN   ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.MAGENTA  ).."██"..
+    M.RGBAtoAnsi24Escape(M.ColorValues.DKMAGENTA).."██"..
+    M.AnsiColorEscapeMap._.."]");
+
+traceprint("COLOR TEST 256   ["..
+    M.RGBAtoAnsi256Escape(M.ColorValues.BLACK    ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKGREY   ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.GREY     ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.WHITE    ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.BLUE     ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKBLUE   ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.GREEN    ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKGREEN  ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.YELLOW   ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKYELLOW ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.RED      ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKRED    ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.CYAN     ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKCYAN   ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.MAGENTA  ).."██"..
+    M.RGBAtoAnsi256Escape(M.ColorValues.DKMAGENTA).."██"..
+    M.AnsiColorEscapeMap._.."]");
+
+traceprint("COLOR TEST 16p   ["..
+    M.AnsiColorEscapeMap.BLACK    .."██"..
+    M.AnsiColorEscapeMap.DKGREY   .."██"..
+    M.AnsiColorEscapeMap.GREY     .."██"..
+    M.AnsiColorEscapeMap.WHITE    .."██"..
+    M.AnsiColorEscapeMap.BLUE     .."██"..
+    M.AnsiColorEscapeMap.DKBLUE   .."██"..
+    M.AnsiColorEscapeMap.GREEN    .."██"..
+    M.AnsiColorEscapeMap.DKGREEN  .."██"..
+    M.AnsiColorEscapeMap.YELLOW   .."██"..
+    M.AnsiColorEscapeMap.DKYELLOW .."██"..
+    M.AnsiColorEscapeMap.RED      .."██"..
+    M.AnsiColorEscapeMap.DKRED    .."██"..
+    M.AnsiColorEscapeMap.CYAN     .."██"..
+    M.AnsiColorEscapeMap.DKCYAN   .."██"..
+    M.AnsiColorEscapeMap.MAGENTA  .."██"..
+    M.AnsiColorEscapeMap.DKMAGENTA.."██"..
+    M.AnsiColorEscapeMap._.."]");
+
+local rave_exact = "";
+for i = 1, #M.RAVE_COLOR do
+    rave_exact = rave_exact..M.RGBAtoAnsi24Escape(M.RAVE_COLOR[i]).."█";
+end
+traceprint("COLOR TEST RAVE Exact    ["..rave_exact..M.AnsiColorEscapeMap._.."]");
+
+local rave_256 = "";
+for i = 1, #M.RAVE_COLOR do
+    rave_256 = rave_256..M.RGBAtoAnsi256Escape(M.RAVE_COLOR[i]).."█";
+end
+traceprint("COLOR TEST RAVE 256      ["..rave_256..M.AnsiColorEscapeMap._.."]");
+
+local rave_16Map = "";
+for i = 1, #M.RAVE_COLOR do
+    rave_16Map = rave_16Map..M.RGBAtoAnsi24Escape(M.ColorValues[M.GetClosestColorCode(M.RAVE_COLOR[i])]).."█";
+end
+traceprint("COLOR TEST RAVE 16->Exact["..rave_16Map..M.AnsiColorEscapeMap._.."]");
+
+local rave_16 = "";
+for i = 1, #M.RAVE_COLOR do
+    rave_16 = rave_16..M.AnsiColorEscapeMap[M.GetClosestColorCode(M.RAVE_COLOR[i])].."█";
+end
+traceprint("COLOR TEST RAVE 16p      ["..rave_16..M.AnsiColorEscapeMap._.."]");
 
 
 

@@ -14,7 +14,7 @@ statemachine.Create("Cheat_BZRAVE",
         --ColorFade(1.0, 5.0, 128, 0, 255);
         StartSound("grave00.wav");
 
-        local player = gameobject.GetPlayerGameObject();
+        local player = gameobject.GetPlayer();
         if player and player:IsCraft() then
             player:GiveWeapon("gtechno", 0)
             player:GiveWeapon("gtechno", 1)

@@ -189,7 +189,7 @@ end
 --- @param pos Vector|Matrix|GameObject|Handle|string Vector, Matrix, GameObject, or pathpoint by name
 --- @param point? integer index
 --- @return GameObject? object Newly built GameObject
-function M.BuildGameObject(odf, team, pos, point)
+function M.BuildObject(odf, team, pos, point)
     local handle = nil;
     if M.isgameobject(pos) then
         --- @cast pos GameObject
@@ -240,7 +240,7 @@ end
 --- Get Player GameObject of team.
 --- @param team? TeamNum Team number of player
 --- @return GameObject? player GameObject of player or nil
-function M.GetPlayerGameObject(team)
+function M.GetPlayer(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetPlayerHandle(team);
@@ -251,7 +251,7 @@ end
 --- Get Recycler GameObject of team.
 --- @param team? TeamNum Team number of player
 --- @return GameObject? recycler GameObject of recycler or nil
-function M.GetRecyclerGameObject(team)
+function M.GetRecycler(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetRecyclerHandle(team);
@@ -262,7 +262,7 @@ end
 --- Get Factory GameObject of team.
 --- @param team? TeamNum Team number of player
 --- @return GameObject? factory GameObject of factory or nil
-function M.GetFactoryGameObject(team)
+function M.GetFactory(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetFactoryHandle(team);
@@ -273,7 +273,7 @@ end
 --- Get Armory GameObject of team.
 --- @param team? TeamNum Team number of player
 --- @return GameObject? armory of armory or nil
-function M.GetArmoryGameObject(team)
+function M.GetArmory(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetArmoryHandle(team);
@@ -284,7 +284,7 @@ end
 --- Get Factory GameObject of team.
 --- @param team? TeamNum Team number of player
 --- @return GameObject? constructor of constructor or nil
-function M.GetConstructorGameObject(team)
+function M.GetConstructor(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetConstructorHandle(team);

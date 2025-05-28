@@ -131,7 +131,7 @@ function StopSound(filename, h) end
 --- Returns the handle of the game object with the given label. Returns nil if none exists.
 --- @param label string
 --- @return Handle?
---- @deprecated Use `_gameobject.GetGameObject` instead.
+--- @deprecated See `_gameobject` module.
 function GetHandle(label) error("This function is provided by the engine."); end
 
 --- Creates a game object with the given odf name, team number, and location.
@@ -140,62 +140,62 @@ function GetHandle(label) error("This function is provided by the engine."); end
 --- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the location is a path this is the path point index, defaults to 0.
 --- @return Handle?
---- @deprecated Use `_gameobject.BuildGameObject` instead.
+--- @deprecated See `_gameobject` module.
 function BuildObject(odfname, teamnum, location, point) error("This function is provided by the engine."); end
 
 --- Removes the game object with the given handle.
 --- @param h Handle
---- @deprecated Use `_gameobject.RemoveObject` instead.
+--- @deprecated See `_gameobject` module.
 function RemoveObject(h) end
 
 --- Returns true if the game object's odf name matches the given odf name. Returns false otherwise.
 --- @param h Handle
 --- @param odfname string
 --- @return boolean
---- @deprecated Use `_gameobject.IsOdf` instead.
+--- @deprecated See `_gameobject` module.
 function IsOdf(h, odfname) error("This function is provided by the engine."); end
 
 --- Returns the odf name of the game object. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @deprecated Use `_gameobject.GetOdf` instead.
+--- @deprecated See `_gameobject` module.
 function GetOdf(h) error("This function is provided by the engine."); end
 
 --- Returns the base config of the game object which determines what VDF/SDF model it uses. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @deprecated Use `_gameobject.GetBase` instead.
+--- @deprecated See `_gameobject` module.
 function GetBase(h) error("This function is provided by the engine."); end
 
 --- Returns the label of the game object (e.g. "avtank0_wingman"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @deprecated Use `_gameobject.GetLabel` instead.
+--- @deprecated See `_gameobject` module.
 function GetLabel(h) error("This function is provided by the engine."); end
 
 --- Set the label of the game object (e.g. "tank1").
 --- @param h Handle
 --- @param label string
---- @deprecated Use `_gameobject.SetLabel` instead.
+--- @deprecated See `_gameobject` module.
 function SetLabel(h, label) end
 
 --- Returns the four-character class signature of the game object (e.g. "WING"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @deprecated Use `_gameobject.GetClassSig` instead.
+--- @deprecated See `_gameobject` module.
 function GetClassSig(h) error("This function is provided by the engine."); end
 
 --- Returns the class label of the game object (e.g. "wingman"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @deprecated Use `_gameobject.GetClassLabel` instead.
+--- @deprecated See `_gameobject` module.
 function GetClassLabel(h) error("This function is provided by the engine."); end
 
 --- Returns the numeric class identifier of the game object. Returns nil if none exists.
 --- Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
 --- @param h Handle
 --- @return integer?
---- @deprecated Use `_gameobject.GetClassId` instead.
+--- @deprecated See `_gameobject` module.
 function GetClassId(h) error("This function is provided by the engine."); end
 
 --- This is a global table that converts between class identifier numbers and class identifier names.
@@ -297,43 +297,43 @@ ClassId = {
 --- The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".
 --- @param h Handle
 --- @return string
---- @deprecated Use `GameObject.GetNation` instead.
+--- @deprecated See `_gameobject` module.
 function GetNation(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsValid` instead.
+--- @deprecated See `_gameobject` module.
 function IsValid(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsAlive` instead.
+--- @deprecated See `_gameobject` module.
 function IsAlive(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled and piloted. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsAliveAndPilot` instead.
+--- @deprecated See `_gameobject` module.
 function IsAliveAndPilot(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and is a vehicle. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsCraft` instead.
+--- @deprecated See `_gameobject` module.
 function IsCraft(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and is a building. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsBuilding` instead.
+--- @deprecated See `_gameobject` module.
 function IsBuilding(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and is a person. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsPerson` instead.
+--- @deprecated See `_gameobject` module.
 function IsPerson(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object exists and has less health than the threshold. Returns false otherwise.
@@ -358,20 +358,20 @@ function IsRecycledByTeam(h, team) error("This function is provided by the engin
 --- Returns the game object's team number.
 --- @param h Handle
 --- @return TeamNum
---- @deprecated Use `GameObject.GetTeamNum` instead.
+--- @deprecated See `_gameobject` module.
 function GetTeamNum(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's team number.
 --- @param h Handle
 --- @param team TeamNum
---- @deprecated Use `GameObject.SetTeamNum` instead.
+--- @deprecated See `_gameobject` module.
 function SetTeamNum(h, team) end
 
 --- Returns the game object's perceived team number (as opposed to its real team number).
 --- The perceived team will differ from the real team when a player enters an empty enemy vehicle without being seen until they attack something.
 --- @param h Handle
 --- @return TeamNum
---- @deprecated Use `GameObject.GetPerceivedTeam` instead.
+--- @deprecated See `_gameobject` module.
 function GetPerceivedTeam(h) error("This function is provided by the engine."); end
 
 --- Set the game object's perceived team number (as opposed to its real team number).
@@ -379,7 +379,7 @@ function GetPerceivedTeam(h) error("This function is provided by the engine."); 
 --- Units on the game object's real team will treat it as friendly regardless of its perceived team.
 --- @param h Handle
 --- @param t TeamNum
---- @deprecated Use `GameObject.SetPerceivedTeam` instead.
+--- @deprecated See `_gameobject` module.
 function SetPerceivedTeam(h, t) end
 
 -------------------------------------------------------------------------------
@@ -432,13 +432,13 @@ function GetOwner(h) error("This function is provided by the engine."); end
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
 --- @param h Handle
 --- @param odfname string?
---- @deprecated Use `GameObject.SetPilotClass` instead.
+--- @deprecated See `_gameobject` module.
 function SetPilotClass(h, odfname) end
 
 --- Returns the odf name of the vehicle's pilot class. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
---- @deprecated Use `GameObject.GetPilotClass` instead.
+--- @deprecated See `_gameobject` module.
 function GetPilotClass(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -451,7 +451,7 @@ function GetPilotClass(h) error("This function is provided by the engine."); end
 --- @param h Handle
 --- @param target Vector|Matrix|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
---- @deprecated Use `GameObject.SetPosition` instead.
+--- @deprecated See `_gameobject` module.
 function SetPosition(h, target, point) end
 
 --- Returns the game object's or path point's position vector. Returns nil if none exists.
@@ -464,19 +464,19 @@ function GetPosition(target, point) error("This function is provided by the engi
 --- Returns the game object's front vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector?
---- @deprecated Use `GameObject.GetFront` instead.
+--- @deprecated See `_gameobject` module.
 function GetFront(h) error("This function is provided by the engine."); end
 
 --- Teleports the game object to the given transform matrix.
 --- @param h Handle
 --- @param transform Matrix
---- @deprecated Use `GameObject.SetTransform` instead.
+--- @deprecated See `_gameobject` module.
 function SetTransform(h, transform) end
 
 --- Returns the game object's transform matrix. Returns nil if none exists.
 --- @param h Handle
 --- @return Matrix?
---- @deprecated Use `GameObject.GetTransform` instead.
+--- @deprecated See `_gameobject` module.
 function GetTransform(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -488,13 +488,13 @@ function GetTransform(h) error("This function is provided by the engine."); end
 --- Returns the game object's linear velocity vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector
---- @deprecated Use `GameObject.GetVelocity` instead.
+--- @deprecated See `_gameobject` module.
 function GetVelocity(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's angular velocity vector. 
 --- @param h Handle
 --- @param velocity Vector
---- @deprecated Use `GameObject.SetVelocity` instead.
+--- @deprecated See `_gameobject` module.
 function SetVelocity(h, velocity) end
 
 -------------------------------------------------------------------------------
@@ -506,13 +506,13 @@ function SetVelocity(h, velocity) end
 --- Returns the game object's angular velocity vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector
---- @deprecated Use `GameObject.GetOmega` instead.
+--- @deprecated See `_gameobject` module.
 function GetOmega(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's angular velocity vector.
 --- @param h Handle
 --- @param omega Vector
---- @deprecated Use `GameObject.SetOmega` instead.
+--- @deprecated See `_gameobject` module.
 function SetOmega(h, omega) end
 
 -------------------------------------------------------------------------------
@@ -611,38 +611,38 @@ function IsAlly(me, him) error("This function is provided by the engine."); end
 
 --- Sets the game object as an objective to all teams.
 --- @param h Handle
---- @deprecated Use `GameObject.SetObjectiveOn` instead.
+--- @deprecated See `_gameobject` module.
 function SetObjectiveOn(h) end
 
 --- Sets the game object back to normal.
 --- @param h Handle
---- @deprecated Use `GameObject.SetObjectiveOff` instead.
+--- @deprecated See `_gameobject` module.
 function SetObjectiveOff(h) end
 
 --- Get the objective on status of object.
 --- [UNRELEASED]
 --- @param h Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsObjectiveOn` instead.
+--- @deprecated See `_gameobject` module.
 function IsObjectiveOn(h) error("This function is provided by the engine."); end
 
 --- Gets the game object's visible name.
 --- @param h Handle
 --- @return string
---- @deprecated Use `GameObject.GetObjectiveName` instead.
+--- @deprecated See `_gameobject` module.
 function GetObjectiveName(h) error("This function is provided by the engine."); end
 
 --- Sets the game object's visible name.
 --- @param h Handle
 --- @param name string
---- @deprecated Use `GameObject.SetObjectiveName` instead.
+--- @deprecated See `_gameobject` module.
 function SetObjectiveName(h, name) end
 
 --- Sets the game object's visible name. This function is effectively an alias for SetObjectiveName.
 --- [2.1+]
 --- @param h Handle
 --- @param name string
---- @deprecated Use `GameObject.SetName` instead.
+--- @deprecated See `_gameobject` module.
 function SetName(h, name) end
 
 -------------------------------------------------------------------------------
@@ -656,7 +656,7 @@ function SetName(h, name) end
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return number
---- @deprecated Use `GameObject.GetDistance` instead.
+--- @deprecated See `_gameobject` module.
 function GetDistance(h1, target, point) error("This function is provided by the engine."); end
 
 --- Returns true if the units are closer than the given distance of each other. Returns false otherwise.
@@ -665,7 +665,7 @@ function GetDistance(h1, target, point) error("This function is provided by the 
 --- @param h2 Handle
 --- @param dist number
 --- @return boolean
---- @deprecated Use `GameObject.IsWithin` instead.
+--- @deprecated See `_gameobject` module.
 function IsWithin(h1, h2, dist) error("This function is provided by the engine."); end
 
 --- Returns true if the bounding spheres of the two game objects are within the specified tolerance. The default tolerance is 1.3 meters if not specified.
@@ -674,7 +674,7 @@ function IsWithin(h1, h2, dist) error("This function is provided by the engine."
 --- @param h2 Handle
 --- @param tolerance? number
 --- @return boolean
---- @deprecated Use `GameObject.IsTouching` instead.
+--- @deprecated See `_gameobject` module.
 function IsTouching(h1, h2, tolerance) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -687,28 +687,28 @@ function IsTouching(h1, h2, tolerance) error("This function is provided by the e
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @deprecated Use `_gameobject.GetNearestObject` instead.
+--- @deprecated See `_gameobject` module.
 function GetNearestObject(target, point) error("This function is provided by the engine."); end
 
 --- Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @deprecated Use `_gameobject.GetNearestVehicle` instead.
+--- @deprecated See `_gameobject` module.
 function GetNearestVehicle(target, point) error("This function is provided by the engine."); end
 
 --- Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @deprecated Use `_gameobject.GetNearestBuilding` instead.
+--- @deprecated See `_gameobject` module.
 function GetNearestBuilding(target, point) error("This function is provided by the engine."); end
 
 --- Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @deprecated Use `_gameobject.GetNearestEnemy` instead.
+--- @deprecated See `_gameobject` module.
 function GetNearestEnemy(target, point) error("This function is provided by the engine."); end
 
 --- Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
@@ -716,7 +716,7 @@ function GetNearestEnemy(target, point) error("This function is provided by the 
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
---- @deprecated Use `_gameobject.GetNearestFriend` instead.
+--- @deprecated See `_gameobject` module.
 function GetNearestFriend(target, point) error("This function is provided by the engine."); end
 
 --- Returns the friend closest to the given reference point. Returns nil if none exists.
@@ -733,7 +733,7 @@ function GetNearestFriend(target, point) error("This function is provided by the
 --- @param transform Matrix The transform matrix.
 --- @return Handle? handle closest friend, or nil if none exists.
 --- @diagnostic enable: undefined-doc-param
---- @deprecated Use `_gameobject.GetNearestUnitOnTeam` instead.
+--- @deprecated See `_gameobject` module.
 function GetNearestUnitOnTeam(...) end
 
 --- Returns the craft or person on the given team closest to the given game object. Returns nil if none exists.
@@ -771,7 +771,7 @@ function GetNearestUnitOnTeam(...) end
 --- @param team TeamNum
 --- @param odfname string
 --- @return integer
---- @deprecated Use `_gameobject.CountUnitsNearObject` instead.
+--- @deprecated See `_gameobject` module.
 function CountUnitsNearObject(h, dist, team, odfname) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -785,28 +785,28 @@ function CountUnitsNearObject(h, dist, team, odfname) error("This function is pr
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
 --- @return fun():Handle iterator
---- @deprecated Use `_gameobject.ObjectsInRange` instead.
+--- @deprecated See `_gameobject` module.
 function ObjectsInRange(dist, target, point) error("This function is provided by the engine."); end
 
 --- Enumerates all game objects.
 --- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
 --- @return fun():Handle iterator
---- @deprecated Use `_gameobject.AllObjects` instead.
+--- @deprecated See `_gameobject` module.
 function AllObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all craft.
 --- @return fun():Handle iterator
---- @deprecated Use `_gameobject.AllCraft` instead.
+--- @deprecated See `_gameobject` module.
 function AllCraft() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects currently selected by the local player.
 --- @return fun():Handle iterator
---- @deprecated Use `_gameobject.SelectedObjects` instead.
+--- @deprecated See `_gameobject` module.
 function SelectedObjects() error("This function is provided by the engine."); end
 
 --- Enumerates all game objects marked as objectives.
 --- @return fun():Handle iterator
---- @deprecated Use `_gameobject.ObjectiveObjects` instead.
+--- @deprecated See `_gameobject` module.
 function ObjectiveObjects() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -912,42 +912,42 @@ TeamSlot = {
 --- @param slot TeamSlotInteger
 --- @param team? TeamNum
 --- @return Handle
---- @deprecated Use `_gameobject.GetTeamSlot` instead.
+--- @deprecated See `_gameobject` module.
 function GetTeamSlot(slot, team) error("This function is provided by the engine."); end
 
 --- Returns the game object controlled by the player on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @deprecated Use `_gameobject.GetPlayerHandle` instead.
+--- @deprecated See `_gameobject` module.
 function GetPlayerHandle(team) error("This function is provided by the engine."); end
 
 --- Returns the Recycler on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @deprecated Use `_gameobject.GetRecyclerGameObject` instead.
+--- @deprecated See `_gameobject` module.
 function GetRecyclerHandle(team) error("This function is provided by the engine."); end
 
 --- Returns the Factory on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @deprecated Use `_gameobject.GetFactoryGameObject` instead.
+--- @deprecated See `_gameobject` module.
 function GetFactoryHandle(team) error("This function is provided by the engine."); end
 
 --- Returns the Armory on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @deprecated Use `_gameobject.GetArmoryGameObject` instead.
+--- @deprecated See `_gameobject` module.
 function GetArmoryHandle(team) error("This function is provided by the engine."); end
 
 --- Returns the Constructor on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
 --- @param team? TeamNum
 --- @return Handle
---- @deprecated Use `_gameobject.GetConstructorGameObject` instead.
+--- @deprecated See `_gameobject` module.
 function GetConstructorHandle(team) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1047,12 +1047,12 @@ function GetMaxScrap(team) error("This function is provided by the engine."); en
 --- Returns true if the game object is a deployed craft. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
---- @deprecated use `GameObject.IsDeployed` instead.
+--- @deprecated See `_gameobject` module.
 function IsDeployed(h) error("This function is provided by the engine."); end
 
 --- Tells the game object to deploy.
 --- @param h Handle
---- @deprecated use `GameObject.Deploy` instead.
+--- @deprecated See `_gameobject` module.
 function Deploy(h) end
 
 -------------------------------------------------------------------------------
@@ -1096,7 +1096,7 @@ function SetCritical(h, critical) end
 --- weaponHard1: 1 weaponHard2: 2 weaponHard3: 4 weaponHard4: 8 weaponHard5: 16
 --- @param h Handle
 --- @param mask integer
---- @deprecated use `GameObject.SetWeaponMask` instead.
+--- @deprecated See `_gameobject` module.
 function SetWeaponMask(h, mask) end
 
 --- Gives the game object the named weapon in the given slot. If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
@@ -1104,7 +1104,7 @@ function SetWeaponMask(h, mask) end
 --- @param h Handle
 --- @param weaponname? string
 --- @param slot? integer
---- @deprecated use `GameObject.GiveWeapon` instead.
+--- @deprecated See `_gameobject` module.
 function GiveWeapon(h, weaponname, slot) end
 
 --- Returns the odf name of the weapon in the given slot on the game object. Returns nil if the game object does not exist or the slot is empty.
@@ -1112,19 +1112,19 @@ function GiveWeapon(h, weaponname, slot) end
 --- @param h Handle
 --- @param slot integer
 --- @return string
---- @deprecated use `GameObject.GetWeaponClass` instead.
+--- @deprecated See `_gameobject` module.
 function GetWeaponClass(h, slot) error("This function is provided by the engine."); end
 
 --- Tells the game object to fire at the given target.
 --- @param me Handle
 --- @param him Handle
---- @deprecated use `GameObject.FireAt` instead.
+--- @deprecated See `_gameobject` module.
 function FireAt(me, him) end
 
 --- Applies damage to the game object.
 --- @param h Handle
 --- @param amount number
---- @deprecated use `GameObject.Damage` instead.
+--- @deprecated See `_gameobject` module.
 function Damage(h, amount) end
 
 -------------------------------------------------------------------------------
@@ -1191,7 +1191,7 @@ function SucceedMission(time, filename) end
 -- These functions control the objective panel visible at the right of the screen.
 
 --- Clears all objective messages.
---- @deprecated use `_objective.ClearObjectives` instead.
+--- @deprecated See `_objective` module.
 function ClearObjectives() end
 
 --- Adds an objective message with the given name and properties.
@@ -1199,7 +1199,7 @@ function ClearObjectives() end
 --- @param color? ColorLabel Default to "WHITE".
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
---- @deprecated use `_objective.AddObjective` instead.
+--- @deprecated See `_objective` module.
 function AddObjective(name, color, duration, text) end
 
 --- Updates the objective message with the given name. If no objective exists with that name, it does nothing.
@@ -1207,12 +1207,12 @@ function AddObjective(name, color, duration, text) end
 --- @param color? ColorLabel Default to "WHITE".
 --- @param duration? number defaults to 8 seconds
 --- @param text? string Override text from the target objective file. [2.0+]
---- @deprecated use `_objective.UpdateObjective` instead.
+--- @deprecated See `_objective` module.
 function UpdateObjective(name, color, duration, text) end
 
 --- Removes the objective message with the given file name. Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
 --- @param name string
---- @deprecated use `_objective.RemoveObjective` instead.
+--- @deprecated See `_objective` module.
 function RemoveObjective(name) end
 
 -------------------------------------------------------------------------------
@@ -1404,43 +1404,43 @@ AiCommand = {
 --- Returns true if the game object can be commanded. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
---- @deprecated use `GameObject.CanCommand` instead.
+--- @deprecated See `_gameobject` module.
 function CanCommand(me) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is a producer that can build at the moment. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
---- @deprecated use `GameObject.CanBuild` instead.
+--- @deprecated See `_gameobject` module.
 function CanBuild(me) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is a producer and currently busy. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
---- @deprecated use `GameObject.IsBusy` instead.
+--- @deprecated See `_gameobject` module.
 function IsBusy(me) error("This function is provided by the engine."); end
 
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param me Handle
 --- @return AiCommand
---- @deprecated use `GameObject.GetCurrentCommand` instead.
+--- @deprecated See `_gameobject` module.
 function GetCurrentCommand(me) error("This function is provided by the engine."); end
 
 --- Returns the target of the current command for the game object. Returns nil if it has none.
 --- @param me Handle
 --- @return Handle
---- @deprecated use `GameObject.GetCurrentWho` instead.
+--- @deprecated See `_gameobject` module.
 function GetCurrentWho(me) error("This function is provided by the engine."); end
 
 --- Gets the independence of a unit.
 --- @param me Handle
 --- @return integer
---- @deprecated use `GameObject.GetIndependence` instead.
+--- @deprecated See `_gameobject` module.
 function GetIndependence(me) error("This function is provided by the engine."); end
 
 --- Sets the independence of a unit. 1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
 --- @param me Handle
 --- @param independence integer
---- @deprecated use `GameObject.SetIndependence` instead.
+--- @deprecated See `_gameobject` module.
 function SetIndependence(me, independence) end
 
 --- Commands the unit using the given parameters. Be careful with this since not all commands work with all units and some have strict requirements on their parameters.
@@ -1457,7 +1457,7 @@ function SetIndependence(me, independence) end
 --- @param where Matrix|Vector|string?
 --- @param when? number
 --- @param param? string
---- @deprecated use `GameObject.SetCommand` instead.
+--- @deprecated See `_gameobject` module.
 function SetCommand(me, command, priority, who, where, when, param) end
 
 --- Commands the unit to attack the given target.
@@ -1465,7 +1465,7 @@ function SetCommand(me, command, priority, who, where, when, param) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Attack` instead.
+--- @deprecated See `_gameobject` module.
 function Attack(me, him, priority) end
 
 --- Commands the unit to go to the position vector, transform matrix, game object location, or named path.
@@ -1473,7 +1473,7 @@ function Attack(me, him, priority) end
 --- @param me Handle
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param priority? integer
---- @deprecated Use `GameObject.Goto` instead.
+--- @deprecated See `_gameobject` module.
 function Goto(me, target, priority) end
 
 --- Commands the unit to lay mines at the given position vector, transform matrix, or named path.
@@ -1481,7 +1481,7 @@ function Goto(me, target, priority) end
 --- @param me Handle
 --- @param target Vector|Matrix|string
 --- @param priority? integer
---- @deprecated Use `GameObject.Mine` instead.
+--- @deprecated See `_gameobject` module.
 function Mine(me, target, priority) end
 
 --- Commands the unit to follow the given target.
@@ -1489,7 +1489,7 @@ function Mine(me, target, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Follow` instead.
+--- @deprecated See `_gameobject` module.
 function Follow(me, him, priority) end
 
 --- Returns true if the unit is currently following the given target.
@@ -1497,14 +1497,14 @@ function Follow(me, him, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @return boolean
---- @deprecated Use `GameObject.IsFollowing` instead.
+--- @deprecated See `_gameobject` module.
 function IsFollowing(me, him) error("This function is provided by the engine."); end
 
 --- Commands the unit to defend its current location.
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Defend` instead.
+--- @deprecated See `_gameobject` module.
 function Defend(me, priority) end
 
 --- Commands the unit to defend the given target.
@@ -1513,14 +1513,14 @@ function Defend(me, priority) end
 --- @param him Handle
 --- @param priority? integer
 --- @function Defend2
---- @deprecated Use `GameObject.Defend2` instead.
+--- @deprecated See `_gameobject` module.
 function Defend2(me, him, priority) end
 
 --- Commands the unit to stop at its current location.
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Stop` instead.
+--- @deprecated See `_gameobject` module.
 function Stop(me, priority) end
 
 --- Commands the unit to patrol along the named path. This is equivalent to Goto with an independence of 1.
@@ -1528,7 +1528,7 @@ function Stop(me, priority) end
 --- @param me Handle
 --- @param path string
 --- @param priority? integer
---- @deprecated Use `GameObject.Patrol` instead.
+--- @deprecated See `_gameobject` module.
 function Patrol(me, path, priority) end
 
 --- Commands the unit to retreat to the given target or named path.
@@ -1537,7 +1537,7 @@ function Patrol(me, path, priority) end
 --- @param me Handle
 --- @param target Handle|string
 --- @param priority? integer
---- @deprecated Use `GameObject.Retreat` instead.
+--- @deprecated See `_gameobject` module.
 function Retreat(me, target, priority) end
 
 --- Commands the pilot to get into the target vehicle.
@@ -1545,7 +1545,7 @@ function Retreat(me, target, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.GetIn` instead.
+--- @deprecated See `_gameobject` module.
 function GetIn(me, him, priority) end
 
 --- Commands the unit to pick up the target object. Deployed units pack up (ignoring the target), scavengers pick up scrap, and tugs pick up and carry objects.
@@ -1553,7 +1553,7 @@ function GetIn(me, him, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Pickup` instead.
+--- @deprecated See `_gameobject` module.
 function Pickup(me, him, priority) end
 
 --- Commands the unit to drop off at the position vector, transform matrix, or named path.
@@ -1562,7 +1562,7 @@ function Pickup(me, him, priority) end
 --- @param me Handle
 --- @param target Vector|Matrix|string
 --- @param priority? integer
---- @deprecated Use `GameObject.Dropoff` instead.
+--- @deprecated See `_gameobject` module.
 function Dropoff(me, target, priority) end
 
 --- Commands a producer to build the given odf name. The Armory and Construction Rig need an additional Dropoff to give them a location to build but first need at least one simulation update to process the Build.
@@ -1570,7 +1570,7 @@ function Dropoff(me, target, priority) end
 --- @param me Handle
 --- @param odfname string
 --- @param priority? integer
---- @deprecated Use `GameObject.Build` instead.
+--- @deprecated See `_gameobject` module.
 function Build(me, odfname, priority) end
 
 --- Commands a producer to build the given odf name at the position vector, transform matrix, game object location, or named path.
@@ -1580,7 +1580,7 @@ function Build(me, odfname, priority) end
 --- @param odfname string
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param priority? integer
---- @deprecated Use `GameObject.BuildAt` instead.
+--- @deprecated See `_gameobject` module.
 function BuildAt(me, odfname, target, priority) end
 
 --- Commands the unit to follow the given target closely. This function is equivalent to SetCommand(me, AiCommand.FORMATION, priority, him).
@@ -1589,7 +1589,7 @@ function BuildAt(me, odfname, target, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Formation` instead.
+--- @deprecated See `_gameobject` module.
 function Formation(me, him, priority) end
 
 --- Commands the unit to hunt for targets autonomously. This function is equivalent to SetCommand(me, AiCommand.HUNT, priority).
@@ -1597,7 +1597,7 @@ function Formation(me, him, priority) end
 --- [2.1+]
 --- @param me Handle
 --- @param priority? integer
---- @deprecated Use `GameObject.Hunt` instead.
+--- @deprecated See `_gameobject` module.
 function Hunt(me, priority) end
 
 -------------------------------------------------------------------------------
@@ -1609,20 +1609,20 @@ function Hunt(me, priority) end
 --- Returns true if the unit is a tug carrying cargo.
 --- @param tug Handle
 --- @return boolean
---- @deprecated use `GameObject.HasCargo` instead.
+--- @deprecated See `_gameobject` module.
 function HasCargo(tug) error("This function is provided by the engine."); end
 
 --- Returns the handle of the cargo if the unit is a tug carrying cargo. Returns nil otherwise.
 --- [2.1+]
 --- @param tug Handle
 --- @return Handle?
---- @deprecated use `GameObject.GetCargo` instead.
+--- @deprecated See `_gameobject` module.
 function GetCargo(tug) error("This function is provided by the engine."); end
 
 --- Returns the handle of the tug carrying the object. Returns nil if not carried.
 --- @param cargo Handle
 --- @return Handle
---- @deprecated use `GameObject.GetTug` instead.
+--- @deprecated See `_gameobject` module.
 function GetTug(cargo) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1633,28 +1633,28 @@ function GetTug(cargo) error("This function is provided by the engine."); end
 
 --- Commands the vehicle's pilot to eject.
 --- @param h Handle
---- @deprecated use `GameObject.EjectPilot` instead.
+--- @deprecated See `_gameobject` module.
 function EjectPilot(h) end
 
 --- Commands the vehicle's pilot to hop out.
 --- @param h Handle
---- @deprecated use `GameObject.HopOut` instead.
+--- @deprecated See `_gameobject` module.
 function HopOut(h) end
 
 --- Kills the vehicle's pilot as if sniped.
 --- @param h Handle
---- @deprecated use `GameObject.KillPilot` instead.
+--- @deprecated See `_gameobject` module.
 function KillPilot(h) end
 
 --- Removes the vehicle's pilot cleanly.
 --- @param h Handle
---- @deprecated use `GameObject.RemovePilot` instead.
+--- @deprecated See `_gameobject` module.
 function RemovePilot(h) end
 
 --- Returns the vehicle that the pilot most recently hopped out of.
 --- @param h Handle
 --- @return Handle
---- @deprecated use `GameObject.HoppedOutOf` instead.
+--- @deprecated See `_gameobject` module.
 function HoppedOutOf(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -1666,43 +1666,43 @@ function HoppedOutOf(h) error("This function is provided by the engine."); end
 --- Returns the fractional health of the game object between 0 and 1.
 --- @param h Handle
 --- @return number
---- @deprecated use `GameObject.GetHealth` instead.
+--- @deprecated See `_gameobject` module.
 function GetHealth(h) error("This function is provided by the engine."); end
 
 --- Returns the current health value of the game object.
 --- @param h Handle
 --- @return number
---- @deprecated use `GameObject.GetCurHealth` instead.
+--- @deprecated See `_gameobject` module.
 function GetCurHealth(h) error("This function is provided by the engine."); end
 
 --- Returns the maximum health value of the game object.
 --- @param h Handle
 --- @return number
---- @deprecated use `GameObject.GetMaxHealth` instead.
+--- @deprecated See `_gameobject` module.
 function GetMaxHealth(h) error("This function is provided by the engine."); end
 
 --- Sets the current health of the game object.
 --- @param h Handle
 --- @param health number
---- @deprecated use `GameObject.SetCurHealth` instead.
+--- @deprecated See `_gameobject` module.
 function SetCurHealth(h, health) end
 
 --- Sets the maximum health of the game object.
 --- @param h Handle
 --- @param health number
---- @deprecated use `GameObject.SetMaxHealth` instead.
+--- @deprecated See `_gameobject` module.
 function SetMaxHealth(h, health) end
 
 --- Adds to the current health of the game object.
 --- @param h Handle
 --- @param health number
---- @deprecated use `GameObject.AddHealth` instead.
+--- @deprecated See `_gameobject` module.
 function AddHealth(h, health) end
 
 --- Sets the unit's current health to maximum.
 --- [2.1+]
 --- @param h Handle
---- @deprecated use `GameObject.GiveMaxHealth` instead.
+--- @deprecated See `_gameobject` module.
 function GiveMaxHealth(h) end
 
 -------------------------------------------------------------------------------
@@ -1714,43 +1714,43 @@ function GiveMaxHealth(h) end
 --- Returns the fractional ammo of the game object between 0 and 1.
 --- @param h Handle
 --- @return number
---- @deprecated use `GameObject.GetAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function GetAmmo(h) error("This function is provided by the engine."); end
 
 --- Returns the current ammo value of the game object.
 --- @param h Handle
 --- @return number
---- @deprecated use `GameObject.GetCurAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function GetCurAmmo(h) error("This function is provided by the engine."); end
 
 --- Returns the maximum ammo value of the game object.
 --- @param h Handle
 --- @return number
---- @deprecated use `GameObject.GetMaxAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function GetMaxAmmo(h) error("This function is provided by the engine."); end
 
 --- Sets the current ammo of the game object.
 --- @param h Handle
 --- @param ammo number
---- @deprecated use `GameObject.SetCurAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function SetCurAmmo(h, ammo) end
 
 --- Sets the maximum ammo of the game object.
 --- @param h Handle
 --- @param ammo number
---- @deprecated use `GameObject.SetMaxAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function SetMaxAmmo(h, ammo) end
 
 --- Adds to the current ammo of the game object.
 --- @param h Handle
 --- @param ammo number
---- @deprecated use `GameObject.AddAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function AddAmmo(h, ammo) end
 
 --- Sets the unit's current ammo to maximum.
 --- [2.1+]
 --- @param h Handle
---- @deprecated use `GameObject.GiveMaxAmmo` instead.
+--- @deprecated See `_gameobject` module.
 function GiveMaxAmmo(h) end
 
 -------------------------------------------------------------------------------
@@ -1762,7 +1762,7 @@ function GiveMaxAmmo(h) end
 --- Starts the cinematic camera and disables normal input.
 --- Always returns true.
 --- @return boolean
---- @deprecated use `_camera.CameraReady` instead.
+--- @deprecated See `_camera` module.
 function CameraReady() error("This function is provided by the engine."); end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
@@ -1772,7 +1772,7 @@ function CameraReady() error("This function is provided by the engine."); end
 --- @param speed integer
 --- @param target Handle
 --- @return boolean
---- @deprecated use `_camera.CameraPath` instead.
+--- @deprecated See `_camera` module.
 function CameraPath(path, height, speed, target) error("This function is provided by the engine."); end
 
 --- Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
@@ -1781,7 +1781,7 @@ function CameraPath(path, height, speed, target) error("This function is provide
 --- @param height integer
 --- @param speed integer
 --- @return boolean
---- @deprecated use `_camera.CameraPathDir` instead.
+--- @deprecated See `_camera` module.
 function CameraPathDir(path, height, speed) error("This function is provided by the engine."); end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target path.
@@ -1791,12 +1791,12 @@ function CameraPathDir(path, height, speed) error("This function is provided by 
 --- @param speed integer
 --- @param target string
 --- @return boolean
---- @deprecated use `_camera.CameraPathPath` instead.
+--- @deprecated See `_camera` module.
 function CameraPathPath(path, height, speed, target) error("This function is provided by the engine."); end
 
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @return boolean
---- @deprecated use `_camera.PanDone` instead.
+--- @deprecated See `_camera` module.
 function PanDone() error("This function is provided by the engine."); end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object. The right, up, and forward offsets are in centimeters.
@@ -1807,18 +1807,18 @@ function PanDone() error("This function is provided by the engine."); end
 --- @param forward integer
 --- @param target Handle
 --- @return boolean
---- @deprecated use `_camera.CameraObject` instead.
+--- @deprecated See `_camera` module.
 function CameraObject(base, right, up, forward, target) error("This function is provided by the engine."); end
 
 --- Finishes the cinematic camera and enables normal input.
 --- Always returns true.
 --- @return boolean
---- @deprecated use `_camera.CameraFinish` instead.
+--- @deprecated See `_camera` module.
 function CameraFinish() error("This function is provided by the engine."); end
 
 --- Returns true if the player canceled the cinematic. Returns false otherwise.
 --- @return boolean
---- @deprecated use `_camera.CameraCancelled` instead.
+--- @deprecated See `_camera` module.
 function CameraCancelled() error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------

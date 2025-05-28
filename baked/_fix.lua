@@ -13,7 +13,7 @@
 --- @module '_fix'
 --- @author John "Nielk1" Klein
 
-local utility = require("_utility");
+local version = require("_version");
 local hook = require("_hook");
 
 -- [Polyfill] table.unpack for Lua 5.1 compatibility
@@ -24,7 +24,7 @@ _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
 _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
 
 -- [Fix] Broken ObjectiveObjects iterator
-if utility.CompareVersion(_G.GameVersion, "2.2.315") < 0 then
+if version.Compare(_G.GameVersion, "2.2.315") < 0 then
     local old_ObjectiveObjects = _G.ObjectiveObjects;
 
     _G.ObjectiveObjects = function ()

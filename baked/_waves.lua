@@ -102,7 +102,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local x = (i3-(length/2))*seperation;
             local z = i2*seperation*2;
             local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildGameObject(units[n],team,pos);
+            local h = gameobject.BuildObject(units[n],team,pos);
             if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
             local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
             h:SetTransform(t);

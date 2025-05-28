@@ -58,7 +58,7 @@ function M.BuildImportantNav(odf, team, location, point)
     --return BuildImportantNavInternal(odf, team, location, point);
 
     --- @type GameObject?
-    local nav = gameobject.BuildGameObject(odf or "apcamr", team, location, point);
+    local nav = gameobject.BuildObject(odf or "apcamr", team, location, point);
     if not nav then return nil; end -- failed to build nav
 
     nav.NavManager = { important = true; }
@@ -217,7 +217,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                     SlotListIndex = SlotListIndex + 1;
                                 else
                                     -- build a new nav in the now open slot
-                                    local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                    local newNav = gameobject.BuildObject(nav:GetOdf(), team, nav:GetTransform());
                                     if not newNav then error("Failed to build nav in slot " .. tostring(OpenSlotList[SlotListIndex])); end -- failed to build nav
 
                                     -- sync properties
@@ -259,7 +259,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                         SlotListIndex = SlotListIndex + 1;
                                     else
                                         -- build a new nav in the now open slot
-                                        local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                        local newNav = gameobject.BuildObject(nav:GetOdf(), team, nav:GetTransform());
                                         if not newNav then error("Failed to build nav in slot " .. tostring(OpenSlotList[SlotListIndex])); end -- failed to build nav
                                         
                                         -- sync properties
@@ -299,7 +299,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                         SlotListIndex = SlotListIndex + 1;
                                     else
                                         -- build a new nav in the now open slot
-                                        local newNav = gameobject.BuildGameObject(nav:GetOdf(), team, nav:GetTransform());
+                                        local newNav = gameobject.BuildObject(nav:GetOdf(), team, nav:GetTransform());
                                         if not newNav then error("Failed to build nav in slot " .. tostring(OpenSlotList[SlotListIndex])); end -- failed to build nav
                                         
                                         -- sync properties

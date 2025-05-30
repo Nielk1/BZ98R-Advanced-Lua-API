@@ -324,12 +324,14 @@ function DeSimplifyForLoad(...)
                     output[k] = TableFromLoad;
                 else
                     -- merge the tables, taking in the new metatable too
-                    local CompositeTable = PriorData or {};
-                    for k2, v2 in pairs(TableFromLoad) do
-                        CompositeTable[k2] = v2;
-                    end
-                    if metatableToApply then
-                        setmetatable(CompositeTable, metatableToApply);
+                    local CompositeTable = PriorData or TableFromLoad;
+                    if CompositeTable ~= TableFromLoad then
+                        for k2, v2 in pairs(TableFromLoad) do
+                            CompositeTable[k2] = v2;
+                        end
+                        if metatableToApply then
+                            setmetatable(CompositeTable, metatableToApply);
+                        end
                     end
                     output[k] = CompositeTable;
 

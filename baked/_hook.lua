@@ -59,13 +59,13 @@ local M = {};
 --- @field func function Function to be executed when the event is triggered.
 
 --- @type table<event_name, HookHandler[]>
-M.Hooks = {};
+local Hooks = {};
 
 --- @type table<event_name, table<event_hook_identifier, HookHandler>>
-M.HookLookup = {};
+local HookLookup = {};
 
 --- @type table<event_hook_identifier, {Save: function, Load: function}>
-M.SaveLoadHooks = {};
+local SaveLoadHooks = {};
 
 --- Stack of hooks as they are called
 --- @todo This can also be used to prevent recursive events if needed!
@@ -94,21 +94,21 @@ end
 
 local function InternalRemove( event, identifier )
     -- deal with existing hook before replacing it?
-    local found = M.HookLookup[ event ][ identifier ];
-    M.HookLookup[ event ][ identifier ] = nil;
+    local found = HookLookup[ event ][ identifier ];
+    HookLookup[ event ][ identifier ] = nil;
 
     -- delete the item from the sorted array
-    --for i, v in ipairs(M.Hooks[ event ]) do
+    --for i, v in ipairs(Hooks[ event ]) do
     --	if v.identifier == identifier then
-    --		table.remove(M.Hooks[ event ], i)
+    --		table.remove(Hooks[ event ], i)
     --		break;
     --	end
     --end
 
     -- Delete the item from the sorted array
-    for i = #M.Hooks[event], 1, -1 do -- Iterate backward
-        if M.Hooks[event][i].identifier == identifier then
-            table.remove(M.Hooks[event], i)
+    for i = #Hooks[event], 1, -1 do -- Iterate backward
+        if Hooks[event][i].identifier == identifier then
+            table.remove(Hooks[event], i)
             break
         end
     end
@@ -132,7 +132,7 @@ end
 --- @field __type string Type of the object, used for type checking. "HookResult"
 
 --- Table of all hooks.
-function M.GetTable() return M.Hooks end
+function M.GetTable() return Hooks end
 
 M_MT = {};
 
@@ -216,30 +216,30 @@ function M.Add( event, identifier, func, priority )
     --- @diagnostic disable-next-line: undefined-global
     priority = (_api_hook_priority_override and _api_hook_priority_override[event]) and _api_hook_priority_override[event][identifier] or priority;
 
-    if M.Hooks[ event ] == nil then
-        M.Hooks[ event ] = {};
+    if Hooks[ event ] == nil then
+        Hooks[ event ] = {};
     end
-    if M.HookLookup[ event ] == nil then
-        M.HookLookup[ event ] = {};
+    if HookLookup[ event ] == nil then
+        HookLookup[ event ] = {};
     end
     
-    if M.HookLookup[ event ][ identifier ] ~= nil then
-        local found = M.HookLookup[ event ][ identifier ];
-        M.HookLookup[ event ][ identifier ] = nil;
+    if HookLookup[ event ][ identifier ] ~= nil then
+        local found = HookLookup[ event ][ identifier ];
+        HookLookup[ event ][ identifier ] = nil;
 		
 		-- delete the item from the sorted array
-		for i, v in ipairs(M.Hooks[ event ]) do
+		for i, v in ipairs(Hooks[ event ]) do
 			if v.identifier == identifier then
-				table.remove(M.Hooks[ event ], i)
+				table.remove(Hooks[ event ], i)
 				break;
 			end
 		end
     end
 
     local new_handler =  { identifier = identifier, priority = priority, func = func };
-    M.HookLookup[ event ][ identifier ] = new_handler; -- store in lookup strong-table
-    table.insert(M.Hooks[ event ], new_handler); -- store in priority weak-table
-    table.sort(M.Hooks[ event ], sort_handlers);
+    HookLookup[ event ][ identifier ] = new_handler; -- store in lookup strong-table
+    table.insert(Hooks[ event ], new_handler); -- store in priority weak-table
+    table.sort(Hooks[ event ], sort_handlers);
   
     debugprint("Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
 end
@@ -252,7 +252,7 @@ function M.Remove( event, identifier )
     if not utility.isstring(event) then error("Parameter event must be a string."); end
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
 
-    if M.HookLookup[ event ][ identifier ] ~= nil then
+    if HookLookup[ event ][ identifier ] ~= nil then
         if HookCallCounts[event] then
             -- this event is currently being processed so buffer the removal
             table.insert(RemoveAfterStack, { event = event, identifier = identifier });
@@ -275,12 +275,12 @@ function M.AddSaveLoad( identifier, save, load )
     if save ~= nil and not utility.isfunction(save) then error("Parameter save must be a function."); end
     if load ~= nil and not utility.isfunction(load) then error("Parameter load must be a function."); end
     
-    if M.SaveLoadHooks[ identifier ] == nil then
-        M.SaveLoadHooks[identifier ] = {};
+    if SaveLoadHooks[ identifier ] == nil then
+        SaveLoadHooks[identifier ] = {};
     end
 
-    M.SaveLoadHooks[ identifier ]['Save'] = save;
-    M.SaveLoadHooks[ identifier ]['Load'] = load;
+    SaveLoadHooks[ identifier ]['Save'] = save;
+    SaveLoadHooks[ identifier ]['Load'] = load;
     
     debugprint("Added Save/Load hooks for " .. identifier);
 end
@@ -290,11 +290,11 @@ end
 --- @function _hook.RemoveSaveLoad
 function M.RemoveSaveLoad( identifier )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
-    if not M.SaveLoadHooks[ identifier ] then return; end
+    if not SaveLoadHooks[ identifier ] then return; end
 
     -- This should be safe since they are stored by identifier, no arrays being looped
     -- Ff it does become an issue having the execution loop use a copy of the key list would solve it
-    M.SaveLoadHooks[ identifier ] = nil;
+    SaveLoadHooks[ identifier ] = nil;
     
     debugprint("Removed Save/Load hooks for " .. identifier);
 end
@@ -302,10 +302,10 @@ end
 --- Calls hooks associated with Save.
 --- @function _hook.CallSave
 function M.CallSave()
-    if M.SaveLoadHooks ~= nil then
+    if SaveLoadHooks ~= nil then
         HookCallCounts["Save"] = (HookCallCounts["Save"] or 0) + 1;
         local ret = {};
-        for k, v in pairs( M.SaveLoadHooks ) do 
+        for k, v in pairs( SaveLoadHooks ) do 
             if v.Save ~= nil and utility.isfunction(v.Save) then
                 ret[k] = {v.Save()};
             end
@@ -321,10 +321,10 @@ end
 --- Calls hooks associated with Load.
 --- @function _hook.CallLoad
 function M.CallLoad(SaveData)
-    if M.SaveLoadHooks ~= nil then
+    if SaveLoadHooks ~= nil then
         HookCallCounts["Load"] = (HookCallCounts["Load"] or 0) + 1;
         local ret = {};
-        for k, v in pairs( M.SaveLoadHooks ) do
+        for k, v in pairs( SaveLoadHooks ) do
             if v.Load ~= nil and utility.isfunction(v.Load) then
                 if SaveData[k] ~= nil then
                     v.Load(table.unpack(SaveData[k]));
@@ -346,7 +346,7 @@ end
 --- @return boolean? Return true if stopped early, else nil
 --- @function _hook.CallAllNoReturn
 function M.CallAllNoReturn( event, ... )
-    local HookTable = M.Hooks[ event ]
+    local HookTable = Hooks[ event ]
     if ( HookTable ~= nil ) then
         HookCallCountIncrement(event);
         for i, v in ipairs(HookTable) do
@@ -383,7 +383,7 @@ end
 --- @return nil|HookResult|any ... `nil` if no hooks are called, a `HookResult` if the chain is aborted, or the return values from the last hook function.
 --- @function _hook.CallAllPassReturn
 function M.CallAllPassReturn( event, ... )
-    local HookTable = M.Hooks[ event ]
+    local HookTable = Hooks[ event ]
     local lastreturn = nil;
     if ( HookTable ~= nil ) then
         HookCallCountIncrement(event);

@@ -295,16 +295,35 @@ function M.PanDone()
 end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object.
+-- Returns true if the base or handle game object does not exist. Returns false otherwise.
+-- @param base GameObject|Handle
+-- @param right number Meters to the right of the base object. (0.01 resolution)
+-- @param up number Meters above the base object. (0.01 resolution)
+-- @param forward number Meters in front of the base object. (0.01 resolution)
+-- @param target GameObject|Handle
+-- @return boolean
+-- @function CameraObject
+
+--- Offsets a cinematic camera from a base game object while looking at a target game object.
+-- Returns true if the base or handle game object does not exist. Returns false otherwise.
+-- @param base GameObject|Handle
+-- @param offset Vector
+-- @param target GameObject|Handle
+-- @return boolean
+-- @function CameraObject
+
+--- Offsets a cinematic camera from a base game object while looking at a target game object.
 --- Returns true if the base or handle game object does not exist. Returns false otherwise.
---- @diagnostic disable: undefined-doc-param
 --- @overload fun(base: GameObject|Handle, right: number, up: number, foward: number, target: GameObject|Handle): boolean
 --- @overload fun(base: GameObject|Handle, offset:Vector, target: GameObject|Handle): boolean
+--- @diagnostic disable: undefined-doc-param
 --- @param base GameObject|Handle
 --- @param right number Meters to the right of the base object. (0.01 resolution)
 --- @param up number Meters above the base object. (0.01 resolution)
 --- @param forward number Meters in front of the base object. (0.01 resolution)
 --- @param offset Vector
 --- @param target GameObject|Handle
+--- @diagnostic enable: undefined-doc-param
 --- @return boolean
 function M.CameraObject(...)
     local args = {...}
@@ -353,24 +372,6 @@ function M.CameraObject(...)
     --- @diagnostic disable-next-line: deprecated
     return CameraObject(base, math.floor(right * 100), math.floor(up * 100), math.floor(forward * 100), target);
 end
-
---- Offsets a cinematic camera from a base game object while looking at a target game object.
--- Returns true if the base or handle game object does not exist. Returns false otherwise.
--- @param base GameObject|Handle
--- @param right number Meters to the right of the base object. (0.01 resolution)
--- @param up number Meters above the base object. (0.01 resolution)
--- @param forward number Meters in front of the base object. (0.01 resolution)
--- @param target GameObject|Handle
--- @return boolean
--- @function CameraObject
-
---- Offsets a cinematic camera from a base game object while looking at a target game object.
--- Returns true if the base or handle game object does not exist. Returns false otherwise.
--- @param base GameObject|Handle
--- @param offset Vector
--- @param target GameObject|Handle
--- @return boolean
--- @function CameraObject
 
 --- Finishes the cinematic camera and enables normal input.
 --- Always returns true.

@@ -154,7 +154,7 @@ local function ProcessQueues()
                             local producerObject = producerTypes[producerOdf];
                             if producerObject and not ProducerOrders[producerObject] then
                                 --debugprint(table.show(queue:contents(), "queue["..tostring(team).."]"));
-                                --debugprint(c.BLUE.."Candidate Found "..producerOdf.." > "..job.odf..c.RESET)
+                                debugprint(c.BLUE.."Candidate Found "..producerOdf.." > "..job.odf..c.RESET)
                                 local producerSig = producerObject:GetClassSig();
                                 local needsPosition = producerSig == utility.ClassSig.armory or producerSig == utility.ClassSig.constructionrig;
                                 if hasPosition == needsPosition then
@@ -177,6 +177,7 @@ local function ProcessQueues()
                                         local range = utility.TeamSlotRange[sig];
                                         local valid_slot = not range or range[1] == TeamSlot.UNDEFINED or range[2] == TeamSlot.UNDEFINED and true or false;
                                         -- slot validity check disabled as it's not needed, consider making it optional
+                                        valid_slot = true;
                                         --if not valid_slot then
                                         --    for i = range[1], range[2] do
                                         --        local object = gameobject.GetTeamSlot(i, team);
@@ -196,20 +197,20 @@ local function ProcessQueues()
                                                 end
                                                 ProducerOrders[producerObject] = job; -- save the producer and its job so we can check it later, either if the producer dies or the target is built
                                                 table.insert(indexesToRemove, idx);
-                                                --debugprint(c.CYAN.."BUILD "..producerOdf.." > "..job.odf..c.RESET)
+                                                debugprint(c.CYAN.."BUILD "..producerOdf.." > "..job.odf..c.RESET)
                                             else
-                                                --debugprint(c.YELLOW.."WAIT "..producerOdf.." > "..job.odf..c.RESET)
+                                                debugprint(c.YELLOW.."WAIT "..producerOdf.." > "..job.odf..c.RESET)
                                             end
                                             producerTypes[producerOdf] = nil; -- remove the producer from the list so we don't use it again as it's either building or waiting for scrap
                                             break; -- break out of producer checking loop since we found a producer for this job
                                         else
-                                            --debugprint(c.DKYELLOW.."SKIP NoSlot "..producerOdf.." > "..job.odf..c.RESET)
+                                            debugprint(c.DKYELLOW.."SKIP NoSlot "..producerOdf.." > "..job.odf..c.RESET)
                                         end
                                     else
-                                        --debugprint(c.DKYELLOW.."SKIP NoResource "..producerOdf.." > "..job.odf..c.RESET)
+                                        debugprint(c.DKYELLOW.."SKIP NoResource "..producerOdf.." > "..job.odf..c.RESET)
                                     end
                                 else
-                                    --debugprint(c.DKYELLOW.."SKIP "..(needsPosition and "NeedPos " or "NoPos ")..producerOdf.." > "..job.odf..c.RESET)
+                                    debugprint(c.DKYELLOW.."SKIP "..(needsPosition and "NeedPos " or "NoPos ")..producerOdf.." > "..job.odf..c.RESET)
                                 end
                             end
                         end
@@ -501,17 +502,4 @@ return M;
 
 --- @class GameObject_producer : GameObject
 --- @field _producer ProducerData?
-
---- @class RBD01_Mission_state : StateMachineIter
---- @field recy GameObject?
---- @field nav1 GameObject?
---- @field command GameObject?
---- @field nav_solar1 GameObject?
---- @field nav_solar2 GameObject?
---- @field handles GameObject[]?
---- @field target_l1 string[]
---- @field target_l2 string[]
---- @field research_enemies_still_exist boolean?
---- @field targets GameObject[]?
---- @field camTarget GameObject?
 

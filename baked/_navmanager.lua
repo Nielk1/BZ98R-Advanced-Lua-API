@@ -47,16 +47,40 @@ local DisableAutomaticNavAdding = false; -- used to prevent navs from being adde
 --- @field NavManager table A table containing custom data for this module.
 
 --- Build an important nav and add it to the collection.
+-- Important navs will push non-important navs out of the way in the list.
+-- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
+-- @param team integer Team number of the nav to build
+-- @param location Vector|Matrix|GameObject|Handle Position vector, ransform matrix, or Object
+-- @return GameObject? nav The nav object that was built
+-- @function BuildImportantNav
+
+--- Build an important nav and add it to the collection.
+-- Important navs will push non-important navs out of the way in the list.
+-- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
+-- @param team integer Team number of the nav to build
+-- @param location string path name
+-- @param point? integer path point index, defaults to 0.
+-- @return GameObject? nav The nav object that was built
+-- @function BuildImportantNav
+
+--- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
+--- @overload fun(odf: string, team: integer, location: Vector|Matrix|GameObject|Handle): GameObject?
+--- @overload fun(odf: string, team: integer, name: string, point?: integer): GameObject?
+--- @diagnostic disable: undefined-doc-param
 --- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
 --- @param team integer Team number of the nav to build
---- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the location is a path this is the path point index, defaults to 0.
+--- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, or Object.
+--- @param name string path name
+--- @param point? integer path point index, defaults to 0.
+--- @diagnostic enable: undefined-doc-param
 --- @return GameObject? nav The nav object that was built
-function M.BuildImportantNav(odf, team, location, point)
-    -- @todo check params h ere, don't allow GameObject on location here, that's internal only
+function M.BuildImportantNav(...)
+    local odf, team, location, point = ...;
+    -- @todo check params here
     --return BuildImportantNavInternal(odf, team, location, point);
 
+    --- @todo Add logic for team nav lookup
     --- @type GameObject?
     local nav = gameobject.BuildObject(odf or "apcamr", team, location, point);
     if not nav then return nil; end -- failed to build nav

@@ -3,11 +3,49 @@
 --- @module '_version'
 --- @author John "Nielk1" Klein
 
+local api_version = "0.1.1"; -- API version of this module
+
+--- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
+local traceprint = traceprint or function(...) end;
+--- @diagnostic enable: undefined-global
 
 debugprint("_version Loading");
 
+local optional = require("_optional");
+local bzcp_success, bzcp = optional("_bzcp");
+
+--- @class Version
+--- @field game string The game version, e.g. "2.2.315"
+--- @field lua string The Lua version, e.g. "Lua 5.1"
+--- @field api string The version of this LUA Extended API, e.g. "0.1.1"
+--- @field bzcp? string The BZCP version, if available, e.g. "0.3"
+--- @field shim? integer The BZCP shim version, if available, e.g. 1
 local M = {};
+
+local M_MT = {};
+M_MT.__index = function(table, key)
+    if key == "game" then return _G.GameVersion; end
+    if key == "lua" then return _G._VERSION; end
+    if key == "api" then return api_version; end
+    if key == "bzcp" then
+        if bzcp_success then
+            return bzcp.version;
+        else
+            return nil; -- bzcp not available
+        end
+    end
+    if key == "shim" then
+        if bzcp_success then
+            return bzcp.version_shim;
+        else
+            return nil; -- bzcp not available
+        end
+    end
+
+    return rawget(table, key) or rawget(M_MT, key); -- move on to base (looking for functions)
+end
+M = setmetatable(M, M_MT);
 
 local version_pattern = "^(%d+)(%.(%d+)(%.(%d+)(%.(%d+)((%a)(%d+)?)?)?)?)?$";
 

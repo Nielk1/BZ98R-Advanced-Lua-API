@@ -19,6 +19,7 @@ local utility = require("_utility");
 local hook = require("_hook");
 local gameobject = require("_gameobject");
 local customsavetype = require("_customsavetype");
+local version = require("_version");
 
 --local updateDelta;
 
@@ -624,16 +625,33 @@ end
 
 debugprint("_api Loaded");
 
-if _VERSION ~= nil then
-    print(_VERSION .. " detected");
-else
-    print("Lua version unknown");
-end
+local version_game = version.game;
+local version_lua = version.lua;
+local version_api = version.api;
+local version_bzcp = version.bzcp;
+local version_shim = version.shim;
 
-if GameVersion ~= nil then
-    print("GameVersion " .. GameVersion .. " detected");
+print("Versions:")
+if version_game then
+    print("  Game: " .. version_game);
 else
-    print("GameVersion unknown");
+    print("  Game: ????");
+end
+if version_lua then
+    print("  Lua: " .. version_lua);
+else
+    print("  Lua: ????");
+end
+if version_api then
+    print("  API: " .. version_api);
+else
+    print("  API: ????");
+end
+if version_bzcp then
+    print("  BZCP: " .. version_bzcp);
+    if version_shim then
+        print("  BZCP Shim: " .. tostring(version_shim));
+    end
 end
 
 return _api;

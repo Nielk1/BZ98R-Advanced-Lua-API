@@ -16,7 +16,7 @@
 local debugprint = debugprint or function(...) end;
 --- @diagnostic enable: undefined-global
 
-debugprint("__optional Loading");
+debugprint("_optional Loading");
 
 local M = {};
 local M_MT = {};
@@ -57,6 +57,6 @@ M = setmetatable(M, M_MT);
 -------------------------------------------------------------------------------
 -- @section
 
-debugprint("__optional Loaded");
+debugprint("_optional Loaded");
 
 return M;

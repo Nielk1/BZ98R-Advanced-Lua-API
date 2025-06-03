@@ -18,7 +18,7 @@ local moduleTable = {};
 local modFileExistCache = {};
 
 --- Abuses the loadfile function to check if a file exists.
-local function FileExists(filename)
+--[[local function FileExists(filename)
     local cached = modFileExistCache[filename];
     if cached ~= nil then
         return cached; -- Return the cached result
@@ -39,36 +39,38 @@ local function FileExists(filename)
         modFileExistCache[filename] = false; -- Cache the result
         return false -- File exists but contains invalid Lua code
     end
-end
+end]]
 
 table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too high?
     local errmsg = "";
     for _, k in ipairs(modPaths) do
         local relativePaths = {"addon/"..k.."/", "../../workshop/content/301650/"..k.."/", "mods/"..k.."/", "packaged_mods/"..k.."/"};
         for _, relativePath in ipairs(relativePaths) do
-            if FileExists(relativePath .. k .. ".ini") then -- does this look like a mod folder?
-                local lfile = relativePath..modulename.. ".lua";
+            local lfile = relativePath..modulename.. ".lua";
+            --if FileExists(relativePath .. k .. ".ini") then -- does this look like a mod folder?
                 local lfunc = loadfile(lfile)
-                if (lfunc) then 
+                if (lfunc) then
                     return lfunc;
                 else
                     errmsg = errmsg.."\n\tno mod asset '"..lfile.."'";
                 end
-            end
+            --end
         end
     end
     for _, k in ipairs(modPaths) do
         local relativePaths = {"addon/"..k.."/", "../../workshop/content/301650/"..k.."/", "mods/"..k.."/"};
         for _, relativePath in ipairs(relativePaths) do
-            if FileExists(relativePath .. k .. ".ini") then -- does this look like a mod folder?
-                local cfile = relativePath..modulename.. ".dll";
+            local cfile = relativePath..modulename.. ".dll";
+            --if FileExists(relativePath .. k .. ".ini") then -- does this look like a mod folder?
+                --print("Trying to load C module '"..cfile.."'");
                 local cfunc = package.loadlib(cfile, "luaopen_"..modulename)
-                if (cfunc) then 
+                if (cfunc) then
+                    debugprint(modulename.." Loaded (C)");
                     return cfunc;
                 else
                     errmsg = errmsg.."\n\tno mod asset '"..cfile.."'";
                 end
-            end
+            --end
         end
     end
     return errmsg;

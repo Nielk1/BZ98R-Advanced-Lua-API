@@ -8,13 +8,23 @@
 --- <li><b>Fix:</b> Works around the possible stuck iterator in <code>ObjectiveObjects</code></li>
 --- <li><b>Fix/Polyfill:</b> TeamSlot missing "PORTAL" = 90</li>
 --- <li><b>Fix:</b> Tugs not respecting DropOff command due to invalid deploy state</li>
+--- <li><b>Fix/Polyfill:</b> Fix for broken <code>Formation</code> order function</li>
 --- </ul>
 ---
 --- @module '_fix'
 --- @author John "Nielk1" Klein
 
+--- @diagnostic disable: undefined-global
+local debugprint = debugprint or function(...) end;
+local traceprint = traceprint or function(...) end;
+--- @diagnostic enable: undefined-global
+
+debugprint("_fix Loading");
+
 local version = require("_version");
 local hook = require("_hook");
+
+local pre_patch = version.Compare(version.game, "2.2.315") < 0;
 
 -- [Polyfill] table.unpack for Lua 5.1 compatibility
 _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
@@ -24,7 +34,7 @@ _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
 _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
 
 -- [Fix] Broken ObjectiveObjects iterator
-if version.Compare(_G.GameVersion, "2.2.315") < 0 then
+if pre_patch then
     local old_ObjectiveObjects = _G.ObjectiveObjects;
 
     _G.ObjectiveObjects = function ()
@@ -111,7 +121,7 @@ local function fixTugs()
     --- @diagnostic enable: deprecated
 end
 
-hook.Add("Start", "Fix:Start", function ()
+hook.Add("Start", "Fix:Start", function()
     fixTugs();
     hook.Remove("Start", "Fix:Start");
     hook.RemoveSaveLoad("Fix");
@@ -121,3 +131,16 @@ hook.AddSaveLoad("Fix", nil, function()
     hook.Remove("Start", "Fix:Start");
     hook.RemoveSaveLoad("Fix");
 end);
+
+-- [Fix][Polyfill] Fix for broken Formation order function
+if pre_patch then
+    _G.Formation = Formation or function(me, him, priority)
+        if(priority == nil) then
+            priority = 1;
+        end
+        --- @diagnostic disable-next-line: deprecated
+        _G.SetCommand(me, AiCommand["FORMATION"], priority, him);
+    end
+end
+
+debugprint("_fix Loaded");

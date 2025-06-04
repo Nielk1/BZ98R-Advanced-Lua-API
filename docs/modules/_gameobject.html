@@ -45,6 +45,7 @@
 <li><a href="#Health_Values">Health Values </a></li>
 <li><a href="#Ammo_Values">Ammo Values </a></li>
 <li><a href="#Team_Number">Team Number </a></li>
+<li><a href="#Owner">Owner </a></li>
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Distance">Distance </a></li>
@@ -58,6 +59,9 @@
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><a href="../modules/_camera.html">_camera</a></li>
+  <li><a href="../modules/_cheat_bzrave.html">_cheat_bzrave</a></li>
+  <li><a href="../modules/_cheat_bzskip.html">_cheat_bzskip</a></li>
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
@@ -79,6 +83,8 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/_version.html">_version</a></li>
+  <li><a href="../modules/_waves.html">_waves</a></li>
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
 
@@ -118,7 +124,7 @@
 <h2><a href="#Object_Creation___Destruction">Object Creation / Destruction </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#BuildGameObject">BuildGameObject (odf, team, pos[, point])</a></td>
+	<td class="name" nowrap><a href="#BuildObject">BuildObject (odf, team, pos[, point])</a></td>
 	<td class="summary">Build Object.</td>
 	</tr>
 	<tr>
@@ -134,23 +140,23 @@
 	<td class="summary">Get the game object in the specified team slot.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetPlayerGameObject">GetPlayerGameObject ([team])</a></td>
+	<td class="name" nowrap><a href="#GetPlayer">GetPlayer ([team])</a></td>
 	<td class="summary">Get Player GameObject of team.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetRecyclerGameObject">GetRecyclerGameObject ([team])</a></td>
+	<td class="name" nowrap><a href="#GetRecycler">GetRecycler ([team])</a></td>
 	<td class="summary">Get Recycler GameObject of team.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetFactoryGameObject">GetFactoryGameObject ([team])</a></td>
+	<td class="name" nowrap><a href="#GetFactory">GetFactory ([team])</a></td>
 	<td class="summary">Get Factory GameObject of team.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetArmoryGameObject">GetArmoryGameObject ([team])</a></td>
+	<td class="name" nowrap><a href="#GetArmory">GetArmory ([team])</a></td>
 	<td class="summary">Get Armory GameObject of team.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetConstructorGameObject">GetConstructorGameObject ([team])</a></td>
+	<td class="name" nowrap><a href="#GetConstructor">GetConstructor ([team])</a></td>
 	<td class="summary">Get Factory GameObject of team.</td>
 	</tr>
 </table>
@@ -476,6 +482,17 @@
 	<td class="summary">Set perceived team number of the GameObject.</td>
 	</tr>
 </table>
+<h2><a href="#Owner">Owner </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.SetOwner">GameObject.SetOwner (self, owner)</a></td>
+	<td class="summary">Sets the game object's owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GameObject.GetOwner">GameObject.GetOwner (self)</a></td>
+	<td class="summary">Returns the game object's owner.</td>
+	</tr>
+</table>
 <h2><a href="#Pilot_Class">Pilot Class </a></h2>
 <table class="function_list">
 	<tr>
@@ -726,8 +743,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "BuildGameObject"></a>
-    <strong>BuildGameObject (odf, team, pos[, point])</strong>
+    <a name = "BuildObject"></a>
+    <strong>BuildObject (odf, team, pos[, point])</strong>
     </dt>
     <dd>
     Build Object.
@@ -800,6 +817,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">key</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          Label
         </li>
     </ul>
@@ -847,8 +865,8 @@
 
 </dd>
     <dt>
-    <a name = "GetPlayerGameObject"></a>
-    <strong>GetPlayerGameObject ([team])</strong>
+    <a name = "GetPlayer"></a>
+    <strong>GetPlayer ([team])</strong>
     </dt>
     <dd>
     Get Player GameObject of team.
@@ -876,8 +894,8 @@
 
 </dd>
     <dt>
-    <a name = "GetRecyclerGameObject"></a>
-    <strong>GetRecyclerGameObject ([team])</strong>
+    <a name = "GetRecycler"></a>
+    <strong>GetRecycler ([team])</strong>
     </dt>
     <dd>
     Get Recycler GameObject of team.
@@ -905,8 +923,8 @@
 
 </dd>
     <dt>
-    <a name = "GetFactoryGameObject"></a>
-    <strong>GetFactoryGameObject ([team])</strong>
+    <a name = "GetFactory"></a>
+    <strong>GetFactory ([team])</strong>
     </dt>
     <dd>
     Get Factory GameObject of team.
@@ -934,8 +952,8 @@
 
 </dd>
     <dt>
-    <a name = "GetArmoryGameObject"></a>
-    <strong>GetArmoryGameObject ([team])</strong>
+    <a name = "GetArmory"></a>
+    <strong>GetArmory ([team])</strong>
     </dt>
     <dd>
     Get Armory GameObject of team.
@@ -963,8 +981,8 @@
 
 </dd>
     <dt>
-    <a name = "GetConstructorGameObject"></a>
-    <strong>GetConstructorGameObject ([team])</strong>
+    <a name = "GetConstructor"></a>
+    <strong>GetConstructor ([team])</strong>
     </dt>
     <dd>
     Get Factory GameObject of team.
@@ -3123,6 +3141,67 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Owner"></a>Owner </h2>
+
+          <div class="section-description">
+           functions get and set owner. The default owner for a game object is the game object that created it.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GameObject.SetOwner"></a>
+    <strong>GameObject.SetOwner (self, owner)</strong>
+    </dt>
+    <dd>
+    Sets the game object's owner.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+        <li><span class="parameter">owner</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+        ?
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GameObject.GetOwner"></a>
+    <strong>GameObject.GetOwner (self)</strong>
+    </dt>
+    <dd>
+    Returns the game object's owner.  Returns nil if it has none.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+            <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/_gameobject.html#GameObject">GameObject</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Pilot_Class"></a>Pilot Class </h2>
 
           <div class="section-description">
@@ -4114,7 +4193,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
+<i style="float:right;">Last updated 2025-06-04 17:52:46 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

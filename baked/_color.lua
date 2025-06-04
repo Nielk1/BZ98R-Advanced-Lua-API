@@ -17,6 +17,7 @@ local bit = require("_bit");
 local M = {};
 
 --- Convert human readable color names to BZ98R color labels.
+--- @type table<string,string>
 --- @enum ColorLabel
 M.ColorLabel = {
     Black       = "BLACK",     -- BLACK:     <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["Black"] = "BLACK"    </code></div>
@@ -48,7 +49,8 @@ M.ColorLabel = {
 
 --- Convert BZ98R color labels to RGB color codes.
 --- This probably isn't useful but it's here.
---- @enum ColorValues : ColorValue
+--- @enum ColorValues
+--- @type table<string,ColorValue>
 M.ColorValues = {
     BLACK     = 0x000000FF, -- 0x000000FF: <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["BLACK"] = 0x000000FF</code></div>
     DKGREY    = 0x4C4C4CFF, -- 0x4C4C4CFF: <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">              ["DKGREY"] = 0x4C4C4CFF</code></div>
@@ -71,6 +73,7 @@ M.ColorValues = {
 
 --- RAVE GUN! color cycle.
 --- Each color is represented as a hexadecimal number: 0xRRGGBBFF.
+--- @enum RAVE_COLOR
 --- @type table<integer, ColorValue>
 M.RAVE_COLOR = {
      [1] = 0xFF0000FF, -- 0xFF0000FF: <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>

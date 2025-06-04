@@ -33,6 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
 </ul>
 
 
@@ -53,7 +54,7 @@
   <li><a href="../modules/_navmanager.html">_navmanager</a></li>
   <li><a href="../modules/_objective.html">_objective</a></li>
   <li><a href="../modules/_optional.html">_optional</a></li>
-  <li><strong>_paramdb</strong></li>
+  <li><a href="../modules/_paramdb.html">_paramdb</a></li>
   <li><a href="../modules/_patrol.html">_patrol</a></li>
   <li><a href="../modules/_printfix.html">_printfix</a></li>
   <li><a href="../modules/_producer.html">_producer</a></li>
@@ -64,7 +65,7 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
-  <li><a href="../modules/_version.html">_version</a></li>
+  <li><strong>_version</strong></li>
   <li><a href="../modules/_waves.html">_waves</a></li>
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
@@ -73,11 +74,9 @@
 
 <div id="content">
 
-<h1>Module <code>_paramdb</code></h1>
-<p>BZ98R LUA Extended API ODF Handler.</p>
-<p>
-<p> Tracks objects by class and odf.
-</p>
+<h1>Module <code>_version</code></h1>
+<p>BZ98R LUA Extended API Version Utility.</p>
+<p></p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: John "Nielk1" Klein</li>
@@ -87,24 +86,31 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#GetClassLabel">GetClassLabel (odf)</a></td>
-	<td class="summary"></td>
+	<td class="name" nowrap><a href="#Compare">Compare (version1, version2)</a></td>
+	<td class="summary">Compare two version strings.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#game">game</a></td>
+	<td class="summary">The game version.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetClassSig">GetClassSig (odf)</a></td>
-	<td class="summary"></td>
+	<td class="name" nowrap><a href="#lua">lua</a></td>
+	<td class="summary">The Lua version.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetScrapCost">GetScrapCost (odf)</a></td>
-	<td class="summary"></td>
+	<td class="name" nowrap><a href="#api">api</a></td>
+	<td class="summary">The version of this LUA Extended API.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetPilotCost">GetPilotCost (odf)</a></td>
-	<td class="summary"></td>
+	<td class="name" nowrap><a href="#bzcp">bzcp</a></td>
+	<td class="summary">The BZCP version, if available.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetBuildTime">GetBuildTime (odf)</a></td>
-	<td class="summary"></td>
+	<td class="name" nowrap><a href="#shim">shim</a></td>
+	<td class="summary">The BZCP shim version, if available.</td>
 	</tr>
 </table>
 
@@ -116,75 +122,23 @@
 
     <dl class="function">
     <dt>
-    <a name = "GetClassLabel"></a>
-    <strong>GetClassLabel (odf)</strong>
+    <a name = "Compare"></a>
+    <strong>Compare (version1, version2)</strong>
     </dt>
     <dd>
-
+    Compare two version strings.
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">odf</span>
+        <li><span class="parameter">version1</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         ODF file name
+         The first version string
         </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">ClassLabel</span> or <span class="type">nil</span></span>
-        classlabel
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetClassSig"></a>
-    <strong>GetClassSig (odf)</strong>
-    </dt>
-    <dd>
-
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odf</span>
+        <li><span class="parameter">version2</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         ODF file name
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">ClassSig</span> or <span class="type">nil</span></span>
-        classlabel
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetScrapCost"></a>
-    <strong>GetScrapCost (odf)</strong>
-    </dt>
-    <dd>
-
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">odf</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         ODF file name
+         The second version string
         </li>
     </ul>
 
@@ -192,64 +146,127 @@
     <ol>
 
            <span class="types"><span class="type">integer</span></span>
-        scrap cost
+        -1, 0, or 1 depending on the comparison result
     </ol>
 
 
 
 
 </dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
     <dt>
-    <a name = "GetPilotCost"></a>
-    <strong>GetPilotCost (odf)</strong>
+    <a name = "game"></a>
+    <strong>game</strong>
     </dt>
     <dd>
-
+    The game version.
+<p> Example: "2.2.315"
 
     </ul>
 
-    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">odf</span>
+        <li><span class="parameter">game</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         ODF file name
+
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
 
-           <span class="types"><span class="type">integer</span></span>
-        pilot cost
-    </ol>
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/ScriptUtils.html#GameVersion">ScriptUtils.GameVersion</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "lua"></a>
+    <strong>lua</strong>
+    </dt>
+    <dd>
+    The Lua version.
+<p> Example: "Lua 5.1"
+
+    </ul>
+
+    <ul>
+        <li><span class="parameter">lua</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+        </li>
+    </ul>
+
 
 
 
 
 </dd>
     <dt>
-    <a name = "GetBuildTime"></a>
-    <strong>GetBuildTime (odf)</strong>
+    <a name = "api"></a>
+    <strong>api</strong>
     </dt>
     <dd>
-
+    The version of this LUA Extended API.
+<p> Example: "0.1.1"
 
     </ul>
 
-    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">odf</span>
+        <li><span class="parameter">api</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         ODF file name
+
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
 
-           <span class="types"><span class="type">number</span></span>
-        time
-    </ol>
+
+
+
+</dd>
+    <dt>
+    <a name = "bzcp"></a>
+    <strong>bzcp</strong>
+    </dt>
+    <dd>
+    The BZCP version, if available.
+<p> Example: "0.3"
+
+    </ul>
+
+    <ul>
+        <li><span class="parameter">bzcp</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "shim"></a>
+    <strong>shim</strong>
+    </dt>
+    <dd>
+    The BZCP shim version, if available.
+<p> Example: 1
+
+    </ul>
+
+    <ul>
+        <li><span class="parameter">shim</span>
+         integer
+         (<em>optional</em>)
+        </li>
+    </ul>
+
 
 
 

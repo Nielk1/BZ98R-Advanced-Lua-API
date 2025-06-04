@@ -33,6 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_bit32">Class bit32 </a></li>
 </ul>
 
 
@@ -40,6 +41,9 @@
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
   <li><strong>_bit</strong></li>
+  <li><a href="../modules/_camera.html">_camera</a></li>
+  <li><a href="../modules/_cheat_bzrave.html">_cheat_bzrave</a></li>
+  <li><a href="../modules/_cheat_bzskip.html">_cheat_bzskip</a></li>
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
@@ -61,6 +65,8 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/_version.html">_version</a></li>
+  <li><a href="../modules/_waves.html">_waves</a></li>
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
 
@@ -74,7 +80,7 @@
 <p> https://github.com/AlberTajuelo/bitop-lua/tree/master
 <p>
  MIT License
-<p> Copyright (c).  Licensed under the same terms as Lua (MIT).
+<p> Copyright (c).    Licensed under the same terms as Lua (MIT).
 <p> Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
@@ -89,7 +95,17 @@
  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.</p>
+ SOFTWARE.
+</p>
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">local bit = require(&quot;_bit&quot;);
+local bit32.bor(1, 2) -- returns 3
+</pre></li>
+        <li><pre class="example">local bit32 = require(&quot;_bit&quot;).bit32;
+local bit.bor(1, 2, 4) -- returns 7
+</pre></li>
+    </ul>
 
 
 <h2><a href="#Functions">Functions</a></h2>
@@ -99,7 +115,7 @@
 	<td class="summary">Normalizes a number to the numeric range for bit operations and returns it.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#bxor">bxor (b, b)</a></td>
+	<td class="name" nowrap><a href="#bxor">bxor (a, b)</a></td>
 	<td class="summary">Returns the bitwise xor of its arguments.</td>
 	</tr>
 	<tr>
@@ -155,6 +171,57 @@
 	<td class="summary">Bitwise test.</td>
 	</tr>
 </table>
+<h2><a href="#Class_bit32">Class bit32 </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#bit32.bnot">bit32.bnot (x)</a></td>
+	<td class="summary">Returns the bitwise not of its argument.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.bxor">bit32.bxor (a, b, ...)</a></td>
+	<td class="summary">Returns the bitwise xor of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.band">bit32.band (a, b, ...)</a></td>
+	<td class="summary">Returns the bitwise and of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.bor">bit32.bor (a, b, ...)</a></td>
+	<td class="summary">Returns the bitwise or of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.btest">bit32.btest (...)</a></td>
+	<td class="summary">Bitwise test.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.lrotate">bit32.lrotate (x, disp)</a></td>
+	<td class="summary">Bitwise left rotation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.rrotate">bit32.rrotate (x, disp)</a></td>
+	<td class="summary">Bitwise right rotation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.lshift">bit32.lshift (x, disp)</a></td>
+	<td class="summary">Bitwise logical left-shift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.rshift">bit32.rshift (x, disp)</a></td>
+	<td class="summary">Bitwise logical right-shift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.arshift">bit32.arshift (x, disp)</a></td>
+	<td class="summary">Bitwise arithmetic right-shift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.extract">bit32.extract (x, field[, width])</a></td>
+	<td class="summary">Extract bits</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit32.replace">bit32.replace (x, v, field[, width])</a></td>
+	<td class="summary">Replace bits</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
@@ -194,17 +261,16 @@
 </dd>
     <dt>
     <a name = "bxor"></a>
-    <strong>bxor (b, b)</strong>
+    <strong>bxor (a, b)</strong>
     </dt>
     <dd>
-    Returns the bitwise xor of its arguments.
- (a,b)
+    Returns the bitwise xor of its arguments. (a,b)
 
     </ul>
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">b</span>
+        <li><span class="parameter">a</span>
             <span class="types"><span class="type">integer</span></span>
 
         </li>
@@ -214,6 +280,12 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
 
 
 
@@ -654,13 +726,419 @@
 
 </dd>
 </dl>
+    <h2 class="section-header "><a name="Class_bit32"></a>Class bit32 </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "bit32.bnot"></a>
+    <strong>bit32.bnot (x)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise not of its argument.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.bxor"></a>
+    <strong>bit32.bxor (a, b, ...)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise xor of its arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.band"></a>
+    <strong>bit32.band (a, b, ...)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise and of its arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.bor"></a>
+    <strong>bit32.bor (a, b, ...)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise or of its arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.btest"></a>
+    <strong>bit32.btest (...)</strong>
+    </dt>
+    <dd>
+    Bitwise test.
+ Checks if any of the bits match.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         integer
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.lrotate"></a>
+    <strong>bit32.lrotate (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise left rotation.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to rotate.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to rotate.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.rrotate"></a>
+    <strong>bit32.rrotate (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise right rotation.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to rotate.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to rotate.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.lshift"></a>
+    <strong>bit32.lshift (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise logical left-shift.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to shift.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to shift.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.rshift"></a>
+    <strong>bit32.rshift (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise logical right-shift.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to shift.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to shift.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.arshift"></a>
+    <strong>bit32.arshift (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise arithmetic right-shift.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to shift.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to shift.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.extract"></a>
+    <strong>bit32.extract (x, field[, width])</strong>
+    </dt>
+    <dd>
+    Extract bits
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to extract bits from.
+        </li>
+        <li><span class="parameter">field</span>
+            <span class="types"><span class="type">integer</span></span>
+         The starting bit position to extract from.
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to extract. Defaults to 1.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        extracted The extracted bits.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit32.replace"></a>
+    <strong>bit32.replace (x, v, field[, width])</strong>
+    </dt>
+    <dd>
+    Replace bits
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to replace bits in.
+        </li>
+        <li><span class="parameter">v</span>
+            <span class="types"><span class="type">integer</span></span>
+         The value to insert.
+        </li>
+        <li><span class="parameter">field</span>
+            <span class="types"><span class="type">integer</span></span>
+         The starting bit position to replace.
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to replace. Defaults to 1.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        replaced The number with the replaced bits.
+    </ol>
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
+<i style="float:right;">Last updated 2025-06-04 17:52:46 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

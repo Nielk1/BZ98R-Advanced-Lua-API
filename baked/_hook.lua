@@ -51,6 +51,7 @@ local utility = require("_utility");
 local M = {};
 
 --- @alias event_name string
+
 --- @alias event_hook_identifier string
 
 --- @class HookHandler

@@ -1,3 +1,21 @@
+--- BZ98R LUA Extended API Cheat.
+---
+--- BZSKIP cheat
+---
+--- @module '_cheat_bzskip'
+--- @author John "Nielk1" Klein
+--- @usage require("_cheat_bzrave");
+--- local hook = require("_hook");
+--- local camera = require("_camera");
+--- hook.Add("Cheat", "Mission:Cheat", function (cheat)
+---     if cheat == "BZSKIP" then
+---         local machine_state = mission_data.mission_states.StateMachines.main_objectives;
+---         machine_state:SecondsHavePassed(); -- clear timer in case we were in one
+---         camera.CameraFinish(); -- protected camera exit that won't crash
+---         machine_state:next(); -- move to the next state
+---     end
+--- end);
+
 local statemachine = require("_statemachine");
 local hook = require("_hook");
 

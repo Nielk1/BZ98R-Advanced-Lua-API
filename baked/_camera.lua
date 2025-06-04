@@ -374,8 +374,11 @@ function M.CameraObject(...)
 end
 
 --- Finishes the cinematic camera and enables normal input.
---- Always returns true.
+--- Does nothing if camera is not active.
 function M.CameraFinish()
+    if not InCamera then
+        return;
+    end
     InCamera = false;
     CheckCameraType(nil, nil);
     --- @diagnostic disable-next-line: deprecated

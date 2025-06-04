@@ -1,3 +1,11 @@
+--- BZ98R LUA Extended API Cheat.
+---
+--- BZRAVE cheat
+---
+--- @module '_cheat_bzrave'
+--- @author John "Nielk1" Klein
+--- @usage require("_cheat_bzrave");
+
 local statemachine = require("_statemachine");
 local hook = require("_hook");
 local gameobject = require("_gameobject");

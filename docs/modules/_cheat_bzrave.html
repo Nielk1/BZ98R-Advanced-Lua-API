@@ -30,10 +30,6 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
-<h2>Contents</h2>
-<ul>
-<li><a href="#Functions">Functions</a></li>
-</ul>
 
 
 <h2>Modules</h2>
@@ -41,7 +37,7 @@
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_bit.html">_bit</a></li>
   <li><a href="../modules/_camera.html">_camera</a></li>
-  <li><a href="../modules/_cheat_bzrave.html">_cheat_bzrave</a></li>
+  <li><strong>_cheat_bzrave</strong></li>
   <li><a href="../modules/_cheat_bzskip.html">_cheat_bzskip</a></li>
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
@@ -60,7 +56,7 @@
   <li><a href="../modules/_requirefix.html">_requirefix</a></li>
   <li><a href="../modules/_statemachine.html">_statemachine</a></li>
   <li><a href="../modules/_stateset.html">_stateset</a></li>
-  <li><strong>_table_show</strong></li>
+  <li><a href="../modules/_table_show.html">_table_show</a></li>
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
@@ -73,84 +69,27 @@
 
 <div id="content">
 
-<h1>Module <code>_table_show</code></h1>
-<p>BZ98R LUA Extended API table to string.</p>
+<h1>Module <code>_cheat_bzrave</code></h1>
+<p>BZ98R LUA Extended API Cheat.</p>
 <p>
- Converts table to string representation.
-<p> January 12, 2007
- (For Lua 5.1)
-<p> Modified slightly by RiciLake to avoid the unnecessary table traversal in tablecount().
-<p> Modified slightly by John "Nielk1" Klein for LDoc.
+<p> BZRAVE cheat
 </p>
-    <h3>Info:</h3>
-    <ul>
-        <li><strong>Author</strong>: Julio Manuel Fernandez-Diaz</li>
-    </ul>
-
-
-<h2><a href="#Functions">Functions</a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#table.show">table.show (t[, name[, indent]])</a></td>
-	<td class="summary">Convert table to string representation.</td>
-	</tr>
-</table>
-
-<br/>
-<br/>
-
-
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
-
-    <dl class="function">
-    <dt>
-    <a name = "table.show"></a>
-    <strong>table.show (t[, name[, indent]])</strong>
-    </dt>
-    <dd>
-    Convert table to string representation.
-<p> Heavily based on "Saving tables with cycles", PIL2, p. 113.
-
- Formats tables with cycles recursively to any depth.
- The output is returned as a string.
- References to other tables are shown as values.
- Self references are indicated.
-<p> The string returned is "Lua code", which can be procesed
- (in the case in which indent is composed by spaces or "--").
-<p> Userdata and function keys and values are shown as strings,
- which logically are exactly not equivalent to the original code.
-
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">t</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
-         the table
-        </li>
-        <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         name of the table
-         (<em>optional</em>)
-        </li>
-        <li><span class="parameter">indent</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         first indentation (optional)
-         (<em>optional</em>)
-        </li>
-    </ul>
-
-
-
-
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="global">print</span>(<span class="global">table</span>.show(t, <span class="string">"t"</span>))   <span class="comment">-- a typical use</span></pre>
+        <pre class="example">require(&quot;_cheat_bzrave&quot;);
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: John "Nielk1" Klein</li>
     </ul>
 
-</dd>
-</dl>
+
+
+<br/>
+<br/>
+
+
 
 
 </div> <!-- id="content" -->

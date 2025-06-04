@@ -26,10 +26,14 @@ local function preprocess_file(input_file, output_file)
         local transformed = 0
 
         if inBlock then
-            if string.match(line, "^%s*%-%-%- ") then
-                line = line:gsub("^%s*%-%-%- (.*)$", "-- %1")
-            elseif string.match(line, "^%s*%-%-%-") then
-                line = line:gsub("^%s*%-%-%-(.*)$", "--%1")
+            --if string.match(line, "^%s*%-%-%- ") then
+            --    line = line:gsub("^%s*%-%-%- (.*)$", "-- %1")
+            --elseif string.match(line, "^%s*%-%-%-") then
+            --    line = line:gsub("^%s*%-%-%-(.*)$", "--%1")
+            if string.match(line, "^%-%-%- ") then
+                line = line:gsub("^%-%-%- (.*)$", "-- %1")
+            elseif string.match(line, "^%-%-%-") then
+                line = line:gsub("^%-%-%-(.*)$", "--%1")
             else
                 inBlock = false;
                 if pendingblock then
@@ -124,9 +128,50 @@ local function preprocess_file(input_file, output_file)
         end
 
         -- X. `--- @type stuff` -> `--`
+        --if transformed == 0 then
+        --    line, transformed = line:gsub("%-%- @type.*", "-- ")
+        --    --if transformed > 0 then print("Processing line: " .. line) end
+        --end
+        
+        -- X. `    --- @type stuff` -> `    --`
         if transformed == 0 then
-            line, transformed = line:gsub("%-%- @type.*", "-- ")
+            line, transformed = line:gsub("^(%s+)%-%-%- @type (.*)", "%1-- type ? %2")
             --if transformed > 0 then print("Processing line: " .. line) end
+        end
+
+        -- remove some lines that conflict in ldoc
+        -- X. `--- @type table<` -> `--`
+        if transformed == 0 then
+            --if line:match("%-%- @type table<.*") and pendingblock and pendingblock[#pendingblock] then
+            --    print('--------------')
+            --    print(line)
+            --    print(pendingblock[#pendingblock])
+            --    print('--------------')
+            --end
+            if line:match("%-%- @type table<.*") and pendingblock and pendingblock[#pendingblock] and pendingblock[#pendingblock]:match("%-%- @class .*") then
+                line = "--";
+                transformed = 1;
+            end
+        end
+        if transformed == 0 then
+            if line:match("%-%- @type table<.*") and pendingblock and pendingblock[#pendingblock] and pendingblock[#pendingblock]:match("%-%- @enum .*") then
+                line = "--";
+                transformed = 1;
+            end
+        end
+        if transformed == 0 then
+            if line:match("%-%- @class .*") and pendingblock and pendingblock[#pendingblock] and pendingblock[#pendingblock]:match("%-%- @type table<.*") then
+                pendingblock[#pendingblock] = line;
+                line = "--";
+                transformed = 1;
+            end
+        end
+        if transformed == 0 then
+            if line:match("%-%- @enum .*") and pendingblock and pendingblock[#pendingblock] and pendingblock[#pendingblock]:match("%-%- @type table<.*") then
+                pendingblock[#pendingblock] = line;
+                line = "--";
+                transformed = 1;
+            end
         end
 
         -- 8. `--- @alias name type` -> `-- @type name`

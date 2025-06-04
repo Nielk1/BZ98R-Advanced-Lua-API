@@ -40,6 +40,7 @@
 <li><a href="#Health_Values">Health Values </a></li>
 <li><a href="#Ammo_Values">Ammo Values </a></li>
 <li><a href="#Team_Number">Team Number </a></li>
+<li><a href="#Owner">Owner </a></li>
 <li><a href="#Pilot_Class">Pilot Class </a></li>
 <li><a href="#Objective_Marker">Objective Marker </a></li>
 <li><a href="#Distance">Distance </a></li>
@@ -50,7 +51,6 @@
 <li><a href="#Sound_Effects">Sound Effects </a></li>
 <li><a href="#Game_Object">Game Object </a></li>
 <li><a href="#Target">Target </a></li>
-<li><a href="#Owner">Owner </a></li>
 <li><a href="#Position_and_Orientation">Position and Orientation </a></li>
 <li><a href="#Linear_Velocity">Linear Velocity </a></li>
 <li><a href="#Angular_Velocity">Angular Velocity </a></li>
@@ -93,6 +93,9 @@
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><a href="../modules/_camera.html">_camera</a></li>
+  <li><a href="../modules/_cheat_bzrave.html">_cheat_bzrave</a></li>
+  <li><a href="../modules/_cheat_bzskip.html">_cheat_bzskip</a></li>
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
@@ -114,6 +117,8 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/_version.html">_version</a></li>
+  <li><a href="../modules/_waves.html">_waves</a></li>
   <li><strong>ScriptUtils</strong></li>
 </ul>
 
@@ -386,6 +391,17 @@
 	<tr>
 	<td class="name" nowrap><a href="#SetPerceivedTeam">SetPerceivedTeam (h, t)</a></td>
 	<td class="summary">Set the game object's perceived team number (as opposed to its real team number).</td>
+	</tr>
+</table>
+<h2><a href="#Owner">Owner </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#SetOwner">SetOwner (h, o)</a></td>
+	<td class="summary">Sets the game object's owner.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetOwner">GetOwner (h)</a></td>
+	<td class="summary">Returns the game object's owner.</td>
 	</tr>
 </table>
 <h2><a href="#Pilot_Class">Pilot Class </a></h2>
@@ -670,17 +686,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#GetTarget">GetTarget (h)</a></td>
 	<td class="summary">Returns the game object's target.</td>
-	</tr>
-</table>
-<h2><a href="#Owner">Owner </a></h2>
-<table class="function_list">
-	<tr>
-	<td class="name" nowrap><a href="#SetOwner">SetOwner (h, o)</a></td>
-	<td class="summary">Sets the game object's owner.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetOwner">GetOwner (h)</a></td>
-	<td class="summary">Returns the game object's owner.</td>
 	</tr>
 </table>
 <h2><a href="#Position_and_Orientation">Position and Orientation </a></h2>
@@ -1048,6 +1053,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#CameraPathDir">CameraPathDir (path, height, speed)</a></td>
 	<td class="summary">Moves a cinematic camera long a path at a given height and speed while looking along the path direction.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#CameraPathPath">CameraPathPath (path, height, speed, target)</a></td>
+	<td class="summary">Moves a cinematic camera along a path at a given height and speed while looking at a target path.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#PanDone">PanDone ()</a></td>
@@ -3295,6 +3304,67 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Owner"></a>Owner </h2>
+
+          <div class="section-description">
+           functions get and set owner. The default owner for a game object is the game object that created it.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "SetOwner"></a>
+    <strong>SetOwner (h, o)</strong>
+    </dt>
+    <dd>
+    Sets the game object's owner.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+        <li><span class="parameter">o</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+        ?
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetOwner"></a>
+    <strong>GetOwner (h)</strong>
+    </dt>
+    <dd>
+    Returns the game object's owner.  Returns nil if it has none.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">h</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Pilot_Class"></a>Pilot Class </h2>
 
           <div class="section-description">
@@ -4667,8 +4737,6 @@
     </dt>
     <dd>
     Set the label of the game object (e.g.  "tank1").
- <p>Note: this function was misspelled as SettLabel in 1.5. It can be renamed compatibly with a short snippet of code at the top of the mission script:</p>
- <pre>SetLabel = SetLabel or SettLabel</pre>
 
     </ul>
 
@@ -5378,67 +5446,6 @@
     </dt>
     <dd>
     Returns the game object's target.  Returns nil if it has none.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a> or <span class="type">nil</span></span>
-
-    </ol>
-
-
-
-
-</dd>
-</dl>
-    <h2 class="section-header has-description"><a name="Owner"></a>Owner </h2>
-
-          <div class="section-description">
-           functions get and set owner. The default owner for a game object is the game object that created it.
-          </div>
-    <dl class="function">
-    <dt>
-    <a name = "SetOwner"></a>
-    <strong>SetOwner (h, o)</strong>
-    </dt>
-    <dd>
-    Sets the game object's owner.
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">h</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-        <li><span class="parameter">o</span>
-            <span class="types"><a class="type" href="../modules/ScriptUtils.html#Handle">Handle</a></span>
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetOwner"></a>
-    <strong>GetOwner (h)</strong>
-    </dt>
-    <dd>
-    Returns the game object's owner.  Returns nil if it has none.
 
     </ul>
 
@@ -7921,6 +7928,47 @@
 
 </dd>
     <dt>
+    <a name = "CameraPathPath"></a>
+    <strong>CameraPathPath (path, height, speed, target)</strong>
+    </dt>
+    <dd>
+    Moves a cinematic camera along a path at a given height and speed while looking at a target path.
+ Returns true when the camera arrives at its destination. Returns false otherwise.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">speed</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "PanDone"></a>
     <strong>PanDone ()</strong>
     </dt>
@@ -10240,7 +10288,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
+<i style="float:right;">Last updated 2025-06-04 17:52:46 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

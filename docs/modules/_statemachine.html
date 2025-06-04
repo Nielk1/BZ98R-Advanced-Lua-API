@@ -42,6 +42,9 @@
 <ul class="nowrap">
   <li><a href="../modules/_api.html">_api</a></li>
   <li><a href="../modules/_bit.html">_bit</a></li>
+  <li><a href="../modules/_camera.html">_camera</a></li>
+  <li><a href="../modules/_cheat_bzrave.html">_cheat_bzrave</a></li>
+  <li><a href="../modules/_cheat_bzskip.html">_cheat_bzskip</a></li>
   <li><a href="../modules/_color.html">_color</a></li>
   <li><a href="../modules/_config.html">_config</a></li>
   <li><a href="../modules/_customsavetype.html">_customsavetype</a></li>
@@ -63,6 +66,8 @@
   <li><a href="../modules/_tracker.html">_tracker</a></li>
   <li><a href="../modules/_unsaved.html">_unsaved</a></li>
   <li><a href="../modules/_utility.html">_utility</a></li>
+  <li><a href="../modules/_version.html">_version</a></li>
+  <li><a href="../modules/_waves.html">_waves</a></li>
   <li><a href="../modules/ScriptUtils.html">ScriptUtils</a></li>
 </ul>
 
@@ -187,12 +192,16 @@ end);
 	<td class="summary">Wait a set period of time on this state.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter.SecondsHavePassed">StateMachineIter.SecondsHavePassed (self[, seconds[, lap]])</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter.SecondsHavePassed">StateMachineIter.SecondsHavePassed (self[, seconds[, lap[, first]]])</a></td>
 	<td class="summary">Check if a set period of time has passed.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#StateMachineNamedStateTruncated:SleepSeconds">StateMachineNamedStateTruncated:SleepSeconds (seconds, next_state[, early_exit])</a></td>
 	<td class="summary">Wait a set period of time on this state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#StateMachineNamedStateTruncated.SleepSeconds-todo4">StateMachineNamedStateTruncated.SleepSeconds-todo4</a></td>
+	<td class="summary">change this to use closures instead of passing the params in an array, as there's actually no need</td>
 	</tr>
 </table>
 <h2><a href="#StateMachineIter___Core">StateMachineIter - Core </a></h2>
@@ -202,7 +211,7 @@ end);
 	<td class="summary">Save event function.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#StateMachineIter.Load">StateMachineIter.Load (template, target_call, target_time, state_key, addonData)</a></td>
+	<td class="name" nowrap><a href="#StateMachineIter.Load">StateMachineIter.Load (template, target_call, target_time, set_wait_time, state_key, addonData)</a></td>
 	<td class="summary">Load event function.</td>
 	</tr>
 	<tr>
@@ -466,7 +475,7 @@ end);
 </dd>
     <dt>
     <a name = "StateMachineIter.SecondsHavePassed"></a>
-    <strong>StateMachineIter.SecondsHavePassed (self[, seconds[, lap]])</strong>
+    <strong>StateMachineIter.SecondsHavePassed (self[, seconds[, lap[, first]]])</strong>
     </dt>
     <dd>
     Check if a set period of time has passed.
@@ -489,6 +498,11 @@ end);
         <li><span class="parameter">lap</span>
             <span class="types"><span class="type">boolean</span></span>
          If true the timer is will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">first</span>
+            <span class="types"><span class="type">boolean</span></span>
+         If true the timer returns true when it starts, requires lap to be true.
          (<em>optional</em>)
         </li>
     </ul>
@@ -524,11 +538,26 @@ end);
          Next state when timer hits zero
         </li>
         <li><span class="parameter">early_exit</span>
-            <span class="types"><span class="type">function</span></span>
+            <span class="types"><a class="type" href="../modules/_statemachine.html#StateMachineFunction">StateMachineFunction</a></span>
          Function to check if the state should be exited early, return false, true, or next state name
          (<em>optional</em>)
         </li>
     </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "StateMachineNamedStateTruncated.SleepSeconds-todo4"></a>
+    <strong>StateMachineNamedStateTruncated.SleepSeconds-todo4</strong>
+    </dt>
+    <dd>
+    change this to use closures instead of passing the params in an array, as there's actually no need
+
+    </ul>
+
 
 
 
@@ -567,7 +596,10 @@ end);
         integer? Timer's value, nil for not set</li>
         <li>
            <span class="types"><span class="type">target_time</span></span>
-        integer? TargetTurn's value, nil for not set</li>
+        number? TargetTurn's value, nil for not set</li>
+        <li>
+           <span class="types"><span class="type">set_wait_time</span></span>
+        number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes</li>
         <li>
            <span class="types"><span class="type">state_key</span></span>
         string|integer|nil Current state, string name or integer index if state machine is ordered</li>
@@ -582,7 +614,7 @@ end);
 </dd>
     <dt>
     <a name = "StateMachineIter.Load"></a>
-    <strong>StateMachineIter.Load (template, target_call, target_time, state_key, addonData)</strong>
+    <strong>StateMachineIter.Load (template, target_call, target_time, set_wait_time, state_key, addonData)</strong>
     </dt>
     <dd>
     Load event function.
@@ -601,8 +633,12 @@ end);
         ? Timer's value, nil for not set
         </li>
         <li><span class="parameter">target_time</span>
-            <span class="types"><span class="type">integer</span></span>
+            <span class="types"><span class="type">number</span></span>
         ? TargetTurn's value, nil for not set
+        </li>
+        <li><span class="parameter">set_wait_time</span>
+            <span class="types"><span class="type">number</span></span>
+        ? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
         </li>
         <li><span class="parameter">state_key</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">integer</span> or <span class="type">nil</span></span>
@@ -642,7 +678,7 @@ end);
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-05-16 08:32:15 </i>
+<i style="float:right;">Last updated 2025-06-04 17:52:46 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

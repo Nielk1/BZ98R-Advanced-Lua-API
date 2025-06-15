@@ -6,14 +6,14 @@
 --- @module '_api'
 --- @author John "Nielk1" Klein
 
-require("_fix");
-
 --- @diagnostic disable: undefined-global
 local debugprint = debugprint or function(...) end;
 local traceprint = traceprint or function(...) end;
 --- @diagnostic enable: undefined-global
 
 debugprint("_api Loading");
+
+require("_fix");
 
 local utility = require("_utility");
 local hook = require("_hook");

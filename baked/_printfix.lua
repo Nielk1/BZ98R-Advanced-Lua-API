@@ -5,6 +5,7 @@
 --- @module '_printfix'
 --- @author John "Nielk1" Klein
 
+-- Bash to show log messages in real time:
 --[[
 tail -F -n0 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '
 /^\|LUA\|PRINT\|/ { sub(/^\|LUA\|PRINT\|/, ""); sub(/\|PRINT\|LUA\|$/, ""); print; system("") }
@@ -12,6 +13,7 @@ tail -F -n0 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|L
 '
 --]]
 
+-- Bash to show log messages in real time and save to file BZLuaLog.txt:
 --[[
 tail -F -n +1 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '
 /^\|LUA\|PRINT\|/ { sub(/^\|LUA\|PRINT\|/, ""); sub(/\|PRINT\|LUA\|$/, ""); print; system("") }
@@ -19,11 +21,26 @@ tail -F -n +1 BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\
 ' | tee BZLuaLog.txt
 --]]
 
+-- Bash to extract log messages from existing log file to file BZLuaLog.txt:
 --[[
 cat BZLogger.txt | grep --line-buffered -oP '\|LUA\|PRINT\|.*?\|PRINT\|LUA\||\|LUA\|ERROR\|.*?\|ERROR\|LUA\|' | awk '
 /^\|LUA\|PRINT\|/ { sub(/^\|LUA\|PRINT\|/, ""); sub(/\|PRINT\|LUA\|$/, ""); print; system("") }
 /^\|LUA\|ERROR\|/ { sub(/^\|LUA\|ERROR\|/, ""); sub(/\|ERROR\|LUA\|$/, ""); print "\033[31m" $0 "\033[0m"; system("") }
 ' > BZLuaLog.txt
+--]]
+
+-- Powershell to show log messages in window in real time: (LuaLogWatch.ps1)
+--[[
+Get-Content -Path "BZLogger.txt" -Wait -Tail 0 -Encoding UTF8 | ForEach-Object {
+    if ($_ -match '\|LUA\|PRINT\|(.*?)\|PRINT\|LUA\|') {
+        $msg = $Matches[1]
+        Write-Host $msg
+    }
+    elseif ($_ -match '\|LUA\|ERROR\|(.*?)\|ERROR\|LUA\|') {
+        $msg = $Matches[1]
+        Write-Host $msg -ForegroundColor Red
+    }
+}
 --]]
 
 local oldPrint = print;

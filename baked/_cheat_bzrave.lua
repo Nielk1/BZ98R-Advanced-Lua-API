@@ -9,7 +9,6 @@
 local statemachine = require("_statemachine");
 local hook = require("_hook");
 local gameobject = require("_gameobject");
-local bit = require("_bit");
 local color = require("_color");
 
 statemachine.Create("Cheat_BZRAVE",

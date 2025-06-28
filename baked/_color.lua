@@ -12,7 +12,7 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_color Loading");
 
-local bit = require("_bit");
+--local bit = require("_bit");
 
 local M = {};
 
@@ -285,6 +285,8 @@ end
 
 
 -- Print Color Tests
+debugprint("Game Color Pallet Test");
+
 debugprint("COLOR TEST Exact ["..
     M.RGBAtoAnsi24Escape(M.ColorValues.BLACK    ).."██"..
     M.RGBAtoAnsi24Escape(M.ColorValues.DKGREY   ).."██"..
@@ -341,6 +343,8 @@ debugprint("COLOR TEST 16p   ["..
     M.AnsiColorEscapeMap.MAGENTA  .."██"..
     M.AnsiColorEscapeMap.DKMAGENTA.."██"..
     M.AnsiColorEscapeMap._.."]");
+
+debugprint("Rave Color Pallet Test");
 
 local rave_exact = "";
 for i = 1, #M.RAVE_COLOR do

@@ -288,5 +288,6 @@ end
 
 -- Run the preprocessor
 local lineCounterAll = preprocess_file("./scriptutils.lua", output_dir .. "/scriptutils.lua")
+lineCounterAll = lineCounterAll + preprocess_file("./bit.lua", output_dir .. "/bit.lua")
 lineCounterAll = lineCounterAll + preprocess_directory("./../baked", output_dir)
 print("Preprocessing complete. Total lines: "..tostring(lineCounterAll).." Files saved to " .. output_dir)

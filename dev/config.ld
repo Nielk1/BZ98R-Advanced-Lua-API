@@ -9,6 +9,7 @@ alias("class", "type")
 alias("package", "local")
 file = {
 --'scriptutils.lua',
+--'bit.lua',
 --'..\\baked',
 '..\\temp'
 }

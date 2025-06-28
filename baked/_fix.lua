@@ -1,4 +1,4 @@
---- BZ98R LUA Extended API Lua Bug Fixer
+--- BZ98R LUA Extended API Lua Bug Fixer.
 ---
 --- Contains fixes for bugs in the game's lua implementation and other polyfils.
 ---

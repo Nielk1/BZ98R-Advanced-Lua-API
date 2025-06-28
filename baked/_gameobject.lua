@@ -353,6 +353,18 @@ function GameObject.IsBusy(self)
     return IsBusy(self:GetHandle());
 end
 
+--- Returns true if the game object has reached the end of the named path. Returns false otherwise.
+--- [2.1+]
+--- @param self GameObject
+--- @param path string
+--- @return boolean
+function GameObject.IsAtEndOfPath(self, path)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not utility.isstring(path) then error("Parameter path must be a string") end
+    --- @diagnostic disable-next-line: deprecated
+    return IsAtEndOfPath(self:GetHandle(), path);
+end
+
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param self GameObject
 --- @return AiCommand
@@ -706,6 +718,15 @@ function GameObject.Hunt(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
     Hunt(self:GetHandle(), priority);
+end
+
+--- Order GameObject to Recycle.
+--- @param self GameObject GameObject instance
+--- @param priority? integer Order priority, >0 removes user control
+function GameObject.Recycle(self, priority)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    Recycle(self:GetHandle(), priority);
 end
 
 -------------------------------------------------------------------------------

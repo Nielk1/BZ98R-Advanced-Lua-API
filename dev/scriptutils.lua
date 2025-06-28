@@ -1419,6 +1419,14 @@ function CanBuild(me) error("This function is provided by the engine."); end
 --- @deprecated See `_gameobject` module.
 function IsBusy(me) error("This function is provided by the engine."); end
 
+--- Returns true if the game object has reached the end of the named path. Returns false otherwise.
+--- [2.1+]
+--- @param me Handle
+--- @param path string
+--- @return boolean
+--- @deprecated See `_gameobject` module.
+function IsAtEndOfPath(me, path) error("This function is provided by the engine."); end
+
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param me Handle
 --- @return AiCommand
@@ -1600,6 +1608,13 @@ function Formation(me, him, priority) end
 --- @deprecated See `_gameobject` module.
 function Hunt(me, priority) end
 
+--- Commands the unit to recycle. This function is equivalent to SetCommand(me, AiCommand.RECYCLE, priority).
+--- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
+--- [2.1+]
+--- @param me Handle
+--- @param priority? integer
+--- @deprecated See `_gameobject` module.
+function Recycle(me, priority) end
 -------------------------------------------------------------------------------
 -- Tug Cargo
 -------------------------------------------------------------------------------

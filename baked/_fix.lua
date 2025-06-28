@@ -1,7 +1,7 @@
 --- BZ98R LUA Extended API Lua Bug Fixer.
 ---
 --- Contains fixes for bugs in the game's lua implementation and other polyfils.
----
+--- 
 --- <ul>
 --- <li><b>Polyfill:</b> <code>table.unpack</code> for Lua 5.1 compatibility</li>
 --- <li><b>Fix/Polyfill:</b> Remap <code>SettLabel</code> to <code>SetLabel</code> for BZ1.5</li>

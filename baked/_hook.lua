@@ -329,6 +329,8 @@ function M.CallLoad(SaveData)
             if v.Load ~= nil and utility.isfunction(v.Load) then
                 if SaveData[k] ~= nil then
                     v.Load(table.unpack(SaveData[k]));
+                else
+                    v.Load();
                 end
             end
         end

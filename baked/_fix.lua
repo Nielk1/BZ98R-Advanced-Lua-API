@@ -27,14 +27,22 @@ local hook = require("_hook");
 local pre_patch = version.Compare(version.game, "2.2.315") < 0;
 
 -- [Polyfill] table.unpack for Lua 5.1 compatibility
-_G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
+if not _G.table.unpack then
+    debugprint(" - Polyfill: table.unpack");
+    _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
+end
 
 -- [Polyfill] Remap SettLabel to SetLabel for BZ1.5
+debugprint(" - Fix/Polyfill: SetLabel");
 --- @diagnostic disable-next-line: undefined-field
-_G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
+if not _G.SetLabel and _G.SettLabel then
+    --- @diagnostic disable-next-line: undefined-field
+    _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
+end
 
 -- [Fix] Broken ObjectiveObjects iterator
 if pre_patch then
+    debugprint(" - Fix: ObjectiveObjects iterator");
     local old_ObjectiveObjects = _G.ObjectiveObjects;
 
     _G.ObjectiveObjects = function ()
@@ -105,35 +113,39 @@ end
 
 -- [Fix][Polyfill] TeamSlot missing "PORTAL" = 90 / ["90"] = "PORTAL"
 if not _G.TeamSlot.PORTAL then
+    debugprint(" - Fix/Polyfill: TeamSlot PORTAL");
     --- @diagnostic disable-next-line: inject-field
     _G.TeamSlot.PORTAL = 90;
     _G.TeamSlot[90] = "PORTAL";
 end
 
 -- [Fix] Tugs not respecting DropOff command due to invalid deploy state
-local function fixTugs()
-    --- @diagnostic disable: deprecated
-    for v in AllCraft() do
-        if(HasCargo(v)) then
-            Deploy(v);
+if pre_patch then
+    debugprint(" - Fix: Tugs DropOff");
+    local function fixTugs()
+        --- @diagnostic disable: deprecated
+        for v in AllCraft() do
+            if(HasCargo(v)) then
+                Deploy(v);
+            end
         end
+        --- @diagnostic enable: deprecated
     end
-    --- @diagnostic enable: deprecated
+    hook.Add("Start", "Fix:Start", function()
+        fixTugs();
+        hook.Remove("Start", "Fix:Start");
+        hook.RemoveSaveLoad("Fix");
+    end);
+    hook.AddSaveLoad("Fix", nil, function()
+        fixTugs();
+        hook.Remove("Start", "Fix:Start");
+        hook.RemoveSaveLoad("Fix");
+end);
 end
-
-hook.Add("Start", "Fix:Start", function()
-    fixTugs();
-    hook.Remove("Start", "Fix:Start");
-    hook.RemoveSaveLoad("Fix");
-end);
-hook.AddSaveLoad("Fix", nil, function()
-    fixTugs();
-    hook.Remove("Start", "Fix:Start");
-    hook.RemoveSaveLoad("Fix");
-end);
 
 -- [Fix][Polyfill] Fix for broken Formation order function
 if pre_patch then
+    debugprint(" - Fix/Polyfill: Formation");
     _G.Formation = Formation or function(me, him, priority)
         if(priority == nil) then
             priority = 1;

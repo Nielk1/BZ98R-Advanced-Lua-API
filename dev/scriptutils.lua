@@ -2466,4 +2466,124 @@ function UnHide(h) end
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 function MakeExplosion(odfname, target) end
 
+-------------------------------------------------------------------------------
+-- Bitwise
+-------------------------------------------------------------------------------
+-- @section
+-- Bitwise operations on 32-bit integers.
+
+--- Table of bitwise operation functions.
+--- @table bit
+--- @diagnostic disable-next-line: lowercase-global
+bit = {}; -- test
+
+
+--- Normalizes a number to the numeric range for bit operations and returns it.
+--- This function is usually not needed since all bit operations already normalize all of their input arguments. Check the operational semantics for details.
+--- @param x integer
+--- @return integer
+--- @usage print(0xffffffff)                --> 4294967295 (*)
+--- print(bit.tobit(0xffffffff))     --> -1
+--- printx(bit.tobit(0xffffffff))    --> 0xffffffff
+--- print(bit.tobit(0xffffffff + 1)) --> 0
+--- print(bit.tobit(2^40 + 1234))    --> 1234
+function bit.tobit(x) error("This function is provided by the engine."); end
+
+--- Returns the bitwise not of its argument.
+--- @param x integer
+--- @return integer
+function bit.bnot(x) error("This function is provided by the engine."); end
+
+--- Returns the bitwise and of its arguments.
+-- @tparam integer a
+-- @tparam integer b
+-- @tparam integer ...
+-- @treturn integer
+-- @function bit.band
+
+--- Returns the bitwise and of its arguments.
+--- @overload fun(a: integer, b: integer, ...: integer): integer
+--- @param a integer
+--- @param b integer
+--- @param c integer
+--- @param ... integer
+--- @return integer
+function bit.band(a, b, c, ...) error("This function is provided by the engine."); end
+
+--- Returns the bitwise or of its arguments.
+-- @tparam integer a
+-- @tparam integer b
+-- @tparam integer ...
+-- @treturn integer
+-- @function bit.bor
+
+--- Returns the bitwise or of its arguments.
+--- @overload fun(a: integer, b: integer, ...: integer): integer
+--- @param a integer
+--- @param b integer
+--- @param c integer
+--- @param ... integer
+--- @return integer
+function bit.bor(a, b, c, ...) error("This function is provided by the engine."); end
+
+--- Returns the bitwise xor of its arguments.
+-- @tparam integer a
+-- @tparam integer b
+-- @tparam integer ...
+-- @treturn integer
+-- @function bit.bxor
+
+--- Returns the bitwise xor of its arguments.
+--- @overload fun(a: integer, b: integer, ...: integer): integer
+--- @param a integer
+--- @param b integer
+--- @param c integer
+--- @param ... integer
+--- @return integer
+function bit.bxor(a, b, c, ...) error("This function is provided by the engine."); end
+
+--- Bitwise logical left-shift.
+--- @param x integer The number to shift.
+--- @param disp integer The number of bits to shift.
+--- @return integer
+function bit.lshift(x,disp) error("This function is provided by the engine."); end
+
+--- Bitwise logical right-shift.
+--- @param x integer The number to shift.
+--- @param disp integer The number of bits to shift.
+--- @return integer
+function bit.rshift(x,disp) error("This function is provided by the engine."); end
+
+--- Bitwise arithmetic right-shift.
+--- @param x integer The number to shift.
+--- @param disp integer The number of bits to shift.
+--- @return integer
+function bit.arshift(x,disp) error("This function is provided by the engine."); end
+
+--- Bitwise left rotation.
+--- @param x integer The number to rotate.
+--- @param disp integer The number of bits to rotate.
+--- @return integer
+function bit.rol(x, disp) error("This function is provided by the engine."); end
+
+--- Bitwise right rotation.
+--- @param x integer The number to rotate.
+--- @param disp integer The number of bits to rotate.
+--- @return integer
+function bit.ror(x, disp) error("This function is provided by the engine."); end
+
+--- Converts its first argument to a hex string. The number of hex digits is given by the absolute value of the optional second argument. Positive numbers between 1 and 8 generate lowercase hex digits. Negative numbers generate uppercase hex digits. Only the least-significant 4*|n| bits are used. The default is to generate 8 lowercase hex digits.
+--- @param x number The number to convert to hex.
+--- @param n? number The number of hex digits to generate. Positive numbers generate lowercase hex digits, negative numbers generate uppercase hex digits.
+--- @return string The hex string representation of the number.
+--- @usage print(bit.tohex(1))              --> 00000001
+--- print(bit.tohex(-1))             --> ffffffff
+--- print(bit.tohex(0xffffffff))     --> ffffffff
+--- print(bit.tohex(-1, -8))         --> FFFFFFFF
+--- print(bit.tohex(0x21, 4))        --> 0021
+--- print(bit.tohex(0x87654321, 4))  --> 4321
+function bit.tohex(x, n) error("This function is provided by the engine."); end
+
+
+
 --- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90

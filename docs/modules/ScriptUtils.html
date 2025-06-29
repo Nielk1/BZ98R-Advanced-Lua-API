@@ -86,6 +86,7 @@
 <li><a href="#Cloak__2_1__">Cloak [2.1+] </a></li>
 <li><a href="#Hide__2_1__">Hide [2.1+] </a></li>
 <li><a href="#Explosion__2_1__">Explosion [2.1+] </a></li>
+<li><a href="#Bitwise">Bitwise </a></li>
 </ul>
 
 
@@ -118,7 +119,6 @@
   <li><a href="../modules/_utility.html">_utility</a></li>
   <li><a href="../modules/_version.html">_version</a></li>
   <li><a href="../modules/_waves.html">_waves</a></li>
-  <li><a href="../modules/bit.html">bit</a></li>
   <li><strong>ScriptUtils</strong></li>
 </ul>
 
@@ -1387,6 +1387,57 @@
 	<tr>
 	<td class="name" nowrap><a href="#MakeExplosion">MakeExplosion (odfname, target)</a></td>
 	<td class="summary">Creates an explosion with the given odf name at the target position vector, transform matrix, object, or the start of the named path.</td>
+	</tr>
+</table>
+<h2><a href="#Bitwise">Bitwise </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#bit">bit</a></td>
+	<td class="summary">Table of bitwise operation functions.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.tobit">bit.tobit (x)</a></td>
+	<td class="summary">Normalizes a number to the numeric range for bit operations and returns it.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.bnot">bit.bnot (x)</a></td>
+	<td class="summary">Returns the bitwise not of its argument.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.band">bit.band (a, b, ...)</a></td>
+	<td class="summary">Returns the bitwise and of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.bor">bit.bor (a, b, ...)</a></td>
+	<td class="summary">Returns the bitwise or of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.bxor">bit.bxor (a, b, ...)</a></td>
+	<td class="summary">Returns the bitwise xor of its arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.lshift">bit.lshift (x, disp)</a></td>
+	<td class="summary">Bitwise logical left-shift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.rshift">bit.rshift (x, disp)</a></td>
+	<td class="summary">Bitwise logical right-shift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.arshift">bit.arshift (x, disp)</a></td>
+	<td class="summary">Bitwise arithmetic right-shift.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.rol">bit.rol (x, disp)</a></td>
+	<td class="summary">Bitwise left rotation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.ror">bit.ror (x, disp)</a></td>
+	<td class="summary">Bitwise right rotation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#bit.tohex">bit.tohex (x[, n])</a></td>
+	<td class="summary">Converts its first argument to a hex string.</td>
 	</tr>
 </table>
 
@@ -10352,13 +10403,410 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Bitwise"></a>Bitwise </h2>
+
+          <div class="section-description">
+           operations on 32-bit integers.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "bit"></a>
+    <strong>bit</strong>
+    </dt>
+    <dd>
+    Table of bitwise operation functions.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.tobit"></a>
+    <strong>bit.tobit (x)</strong>
+    </dt>
+    <dd>
+    Normalizes a number to the numeric range for bit operations and returns it.
+ This function is usually not needed since all bit operations already normalize all of their input arguments. Check the operational semantics for details.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="global">print</span>(<span class="number">0xffffffff</span>)                <span class="comment">--&gt; 4294967295 (*)
+</span><span class="global">print</span>(bit.tobit(<span class="number">0xffffffff</span>))     <span class="comment">--&gt; -1
+</span>printx(bit.tobit(<span class="number">0xffffffff</span>))    <span class="comment">--&gt; 0xffffffff
+</span><span class="global">print</span>(bit.tobit(<span class="number">0xffffffff</span> + <span class="number">1</span>)) <span class="comment">--&gt; 0
+</span><span class="global">print</span>(bit.tobit(<span class="number">2</span>^<span class="number">40</span> + <span class="number">1234</span>))    <span class="comment">--&gt; 1234</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "bit.bnot"></a>
+    <strong>bit.bnot (x)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise not of its argument.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.band"></a>
+    <strong>bit.band (a, b, ...)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise and of its arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.bor"></a>
+    <strong>bit.bor (a, b, ...)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise or of its arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.bxor"></a>
+    <strong>bit.bxor (a, b, ...)</strong>
+    </dt>
+    <dd>
+    Returns the bitwise xor of its arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">a</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">b</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><span class="type">integer</span></span>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.lshift"></a>
+    <strong>bit.lshift (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise logical left-shift.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to shift.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to shift.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.rshift"></a>
+    <strong>bit.rshift (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise logical right-shift.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to shift.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to shift.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.arshift"></a>
+    <strong>bit.arshift (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise arithmetic right-shift.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to shift.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to shift.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.rol"></a>
+    <strong>bit.rol (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise left rotation.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to rotate.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to rotate.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.ror"></a>
+    <strong>bit.ror (x, disp)</strong>
+    </dt>
+    <dd>
+    Bitwise right rotation.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number to rotate.
+        </li>
+        <li><span class="parameter">disp</span>
+            <span class="types"><span class="type">integer</span></span>
+         The number of bits to rotate.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "bit.tohex"></a>
+    <strong>bit.tohex (x[, n])</strong>
+    </dt>
+    <dd>
+    Converts its first argument to a hex string.  The number of hex digits is given by the absolute value of the optional second argument. Positive numbers between 1 and 8 generate lowercase hex digits. Negative numbers generate uppercase hex digits. Only the least-significant 4*|n| bits are used. The default is to generate 8 lowercase hex digits.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">number</span></span>
+         The number to convert to hex.
+        </li>
+        <li><span class="parameter">n</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of hex digits to generate. Positive numbers generate lowercase hex digits, negative numbers generate uppercase hex digits.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/ScriptUtils.html#string">string</a></span>
+        The hex string representation of the number.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="global">print</span>(bit.tohex(<span class="number">1</span>))              <span class="comment">--&gt; 00000001
+</span><span class="global">print</span>(bit.tohex(-<span class="number">1</span>))             <span class="comment">--&gt; ffffffff
+</span><span class="global">print</span>(bit.tohex(<span class="number">0xffffffff</span>))     <span class="comment">--&gt; ffffffff
+</span><span class="global">print</span>(bit.tohex(-<span class="number">1</span>, -<span class="number">8</span>))         <span class="comment">--&gt; FFFFFFFF
+</span><span class="global">print</span>(bit.tohex(<span class="number">0x21</span>, <span class="number">4</span>))        <span class="comment">--&gt; 0021
+</span><span class="global">print</span>(bit.tohex(<span class="number">0x87654321</span>, <span class="number">4</span>))  <span class="comment">--&gt; 4321</span></pre>
+    </ul>
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2025-06-28 10:34:41 </i>
+<i style="float:right;">Last updated 2025-06-28 21:23:39 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

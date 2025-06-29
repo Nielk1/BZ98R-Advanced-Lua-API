@@ -12,8 +12,6 @@ local debugprint = debugprint or function(...) end;
 
 debugprint("_color Loading");
 
---local bit = require("_bit");
-
 local M = {};
 
 --- Convert human readable color names to BZ98R color labels.

@@ -140,7 +140,7 @@ if pre_patch then
         fixTugs();
         hook.Remove("Start", "Fix:Start");
         hook.RemoveSaveLoad("Fix");
-end);
+    end);
 end
 
 -- [Fix][Polyfill] Fix for broken Formation order function

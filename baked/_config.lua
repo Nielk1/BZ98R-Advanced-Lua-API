@@ -92,8 +92,9 @@ end
 --- CreateObject                   .NavManager   =  4999
 --- CreateObject                   .Tracker      =  4999
 --- ----------------------------------------------------
---- Start                          .Tracker      =  4999
 --- Start                          .Producer     =  4999
+--- Start                          .Producer     =  4999
+--- Start                          .GameObject   =  9999
 --- ----------------------------------------------------
 --- Update                         .Producer     =  4999
 --- Update                         .Patrol       =  4999
@@ -118,6 +119,7 @@ M.hook_priority = {
         --NavManager = 4999,
         Tracker = 4999,
         Producer = 4999,
+        GameObject = 9999,
     },
     Update = {
         Producer = 4999,

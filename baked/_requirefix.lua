@@ -13,9 +13,9 @@ local debugprint = debugprint or function(...) end;
 debugprint("_requirefix Loading");
 
 local modPaths = {};
-local modPathSet ={};
+local modPathSet = {};
 local moduleTable = {};
-local modFileExistCache = {};
+--local modFileExistCache = {};
 
 --- Abuses the loadfile function to check if a file exists.
 --[[local function FileExists(filename)

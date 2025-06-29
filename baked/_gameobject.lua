@@ -32,6 +32,9 @@ local GameObjectWeakList = setmetatable({}, GameObjectWeakList_MT);
 local GameObjectAltered = {}; -- used to strong-reference hold objects with custom data until they are removed from game world
 --local GameObjectDead = {}; -- used to hold dead objects till next update for cleanup
 
+local GameObjectSeqNoMemo = {}; -- maps sequence numbers to handles
+local GameObjectSeqNoDeadMemo = setmetatable({}, GameObjectWeakList_MT); -- maps sequence numbers to dead game objects to handle the edge-cases
+
 --- GameObject
 --- An object containing all functions and data related to a game object.
 --- @class GameObject : CustomSavableType
@@ -88,7 +91,24 @@ function M.FromHandle(handle)
     local self = setmetatable({}, GameObject);
     self.id = handle;
     GameObjectWeakList[objectId] = self;
+    GameObjectSeqNoMemo[self:GetSeqNo()] = objectId;
     return self;
+end
+
+--- Create a new GameObject instance.
+--- This works via a lookup table so it can fail easily.
+--- @param seqNo integer Sequence number of the object
+--- @return GameObject?
+function M.FromSeqNo(seqNo)
+    local objectId = GameObjectSeqNoMemo[seqNo];
+    if objectId ~= nil then
+        return M.FromHandle(objectId);
+    end
+    local deadObject = GameObjectSeqNoDeadMemo[seqNo];
+    if deadObject ~= nil then
+        return deadObject; -- return the dead object reference if it's still around
+    end
+    return nil;
 end
 
 --- Get Handle used by BZ98R.
@@ -96,6 +116,15 @@ end
 --- @return Handle
 function GameObject.GetHandle(self)
     return self.id;
+end
+
+--- Get the SeqNo of the GameObject.
+--- Note that the SeqNo is rather useless.
+--- @param self GameObject GameObject instance
+--- @return integer SeqNo
+function GameObject.GetSeqNo(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    return tonumber(tostring(self:GetHandle()):sub(-5), 16);
 end
 
 --- Save event function.
@@ -1968,6 +1997,13 @@ end
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();
 
+    -- store the dead object as a weak reference just in case something's still using it
+    -- if nothing's tracking it then it will be gone soon
+    GameObjectSeqNoDeadMemo[object:GetSeqNo()] = object;
+
+    -- stop tracking the object's sequence number
+    GameObjectSeqNoMemo[object:GetSeqNo()] = nil;
+
     GameObjectAltered[objectId] = nil; -- remove any strong reference for being altered
 
     -- Alternate method where we delay deletion to next update
@@ -1975,6 +2011,11 @@ hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     --debugprint('Decaying object ' .. tostring(objectId));
     --GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (in BZ2 handle might be re-used)
 end, config.get("hook_priority.DeleteObject.GameObject"));
+
+hook.Add("Start", "GameObject_Start", function()
+    --- @diagnostic disable-next-line: empty-block
+    for v in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
+end, config.get("hook_priority.Start.GameObject"));
 
 --hook.Add("Update", "GameObject_Update", function(dtime)
 --    for k,v in pairs(GameObjectDead) do

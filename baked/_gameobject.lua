@@ -205,6 +205,9 @@ function GameObject.BulkLoad(data)
     --    local newGameObject = _gameobject.FromHandle(v); -- this will be either a new GameObject or an existing one from the above addon data filling loop
     --    GameObjectDead[v] = newGameObject;
     --end
+
+    --- @diagnostic disable-next-line: empty-block
+    for v in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
 end
 
 -------------------------------------------------------------------------------

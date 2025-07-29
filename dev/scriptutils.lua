@@ -2475,8 +2475,7 @@ function MakeExplosion(odfname, target) end
 --- Table of bitwise operation functions.
 --- @table bit
 --- @diagnostic disable-next-line: lowercase-global
-bit = {}; -- test
-
+bit = {};
 
 --- Normalizes a number to the numeric range for bit operations and returns it.
 --- This function is usually not needed since all bit operations already normalize all of their input arguments. Check the operational semantics for details.
@@ -2583,7 +2582,5 @@ function bit.ror(x, disp) error("This function is provided by the engine."); end
 --- print(bit.tohex(0x21, 4))        --> 0021
 --- print(bit.tohex(0x87654321, 4))  --> 4321
 function bit.tohex(x, n) error("This function is provided by the engine."); end
-
-
 
 --- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90

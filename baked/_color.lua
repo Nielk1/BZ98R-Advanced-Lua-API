@@ -5,12 +5,9 @@
 --- @module '_color'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---local traceprint = traceprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_color Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_color Loading");
 
 local M = {};
 
@@ -283,9 +280,9 @@ end
 
 
 -- Print Color Tests
-debugprint("Game Color Pallet Test");
+logger.print(logger.LogLevel.DEBUG, nil, "Game Color Pallet Test");
 
-debugprint("COLOR TEST Exact ["..
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST Exact ["..
     M.RGBAtoAnsi24Escape(M.ColorValues.BLACK    ).."██"..
     M.RGBAtoAnsi24Escape(M.ColorValues.DKGREY   ).."██"..
     M.RGBAtoAnsi24Escape(M.ColorValues.GREY     ).."██"..
@@ -304,7 +301,7 @@ debugprint("COLOR TEST Exact ["..
     M.RGBAtoAnsi24Escape(M.ColorValues.DKMAGENTA).."██"..
     M.AnsiColorEscapeMap._.."]");
 
-debugprint("COLOR TEST 256   ["..
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST 256   ["..
     M.RGBAtoAnsi256Escape(M.ColorValues.BLACK    ).."██"..
     M.RGBAtoAnsi256Escape(M.ColorValues.DKGREY   ).."██"..
     M.RGBAtoAnsi256Escape(M.ColorValues.GREY     ).."██"..
@@ -323,7 +320,7 @@ debugprint("COLOR TEST 256   ["..
     M.RGBAtoAnsi256Escape(M.ColorValues.DKMAGENTA).."██"..
     M.AnsiColorEscapeMap._.."]");
 
-debugprint("COLOR TEST 16p   ["..
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST 16p   ["..
     M.AnsiColorEscapeMap.BLACK    .."██"..
     M.AnsiColorEscapeMap.DKGREY   .."██"..
     M.AnsiColorEscapeMap.GREY     .."██"..
@@ -342,36 +339,36 @@ debugprint("COLOR TEST 16p   ["..
     M.AnsiColorEscapeMap.DKMAGENTA.."██"..
     M.AnsiColorEscapeMap._.."]");
 
-debugprint("Rave Color Pallet Test");
+logger.print(logger.LogLevel.DEBUG, nil, "Rave Color Pallet Test");
 
 local rave_exact = "";
 for i = 1, #M.RAVE_COLOR do
     rave_exact = rave_exact..M.RGBAtoAnsi24Escape(M.RAVE_COLOR[i]).."█";
 end
-debugprint("COLOR TEST RAVE Exact    ["..rave_exact..M.AnsiColorEscapeMap._.."]");
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST RAVE Exact    ["..rave_exact..M.AnsiColorEscapeMap._.."]");
 
 local rave_256 = "";
 for i = 1, #M.RAVE_COLOR do
     rave_256 = rave_256..M.RGBAtoAnsi256Escape(M.RAVE_COLOR[i]).."█";
 end
-debugprint("COLOR TEST RAVE 256      ["..rave_256..M.AnsiColorEscapeMap._.."]");
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST RAVE 256      ["..rave_256..M.AnsiColorEscapeMap._.."]");
 
 local rave_16Map = "";
 for i = 1, #M.RAVE_COLOR do
     rave_16Map = rave_16Map..M.RGBAtoAnsi24Escape(M.ColorValues[M.GetClosestColorCode(M.RAVE_COLOR[i])]).."█";
 end
-debugprint("COLOR TEST RAVE 16->Exact["..rave_16Map..M.AnsiColorEscapeMap._.."]");
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST RAVE 16->Exact["..rave_16Map..M.AnsiColorEscapeMap._.."]");
 
 local rave_16 = "";
 for i = 1, #M.RAVE_COLOR do
     rave_16 = rave_16..M.AnsiColorEscapeMap[M.GetClosestColorCode(M.RAVE_COLOR[i])].."█";
 end
-debugprint("COLOR TEST RAVE 16p      ["..rave_16..M.AnsiColorEscapeMap._.."]");
+logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST RAVE 16p      ["..rave_16..M.AnsiColorEscapeMap._.."]");
 
 
 
 
-debugprint("_color Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_color Loaded");
 
 return M;
 

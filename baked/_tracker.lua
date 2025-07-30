@@ -11,12 +11,9 @@
 --- tracker.setFilterTeam(1, true);
 --- tracker.setFilterClass("TANK", true);
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
-local traceprint = traceprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_tracker Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_tracker Loading");
 
 local config = require("_config");
 local utility = require("_utility");
@@ -45,19 +42,19 @@ local Current_TrackerData_Filter_Classes = {};
 local Current_TrackerData_Filter_Odfs = {};
 
 local function testprint()
-    traceprint("TrackerData_Class: " .. table.show(TrackerData_Class, "TrackerData_Class"));
-    traceprint("TrackerData_Odf: " .. table.show(TrackerData_Odf, "TrackerData_Odf"));
-    traceprint("TrackerData_CountClass: " .. table.show(TrackerData_CountClass, "TrackerData_CountClass"));
-    traceprint("TrackerData_CountOdf: " .. table.show(TrackerData_CountOdf, "TrackerData_CountOdf"));
-    traceprint("TrackerData_TotalClass: " .. table.show(TrackerData_TotalClass, "TrackerData_TotalClass"));
-    traceprint("TrackerData_TotalOdf: " .. table.show(TrackerData_TotalOdf, "TrackerData_TotalOdf"));
+    logger.print(logger.LogLevel.TRACE, nil, "TrackerData_Class: " .. table.show(TrackerData_Class, "TrackerData_Class"));
+    logger.print(logger.LogLevel.TRACE, nil, "TrackerData_Odf: " .. table.show(TrackerData_Odf, "TrackerData_Odf"));
+    logger.print(logger.LogLevel.TRACE, nil, "TrackerData_CountClass: " .. table.show(TrackerData_CountClass, "TrackerData_CountClass"));
+    logger.print(logger.LogLevel.TRACE, nil, "TrackerData_CountOdf: " .. table.show(TrackerData_CountOdf, "TrackerData_CountOdf"));
+    logger.print(logger.LogLevel.TRACE, nil, "TrackerData_TotalClass: " .. table.show(TrackerData_TotalClass, "TrackerData_TotalClass"));
+    logger.print(logger.LogLevel.TRACE, nil, "TrackerData_TotalOdf: " .. table.show(TrackerData_TotalOdf, "TrackerData_TotalOdf"));
 end
 
 local function AddTrackedObject(object, odf, sig, team)
-    traceprint("AddTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
+    logger.print(logger.LogLevel.TRACE, nil, "AddTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
     if next(Current_TrackerData_Filter_Teams) ~= nil and not Current_TrackerData_Filter_Teams[team] then
-        traceprint("AddTrackedObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
+        logger.print(logger.LogLevel.TRACE, nil, "AddTrackedObject: Team " .. tostring(team) .. " is not being tracked, ignoring object.");
         return;
     end
 
@@ -103,7 +100,7 @@ local function AddTrackedObject(object, odf, sig, team)
 end
 
 local function DeleteTrackedObject(object, odf, sig, team, remove_from_total)
-    traceprint("DeleteTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
+    logger.print(logger.LogLevel.TRACE, nil, "DeleteTrackedObject: " .. tostring(object:GetHandle()) .. " " .. tostring(odf) .. " " .. tostring(sig) .. " " .. tostring(team));
 
     -- Remove the object from the TeamClass and TeamOdf tracking tables
     if TrackerData_Class[team] and TrackerData_Class[team][sig] then
@@ -192,14 +189,14 @@ local CheckUpdated = function()
     local areDifferent = areDifferent1 or areDifferent2 or areDifferent3;
 
     if areDifferent then
-        debugprint("TrackerData Filter changed, updating tracker data")
+        logger.print(logger.LogLevel.DEBUG, nil, "TrackerData Filter changed, updating tracker data")
         
         Current_TrackerData_Filter_Teams = utility.shallowCopy(Desired_TrackerData_Filter_Teams);
         Current_TrackerData_Filter_Classes = utility.shallowCopy(Desired_TrackerData_Filter_Classes);
         Current_TrackerData_Filter_Odfs = utility.shallowCopy(Desired_TrackerData_Filter_Odfs);
 
         if hasNew then
-            debugprint("TrackerData Filter has new items, updating tracker data")
+            logger.print(logger.LogLevel.DEBUG, nil, "TrackerData Filter has new items, updating tracker data")
             for object in gameobject.AllObjects() do
                 AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
             end
@@ -364,6 +361,6 @@ function(filter_teams, filter_classes, filter_odfs)
     HaveStarted = true;
 end);
 
-debugprint("_tracker Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_tracker Loaded");
 
 return M;

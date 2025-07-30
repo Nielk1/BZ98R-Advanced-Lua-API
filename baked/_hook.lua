@@ -41,10 +41,9 @@
 --     end
 -- end, 9999)
 
---- @diagnostic disable-next-line: undefined-global
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_hook Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_hook Loading");
 
 local utility = require("_utility");
 
@@ -242,7 +241,7 @@ function M.Add( event, identifier, func, priority )
     table.insert(Hooks[ event ], new_handler); -- store in priority weak-table
     table.sort(Hooks[ event ], sort_handlers);
   
-    debugprint("Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
+    logger.print(logger.LogLevel.DEBUG, nil, "Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
 end
 
 --- Removes the hook with the given identifier.
@@ -262,7 +261,7 @@ function M.Remove( event, identifier )
         end
     end
 
-    debugprint("Removed " .. event .. " hook for " .. identifier);
+    logger.print(logger.LogLevel.DEBUG, nil, "Removed " .. event .. " hook for " .. identifier);
 end
 
 --- Add a hook to listen to the Save and Load event.
@@ -283,7 +282,7 @@ function M.AddSaveLoad( identifier, save, load )
     SaveLoadHooks[ identifier ]['Save'] = save;
     SaveLoadHooks[ identifier ]['Load'] = load;
     
-    debugprint("Added Save/Load hooks for " .. identifier);
+    logger.print(logger.LogLevel.DEBUG, nil, "Added Save/Load hooks for " .. identifier);
 end
 
 --- Removes the Save and Load hooks with the given identifier.
@@ -297,7 +296,7 @@ function M.RemoveSaveLoad( identifier )
     -- Ff it does become an issue having the execution loop use a copy of the key list would solve it
     SaveLoadHooks[ identifier ] = nil;
     
-    debugprint("Removed Save/Load hooks for " .. identifier);
+    logger.print(logger.LogLevel.DEBUG, nil, "Removed Save/Load hooks for " .. identifier);
 end
 
 --- Calls hooks associated with Save.
@@ -410,6 +409,6 @@ function M.CallAllPassReturn( event, ... )
     return lastreturn;
 end
 
-debugprint("_hook Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_hook Loaded");
 
 return M;

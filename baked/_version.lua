@@ -3,14 +3,11 @@
 --- @module '_version'
 --- @author John "Nielk1" Klein
 
-local api_version = "0.1.1"; -- API version of this module
+local api_version = "0.1.2"; -- API version of this module
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
-local traceprint = traceprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_version Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_version Loading");
 
 local optional = require("_optional");
 local bzcp_success, bzcp = optional("_bzcp");
@@ -130,6 +127,6 @@ end
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 
-debugprint("_version Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_version Loaded");
 
 return M;

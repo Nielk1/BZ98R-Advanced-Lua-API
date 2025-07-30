@@ -8,9 +8,9 @@
 --- 
 --- data.unsavable = unsaved(data.unsavable);
 
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_unsaved Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_unsaved Loading");
 
 local M = {};
 local M_MT = {};
@@ -49,6 +49,6 @@ end
 
 M = setmetatable(M, M_MT);
 
-debugprint("_unsaved Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_unsaved Loaded");
 
 return M;

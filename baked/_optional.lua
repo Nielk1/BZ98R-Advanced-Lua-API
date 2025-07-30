@@ -12,11 +12,9 @@
 --- missingMod2 = missing2Success and missingMod2 or nil;
 
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_optional Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_optional Loading");
 
 local M = {};
 local M_MT = {};
@@ -57,6 +55,6 @@ M = setmetatable(M, M_MT);
 -------------------------------------------------------------------------------
 -- @section
 
-debugprint("_optional Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_optional Loaded");
 
 return M;

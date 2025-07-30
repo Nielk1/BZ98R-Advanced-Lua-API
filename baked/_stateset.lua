@@ -30,10 +30,9 @@
 -- end);
 
 
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_stateset Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_stateset Loading");
 
 local utility = require("_utility");
 local customsavetype = require("_customsavetype");
@@ -64,7 +63,7 @@ StateSet.__index = StateSet;
 --- @param permitBased? boolean If true, the state is permit based
 --- @return StateSet self For function chaining
 function StateSet.Add(self, name, state, permitBased)
-    debugprint("Add state '"..name.."' to StateSet '"..self.template.."'.", permitBased);
+    logger.print(logger.LogLevel.DEBUG, nil, "Add state '"..name.."' to StateSet '"..self.template.."'.", permitBased);
     if permitBased then
         M.Sets[self.template][name] = { f = state, p = true };
     else
@@ -193,7 +192,7 @@ function StateSetRunner.run(self, ...)
                     if statemachine.isstatemachineiterwrappedresult(machine_return) then
                         --- @cast machine_return StateMachineIterWrappedResult
                         if machine_return.Abort then
-                            debugprint("StateSetRunner state '"..self.template.."' StateMachineIter aborted, disabling StateSetRunner state.");
+                            logger.print(logger.LogLevel.DEBUG, nil, "StateSetRunner state '"..self.template.."' StateMachineIter aborted, disabling StateSetRunner state.");
                             self:off(name, true); -- force off the state as the machine aborted
                         end
                     end
@@ -260,7 +259,7 @@ end
 function M.Create( name )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
 
-    debugprint("Create StateSetRunner Template '"..name.."'.", M.Sets[name] ~= nil);
+    logger.print(logger.LogLevel.DEBUG, nil, "Create StateSetRunner Template '"..name.."'.", M.Sets[name] ~= nil);
     
     --if (_stateset.Machines[ name ] == nil) then
     --    _stateset.Machines[ name ] = {};
@@ -322,6 +321,6 @@ end
 
 customsavetype.Register(StateSetRunner);
 
-debugprint("_stateset Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_stateset Loaded");
 
 return M;

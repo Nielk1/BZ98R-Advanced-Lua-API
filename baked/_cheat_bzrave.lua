@@ -77,7 +77,7 @@ local Cheat_BZRAVE = statemachine.Start("Cheat_BZRAVE");
 hook.Add("GameKey", "Mission:GameKey:Cheat_BZRAVE", function (key)
     local success, result = Cheat_BZRAVE:run(key);
     --if result then
-    --    debugprint("BZRAVE stopping more hooks");
+    --    logger.print(logger.LogLevel.DEBUG, nil, "BZRAVE stopping more hooks");
     --    return hook.AbortResult();
     --end
 end);

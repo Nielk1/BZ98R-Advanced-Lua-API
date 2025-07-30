@@ -11,11 +11,9 @@
 --- @todo Determine if network handling is needed.
 --- @todo Look into soft-loading native module that gives nav data access.
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_navmanager Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_navmanager Loading");
 
 local config = require("_config");
 local utility = require("_utility");
@@ -387,6 +385,6 @@ function(_PendingNavs, _PendingNavsMemo, _PendingDirty, _OverflowNavs)
     -- should we leave CompactMode out and leave it to script parse?
 end);
 
-debugprint("_navmanager Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_navmanager Loaded");
 
 return M;

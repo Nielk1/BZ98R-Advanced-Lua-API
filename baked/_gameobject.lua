@@ -5,11 +5,9 @@
 --- @module '_gameobject'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_gameobject Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_gameobject Loading");
 
 local utility = require("_utility");
 local config = require("_config");
@@ -185,7 +183,7 @@ function GameObject.BulkLoad(data)
                     break; -- break out of inf loop issue
                 end
             _ObjectiveObjects[h] = true;
-                debugprint("BulkLoad GameObject ObjectiveObjects: "..tostring(h));
+                logger.print(logger.LogLevel.DEBUG, nil, "BulkLoad GameObject ObjectiveObjects: "..tostring(h));
                 lastObject = h;
             end
     end
@@ -2011,7 +2009,7 @@ hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
 
     -- Alternate method where we delay deletion to next update
     -- BZ2 needs this because handles can be re-used in an upgrade, so we need to know if this has happened for an UpgradeObject event, but BZ1 doesn't have this.
-    --debugprint('Decaying object ' .. tostring(objectId));
+    --logger.print(logger.LogLevel.DEBUG, nil, 'Decaying object ' .. tostring(objectId));
     --GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (in BZ2 handle might be re-used)
 end, config.get("hook_priority.DeleteObject.GameObject"));
 
@@ -2022,7 +2020,7 @@ end, config.get("hook_priority.Start.GameObject"));
 
 --hook.Add("Update", "GameObject_Update", function(dtime)
 --    for k,v in pairs(GameObjectDead) do
---        debugprint('Decayed object ' .. tostring(k));
+--        logger.print(logger.LogLevel.DEBUG, nil, 'Decayed object ' .. tostring(k));
 --        GameObjectAltered[k] = nil; -- remove any strong reference for being altered
 --        GameObjectDead[k] = nil; -- remove any strong reference for being dead
 --    end
@@ -2030,6 +2028,6 @@ end, config.get("hook_priority.Start.GameObject"));
 
 customsavetype.Register(GameObject);
 
-debugprint("_gameobject Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_gameobject Loaded");
 
 return M;

@@ -7,11 +7,9 @@
 --- @author Janne Trollebø
 --- @usage local waves = require("_waves");
 
+local logger = require("_logger");
 
---- @diagnostic disable-next-line: undefined-global
-local debugprint = debugprint or function(...) end;
-
-debugprint("_waves Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_waves Loading");
 
 local utility = require("_utility");
 local config = require("_config");
@@ -302,6 +300,6 @@ end)
 
 customsavetype.Register(WaveSpawner)
 
-debugprint("_waves Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_waves Loaded");
 
 return M

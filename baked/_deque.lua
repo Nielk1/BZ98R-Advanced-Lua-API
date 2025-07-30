@@ -27,9 +27,9 @@
 --- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 --- THE SOFTWARE.
 
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_deque Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_deque Loading");
 
 local customsavetype = require("_customsavetype");
 
@@ -328,7 +328,7 @@ end
 
 customsavetype.Register(methods);
 
-debugprint("_deque Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_deque Loaded");
 
 return {
     new = new,

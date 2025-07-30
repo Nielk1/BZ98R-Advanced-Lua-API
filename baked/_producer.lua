@@ -5,12 +5,9 @@
 --- @module '_producer'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
-local traceprint = traceprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_producer Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_producer Loading");
 
 local config = require("_config");
 local utility = require("_utility");
@@ -107,7 +104,7 @@ local c = color.AnsiColorEscapeMap;
 local function ProcessQueues()
     -- iterate the queue until either the end of the queue or all producers are busy
     for team, queue in pairs(ProducerQueue) do
-        --debugprint(table.show(queue:contents(), "queue["..tostring(team).."]"));
+        --logger.print(logger.LogLevel.DEBUG, nil, table.show(queue:contents(), "queue["..tostring(team).."]"));
         if not queue:is_empty() and ProducerCache[team] ~= nil then
             local producerTypes = {};
             --- @cast producerTypes table<string, GameObject>
@@ -129,8 +126,8 @@ local function ProcessQueues()
                 local Pilot = GetPilot(team);
                 local indexesToRemove = {};
                 for job, idx in queue:iter_left() do
-                    --debugprint("\27[34m".."Candidate "..job.odf.."\27[0m")
-                    --debugprint("\27[34m"..table.show(MemoOfProducersByProduced).."\27[0m")
+                    --logger.print(logger.LogLevel.DEBUG, nil, "\27[34m".."Candidate "..job.odf.."\27[0m")
+                    --logger.print(logger.LogLevel.DEBUG, nil, "\27[34m"..table.show(MemoOfProducersByProduced).."\27[0m")
                     --- @cast job ProductionQueue
                     local hasPosition = job.location and job.location ~= "" and true or false;
                     if not hasPosition then
@@ -150,11 +147,11 @@ local function ProcessQueues()
                     end
                     if possibleProducers and next(producerTypes) then
                         for producerOdf, _ in pairs(possibleProducers) do
-                            --debugprint("\27[34m".."Candidate Builder "..producerOdf.."\27[0m")
+                            --logger.print(logger.LogLevel.DEBUG, nil, "\27[34m".."Candidate Builder "..producerOdf.."\27[0m")
                             local producerObject = producerTypes[producerOdf];
                             if producerObject and not ProducerOrders[producerObject] then
-                                --debugprint(table.show(queue:contents(), "queue["..tostring(team).."]"));
-                                debugprint(c.BLUE.."Candidate Found "..producerOdf.." > "..job.odf..c.RESET)
+                                --logger.print(logger.LogLevel.DEBUG, nil, table.show(queue:contents(), "queue["..tostring(team).."]"));
+                                logger.print(logger.LogLevel.DEBUG, nil, c.BLUE.."Candidate Found "..producerOdf.." > "..job.odf..c.RESET)
                                 local producerSig = producerObject:GetClassSig();
                                 local needsPosition = producerSig == utility.ClassSig.armory or producerSig == utility.ClassSig.constructionrig;
                                 if hasPosition == needsPosition then
@@ -197,20 +194,20 @@ local function ProcessQueues()
                                                 end
                                                 ProducerOrders[producerObject] = job; -- save the producer and its job so we can check it later, either if the producer dies or the target is built
                                                 table.insert(indexesToRemove, idx);
-                                                debugprint(c.CYAN.."BUILD "..producerOdf.." > "..job.odf..c.RESET)
+                                                logger.print(logger.LogLevel.DEBUG, nil, c.CYAN.."BUILD "..producerOdf.." > "..job.odf..c.RESET)
                                             else
-                                                debugprint(c.YELLOW.."WAIT "..producerOdf.." > "..job.odf..c.RESET)
+                                                logger.print(logger.LogLevel.DEBUG, nil, c.YELLOW.."WAIT "..producerOdf.." > "..job.odf..c.RESET)
                                             end
                                             producerTypes[producerOdf] = nil; -- remove the producer from the list so we don't use it again as it's either building or waiting for scrap
                                             break; -- break out of producer checking loop since we found a producer for this job
                                         else
-                                            debugprint(c.DKYELLOW.."SKIP NoSlot "..producerOdf.." > "..job.odf..c.RESET)
+                                            logger.print(logger.LogLevel.DEBUG, nil, c.DKYELLOW.."SKIP NoSlot "..producerOdf.." > "..job.odf..c.RESET)
                                         end
                                     else
-                                        debugprint(c.DKYELLOW.."SKIP NoResource "..producerOdf.." > "..job.odf..c.RESET)
+                                        logger.print(logger.LogLevel.DEBUG, nil, c.DKYELLOW.."SKIP NoResource "..producerOdf.." > "..job.odf..c.RESET)
                                     end
                                 else
-                                    debugprint(c.DKYELLOW.."SKIP "..(needsPosition and "NeedPos " or "NoPos ")..producerOdf.." > "..job.odf..c.RESET)
+                                    logger.print(logger.LogLevel.DEBUG, nil, c.DKYELLOW.."SKIP "..(needsPosition and "NeedPos " or "NoPos ")..producerOdf.." > "..job.odf..c.RESET)
                                 end
                             end
                         end
@@ -265,12 +262,12 @@ local function ProcessCreated(object)
         if currentCanBuild then
             if producerSig == utility.ClassSig.armory and not currentBusy then
                 -- armories are special and somehow aren't still busy after a build
-                --debugprint(c.GREEN.."BuildComplete FIND&DONE ("..tostring(math.floor(distance)).."m)"..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
+                --logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete FIND&DONE ("..tostring(math.floor(distance)).."m)"..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
                 hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, matchingJob.data);
                 ProducerOrders[closestProducer] = nil; -- remove the producer from the list
             elseif currentBusy then
                 -- Recycler, Factory, and Construction Rig change Busy flag on a delay
-                --debugprint(c.DKGREEN.."BuildComplete FIND ("..tostring(math.floor(distance)).."m) "..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
+                --logger.print(logger.LogLevel.DEBUG, nil, c.DKGREEN.."BuildComplete FIND ("..tostring(math.floor(distance)).."m) "..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
 
                 --hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, ProducerOrders[closestProducer]);
     
@@ -290,22 +287,22 @@ local function PostBuildCheck()
         if not producer or not producer:IsValid() then
             ProducerOrders[producer] = nil; -- remove the producer from the list
             if producer._producer and producer._producer.post_build_check then
-                ----debugprint(c.RED..table.show(job)..job.odf..c.RESET);
+                ----logger.print(logger.LogLevel.DEBUG, nil, c.RED..table.show(job)..job.odf..c.RESET);
                 local object = producer._producer.post_build_check;
                 --- @cast object GameObject
                 producer._producer.post_build_check = nil;
-                --debugprint(c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                --logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
                 hook.CallAllNoReturn("Producer:BuildComplete", object, producer, job.data);
                 ProducerOrders[producer] = nil; -- remove the producer from the list
             end
         elseif not producer:IsBusy() then
             ProducerOrders[producer] = nil; -- remove the producer from the list
             if producer._producer and producer._producer.post_build_check then
-                ----debugprint(c.RED..table.show(job)..job.odf..c.RESET);
+                ----logger.print(logger.LogLevel.DEBUG, nil, c.RED..table.show(job)..job.odf..c.RESET);
                 local object = producer._producer.post_build_check;
                 --- @cast object GameObject
                 producer._producer.post_build_check = nil;
-                --debugprint(c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                --logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
                 hook.CallAllNoReturn("Producer:BuildComplete", object, producer, job.data);
                 ProducerOrders[producer] = nil; -- remove the producer from the list
             end
@@ -381,14 +378,14 @@ function M.QueueJob(odf, team, location, builder, data)
     ---- get the possible producers for this ODF
     --local KnownProducerODFs = MemoOfProducersByProduced[odf];
     --if not KnownProducerODFs then
-    --    debugprint("No producers found for ODF: " .. odf);
+    --    logger.print(logger.LogLevel.DEBUG, nil, "No producers found for ODF: " .. odf);
     --    return false; -- No producers can build this ODF
     --end
     --
     ---- loop the known producers for this team
     --local ProducersForTeam = ProducerCache[team];
     --if not ProducersForTeam then
-    --    debugprint("No producers found for team: " .. tostring(team));
+    --    logger.print(logger.LogLevel.DEBUG, nil, "No producers found for team: " .. tostring(team));
     --    return false;
     --end
     --
@@ -404,7 +401,7 @@ function M.QueueJob(odf, team, location, builder, data)
     --end
     --
     --if ProducerTeamSlot == nil then
-    --    debugprint("No producer found for ODF: " .. odf .. " on team: " .. tostring(team));
+    --    logger.print(logger.LogLevel.DEBUG, nil, "No producer found for ODF: " .. odf .. " on team: " .. tostring(team));
     --    return false; -- No producer can build this ODF
     --end
 
@@ -421,7 +418,7 @@ function M.QueueJob(odf, team, location, builder, data)
     });
     --for i = 0, 15 do
     --    if ProducerQueue[i] then
-    --        debugprint(table.show(ProducerQueue[i]:contents(), "ProducerQueue["..tostring(i).."]"));
+    --        logger.print(logger.LogLevel.DEBUG, nil, table.show(ProducerQueue[i]:contents(), "ProducerQueue["..tostring(i).."]"));
     --    end
     --end
 end
@@ -493,7 +490,7 @@ function(_ProducerQueue, _ProducerOrdersRemapped, _ProducerCommandHistory)
     ProducerCommandHistory = _ProducerCommandHistory or {};
 end);
 
-debugprint("_producer Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_producer Loaded");
 
 return M;
 

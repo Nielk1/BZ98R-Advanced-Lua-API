@@ -70,10 +70,9 @@
 --- end);
 
 
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_statemachine Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_statemachine Loading");
 
 --require("_table_show");
 
@@ -198,11 +197,11 @@ local function CreateStateMachineIter(name, target_call, target_time, set_wait_t
     self.target_time = target_time;
     self.set_wait_time = set_wait_time;
     self.state_key = state_key;
-    debugprint("StateMachineIter '"..name.."' created with state '"..tostring(state_key).."'");
+    logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter '"..name.."' created with state '"..tostring(state_key).."'");
     
     if values and utility.istable(values) then
         for k, v in pairs( values ) do
-            debugprint("StateMachineIter: Adding value '"..tostring(k).."' = '"..tostring(v).."' to StateMachineIter '"..name.."'");
+            logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter: Adding value '"..tostring(k).."' = '"..tostring(v).."' to StateMachineIter '"..name.."'");
             self[k] = v;
         end
     end
@@ -218,7 +217,7 @@ end
 function StateMachineIter.run(self, ...)
     if not M.isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
 
-    --debugprint("Running StateMachineIter Template '"..self.template.."' with state '"..self.state_key.."'");
+    --logger.print(logger.LogLevel.DEBUG, nil, "Running StateMachineIter Template '"..self.template.."' with state '"..self.state_key.."'");
     local machine = M.Machines[self.template];
     if machine == nil then return false; end
 
@@ -257,7 +256,7 @@ function StateMachineIter.run(self, ...)
             return true, table.unpack(retVal);
         elseif utility.istable(machine[currentState]) then
             if utility.isfunction(machine[currentState].f) then
-                --debugprint("StateMachineIter state '"..currentState.."' is "..type(machine[currentState].f).." '"..table.show(machine[currentState].p).."'");
+                --logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter state '"..currentState.."' is "..type(machine[currentState].f).." '"..table.show(machine[currentState].p).."'");
                 return true, machine[currentState].f(self, machine[currentState].p, ...);
             end
         end
@@ -328,7 +327,7 @@ function StateMachineIter.next(self)
     local old_key = self.state_key
     self.state_key = nextState(self);
 
-    debugprint("StateMachineIter '"..self.template.."' next state '"..tostring(old_key).."' to '"..tostring(self.state_key).."'");
+    logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter '"..self.template.."' next state '"..tostring(old_key).."' to '"..tostring(self.state_key).."'");
 end
 
 --- Switch StateMachineIter State.
@@ -345,7 +344,7 @@ function StateMachineIter.switch(self, key)
     local old_key = self.state_key
     self.state_key = key;
 
-    debugprint("StateMachineIter '"..self.template.."' switch state '"..tostring(old_key).."' to '"..tostring(self.state_key).."'");
+    logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter '"..self.template.."' switch state '"..tostring(old_key).."' to '"..tostring(self.state_key).."'");
 end
 
 --- Creates an StateMachineIter Template with the given indentifier.
@@ -358,13 +357,13 @@ end
 function M.Create( name, ... )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
     
-    debugprint("Creating StateMachineIter Template '"..name.."'");
+    logger.print(logger.LogLevel.DEBUG, nil, "Creating StateMachineIter Template '"..name.."'");
 
     --if (_statemachine.Machines[ name ] == nil) then
     --    _statemachine.Machines[ name ] = {};
     --end
 
-    --debugprint(table.show({...}, "StateMachineIter states: "));
+    --logger.print(logger.LogLevel.DEBUG, nil, table.show({...}, "StateMachineIter states: "));
 
     local is_ordered = true;
     local has_any_named = false;
@@ -520,7 +519,7 @@ function M.Create( name, ... )
                     error("StateMachineIter state must be n array of state descriptors");
                 end
 
-                debugprint("StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
+                logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
 
                 if has_any_named then
                     -- we have named states in addition to be ordered, so we'll use the lookup table
@@ -540,7 +539,7 @@ function M.Create( name, ... )
                     error("StateMachineIter state must be a map of state descriptors");
                 end
 
-                debugprint("StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
+                logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter state '"..state_name.."' is "..type(state_func).." '"..tostring(state_func).."'");
 
                 new_states[state_name] = state_func;
                 state_indexes[state_name] = accumulator;
@@ -556,13 +555,13 @@ function M.Create( name, ... )
         name_to_index = state_indexes
     };
 
-    --debugprint(table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
-    --debugprint(table.show(_statemachine.MachineFlags[ name ], "StateMachineIter flags: "));
+    --logger.print(logger.LogLevel.DEBUG, nil, table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
+    --logger.print(logger.LogLevel.DEBUG, nil, table.show(_statemachine.MachineFlags[ name ], "StateMachineIter flags: "));
     
     --_statemachine.Machines[ name ] = states;
     --_statemachine.MachineFlags[ name ] = {};
 
-    --debugprint(table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
+    --logger.print(logger.LogLevel.DEBUG, nil, table.show(_statemachine.Machines[ name ], "StateMachineIter stated(2): "));
 end
 
 --- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
@@ -588,7 +587,7 @@ function M.Start( name, state_key, init )
         end
     end
 
-    debugprint("Starting StateMachineIter Template '"..name.."' with state '"..tostring(state_key).."'");
+    logger.print(logger.LogLevel.DEBUG, nil, "Starting StateMachineIter Template '"..name.."' with state '"..tostring(state_key).."'");
 
     return CreateStateMachineIter(name, nil, nil, nil, state_key, init);
 end
@@ -656,7 +655,7 @@ function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)
         self.set_wait_time = seconds;
         return lap and first and true or false; -- start sleeping
     elseif self.target_time <= M.game_time  then
-        --debugprint(M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
+        --logger.print(logger.LogLevel.DEBUG, nil, M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
         if lap then
             self.target_time = self.target_time + seconds; -- reset the timer to the next lap
         else
@@ -755,6 +754,6 @@ end, config.get("hook_priority.Update.StateMachine"));
 
 customsavetype.Register(StateMachineIter);
 
-debugprint("_statemachine Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_statemachine Loaded");
 
 return M;

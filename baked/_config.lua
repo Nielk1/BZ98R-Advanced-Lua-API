@@ -11,13 +11,11 @@
 --     config.hook_priority.DeleteObject.GameObject = -99999;
 -- end
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
 require("_table_show")
 
-debugprint("_config Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_config Loading");
 
 local function resolve_path(tbl, path)
     -- Resolve a period or colon delimited path into a nested table value
@@ -73,8 +71,8 @@ function M_MT.get(path)
     local value = resolve_path(M_MT.data, path)
     if value ~= nil and not M_MT.locked then
         M_MT.locked = true;
-        debugprint("Config table is now locked.")
-        debugprint(table.show(M_MT.data, "config"))
+        logger.print(logger.LogLevel.DEBUG, nil, "Config table is now locked.")
+        logger.print(logger.LogLevel.DEBUG, nil, table.show(M_MT.data, "config"))
     end
     return value
 end
@@ -136,6 +134,6 @@ dont_lock = false;
 
 -- enable reading lockdown
 
-debugprint("_config Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_config Loaded");
 
 return M;

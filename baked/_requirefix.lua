@@ -6,11 +6,9 @@
 --- @author John "Nielk1" Klein
 --- @usage require("_requirefix").addmod("12345").addmod("67890");
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_requirefix Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_requirefix Loading");
 
 local modPaths = {};
 local modPathSet = {};
@@ -65,7 +63,7 @@ table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too 
                 --print("Trying to load C module '"..cfile.."'");
                 local cfunc = package.loadlib(cfile, "luaopen_"..modulename)
                 if (cfunc) then
-                    debugprint(modulename.." Loaded (C)");
+                    logger.print(logger.LogLevel.DEBUG, nil, modulename.." Loaded (C)");
                     return cfunc;
                 else
                     errmsg = errmsg.."\n\tno mod asset '"..cfile.."'";
@@ -77,7 +75,7 @@ table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too 
 end);
 
 function moduleTable.addmod(mod_id)
-    debugprint("Add module require path '"..mod_id.."'");
+    logger.print(logger.LogLevel.DEBUG, nil, "Add module require path '"..mod_id.."'");
 	if not modPathSet[mod_id] then
 		table.insert(modPaths, mod_id);
 		modPathSet[mod_id] = true;
@@ -85,6 +83,6 @@ function moduleTable.addmod(mod_id)
     return moduleTable; -- chaining
 end;
 
-debugprint("_requirefix Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_requirefix Loaded");
 
 return moduleTable;

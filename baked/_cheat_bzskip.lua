@@ -47,7 +47,7 @@ local Cheat_BZSKIP = statemachine.Start("Cheat_BZSKIP");
 hook.Add("GameKey", "Mission:GameKey:Cheat_BZSKIP", function (key)
     local success, result = Cheat_BZSKIP:run(key);
     --if result then
-    --    debugprint("BZSKIP stopping more hooks");
+    --    logger.print(logger.LogLevel.DEBUG, nil, "BZSKIP stopping more hooks");
     --    return hook.AbortResult();
     --end
 end);

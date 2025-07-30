@@ -6,12 +6,9 @@
 --- @module '_api'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
-local traceprint = traceprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_api Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_api Loading");
 
 require("_fix");
 
@@ -249,7 +246,7 @@ function SimplifyForSave(...)
                     if customsavetype.CustomSavableTypes[v.__type] ~= nil then
                         if not CustomTypeMap then error("CustomTypeMap is nil") end
                         local typeIndex = CustomTypeMap[v.__type];
-                        debugprint("Type index for " .. v.__type .. " is " .. tostring(typeIndex));
+                        logger.print(logger.LogLevel.DEBUG, nil, "Type index for " .. v.__type .. " is " .. tostring(typeIndex));
                         newTable["*custom_type"] = typeIndex;
                         if customsavetype.CustomSavableTypes[v.__type].Save ~= nil then
                             newTable["*data"] = {SimplifyForSave(customsavetype.CustomSavableTypes[v.__type].Save(v))};
@@ -357,48 +354,48 @@ end
 --- Save is called when you save a game
 --- @local
 function Save()
-    debugprint("_api::Save()");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::Save()");
     CustomTypeMap = {};
     RefUUIID = 1;
     SaveUUIDMap = {};
     SaveLoopCheck = {};
     SavePostCheck = {};
 
-    debugprint("Beginning save code");
+    logger.print(logger.LogLevel.DEBUG, nil, "Beginning save code");
 
     local saveData = {};
-    debugprint("Save Data Container ready");
+    logger.print(logger.LogLevel.DEBUG, nil, "Save Data Container ready");
 
-    debugprint("Saving custom types map");
+    logger.print(logger.LogLevel.DEBUG, nil, "Saving custom types map");
     local CustomSavableTypesCounter = 1;
     local CustomSavableTypeTmpTable = {};
     for k,v in pairs(customsavetype.CustomSavableTypes) do
         CustomSavableTypeTmpTable[CustomSavableTypesCounter] = k;
         CustomTypeMap[k] = CustomSavableTypesCounter;
-        debugprint("[" .. CustomSavableTypesCounter .. "] = " .. k);
+        logger.print(logger.LogLevel.DEBUG, nil, "[" .. CustomSavableTypesCounter .. "] = " .. k);
         CustomSavableTypesCounter = CustomSavableTypesCounter + 1;
     end
     saveData.CustomSavableTypes = CustomSavableTypeTmpTable; -- Write TmpID -> Name map
-    debugprint("Saved custom types map");
+    logger.print(logger.LogLevel.DEBUG, nil, "Saved custom types map");
     
-    debugprint("Saving custom types");
+    logger.print(logger.LogLevel.DEBUG, nil, "Saving custom types");
     local CustomSavableTypeDataTmpTable = {};
     for idNum,name in ipairs(CustomSavableTypeTmpTable) do
         local entry = customsavetype.CustomSavableTypes[name];
         if entry.BulkSave ~= nil and utility.isfunction(entry.BulkSave) then
-            debugprint("Saved " .. entry.__type);
+            logger.print(logger.LogLevel.DEBUG, nil, "Saved " .. entry.__type);
             CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.BulkSave())};
         else
-            debugprint("Saved " .. entry.__type .. " (nothing to save)");
+            logger.print(logger.LogLevel.DEBUG, nil, "Saved " .. entry.__type .. " (nothing to save)");
             CustomSavableTypeDataTmpTable[idNum] = {};
         end
     end
     saveData.CustomSavableTypeData = CustomSavableTypeDataTmpTable; -- Write TmpID -> Data map
     CustomSavableTypeDataTmpTable = nil;
     CustomSavableTypeTmpTable = nil;
-    debugprint("Saved custom types");
+    logger.print(logger.LogLevel.DEBUG, nil, "Saved custom types");
     
-    debugprint("Calling all hooked save functions");
+    logger.print(logger.LogLevel.DEBUG, nil, "Calling all hooked save functions");
     table.insert(saveData,saveData.Hooks)
     local hookResults = hook.CallSave();
     if hookResults ~= nil then
@@ -407,7 +404,7 @@ function Save()
       saveData.HooksData = {};
     end
     
-    debugprint(table.show(saveData));
+    logger.print(logger.LogLevel.DEBUG, nil, table.show(saveData));
     
     CustomTypeMap = nil;
     RefUUIID = 0;
@@ -417,47 +414,47 @@ function Save()
     SavePostCheck = nil;
     --- @diagnostic enable: cast-local-type
 
-    debugprint("_api::/Save");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::/Save");
     return saveData;
 end
 
 --- Load is called when you load a game, or when a Resync is loaded.
 --- @local
 function Load(...)
-    debugprint("_api::Load()");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::Load()");
     local args = ...;
 
 --    str = table.show(args);
 --    for s in str:gmatch("[^\r\n]+") do
---        debugprint(s);
+--        logger.print(logger.LogLevel.DEBUG, nil, s);
 --    end
-    debugprint(table.show(args));
+    logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
 
---    debugprint("Beginning load code");
+--    logger.print(logger.LogLevel.DEBUG, nil, "Beginning load code");
 
     LoadUUIDToTable = {};
 
-    traceprint("Loading custom types map");
+    logger.print(logger.LogLevel.TRACE, nil, "Loading custom types map");
     CustomTypeMap = args.CustomSavableTypes
-    traceprint("Loaded custom types map");
+    logger.print(logger.LogLevel.TRACE, nil, "Loaded custom types map");
     
-    traceprint("Loading custom types data");
+    logger.print(logger.LogLevel.TRACE, nil, "Loading custom types data");
     for idNum,data in ipairs(args.CustomSavableTypeData) do
         local entry = customsavetype.CustomSavableTypes[CustomTypeMap[idNum]];
         if entry.BulkLoad ~= nil and utility.isfunction(entry.BulkLoad) then
-            traceprint("Loaded " .. entry.__type);
+            logger.print(logger.LogLevel.TRACE, nil, "Loaded " .. entry.__type);
 
             local ArraySize = 0;
             for k,v in pairs(data) do if k > ArraySize then ArraySize = k; end end
 
             -- maybe we should load DeSimplifyForLoad multiple times until we know for sure the data has no more refs?
             entry.BulkLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));
-            traceprint("BulkLoad ran for " .. entry.__type);
+            logger.print(logger.LogLevel.TRACE, nil, "BulkLoad ran for " .. entry.__type);
         end
     end
-    traceprint("Loaded custom types data");
+    logger.print(logger.LogLevel.TRACE, nil, "Loaded custom types data");
 
-    traceprint("Calling all hooked load functions");
+    logger.print(logger.LogLevel.TRACE, nil, "Calling all hooked load functions");
 
     local ArraySize = 0;
     for k,_ in pairs(args.HooksData) do if utility.isinteger(k) and k > ArraySize then ArraySize = k; end end
@@ -478,14 +475,14 @@ function Load(...)
     --- @diagnostic disable-next-line: unused-local, cast-local-type
     LoadUUIDToTable = nil;
 
-    debugprint("_api::/Load");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::/Load");
 end
 
 --- Called when the mission starts for the first time.
 --- Use this function to perform any one-time script initialization.
 --- @local
 function Start()
-    debugprint("_api::Start()");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::Start()");
     
     --- @diagnostic disable-next-line: deprecated
     for h in AllObjects() do
@@ -493,7 +490,7 @@ function Start()
     end
 
     hook.CallAllNoReturn( "Start" );
-    debugprint("_api::/Start");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::/Start");
 end
 
 --- Called any time a game key is pressed.
@@ -502,9 +499,9 @@ end
 --- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
 --- @local
 function GameKey(key)
-    traceprint("_api::GameKey('" .. key .. "')");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::GameKey('" .. key .. "')");
     hook.CallAllNoReturn( "GameKey", key );
-    traceprint("_api::/GameKey");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/GameKey");
 end
 
 --- Called after any game object is created.
@@ -513,9 +510,9 @@ end
 --- Note that many game object functions may not work properly here.
 --- @local
 function CreateObject(h)
-    traceprint("_api::CreateObject(" .. tostring(h) .. ")");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::CreateObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h) );
-    traceprint("_api::/CreateObject");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/CreateObject");
 end
 
 --- Called after any game object is created.
@@ -524,9 +521,9 @@ end
 --- Note that many game object functions may not work properly here.
 --- @local
 function AddObject(h)
-    traceprint("_api::AddObject(" .. tostring(h) .. ")");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::AddObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "AddObject", gameobject.FromHandle(h) );
-    traceprint("_api::/AddObject");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/AddObject");
 end
 
 --- Called before a game object is deleted.
@@ -535,22 +532,22 @@ end
 --- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
 --- @local
 function DeleteObject(h)
-    traceprint("_api::DeleteObject(" .. tostring(h) .. ")");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::DeleteObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "DeleteObject", gameobject.FromHandle(h) );
-    traceprint("_api::/DeleteObject");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/DeleteObject");
 end
 
 --- Called once per tick after updating the network system and before simulating game objects.
 --- This function performs most of the mission script's game logic.
 --- @local
 function Update(dtime)
-    traceprint("_api::Update()");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::Update()");
 
     --local start = GetTimeNow();
 
     local ttime = GetTime();
     hook.CallAllNoReturn( "Update", dtime, ttime);
-    traceprint("_api::/Update");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/Update");
     --local delta = GetTimeNow() - start;
 
     --print("Script Update Load: "..string.format("%.2f%%", (updateDelta or delta) / dtime / 10));
@@ -563,9 +560,9 @@ end
 --- @param team integer Team number for this player
 --- @local
 function CreatePlayer(id, name, team)
-    debugprint("_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("CreatePlayer", id, name, team);
-    debugprint("_api::/CreatePlayer");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::/CreatePlayer");
 end
 
 --- Called when a player joins the game world.
@@ -574,9 +571,9 @@ end
 --- @param team integer Team number for this player
 --- @local
 function AddPlayer(id, name, team)
-    debugprint("_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("AddPlayer", id, name, team);
-    debugprint("_api::/AddPlayer");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::/AddPlayer");
 end
 
 --- Called when a player leaves the game world.
@@ -585,22 +582,22 @@ end
 --- @param team integer Team number for this player
 --- @local
 function DeletePlayer(id, name, team)
-    debugprint("_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("DeletePlayer", id, name, team);
-    debugprint("_api::/DeletePlayer");
+    logger.print(logger.LogLevel.DEBUG, nil, "_api::/DeletePlayer");
 end
 
 --- Command
 --- @param command string the command string
 --- @local
 function Command(command, ...)
-    traceprint("_api::Command('" .. command .. "')");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::Command('" .. command .. "')");
     local args = ...;
-    debugprint(table.show(args));
+    logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
     
     local retVal = nil;
     retVal = hook.CallAllPassReturn("Command", command, table.unpack(args));
-    traceprint("_api::/Command");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/Command");
     return retVal;
 end
 
@@ -610,20 +607,20 @@ end
 --- @tparam ... data
 --- @local
 function Receive(from, type, ...)
-    traceprint("_api::Receive(" .. from .. ", '" .. type .. "')");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::Receive(" .. from .. ", '" .. type .. "')");
     local args = ...;
-    debugprint(table.show(args));
+    logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
     
     local retVal = nil;
     retVal = hook.CallAllPassReturn("Receive", from, type, table.unpack(args));
-    traceprint("_api::/Receive");
+    logger.print(logger.LogLevel.TRACE, nil, "_api::/Receive");
     return retVal;
 end
 
 
 -- @section Script Run
 
-debugprint("_api Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_api Loaded");
 
 local version_game = version.game;
 local version_lua = version.lua;

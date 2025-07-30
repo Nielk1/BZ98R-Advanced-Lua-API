@@ -5,10 +5,9 @@
 --- @module '_camera'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable-next-line: undefined-global
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_camera Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_camera Loading");
 
 local config = require("_config");
 local utility = require("_utility");
@@ -447,6 +446,6 @@ end, function(_CameraTargetDummy)
     end
 end);
 
-debugprint("_camera Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_camera Loaded");
 
 return M;

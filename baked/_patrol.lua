@@ -8,10 +8,9 @@
 --- @usage local statemachine = require("_patrol");
 
 
---- @diagnostic disable-next-line: undefined-global
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_patrol Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_patrol Loading");
 
 local utility = require("_utility");
 local config = require("_config");
@@ -284,7 +283,7 @@ end, config.get("hook_priority.DeleteObject.Patrol"));
 
 customsavetype.Register(PatrolEngine);
 
-debugprint("_patrol Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_patrol Loaded");
 
 return M
 

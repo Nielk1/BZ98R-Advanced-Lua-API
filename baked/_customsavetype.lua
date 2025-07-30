@@ -8,10 +8,9 @@
 --- 
 --- customsavetype.Register(ObjectDef);
 
---- @diagnostic disable-next-line: undefined-global
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_customsavetype Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loading");
 
 local M = {};
 local M_MT = {};
@@ -76,6 +75,6 @@ M = setmetatable(M, M_MT);
 -------------------------------------------------------------------------------
 -- @section
 
-debugprint("_customsavetype Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loaded");
 
 return M;

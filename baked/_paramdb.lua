@@ -5,9 +5,9 @@
 --- @module '_paramdb'
 --- @author John "Nielk1" Klein
 
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_paramdb Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_paramdb Loading");
 
 local M = {};
 
@@ -94,6 +94,6 @@ function M.GetBuildTime(odf)
     return buildTime;
 end
 
-debugprint("_paramdb Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_paramdb Loaded");
 
 return M;

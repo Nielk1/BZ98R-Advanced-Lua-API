@@ -3,9 +3,9 @@
 --- @module '_utility'
 --- @author John "Nielk1" Klein
 
-local debugprint = debugprint or function(...) end;
+local logger = require("_logger");
 
-debugprint("_utility Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_utility Loading");
 
 local M = {};
 --local utility_module_meta = {};
@@ -535,6 +535,6 @@ end
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 
-debugprint("_utility Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_utility Loaded");
 
 return M;

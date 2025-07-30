@@ -8,11 +8,9 @@
 --- 
 --- @todo write example usage
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
---- @diagnostic enable: undefined-global
+local logger = require("_logger");
 
-debugprint("_objective Loading");
+logger.print(logger.LogLevel.DEBUG, nil, "_objective Loading");
 
 local hook = require("_hook");
 
@@ -160,6 +158,6 @@ function(_allObjectives, _nextId)
     nextId = _nextId;
 end);
 
-debugprint("_objective Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_objective Loaded");
 
 return M;

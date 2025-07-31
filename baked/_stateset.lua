@@ -29,7 +29,6 @@
 --     MissionData.TestSMI:run(1, 2);
 -- end);
 
-
 local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_stateset Loading");
@@ -211,7 +210,8 @@ end
 function StateSetRunner.on(self, name)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.isstring(name) then error("Parameter name must be string."); end
-    local sets = M.Sets[ self.template ];
+    logger.print(logger.LogLevel.DEBUG, nil, 'StateSetRunner:on("'..name..'")');
+    local sets = M.Sets[self.template ];
     if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
@@ -236,6 +236,7 @@ end
 function StateSetRunner.off(self, name, force)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.isstring(name) then error("Parameter name must be string."); end
+    logger.print(logger.LogLevel.DEBUG, nil, 'StateSetRunner:off("'..name..'")');
     local sets = M.Sets[ self.template ];
     if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];

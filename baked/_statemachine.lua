@@ -633,7 +633,7 @@ end
 --- Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
 --- @param self StateMachineIter StateMachineIter instance
 --- @param seconds? number How many seconds to wait
---- @param lap? boolean If true the timer is will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
+--- @param lap? boolean If true the timer will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
 --- @param first? boolean If true the timer returns true when it starts, requires lap to be true.
 --- @return boolean True if the time is up
 function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)

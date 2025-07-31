@@ -549,16 +549,19 @@ function GetPositionNear(center, minradius, maxradius) error("This function is p
 --- Returns who scored the most recent hit on the game object. Returns nil if none exists.
 --- @param h Handle
 --- @return Handle
+--- @deprecated See `_gameobject` module.
 function GetWhoShotMe(h) error("This function is provided by the engine."); end
 
 --- Returns the last time an enemy shot the game object.
 --- @param h Handle
 --- @return number float
+--- @deprecated See `_gameobject` module.
 function GetLastEnemyShot(h) error("This function is provided by the engine."); end
 
 --- Returns the last time a friend shot the game object.
 --- @param h Handle
 --- @return number float
+--- @deprecated See `_gameobject` module.
 function GetLastFriendShot(h) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------
@@ -600,6 +603,7 @@ function IsTeamAllied(team1, team2) error("This function is provided by the engi
 --- @param me Handle
 --- @param him Handle
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsAlly(me, him) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------

@@ -1260,6 +1260,25 @@ function GameObject.SetPerceivedTeam(self, team)
     SetPerceivedTeam(self:GetHandle(), team);
 end
 
+--- Order GameObject to Attack target GameObject.
+--- @param self GameObject GameObject instance
+--- @param target GameObject|Handle Target GameObject
+--- @return boolean Ally Do we consider this an ally?
+function GameObject.IsAlly(self, target)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if M.isgameobject(target) then
+        --- @cast target GameObject
+        --- @diagnostic disable-next-line: deprecated
+        return IsAlly(self:GetHandle(), target:GetHandle());
+    elseif target ~= nil then
+        --- @cast target Handle
+        --- @diagnostic disable-next-line: deprecated
+        return IsAlly(self:GetHandle(), target);
+    else
+        error("Parameter target must be GameObject or Handle.");
+    end
+end
+
 -------------------------------------------------------------------------------
 -- Owner
 -------------------------------------------------------------------------------
@@ -1465,6 +1484,41 @@ function GameObject.IsTouching(self, target, tolerance)
     else
         error("Parameter target must be GameObject or Handle.");
     end
+end
+
+-------------------------------------------------------------------------------
+-- Shot
+-------------------------------------------------------------------------------
+-- @section
+-- These functions query a game object for information about ordnance hits.
+
+--- Returns who scored the most recent hit on the game object. Returns nil if none exists.
+--- @param self GameObject
+--- @return GameObject?
+function GameObject.GetWhoShotMe(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    local handle = GetWhoShotMe(self:GetHandle());
+    if handle == nil then return nil end;
+    return M.FromHandle(handle);
+end
+
+--- Returns the last time an enemy shot the game object.
+--- @param self GameObject
+--- @return number float
+function GameObject.GetLastEnemyShot(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetLastEnemyShot(self:GetHandle());
+end
+
+--- Returns the last time a friend shot the game object.
+--- @param self GameObject
+--- @return number float
+function GameObject.GetLastFriendShot(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return GetLastFriendShot(self:GetHandle());
 end
 
 -------------------------------------------------------------------------------
@@ -1749,7 +1803,7 @@ end
 --- @param dist number
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
 --- @param point? integer If the target is a path this is the path point index, defaults to 0.
---- @return function iterator Iterator of GameObject values
+--- @return fun(): GameObject iterator Iterator of GameObject values
 function M.ObjectsInRange(dist, target, point)
     if not utility.isnumber(dist) then error("Parameter dist must be number."); end
     if M.isgameobject(target) then
@@ -1775,7 +1829,7 @@ end
 
 --- Enumerates all game objects.
 --- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
---- @return function iterator Iterator of GameObject values
+--- @return fun(): GameObject iterator Iterator of GameObject values
 function M.AllObjects()
     return coroutine.wrap(function()
         --- @diagnostic disable-next-line: deprecated
@@ -1786,7 +1840,7 @@ function M.AllObjects()
 end
 
 --- Enumerates all craft.
---- @return function iterator Iterator of GameObject values
+--- @return fun(): GameObject iterator Iterator of GameObject values
 function M.AllCraft()
     return coroutine.wrap(function()
         --- @diagnostic disable-next-line: deprecated
@@ -1797,7 +1851,7 @@ function M.AllCraft()
 end
 
 --- Enumerates all game objects currently selected by the local player.
---- @return function iterator Iterator of GameObject values
+--- @return fun(): GameObject iterator Iterator of GameObject values
 function M.SelectedObjects()
     return coroutine.wrap(function()
         --- @diagnostic disable-next-line: deprecated
@@ -1808,7 +1862,7 @@ function M.SelectedObjects()
 end
 
 --- Enumerates all game objects marked as objectives.
---- @return function iterator Iterator of GameObject values
+--- @return fun(): GameObject iterator Iterator of GameObject values
 function M.ObjectiveObjects()
     return coroutine.wrap(function()
         --- @diagnostic disable-next-line: deprecated

@@ -78,6 +78,8 @@ function M.BuildImportantNav(...)
     -- @todo check params here
     --return BuildImportantNavInternal(odf, team, location, point);
 
+    --- @todo if the game supports nation specific navs, handle it here (and memo if they exist to save cycles)
+
     --- @todo Add logic for team nav lookup
     --- @type GameObject?
     local nav = gameobject.BuildObject(odf or "apcamr", team, location, point);

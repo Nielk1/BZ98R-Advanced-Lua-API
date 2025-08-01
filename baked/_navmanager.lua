@@ -212,7 +212,7 @@ function M.SetCompactionStrategy(strategy)
 end
 
 --- Get the current compaction strategy for navs.
---- @treturn integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
+--- @return integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
 function M.GetCompactionStrategy()
     return CompactMode;
 end
@@ -222,8 +222,8 @@ end
 --- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
 --- @param team integer Team number to enumerate
 --- @param include_overflow? boolean If true "Overflow Navs" will be included in the enumeration after the initial 10.
---- @treturn integer index The index of the nav in the enumeration
---- @treturn GameObject nav The nav object at the index
+--- @return integer index The index of the nav in the enumeration
+--- @return GameObject nav The nav object at the index
 --- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
 ---     print("Nav " .. i .. ": " .. tostring(nav));
 --- end

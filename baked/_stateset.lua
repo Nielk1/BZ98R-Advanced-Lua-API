@@ -115,7 +115,7 @@ end
 
 --- Is this object an instance of StateSetRunner?
 --- @param object any Object in question
---- @treturn bool
+--- @return boolean
 function M.isstatesetrunner(object)
   return (type(object) == "table" and object.__type == "StateSetRunner");
 end
@@ -206,7 +206,7 @@ end
 --- Set state on.
 --- @param self StateSetRunner StateSetRunner instance
 --- @param name string Name of the state
---- @treturn StateSetRunner For function chaining
+--- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.on(self, name)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.isstring(name) then error("Parameter name must be string."); end
@@ -232,7 +232,7 @@ end
 --- @param self StateSetRunner StateSetRunner instance
 --- @param name string Name of the state
 --- @param force? boolean If true, the state is set off regardless of the current permits
---- @treturn StateSetRunner For function chaining
+--- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.off(self, name, force)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.isstring(name) then error("Parameter name must be string."); end
@@ -256,7 +256,7 @@ end
 
 --- Creates an StateSetRunner Template with the given indentifier.
 --- @param name string Name of the StateSetRunner Template
---- @treturn StateSet StateSet for calling Add and AddPermit, can not be saved.
+--- @return StateSet StateSet for calling Add and AddPermit, can not be saved.
 function M.Create( name )
     if not utility.isstring(name) then error("Parameter name must be a string."); end
 

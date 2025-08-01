@@ -34,7 +34,7 @@ local KnownFailedModules = {};
 --- Attempt to load a module, if it fails return false and error, if succesful return true and the module.
 --- @param table table The module table itself.
 --- @param moduleName string Module name to load.
---- @treturn boolean success True if the module loaded successfully, false if it failed.
+--- @return boolean success True if the module loaded successfully, false if it failed.
 --- @return ... The module return values or error if failed
 M_MT.__call = function(table, moduleName)
     local priorError = KnownFailedModules[moduleName];

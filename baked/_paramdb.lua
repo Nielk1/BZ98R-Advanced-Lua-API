@@ -5,6 +5,8 @@
 --- @module '_paramdb'
 --- @author John "Nielk1" Klein
 
+--- @todo Add caching of the data or hold odfs open with time decay
+
 local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_paramdb Loading");
@@ -82,6 +84,7 @@ function M.GetPilotCost(odf)
     return pilot;
 end
 
+--- @todo This might not need to exist since it doesn't have special class code
 --- @param odf string ODF file name
 --- @return number time
 function M.GetBuildTime(odf)
@@ -92,6 +95,22 @@ function M.GetBuildTime(odf)
 
     local buildTime = GetODFFloat(odfHandle, "GameObjectClass", "buildTime", 5.0);
     return buildTime;
+end
+
+--- Get a general string without handling of class defaults.
+--- @param odf string ODF file name
+--- @param section string? Section name
+--- @param key string Key name
+--- @param default string? Default value if the key is not found
+--- @return string value
+function M.GetValueString(odf, section, key, default)
+    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    
+    local odfHandle = OpenODF(odf);
+    if odfHandle == nil then error("OpenODF() returned nil."); end
+
+    local valueString = GetODFString(odfHandle, section, key, default);
+    return valueString;
 end
 
 logger.print(logger.LogLevel.DEBUG, nil, "_paramdb Loaded");

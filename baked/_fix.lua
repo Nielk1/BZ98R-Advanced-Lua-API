@@ -9,6 +9,7 @@
 --- <li><b>Fix/Polyfill:</b> TeamSlot missing "PORTAL" = 90</li>
 --- <li><b>Fix:</b> Tugs not respecting DropOff command due to invalid deploy state</li>
 --- <li><b>Fix/Polyfill:</b> Fix for broken <code>Formation</code> order function</li>
+--- <li><b>Fix:</b> Powerups not using thrusters when falling if on an AI team</li>
 --- </ul>
 ---
 --- @module '_fix'
@@ -20,6 +21,10 @@ logger.print(logger.LogLevel.DEBUG, nil, "_fix Loading");
 
 local version = require("_version");
 local hook = require("_hook");
+local utility = require("_utility");
+local paramdb = require("_paramdb");
+local config = require("_config");
+local gameobject = require("_gameobject");
 
 local pre_patch = version.Compare(version.game, "2.2.315") < 0;
 
@@ -128,15 +133,15 @@ if pre_patch then
         end
         --- @diagnostic enable: deprecated
     end
-    hook.Add("Start", "Fix:Start", function()
+    hook.Add("Start", "Fix:Tug:Start", function()
         fixTugs();
-        hook.Remove("Start", "Fix:Start");
-        hook.RemoveSaveLoad("Fix");
+        hook.Remove("Start", "Fix:Tug:Start");
+        hook.RemoveSaveLoad("Fix:Tug");
     end);
-    hook.AddSaveLoad("Fix", nil, function()
+    hook.AddSaveLoad("Fix:Tug", nil, function()
         fixTugs();
-        hook.Remove("Start", "Fix:Start");
-        hook.RemoveSaveLoad("Fix");
+        hook.Remove("Start", "Fix:Tug:Start");
+        hook.RemoveSaveLoad("Fix:Tug");
     end);
 end
 
@@ -150,6 +155,68 @@ if pre_patch then
         --- @diagnostic disable-next-line: deprecated
         _G.SetCommand(me, AiCommand["FORMATION"], priority, him);
     end
+end
+
+-- [Fix] Powerups not using thrusters when falling if on an AI team
+if pre_patch then
+    logger.print(logger.LogLevel.DEBUG, nil, " - Fix: Powerups not using thrusters when falling if on an AI team");
+    
+    --- @class GameObject_FixFallingPowerup : GameObject
+    --- @field PowerupFixes_team integer
+    --- @field PowerupFixes_wrecker boolean?
+
+    --- @type table<GameObject_FixFallingPowerup, boolean>
+    local PowerupFixes = {};
+
+    hook.Add("Update", "Fix:PowerupAi2:Update", function (dtime, ttime)
+        for object, _ in pairs(PowerupFixes) do
+            if not object:IsLocal() or not object then
+                --- @todo this might cause issues if something changes the owner, but then that other thing would need to fix the team
+                PowerupFixes[object] = nil;
+            elseif object:GetCurrentCommand() == AiCommand.GO then
+                object:SetTeamNum(object.PowerupFixes_team);
+                PowerupFixes[object] = nil;
+            elseif object.PowerupFixes_wrecker then
+                if object:GetVelocity().y < 0 and GetFloorHeightAndNormal(object:GetHandle()) + 10 < object:GetPosition().y then
+                    object:SetTeamNum(object.PowerupFixes_team);
+                    PowerupFixes[object] = nil;
+                end
+            end
+        end
+    end, config.get("hook_priority.Update.FixPowerupAi2"));
+
+    hook.Add("CreateObject", "Fix:PowerupAi2:CreateObject", function(object)
+        --- @cast object GameObject_FixFallingPowerup
+
+        -- ignore objects that are not local
+        if not object:IsLocal() then return; end
+
+        -- ignore objects that are not powerups
+        if object:GetClassId() ~= ClassId.POWERUP then return; end
+        if object:GetClassSig() == utility.ClassSig.TORPEDO then return; end
+        
+        -- we only care about objects that aren't on a player team
+        local currentTeam = object:GetTeamNum();
+        if gameobject.GetPlayer(currentTeam) ~= nil then return; end
+
+        if object:GetClassSig() ~= utility.ClassSig.DAYWRECKER then
+            if paramdb.GetValueString(object:GetOdf(), "GameObjectClass", "aiName2", "") == "" then
+                -- wreckers are a pain in the ass so if we don't need this code, don't do it
+                return;
+            else
+                logger.print(logger.LogLevel.WARN, nil, "Powerup is a wrecker but has no aiName2, fall-fix could cause issues with damage credit.");
+                object.PowerupFixes_wrecker = true;
+            end
+        end
+        object.PowerupFixes_team = currentTeam;
+        PowerupFixes[object] = true;
+        object:SetTeamNum(0);
+    end, config.get("hook_priority.CreateObject.FixPowerupAi2"));
+
+    hook.AddSaveLoad(
+        "Fix:PowerupAi2",
+        function() return PowerupFixes; end,
+        function(data) PowerupFixes = data; end);
 end
 
 logger.print(logger.LogLevel.DEBUG, nil, "_fix Loaded");

@@ -270,6 +270,7 @@ end
 --- Get Player GameObject of team.
 --- @param team? TeamNum Team number of player
 --- @return GameObject? player GameObject of player or nil
+--- @todo depricate functions like this and move them to a team manager, because of the issue noted on scriptutils for GetTeamSlot.
 function M.GetPlayer(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
@@ -1000,6 +1001,39 @@ function GameObject.HoppedOutOf(self)
     local handle = HoppedOutOf(self:GetHandle());
     if handle == nil then return nil end;
     return M.FromHandle(handle);
+end
+
+-------------------------------------------------------------------------------
+-- Network
+-------------------------------------------------------------------------------
+-- @section
+-- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
+
+--- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.
+--- Important safety tip: only call this on one machine at a time!
+--- @param self GameObject GameObject instance
+function SetLocal(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    SetLocal(self:GetHandle());
+end
+
+--- Returns true if the game is local to the machine the script is running on. Returns false otherwise.
+--- @param self GameObject GameObject instance
+--- @return boolean
+function GameObject.IsLocal(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return IsLocal(self:GetHandle());
+end
+
+--- Returns true if the game object is remote to the machine the script is running on. Returns false otherwise.
+--- @param self GameObject GameObject instance
+--- @return boolean
+function GameObject.IsRemote(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return IsRemote(self:GetHandle());
 end
 
 -------------------------------------------------------------------------------

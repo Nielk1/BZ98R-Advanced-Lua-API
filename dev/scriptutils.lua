@@ -917,6 +917,7 @@ TeamSlot = {
 --- @param team? TeamNum
 --- @return Handle
 --- @deprecated See `_gameobject` module.
+--- @note Team slots badly lag behind for remote players, even though the object will exist on the local machine as a remote tagged object.  This affects all TeamSlot based functions.
 function GetTeamSlot(slot, team) error("This function is provided by the engine."); end
 
 --- Returns the game object controlled by the player on the given team. Returns nil if none exists.
@@ -1864,18 +1865,22 @@ function IsNetGame() error("This function is provided by the engine."); end
 --- @return boolean
 function IsHosting() error("This function is provided by the engine."); end
 
---- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote. Important safety tip: only call this on one machine at a time!
+--- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.
+--- Important safety tip: only call this on one machine at a time!
 --- @param h Handle
+--- @deprecated See `_gameobject` module.
 function SetLocal(h) end
 
 --- Returns true if the game is local to the machine the script is running on. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsLocal(h) error("This function is provided by the engine."); end
 
 --- Returns true if the game object is remote to the machine the script is running on. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsRemote(h) error("This function is provided by the engine."); end
 
 --- Adds a system text message to the chat window on the local machine.

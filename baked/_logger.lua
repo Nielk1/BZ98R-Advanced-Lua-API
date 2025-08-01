@@ -59,16 +59,18 @@ M.InterceptPrint = {
 --- Log Levels
 --- @enum LogLevel
 M.LogLevel = {
-    NONE = 0, -- No logging
+    NONE  = 0, -- No logging
     ERROR = 1, -- Error messages, used for critical issues
-    PRINT = 2, -- Normal print messages, used most often in intercept
-    DEBUG = 3, -- Debug messages
-    TRACE = 4, -- Trace messages
+    WARN  = 2, -- Warning messages, used for non-critical issues
+    PRINT = 3, -- Normal print messages, used most often in intercept
+    DEBUG = 4, -- Debug messages
+    TRACE = 5, -- Trace messages
 };
 
 local LogLevelName = {
     [M.LogLevel.NONE]  = "NONE ",
     [M.LogLevel.ERROR] = "ERROR",
+    [M.LogLevel.WARN]  = "WARN ",
     [M.LogLevel.PRINT] = "PRINT",
     [M.LogLevel.DEBUG] = "DEBUG",
     [M.LogLevel.TRACE] = "TRACE",

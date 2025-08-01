@@ -40,6 +40,34 @@ local OverflowNavs = {};
 
 local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
 
+local NationMemo = {};
+function GetDefaultNavOdf(nation)
+    if nation == nil or #nation == 0 then
+        return "apcamr";
+    end
+
+    local odf = NationMemo[nation[1]];
+    if odf then
+        return odf;
+    end
+
+    odf = nation[1] .. "pcamr";
+
+    -- OpenODF hoping to mirror game behavior, UseItem is also an option
+    if OpenODF(odf) then
+        NationMemo[nation[1]] = odf;
+        return odf;
+    end
+
+    if nation[1] == "c" then
+        NationMemo[nation[1]] = "spcamr";
+        return "spcamr";
+    end
+
+    NationMemo[nation[1]] = "apcamr";
+    return "apcamr";
+end
+
 --- Adds custom data to GameObject for this module.
 --- @class GameObject
 --- @field NavManager table A table containing custom data for this module.
@@ -78,11 +106,67 @@ function M.BuildImportantNav(...)
     -- @todo check params here
     --return BuildImportantNavInternal(odf, team, location, point);
 
-    --- @todo if the game supports nation specific navs, handle it here (and memo if they exist to save cycles)
+    --- @todo Add a team manager to track team nations better such as scanning all the teamslots
+    
+    local nation = nil;
+    if odf then
+        if not nation then
+            local source = gameobject.GetPlayer(team);
+            if source then
+                local pilot = source:GetPilotClass();
+                if pilot and #pilot > 0 then
+                    nation = pilot[1];
+                else
+                    nation = source:GetNation();
+                end
+            end
+        end
+        if not nation then
+            local source = gameobject.GetRecycler(team);
+            if source then
+                nation = source:GetNation();
+            end
+        end
+        if not nation then
+            local source = gameobject.GetConstructor(team);
+            if source then
+                nation = source:GetNation();
+            end
+        end
+        if not nation then
+            local source = gameobject.GetFactory(team);
+            if source then
+                nation = source:GetNation();
+            end
+        end
+        if not nation then
+            local source = gameobject.GetArmory(team);
+            if source then
+                nation = source:GetNation();
+            end
+        end
+        if not nation then
+            for i = TeamSlot.MIN_COMM, TeamSlot.MAX_COMM do
+                local source = gameobject.GetTeamSlot(i, team);
+                if source then
+                    nation = source:GetNation();
+                    break;
+                end
+            end
+        end
+        if not nation then
+            for i = TeamSlot.MIN_POWER, TeamSlot.MAX_POWER do
+                local source = gameobject.GetTeamSlot(i, team);
+                if source then
+                    nation = source:GetNation();
+                    break;
+                end
+            end
+        end
+    end
 
-    --- @todo Add logic for team nav lookup
     --- @type GameObject?
-    local nav = gameobject.BuildObject(odf or "apcamr", team, location, point);
+    local nav = gameobject.BuildObject(odf or GetDefaultNavOdf(nation), team, location, point);
     if not nav then return nil; end -- failed to build nav
 
     nav.NavManager = { important = true; }

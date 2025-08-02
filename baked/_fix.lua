@@ -153,7 +153,7 @@ if pre_patch then
             priority = 1;
         end
         --- @diagnostic disable-next-line: deprecated
-        _G.SetCommand(me, AiCommand["FORMATION"], priority, him);
+        _G.SetCommand(me, AiCommand.FORMATION, priority, him);
     end
 end
 
@@ -187,9 +187,9 @@ if pre_patch then
 
     hook.Add("CreateObject", "Fix:PowerupAi2:CreateObject", function(object)
         --- @cast object GameObject_FixFallingPowerup
-
-        -- ignore objects that are not local
-        if not object:IsLocal() then return; end
+        
+        -- ignore objects that are not local ( can't be done in CreateObject, too early)
+        --if not object:IsLocal() then return; end
 
         -- ignore objects that are not powerups
         if object:GetClassId() ~= ClassId.POWERUP then return; end
@@ -199,18 +199,26 @@ if pre_patch then
         local currentTeam = object:GetTeamNum();
         if gameobject.GetPlayer(currentTeam) ~= nil then return; end
 
-        if object:GetClassSig() ~= utility.ClassSig.DAYWRECKER then
-            if paramdb.GetValueString(object:GetOdf(), "GameObjectClass", "aiName2", "") == "" then
-                -- wreckers are a pain in the ass so if we don't need this code, don't do it
-                return;
-            else
-                logger.print(logger.LogLevel.WARN, nil, "Powerup is a wrecker but has no aiName2, fall-fix could cause issues with damage credit.");
-                object.PowerupFixes_wrecker = true;
-            end
+        if paramdb.GetValueString(object:GetOdf(), "GameObjectClass", "aiName2", "") ~= "" then return; end
+
+        local sig = object:GetClassSig();
+        if sig == utility.ClassSig.DAYWRECKER then
+            logger.print(logger.LogLevel.WARN, nil, "Powerup is a wrecker but has no aiName2, fall-fix could cause issues with damage credit.");
+            object.PowerupFixes_wrecker = true;
         end
+        logger.print(logger.LogLevel.DEBUG, nil, "Falling AI Powerup detected!");
         object.PowerupFixes_team = currentTeam;
         PowerupFixes[object] = true;
-        object:SetTeamNum(0);
+        if not IsNetGame() and IsTeamAllied(currentTeam, 1) and IsTeamAllied(1, currentTeam) then
+            if sig == utility.ClassSig.POWERUP_CAMERA then
+                -- camera pods are annoying because you can see from them
+                object:SetTeamNum(0);
+            else
+                object:SetTeamNum(1);
+            end
+        else
+            object:SetTeamNum(0);
+        end
     end, config.get("hook_priority.CreateObject.FixPowerupAi2"));
 
     hook.AddSaveLoad(

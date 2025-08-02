@@ -96,6 +96,7 @@ local settings = {
     strip_colors = false, -- Strip ANSI color codes, but only from dedicated logging function, print/error not touched
     suppress = {}, -- Patterns to suppress in log messages
 };
+M.settings = settings; --- @todo make this readonly (at least through this window)
 
 --- @param odf ParameterDB
 --- @param section? string

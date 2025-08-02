@@ -2082,7 +2082,7 @@ if utility.isfunction(SetTeamSlot) then
     --- @param slot TeamSlotInteger Slot number, see TeamSlot
     --- @return GameObject? old_object The new game object formerly in the slot, or nil if the slot was empty
     --- @see ScriptUtils.TeamSlot
-    function M.SetTeamSlot(self, slot)
+    function GameObject.SetTeamSlot(self, slot)
         if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
         if not utility.isnumber(slot) then error("Parameter slot must be a number") end
         

@@ -44,9 +44,17 @@ local ProducerTeamSlots = {
     TeamSlot.CONSTRUCT,
 };
 
+--- @type table<ClassSig, string>
+local ProducerTypeColors = {
+    [utility.ClassSig.RECYCLER] = color.AnsiColorEscapeMap.CYAN,
+    [utility.ClassSig.FACTORY] = color.AnsiColorEscapeMap.YELLOW,
+    [utility.ClassSig.ARMORY] = color.AnsiColorEscapeMap.GREEN,
+    [utility.ClassSig.CONSTRUCTIONRIG] = color.AnsiColorEscapeMap.MAGENTA,
+};
+
 --- @class ProductionQueue
 --- @field odf string The ODF of the object to be built.
---- @field location Vector|string The location where the object should be built, or "0 0 0" if not specified.
+--- @field location Vector|string|PathWithIndex|nil The location where the object should be built, or "0 0 0" if not specified.
 --- @field builder TeamSlotInteger? The producer that will build the object.
 --- @field data any? The event data to be fired with the creation event.
 
@@ -99,6 +107,60 @@ local ProducersDirty = {};
 -------------------------------------------------------------------------------
 -- @section
 local c = color.AnsiColorEscapeMap;
+
+local function ToStringJobFragment(job)
+    local queueString = job.odf;
+    if job.data then
+        queueString = queueString.."*";
+    end
+    if job.location then
+        local location = job.location;
+        --- @cast location PathWithIndex
+        if utility.istable(location)
+            and #location == 2
+            and utility.isstring(location[1])
+            and utility.isinteger(location[2]) then
+            queueString = queueString.."@"..location[1]..":"..tostring(location[2]);
+        elseif utility.isVector(location) then
+            --- @cast location Vector
+            queueString = queueString.."@"..tostring(location.x)..","..tostring(location.y)..","..tostring(location.z);
+        else
+            --- @cast location string|Vector
+            queueString = queueString.."@"..tostring(location);
+        end
+    end
+    return queueString;
+end
+
+local function PrintQueue(team)
+    if logger.settings.level < logger.LogLevel.DEBUG then
+        return; -- don't waste cycles building a string we can't see
+    end
+    local queue = ProducerQueue[team];
+    if queue then
+        local queueString = "";
+        for job in queue:iter_left() do
+            --- @cast job ProductionQueue
+            queueString = queueString.."[";
+            if job.builder then
+                queueString = utility.TeamSlotString[job.builder]..">";
+            end
+            queueString = queueString..ToStringJobFragment(job);            
+            queueString = queueString.."]";
+        end
+
+        local orderString = "";
+        for producer, job in pairs(ProducerOrders) do
+            if producer then
+                orderString = orderString..ProducerTypeColors[producer:GetClassSig()].."["..producer:GetOdf()..">";
+                orderString = orderString..ToStringJobFragment(job);
+                orderString = orderString.."]"..c.RESET;
+            end
+        end
+
+        logger.print(logger.LogLevel.DEBUG, "<PRODUCER>", "QUEUE|"..tostring(team).."|"..orderString.."|"..queueString);
+    end
+end
 
 --- Process the queues for each team.
 local function ProcessQueues()
@@ -188,7 +250,16 @@ local function ProcessQueues()
                                             -- if we have enough scrap, start building
                                             if scrapCost <= Scrap then
                                                 if hasPosition then
-                                                    producerObject:BuildAt(job.odf, job.location);
+                                                    local location = job.location;
+                                                    --- @cast location PathWithIndex
+                                                    if utility.istable(location)
+                                                        and #location == 2
+                                                        and utility.isstring(location[1])
+                                                        and utility.isinteger(location[2]) then
+                                                        location = GetPosition(location[1], location[2]);
+                                                    end
+                                                    --- @cast location string|Vector
+                                                    producerObject:BuildAt(job.odf, location);
                                                 else
                                                     producerObject:Build(job.odf);
                                                 end
@@ -215,6 +286,9 @@ local function ProcessQueues()
                 end
                 -- remove the items from the queue
                 queue:remove_multiple(indexesToRemove);
+                if #indexesToRemove > 0 then
+                    PrintQueue(team);
+                end
             end
         end
     end
@@ -262,13 +336,15 @@ local function ProcessCreated(object)
         if currentCanBuild then
             if producerSig == utility.ClassSig.armory and not currentBusy then
                 -- armories are special and somehow aren't still busy after a build
-                --logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete FIND&DONE ("..tostring(math.floor(distance)).."m)"..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
+                logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete FIND&DONE ("..tostring(math.floor(distance)).."m)"..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
+                PrintQueue(closestProducer:GetTeamNum());
                 hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, matchingJob.data);
                 ProducerOrders[closestProducer] = nil; -- remove the producer from the list
             elseif currentBusy then
                 -- Recycler, Factory, and Construction Rig change Busy flag on a delay
                 --logger.print(logger.LogLevel.DEBUG, nil, c.DKGREEN.."BuildComplete FIND ("..tostring(math.floor(distance)).."m) "..closestProducer:GetOdf().."["..tostring(closestProducer:GetTeamNum()).."] > "..odf..c.RESET);
 
+                --PrintQueue(closestProducer:GetTeamNum());
                 --hook.CallAllNoReturn("Producer:BuildComplete", object, closestProducer, ProducerOrders[closestProducer]);
     
                 if closestProducer._producer == nil then
@@ -291,7 +367,8 @@ local function PostBuildCheck()
                 local object = producer._producer.post_build_check;
                 --- @cast object GameObject
                 producer._producer.post_build_check = nil;
-                --logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                PrintQueue(producer:GetTeamNum());
                 hook.CallAllNoReturn("Producer:BuildComplete", object, producer, job.data);
                 ProducerOrders[producer] = nil; -- remove the producer from the list
             end
@@ -302,7 +379,8 @@ local function PostBuildCheck()
                 local object = producer._producer.post_build_check;
                 --- @cast object GameObject
                 producer._producer.post_build_check = nil;
-                --logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                logger.print(logger.LogLevel.DEBUG, nil, c.GREEN.."BuildComplete DONE "..producer:GetOdf().."["..tostring(object:GetTeamNum()).."] > "..object:GetOdf()..c.RESET);
+                PrintQueue(producer:GetTeamNum());
                 hook.CallAllNoReturn("Producer:BuildComplete", object, producer, job.data);
                 ProducerOrders[producer] = nil; -- remove the producer from the list
             end
@@ -363,7 +441,7 @@ end
 
 --- @param odf string Object to build.
 --- @param team TeamNum Team number to build the object.
---- @param location Vector|Matrix|string|GameObject|Handle|nil Location to build the object if from an armory or constructor.
+--- @param location Vector|Matrix|string|PathWithIndex|GameObject|Handle|nil Location to build the object if from an armory or constructor.
 --- @param builder TeamSlotInteger? The producer that will build the object.
 --- @param data any? Event data to be fired with the creation event.
 function M.QueueJob(odf, team, location, builder, data)
@@ -421,6 +499,8 @@ function M.QueueJob(odf, team, location, builder, data)
     --        logger.print(logger.LogLevel.DEBUG, nil, table.show(ProducerQueue[i]:contents(), "ProducerQueue["..tostring(i).."]"));
     --    end
     --end
+
+    PrintQueue(team);
 end
 
 -------------------------------------------------------------------------------

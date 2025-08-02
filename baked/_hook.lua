@@ -327,7 +327,13 @@ function M.CallLoad(SaveData)
         for k, v in pairs( SaveLoadHooks ) do
             if v.Load ~= nil and utility.isfunction(v.Load) then
                 if SaveData[k] ~= nil then
-                    v.Load(table.unpack(SaveData[k]));
+                    local ArraySize = 0;
+                    for k2, _ in pairs(SaveData[k]) do
+                        if utility.isinteger(k2) and k2 > ArraySize then
+                            ArraySize = k2;
+                        end
+                    end
+                    v.Load(table.unpack(SaveData[k], 1, ArraySize));
                 else
                     v.Load();
                 end
@@ -404,7 +410,13 @@ function M.CallAllPassReturn( event, ... )
         ProcPendingRemovals();
     end
     if lastreturn ~= nil then
-        return table.unpack(lastreturn);
+        local ArraySize = 0;
+        for k, _ in pairs(lastreturn) do
+            if utility.isinteger(k) and k > ArraySize then
+                ArraySize = k;
+            end
+        end
+        return table.unpack(lastreturn, 1, ArraySize);
     end
     return lastreturn;
 end

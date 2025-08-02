@@ -72,6 +72,9 @@ function GameObject.__newindex(dtable, key, value)
 end
 GameObject.__type = "GameObject";
 GameObject.__noref = true;
+GameObject.__tostring = function(self)
+    return "GameObject: " .. tostring(self:GetHandle());
+end
 
 -------------------------------------------------------------------------------
 -- Core
@@ -1034,6 +1037,16 @@ function GameObject.IsRemote(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
     return IsRemote(self:GetHandle());
+end
+
+--- Returns true if the game object is initialized, meaning it has been created and is either local or remote.
+--- @param self GameObject GameObject instance
+--- @return boolean
+function GameObject.IsInitialized(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    local h = self:GetHandle();
+    --- @diagnostic disable-next-line: deprecated
+    return IsLocal(h) or IsRemote(h);
 end
 
 -------------------------------------------------------------------------------

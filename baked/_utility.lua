@@ -23,6 +23,154 @@ local M = {};
 -------------------------------------------------------------------------------
 -- @section
 
+--- TeamSlotStrings
+--- @enum TeamSlotString
+M.TeamSlotString = {
+    UNDEFINED = "UNDEFINED", -- UNDEFINED
+    PLAYER = "PLAYER", -- PLAYER
+
+    RECYCLER = "RECYCLER", -- RECYCLER
+    FACTORY = "FACTORY", -- FACTORY
+    ARMORY = "ARMORY", -- ARMORY
+    CONSTRUCT = "CONSTRUCT", -- CONSTRUCT
+
+    MIN_OFFENSE = "MIN_OFFENSE", -- MIN_OFFENSE
+    MAX_OFFENSE = "MAX_OFFENSE", -- MAX_OFFENSE
+    MIN_DEFENSE = "MIN_DEFENSE", -- MIN_DEFENSE
+    MAX_DEFENSE = "MAX_DEFENSE", -- MAX_DEFENSE
+    MIN_UTILITY = "MIN_UTILITY", -- MIN_UTILITY
+    MAX_UTILITY = "MAX_UTILITY", -- MAX_UTILITY
+
+    MIN_BEACON = "MIN_BEACON", -- MIN_BEACON
+    MAX_BEACON = "MAX_BEACON", -- MAX_BEACON
+
+    MIN_POWER = "MIN_POWER", -- MIN_POWER
+    MAX_POWER = "MAX_POWER", -- MAX_POWER
+    MIN_COMM = "MIN_COMM", -- MIN_COMM
+    MAX_COMM = "MAX_COMM", -- MAX_COMM
+    MIN_REPAIR = "MIN_REPAIR", -- MIN_REPAIR
+    MAX_REPAIR = "MAX_REPAIR", -- MAX_REPAIR
+    MIN_SUPPLY = "MIN_SUPPLY", -- MIN_SUPPLY
+    MAX_SUPPLY = "MAX_SUPPLY", -- MAX_SUPPLY
+    MIN_SILO = "MIN_SILO", -- MIN_SILO
+    MAX_SILO = "MAX_SILO", -- MAX_SILO
+    MIN_BARRACKS = "MIN_BARRACKS", -- MIN_BARRACKS
+    MAX_BARRACKS = "MAX_BARRACKS", -- MAX_BARRACKS
+    MIN_GUNTOWER = "MIN_GUNTOWER", -- MIN_GUNTOWER
+    MAX_GUNTOWER = "MAX_GUNTOWER", -- MAX_GUNTOWER
+
+    PORTAL = "PORTAL", -- PORTAL [2.2.315+]
+
+    [-1] = "UNDEFINED", -- UNDEFINED
+    [0] = "PLAYER", -- PLAYER
+
+    [1] = "RECYCLER", -- RECYCLER
+    [2] = "FACTORY", -- FACTORY
+    [3] = "ARMORY", -- ARMORY
+    [4] = "CONSTRUCT", -- CONSTRUCT
+
+    [5] = "MIN_OFFENSE", -- MIN_OFFENSE
+    [14] = "MAX_OFFENSE", -- MAX_OFFENSE
+    [15] = "MIN_DEFENSE", -- MIN_DEFENSE
+    [24] = "MAX_DEFENSE", -- MAX_DEFENSE
+    [25] = "MIN_UTILITY", -- MIN_UTILITY
+    [34] = "MAX_UTILITY", -- MAX_UTILITY
+
+    [35] = "MIN_BEACON", -- MIN_BEACON
+    [44] = "MAX_BEACON", -- MAX_BEACON
+
+    [45] = "MIN_POWER", -- MIN_POWER
+    [54] = "MAX_POWER", -- MAX_POWER
+    [55] = "MIN_COMM", -- MIN_COMM
+    [59] = "MAX_COMM", -- MAX_COMM
+    [60] = "MIN_REPAIR", -- MIN_REPAIR
+    [64] = "MAX_REPAIR", -- MAX_REPAIR
+    [65] = "MIN_SUPPLY", -- MIN_SUPPLY
+    [69] = "MAX_SUPPLY", -- MAX_SUPPLY
+    [70] = "MIN_SILO", -- MIN_SILO
+    [74] = "MAX_SILO", -- MAX_SILO
+    [75] = "MIN_BARRACKS", -- MIN_BARRACKS
+    [79] = "MAX_BARRACKS", -- MAX_BARRACKS
+    [80] = "MIN_GUNTOWER", -- MIN_GUNTOWER
+    [89] = "MAX_GUNTOWER", -- MAX_GUNTOWER
+
+    [90] = "PORTAL", -- PORTAL [2.2.315+]
+}
+
+--- TeamSlotIntegers
+--- @enum TeamSlotInteger
+M.TeamSlotInteger = {
+    UNDEFINED = -1, -- invalid, -1
+    PLAYER = 0, -- 0
+
+    RECYCLER = 1, -- 1
+    FACTORY = 2, -- 2
+    ARMORY = 3, -- 3
+    CONSTRUCT = 4, -- 4
+
+    MIN_OFFENSE = 5, -- 5
+    MAX_OFFENSE = 14, -- 14
+    MIN_DEFENSE = 15, -- 15
+    MAX_DEFENSE = 24, -- 24
+    MIN_UTILITY = 25, -- 25
+    MAX_UTILITY = 34, -- 34
+
+    MIN_BEACON = 35, -- 35
+    MAX_BEACON = 44, -- 44
+
+    MIN_POWER = 45, -- 45
+    MAX_POWER = 54, -- 54
+    MIN_COMM = 55, -- 55
+    MAX_COMM = 59, -- 59
+    MIN_REPAIR = 60, -- 60
+    MAX_REPAIR = 64, -- 64
+    MIN_SUPPLY = 65, -- 65
+    MAX_SUPPLY = 69, -- 69
+    MIN_SILO = 70, -- 70
+    MAX_SILO = 74, -- 74
+    MIN_BARRACKS = 75, -- 75
+    MAX_BARRACKS = 79, -- 79
+    MIN_GUNTOWER = 80, -- 80
+    MAX_GUNTOWER = 89, -- 89
+
+    PORTAL = 90, -- 90 [2.2.315+]
+
+    [-1] = -1, -- invalid, -1
+    [0] = 0, -- 0
+
+    [1] = 1, -- 1
+    [2] = 2, -- 2
+    [3] = 3, -- 3
+    [4] = 4, -- 4
+
+    [5] = 5, -- 5
+    [14] = 14, -- 14
+    [15] = 15, -- 15
+    [24] = 24, -- 24
+    [25] = 25, -- 25
+    [34] = 34, -- 34
+
+    [35] = 35, -- 35
+    [44] = 44, -- 44
+
+    [45] = 45, -- 45
+    [54] = 54, -- 54
+    [55] = 55, -- 55
+    [59] = 59, -- 59
+    [60] = 60, -- 60
+    [64] = 64, -- 64
+    [65] = 65, -- 65
+    [69] = 69, -- 69
+    [70] = 70, -- 70
+    [74] = 74, -- 74
+    [75] = 75, -- 75
+    [79] = 79, -- 79
+    [80] = 80, -- 80
+    [89] = 89, -- 89
+
+    [90] = 90, -- 90 [2.2.315+]
+}
+
 --- ClassLabels
 --- @enum ClassLabel
 M.ClassLabel = {
@@ -582,3 +730,6 @@ end
 logger.print(logger.LogLevel.DEBUG, nil, "_utility Loaded");
 
 return M;
+
+--- @todo It would probably be worth making a path manager with a path class and kill this alias. The alias would let us find all the places that could use the new module.
+--- @alias PathWithIndex { [1]: string, [2]: integer }

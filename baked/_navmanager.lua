@@ -41,7 +41,7 @@ local OverflowNavs = {};
 local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
 
 local NationMemo = {};
-function GetDefaultNavOdf(nation)
+local function GetDefaultNavOdf(nation)
     if nation == nil or #nation == 0 then
         return "apcamr";
     end

@@ -88,11 +88,13 @@ M.LogFormat = {
 --- @field format LogFormat
 --- @field intercept_print InterceptPrint
 --- @field strip_colors boolean
+--- @field suppress string[] -- Patterns to suppress in log messages
 local settings = {
     level = M.LogLevel.NONE,
     format = M.LogFormat.RAW,
     intercept_print = M.InterceptPrint.NONE,
     strip_colors = false, -- Strip ANSI color codes, but only from dedicated logging function, print/error not touched
+    suppress = {}, -- Patterns to suppress in log messages
 };
 
 --- @param odf ParameterDB
@@ -165,6 +167,16 @@ if settingsFile then
 
     settings.strip_colors = GetODFBool(settingsFile, "Logging", "strip_colors", false);
 
+    -- loop untip GetODFString returns nil
+    for i = 1, 100 do
+        --- @diagnostic disable-next-line: deprecated
+        local pattern, success = GetODFString(settingsFile, "Logging", "suppress"..tostring(i));
+        if not success or not pattern then
+            break;
+        end
+        table.insert(settings.suppress, pattern);
+    end
+
     settingsFile = nil;
 end
 
@@ -219,13 +231,21 @@ function M.print(level, context, ...)
         return;
     end
     local contextWrap = context;
-    if not context then
+    if not contextWrap then
         local info = debug.getinfo(2, "Sl")
         local filename = info.short_src or "unknown"
         filename = filename:gsub('%[string "(.-)"%]', '%1')
         filename = filename:match("[^/\\]+$") or filename -- strip path
         local lineinfo = info.currentline and ("#" .. info.currentline) or ""
         contextWrap = filename .. lineinfo;
+    end
+    if level ~= M.LogLevel.ERROR then
+        -- supressed logging by context, except for errors
+        for _, pattern in ipairs(settings.suppress) do
+            if contextWrap:match(pattern) then
+                return; -- Suppress this message
+            end
+        end
     end
     if #contextWrap < CONTEXT_PAD then
         contextWrap = contextWrap .. string.rep(" ", CONTEXT_PAD - #contextWrap)

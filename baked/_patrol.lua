@@ -64,18 +64,10 @@ end
 --- @field forcedAlert boolean
 PatrolEngine = { __type = "PatrolEngine" };
 
-
---- Checks if the controller is alive.
---- @param self PatrolEngine
---- @return boolean
-function PatrolEngine.isAlive(self)
-    return true
-end
-
 --- Registers a location.
 --- @param self PatrolEngine
 --- @param locationName string
-function PatrolEngine.registerLocation(self, locationName)
+function PatrolEngine.RegisterLocation(self, locationName)
     self.path_map[locationName] = {}
     table.insert(self.locations, locationName)
 end
@@ -83,9 +75,9 @@ end
 --- Registers multiple locations.
 --- @param self PatrolEngine
 --- @param locations string[]
-function PatrolEngine.registerLocations(self, locations)
+function PatrolEngine.RegisterLocations(self, locations)
     for _, location in pairs(locations) do
-        PatrolEngine.registerLocation(self, location)
+        PatrolEngine.RegisterLocation(self, location)
     end
 end
 
@@ -102,7 +94,7 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @param routes table<string, string>
-function PatrolEngine.defineRoutes(self, location, routes)
+function PatrolEngine.DefineRoutes(self, location, routes)
     for path, endpoint in pairs(routes) do
         _connectPaths(self, location, path, endpoint)
     end
@@ -112,7 +104,7 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @return table
-function PatrolEngine.getRandomRoute(self, location)
+function PatrolEngine.GetRandomRoute(self, location)
     if #self.path_map[location] < 2 then
         return self.path_map[location][1]
     end
@@ -123,13 +115,13 @@ end
 --- Assigns a route to a patrol unit.
 --- @param self PatrolEngine
 --- @param handle GameObject_patrol
-function PatrolEngine.giveRoute(self, handle)
+function PatrolEngine.GiveRoute(self, handle)
     --local unit = self.patrol_units[handle]
-    local route = PatrolEngine.getRandomRoute(self,handle._patrol.location)
+    local route = PatrolEngine.GetRandomRoute(self,handle._patrol.location)
     local attempts = 0
 
     while route and route.location == handle._patrol.oldLocation and #self.path_map[handle._patrol.location] > 1 do
-        route = PatrolEngine.getRandomRoute(self,handle._patrol.location)
+        route = PatrolEngine.GetRandomRoute(self,handle._patrol.location)
         attempts = attempts + 1
         if attempts > 10 then
             break
@@ -149,7 +141,7 @@ end
 --- Adds a handle to the patrol units.
 --- @param self PatrolEngine
 --- @param handle GameObject
-function PatrolEngine.addGameObject(self, handle)
+function PatrolEngine.AddGameObject(self, handle)
     --- @cast handle GameObject_patrol
     local nearestLocation = nil
     local location = nil
@@ -172,7 +164,7 @@ function PatrolEngine.addGameObject(self, handle)
         busy = false
     };
     self.patrol_units[handle] = true;
-    PatrolEngine.giveRoute(self,handle)
+    PatrolEngine.GiveRoute(self,handle)
 end
 
 local function keylist(t)
@@ -186,7 +178,7 @@ end
 --- Gets all patrol unit handles.
 --- @param self PatrolEngine
 --- @return table
-function PatrolEngine.getGameObjects(self)
+function PatrolEngine.GetGameObjects(self)
     --return self.patrol_units
     return keylist(self.patrol_units);
 end
@@ -194,7 +186,7 @@ end
 --- Removes a handle from the patrol units.
 --- @param self PatrolEngine
 --- @param handle GameObject
-function PatrolEngine.removeGameObject(self, handle)
+function PatrolEngine.RemoveGameObject(self, handle)
     --- @cast handle GameObject_patrol
     handle._patrol = nil
     self.patrol_units[handle] = nil
@@ -243,7 +235,7 @@ local function update(self, dtime)
             end
 
             if not unit._patrol.busy and currentCommand == AiCommand["NONE"] then
-                PatrolEngine.giveRoute(self, unit)
+                PatrolEngine.GiveRoute(self, unit)
             elseif unit._patrol.busy and currentCommand == AiCommand["NONE"] then
                 unit._patrol.busy = false
                 unit:Goto(unit._patrol.path)
@@ -263,7 +255,7 @@ end, config.get("hook_priority.Update.Patrol"));
 hook.Add("DeleteObject", "_patrol_DeleteObject", function(object)
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
-            PatrolEngine.removeGameObject(manager, object);
+            PatrolEngine.RemoveGameObject(manager, object);
         end
     end
 end, config.get("hook_priority.DeleteObject.Patrol"));
@@ -275,7 +267,7 @@ end, config.get("hook_priority.DeleteObject.Patrol"));
 -- --- @param forcedAlert boolean
 -- function M.onInit(self, handles, forcedAlert)
 --     for _, handle in pairs(handles or {}) do
---         M.addGameObject(self, handle)
+--         M.AddGameObject(self, handle)
 --     end
 --     self.forcedAlert = not not forcedAlert
 -- end

@@ -98,7 +98,7 @@ M.TeamSlotString = {
 }
 
 --- TeamSlotIntegers
---- @enum TeamSlotInteger
+--- @enum TeamSlotIntegerEnum
 M.TeamSlotInteger = {
     UNDEFINED = -1, -- invalid, -1
     PLAYER = 0, -- 0

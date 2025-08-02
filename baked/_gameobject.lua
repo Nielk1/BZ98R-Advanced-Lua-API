@@ -261,6 +261,7 @@ end
 --- @param slot TeamSlotInteger Slot number, see TeamSlot
 --- @see ScriptUtils.TeamSlot
 --- @param team? TeamNum Team number, 0 to 15
+--- @return GameObject? object GameObject in the slot or nil if none found
 function M.GetTeamSlot(slot, team)
     if not utility.isnumber(slot) then error("Parameter slot must be a number") end
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number") end

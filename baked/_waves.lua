@@ -197,7 +197,7 @@ local WaveSpawner = { __type = "WaveSpawner" }
 --- Checks if the WaveSpawner is alive.
 --- @param self WaveSpawner
 --- @return boolean
-function WaveSpawner.isAlive(self)
+function WaveSpawner.IsAlive(self)
     return self.waves_left > 0
 end
 

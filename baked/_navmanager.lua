@@ -222,22 +222,31 @@ end
 --- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
 --- @param team integer Team number to enumerate
 --- @param include_overflow? boolean If true "Overflow Navs" will be included in the enumeration after the initial 10.
---- @return integer index The index of the nav in the enumeration
---- @return GameObject nav The nav object at the index
+--- @return fun(): (integer, GameObject?) Iterator function yielding index and nav object
 --- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
 ---     print("Nav " .. i .. ": " .. tostring(nav));
 --- end
 --- @usage local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
 function M.AllNavGameObjects(team, include_overflow)
-    for slot = TeamSlot.MIN_BEACON, TeamSlot.MAX_BEACON do
-        return (slot - TeamSlot.MIN_BEACON + 1), gameobject.GetTeamSlot(slot, team);
-    end
-    if include_overflow and OverflowNavs[team] then
-        for i = 1, #OverflowNavs[team] do
-            return (10 + i), OverflowNavs[team][i];
+    local slot_min = TeamSlot.MIN_BEACON
+    local slot_max = TeamSlot.MAX_BEACON
+    local overflow = include_overflow and OverflowNavs[team] or nil
+    local overflow_count = overflow and #overflow or 0
+
+    local i = 0
+    local function iter()
+        i = i + 1
+        if i <= (slot_max - slot_min + 1) then
+            local slot = slot_min + (i - 1)
+            return i, gameobject.GetTeamSlot(slot, team)
+        elseif overflow and (i <= (slot_max - slot_min + 1) + overflow_count) then
+            local oi = i - (slot_max - slot_min + 1)
+            return (slot_max - slot_min + 1) + oi, overflow[oi]
+        else
+            return nil
         end
     end
-    return nil; -- End of iteration
+    return iter
 end
 
 -------------------------------------------------------------------------------

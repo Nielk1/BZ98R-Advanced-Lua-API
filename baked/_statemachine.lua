@@ -635,11 +635,13 @@ end
 --- @param seconds? number How many seconds to wait
 --- @param lap? boolean If true the timer will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
 --- @param first? boolean If true the timer returns true when it starts, requires lap to be true.
---- @return boolean True if the time is up
+--- @return boolean timeup True if the time is up
 function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)
     if seconds == nil then
         self.target_time = nil;
         self.set_wait_time = nil;
+        --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Clear Wait Time");
+        --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "TRIGGER");
         return true;
     end
 
@@ -647,21 +649,29 @@ function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)
         -- we are already sleeping, but the time has changed
         local delta = seconds - self.set_wait_time;
         self.set_wait_time = seconds;
+        --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Add Wait Time "..tostring(delta));
         self.target_time = self.target_time + delta;
     end
 
     if self.target_time == nil then
         self.target_time = M.game_time + seconds;
         self.set_wait_time = seconds;
+        --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Set Wait Time "..tostring(seconds));
+        --if lap and first and true or false then
+        --    logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "TRIGGER");
+        --end
         return lap and first and true or false; -- start sleeping
     elseif self.target_time <= M.game_time  then
         --logger.print(logger.LogLevel.DEBUG, nil, M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
         if lap then
             self.target_time = self.target_time + seconds; -- reset the timer to the next lap
+            --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Lap Cycle");
         else
             self.target_time = nil; -- ensure that the timer is reset
             self.set_wait_time = nil;
+            --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Clear Wait Time");
         end
+        --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "TRIGGER");
         return true; -- time is up
     end
     return false; -- still sleeping

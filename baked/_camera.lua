@@ -333,7 +333,7 @@ end
 --- @param offset Vector
 --- @param target GameObject|Handle
 --- @diagnostic enable: undefined-doc-param
---- @return boolean
+--- @return boolean Exists true if the base or handle game object does not exist. Returns false otherwise.
 function M.CameraObject(...)
     local args = {...}
     local base = args[1];

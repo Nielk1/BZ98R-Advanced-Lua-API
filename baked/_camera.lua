@@ -64,7 +64,7 @@ end
 --bool FreeFinish()
 
 --- @param path string
---- @param speed integer
+--- @param speed integer centimeters per second
 --- @param time integer
 --- @return Vector pos
 --- @return Vector dir
@@ -215,8 +215,8 @@ end
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @param path string
---- @param height integer
---- @param speed integer
+--- @param height number meters above the ground
+--- @param speed number speed in meters per second
 --- @param target GameObject|Handle
 --- @return boolean
 function M.CameraPath(path, height, speed, target)
@@ -224,6 +224,8 @@ function M.CameraPath(path, height, speed, target)
         --- @cast target GameObject
         target = target:GetHandle();
     end
+    height = math.floor(height * 100); -- convert to centimeters
+    speed = math.floor(speed * 100); -- convert to centimeters per second
     --- @cast target Handle
     CheckCameraType("CameraPath", {path, height, speed, target});
     --- @diagnostic disable-next-line: deprecated
@@ -233,15 +235,19 @@ end
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target path.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @param path string
---- @param height integer
---- @param speed integer
+--- @param height number meters above the ground
+--- @param speed number speed in meters per second
 --- @param target string
---- @param target_height integer?
---- @param target_speed integer? defaults to the same as speed
+--- @param target_height number?
+--- @param target_speed number? defaults to the same as speed
 --- @return boolean
 function M.CameraPathPathFollow(path, height, speed, target, target_height, target_speed)
     target_height = target_height or 0;
     target_speed = target_speed or speed;
+    speed = math.floor(speed * 100); -- convert to centimeters per second
+    height = math.floor(height * 100); -- convert to centimeters
+    target_height = math.floor(target_height * 100); -- convert to centimeters
+    target_speed = math.floor(target_speed * 100); -- convert to centimeters per second
     CheckCameraType("CameraPathPathFollow", {path, height, speed, target, target_height, target_speed});
     local target_pos = GetPosition(target);
     if not target_pos then
@@ -264,10 +270,12 @@ end
 --- Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @param path string
---- @param height integer
---- @param speed integer
+--- @param height number
+--- @param speed number
 --- @return boolean
 function M.CameraPathDir(path, height, speed)
+    height = math.floor(height * 100); -- convert to centimeters
+    speed = math.floor(speed * 100); -- convert to centimeters per second
     CheckCameraType("CameraPathDir", {path, height, speed});
     --- @diagnostic disable-next-line: deprecated
     return CameraPathDir(path, height, speed);
@@ -276,11 +284,13 @@ end
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target path point.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @param path string
---- @param height integer
---- @param speed integer
+--- @param height number
+--- @param speed number
 --- @param target string
 --- @return boolean
 function M.CameraPathPath(path, height, speed, target)
+    height = math.floor(height * 100); -- convert to centimeters
+    speed = math.floor(speed * 100); -- convert to centimeters per second
     CheckCameraType("CameraPathPath", {path, height, speed, target});
     --- @diagnostic disable-next-line: deprecated
     return CameraPathPath(path, height, speed, target);
@@ -296,9 +306,9 @@ end
 --- Offsets a cinematic camera from a base game object while looking at a target game object.
 -- Returns true if the base or handle game object does not exist. Returns false otherwise.
 -- @param base GameObject|Handle
--- @param right number Meters to the right of the base object. (0.01 resolution)
--- @param up number Meters above the base object. (0.01 resolution)
--- @param forward number Meters in front of the base object. (0.01 resolution)
+-- @param right number Meters to the right of the base object.
+-- @param up number Meters above the base object.
+-- @param forward number Meters in front of the base object.
 -- @param target GameObject|Handle
 -- @return boolean
 -- @function CameraObject
@@ -317,9 +327,9 @@ end
 --- @overload fun(base: GameObject|Handle, offset:Vector, target: GameObject|Handle): boolean
 --- @diagnostic disable: undefined-doc-param
 --- @param base GameObject|Handle
---- @param right number Meters to the right of the base object. (0.01 resolution)
---- @param up number Meters above the base object. (0.01 resolution)
---- @param forward number Meters in front of the base object. (0.01 resolution)
+--- @param right number Meters to the right of the base object.
+--- @param up number Meters above the base object.
+--- @param forward number Meters in front of the base object.
 --- @param offset Vector
 --- @param target GameObject|Handle
 --- @diagnostic enable: undefined-doc-param
@@ -333,15 +343,15 @@ function M.CameraObject(...)
     local forward;
     if #args == 5 then
         target = args[5];
-        right = args[2];
-        up = args[3];
-        forward = args[4];
+        right = math.floor(args[2] * 100); -- convert to centimeters
+        up = math.floor(args[3] * 100); -- convert to centimeters
+        forward = math.floor(args[4] * 100); -- convert to centimeters
     elseif #args == 3 then
         if not utility.isVector(args[2]) then error("Parameter offset must be a Vector."); end
         target = args[3];
-        right = args[2].x;
-        up = args[2].y;
-        forward = args[2].z;
+        right = math.floor(args[2].x * 100); -- convert to centimeters
+        up = math.floor(args[2].y * 100); -- convert to centimeters
+        forward = math.floor(args[2].z * 100); -- convert to centimeters
     else
         error("Invalid number of arguments. Expected 3 or 5.");
     end
@@ -369,7 +379,7 @@ function M.CameraObject(...)
     end
     CheckCameraType("CameraObject", {base, right, up, forward, target});
     --- @diagnostic disable-next-line: deprecated
-    return CameraObject(base, math.floor(right * 100), math.floor(up * 100), math.floor(forward * 100), target);
+    return CameraObject(base, right, up, forward, target);
 end
 
 --- Finishes the cinematic camera and enables normal input.

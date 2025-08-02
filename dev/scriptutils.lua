@@ -1847,8 +1847,9 @@ function CameraCancelled() error("This function is provided by the engine."); en
 -- @section
 
 --- Returns true if the game object inspected by the info display matches the given odf name.
---- @param odfname string
+--- @param odfname string|Handle
 --- @return boolean
+--- @note see `_gameobject` module.
 function IsInfo(odfname) error("This function is provided by the engine."); end
 
 -------------------------------------------------------------------------------

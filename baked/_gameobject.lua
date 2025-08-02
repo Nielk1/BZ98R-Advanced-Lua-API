@@ -1008,6 +1008,20 @@ function GameObject.HoppedOutOf(self)
 end
 
 -------------------------------------------------------------------------------
+-- Info Display
+-------------------------------------------------------------------------------
+-- @section
+
+--- Returns true if the game object inspected by the info display matches the current game object.
+--- @param self GameObject GameObject instance
+--- @return boolean
+function GameObject.IsInfo(self)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    --- @diagnostic disable-next-line: deprecated
+    return IsInfo(self:GetHandle());
+end
+
+-------------------------------------------------------------------------------
 -- Network
 -------------------------------------------------------------------------------
 -- @section
@@ -1016,7 +1030,7 @@ end
 --- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.
 --- Important safety tip: only call this on one machine at a time!
 --- @param self GameObject GameObject instance
-function SetLocal(self)
+function GameObject.SetLocal(self)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
     SetLocal(self:GetHandle());

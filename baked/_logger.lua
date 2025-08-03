@@ -67,6 +67,7 @@ M.LogLevel = {
     TRACE = 5, -- Trace messages
 };
 
+--- @type table<LogLevel, string>
 local LogLevelName = {
     [M.LogLevel.NONE]  = "NONE ",
     [M.LogLevel.ERROR] = "ERROR",

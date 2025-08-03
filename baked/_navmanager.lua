@@ -41,35 +41,40 @@ local OverflowNavs = {};
 local DisableAutomaticNavAdding = false; -- used to prevent navs from being added to the collection when they are built
 
 local NationMemo = {};
+
+--- @param nation string? Nation id character, will take the first character if longer
+--- @return string ODF ODF of the default nav for the nation
 local function GetDefaultNavOdf(nation)
     if nation == nil or #nation == 0 then
         return "apcamr";
     end
+    
+    nation = nation:sub(1, 1):lower();
 
-    local odf = NationMemo[nation[1]];
+    local odf = NationMemo[nation];
     if odf then
         return odf;
     end
 
-    odf = nation[1] .. "pcamr";
+    odf = nation .. "pcamr";
 
     -- OpenODF hoping to mirror game behavior, UseItem is also an option
     if OpenODF(odf) then
-        NationMemo[nation[1]] = odf;
+        NationMemo[nation] = odf;
         return odf;
     end
 
-    if nation[1] == "c" then
-        NationMemo[nation[1]] = "spcamr";
+    if nation == "c" then
+        NationMemo[nation] = "spcamr";
         return "spcamr";
     end
 
-    NationMemo[nation[1]] = "apcamr";
+    NationMemo[nation] = "apcamr";
     return "apcamr";
 end
 
 --- Adds custom data to GameObject for this module.
---- @class GameObject
+--- @class GameObject_NavManager : GameObject
 --- @field NavManager table A table containing custom data for this module.
 
 --- Build an important nav and add it to the collection.
@@ -107,9 +112,10 @@ function M.BuildImportantNav(...)
     --return BuildImportantNavInternal(odf, team, location, point);
 
     --- @todo Add a team manager to track team nations better such as scanning all the teamslots
-    
+
+    --- @type string?
     local nation = nil;
-    if odf then
+    if not odf then
         if not nation then
             local source = gameobject.GetPlayer(team);
             if source then
@@ -169,6 +175,7 @@ function M.BuildImportantNav(...)
     local nav = gameobject.BuildObject(odf or GetDefaultNavOdf(nation), team, location, point);
     if not nav then return nil; end -- failed to build nav
 
+    --- @cast nav GameObject_NavManager
     nav.NavManager = { important = true; }
 
     -- this probably never needs to run

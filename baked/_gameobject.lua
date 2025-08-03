@@ -27,6 +27,7 @@ end
 local GameObjectWeakList_MT = {};
 GameObjectWeakList_MT.__mode = "v";
 local GameObjectWeakList = setmetatable({}, GameObjectWeakList_MT);
+--- @diagnostic disable-next-line: unused-local -- used to strong-reference hold objects with custom data until they are removed from game world
 local GameObjectAltered = {}; -- used to strong-reference hold objects with custom data until they are removed from game world
 --local GameObjectDead = {}; -- used to hold dead objects till next update for cleanup
 

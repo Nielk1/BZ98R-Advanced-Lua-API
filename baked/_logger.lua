@@ -225,7 +225,7 @@ end
 --- Print log line
 --- Ignores wrapping setting for normal print.
 --- Will strip colors if not supported.
---- @param level LogLevel
+--- @param level LogLevel|integer
 --- @param context string?
 --- @param ... any
 function M.print(level, context, ...)

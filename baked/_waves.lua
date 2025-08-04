@@ -35,10 +35,7 @@ local WaveSpawnerManagerWeakList_MT = {}
 WaveSpawnerManagerWeakList_MT.__mode = "k"
 local WaveSpawnerManagerWeakList = setmetatable({}, WaveSpawnerManagerWeakList_MT)
 
-
 local WaveSpawner;
-
-
 
 local function choose(...)
     local t = {...};
@@ -214,10 +211,7 @@ local function Construct(name, factions, locations, wave_frequency, waves_left, 
     self.wave_types = wave_types or {}
     self = setmetatable(self, { __index = WaveSpawner })
     WaveSpawnerManagerWeakList[self] = true
-    return self
-
-
-
+    return self;
 end
 
 --- Creates a new WaveSpawner instance.
@@ -298,46 +292,64 @@ local function spawnWave(name, wave_table, faction, location)
     print("Spawn Wave", wave_table, faction, location)
     local units, lead = M.SpawnInFormation(wave_table, ("%s_wave"):format(location), nil, units[faction], 2)
     for _, v in pairs(units) do
-        --local s = mission.TaskManager:sequencer(v)
         if v == lead then
-            --s:queue2("Goto", ("%s_path"):format(location))
             v:Goto(("%s_path"):format(location));
         else
-            --s:queue2("Follow", lead)
             if lead then
                 v:Follow(lead);
             else
                 v:Goto(("%s_path"):format(location));
             end
         end
-        --s:queue3("FindTarget", "bdog_base")
     end
     hook.CallAllNoReturn("WaveSpawner:Spawned", name, units, lead)
     return units
 end
 
 --- Updates the WaveSpawner.
+--- Spawns a wave if enough time has passed, choosing a unit list and location.
 --- @param self WaveSpawner
 --- @param dtime number
 local function update(self, dtime)
+    -- Advance the internal timer
     self.timer = self.timer + dtime
-    local freq = self.wave_frequency + self.c_variance
-    if self.timer * freq >= 1 then
-        self.timer = self.timer - 1 / freq
-        local f = self.wave_frequency * self.variance
-        self.c_variance = f + 2 * f * math.random()
+
+    -- Calculate the current spawn frequency (base + variance)
+    local current_frequency = self.wave_frequency + self.c_variance
+
+    -- If enough time has passed, spawn a new wave
+    if self.timer * current_frequency >= 1 then
+        -- Reset timer for next wave
+        self.timer = self.timer - 1 / current_frequency
+
+        -- Recalculate variance for next wave
+        local variance_base = self.wave_frequency * self.variance
+        self.c_variance = variance_base + 2 * variance_base * math.random()
+
+        -- Decrement remaining waves
         self.waves_left = self.waves_left - 1
 
-        local fac = choose(unpack(self.factions))
-        local locations = {}
-        for _, v in pairs(self.locations) do
-            if (not isIn(v, self.factions)) or (isIn(v, self.factions) and fac == v) then
-                table.insert(locations, v)
+        -- Choose a unit list (e.g., a faction name) at random
+        local unit_list_name = choose(unpack(self.factions))
+
+        -- Build a list of valid spawn locations for this wave
+        local valid_locations = {}
+        for _, location_name in pairs(self.locations) do
+            -- If the location is NOT a unit list name, it's always valid.
+            -- If the location IS a unit list name, it's only valid if it matches the chosen unit list.
+            if (not isIn(location_name, self.factions)) or (unit_list_name == location_name) then
+                table.insert(valid_locations, location_name)
             end
         end
-        local location = choose(unpack(locations))
-        local w_type = chooseA(unpack(self.wave_types))
-        spawnWave(self.name, w_type, fac, location)
+
+        -- Pick a random valid location
+        local chosen_location = choose(unpack(valid_locations))
+
+        -- Pick a random wave type (weighted random)
+        local wave_type = chooseA(unpack(self.wave_types))
+
+        -- Spawn the wave using the chosen parameters
+        spawnWave(self.name, wave_type, unit_list_name, chosen_location)
     end
 end
 
@@ -353,4 +365,4 @@ customsavetype.Register(WaveSpawner)
 
 logger.print(logger.LogLevel.DEBUG, nil, "_waves Loaded");
 
-return M
+return M;

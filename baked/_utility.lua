@@ -672,21 +672,6 @@ end
 -------------------------------------------------------------------------------
 -- @section
 
-function M.IteratePath(path)
-    local count = GetPathPointCount(path);
-    local i = 0;
-    local iterator = function()
-        if i < count then
-            local position = GetPosition(path, i);
-            i = i + 1;
-            return i, position;
-        end
-        return nil;
-    end
-
-    return iterator;
-end
-
 --- Convert an iterator to an array.
 --- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
 --- Sparse numeric indices will result in `nil` values in the array.
@@ -730,6 +715,3 @@ end
 logger.print(logger.LogLevel.DEBUG, nil, "_utility Loaded");
 
 return M;
-
---- @todo It would probably be worth making a path manager with a path class and kill this alias. The alias would let us find all the places that could use the new module.
---- @alias PathWithIndex { [1]: string, [2]: integer }

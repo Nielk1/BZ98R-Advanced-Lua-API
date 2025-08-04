@@ -17,6 +17,7 @@ local _api = require("_api");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
+local paths = require("_paths");
 
 --- Called when a wave spawner has spawned a wave.
 --
@@ -74,18 +75,67 @@ end
 
 
 
-
 --- Spawns units in a specified formation at a location, facing a direction.
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location Vector     -- Center position of the formation
---- @param dir Vector          -- Direction the formation faces (forward)
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
+--- @param formation string[]                       -- Array of strings, each string is a row, numbers are unit indices in 'units'
+--- @param location Vector|string|PathWithIndex     -- Center position of the formation
+--- @param dir Vector?                              -- Direction the formation faces (forward)
+--- @param units string[]                           -- List of unit ODFs, indexed by number in formation
+--- @param team TeamNum                             -- Team to assign units to
+--- @param seperation integer?                      -- Distance between units (optional, default 10)
 --- @return GameObject[] units
---- @return GameObject|nil leader
-local function spawnInFormation(formation, location, dir, units, team, seperation)
+--- @return GameObject? leader
+function M.SpawnInFormation(formation, location, dir, units, team, seperation)
     seperation = seperation or 10
+
+    --- @type Vector?
+    local locationVector = nil;
+    if utility.isVector(location) then
+        --- @cast location Vector
+        locationVector = location;
+    elseif utility.isstring(location) then
+        --- @cast location string
+        local pathSize = GetPathPointCount(location);
+        if pathSize <= 0 then
+            error("path index is out of bounds");
+        end
+        locationVector = GetPosition(location, 0);
+        if not dir then
+            -- If no direction is given, use the next point in the path to determine direction
+            if pathSize <= 1 then
+                error("path index for direction is out of bounds");
+            end
+            local pos2 = GetPosition(location, 1);
+            dir = pos2 - locationVector;
+        end
+    elseif paths.isPathWithString(location) then
+        --- @cast location PathWithIndex
+        local pathSize = GetPathPointCount(location[1]);
+        if pathSize <= location[2] then
+            error("path index is out of bounds");
+        end
+        locationVector = GetPosition(location[1], location[2]);
+        if not dir then
+            -- If no direction is given, use the next point in the path to determine direction
+            if pathSize <= (location[2] + 1) then
+                error("path index for direction is out of bounds");
+            end
+            local pos2 = GetPosition(location[1], location[2] + 1);
+            dir = pos2 - locationVector;
+        end
+    else
+        error("location must be a Vector, string, or PathWithIndex");
+    end
+
+    if dir ~= nil and not utility.isVector(dir) then
+        error("dir must be a Vector or nil if derived from path");
+    end
+
+    if not utility.istable(units) or #units == 0 or #units > 9 then
+        error("units must be a non-empty array of no more than 9 unit ODFs");
+    end
+
+    --- @cast dir Vector
+    dir = Normalize(dir);
 
     local spawnedUnits = {};
     local leadUnit = nil;
@@ -108,8 +158,8 @@ local function spawnInFormation(formation, location, dir, units, team, seperatio
                 local xOffset = (colIndex - (rowLength / 2)) * seperation;
                 local zOffset = rowIndex * seperation * 2;
                 
-                -- Final position = location + (right * xOffset) - (forward * zOffset)
-                local pos = xOffset * right + -zOffset * forward + location;
+                -- Final position = locationVector + (right * xOffset) - (forward * zOffset)
+                local pos = xOffset * right + -zOffset * forward + locationVector;
 
                 -- Spawn the unit
                 local h = gameobject.BuildObject(units[unitIdx], team, pos);
@@ -133,29 +183,12 @@ local function spawnInFormation(formation, location, dir, units, team, seperatio
     return spawnedUnits, leadUnit;
 end
 
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location string     -- Center position of the formation
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
-local function spawnInFormation2(formation, location, units, team, seperation)
-    local pos = GetPosition(location, 0);
-    if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location, 1);
-    if not pos2 then error("Failed to get position of " .. location) end
-    local dir = pos2 - pos;
-    return spawnInFormation(formation, pos, dir, units, team, seperation);
-end
-
-
-
-
-
+--- @todo move these out of this module as some are mod items
 local units = {
     nsdf = {"avfigh","avtank","avrckt","avhraz","avapc","avwalk", "avltnk"},
     cca = {"svfigh","svtank","svrckt","svhraz","svapc","svwalk", "svltnk"},
     fury = {"hvsat","hvngrd"}
-  };
+};
 
 --- Constructs a new WaveSpawner instance.
 --- @param name string
@@ -263,7 +296,7 @@ end
 --- @return table
 local function spawnWave(name, wave_table, faction, location)
     print("Spawn Wave", wave_table, faction, location)
-    local units, lead = spawnInFormation2(wave_table, ("%s_wave"):format(location), units[faction], 2)
+    local units, lead = M.SpawnInFormation(wave_table, ("%s_wave"):format(location), nil, units[faction], 2)
     for _, v in pairs(units) do
         --local s = mission.TaskManager:sequencer(v)
         if v == lead then

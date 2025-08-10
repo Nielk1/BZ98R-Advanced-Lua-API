@@ -130,7 +130,8 @@ end
 --- @param object any Object in question
 --- @return boolean
 function M.isstatemachineiter(object)
-  return (type(object) == "table" and object.__type == "StateMachineIter");
+    --return (type(object) == "table" and object.__type == "StateMachineIter");
+    return customsavetype.Implements(object, "StateMachineIter");
 end
 
 --- An object containing all functions and data related to an StateMachineIter.

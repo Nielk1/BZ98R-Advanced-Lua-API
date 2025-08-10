@@ -18,6 +18,7 @@ local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 local paths = require("_paths");
+local statemachine = require("_statemachine");
 
 --- Called when a wave spawner has spawned a wave.
 --
@@ -32,20 +33,67 @@ local paths = require("_paths");
 --- @class _waves
 local M = {}
 
---- @class WaveSpawner : CustomSavableType
---- @field name string Only used for debugging/logging.
---- @field factions table A list of factions from which a random will be selected.
---- @field locations table A list of locations where waves can spawn, considered if the name is not the same as a faction name, or it is the same as a selected faction.
---- @field wave_frequency number
---- @field waves_left number
---- @field timer number Internal timer for wave spawning.
---- @field variance number Wave frequency variance, percentage of wave_frequency.
---- @field c_variance number Next wave variance, calculated from wave_frequency and variance.
---- @field wave_types table Array of weighted formation tables
-local WaveSpawner = { __type = "WaveSpawner" }
+--- @class WaveSpawner : StateMachineIter
+--- @field name string The name of the wave spawner. "WaveSpawner:Spawned" event fired
+--- @field frequency number The frequency of waves.
+--- @field variance number The variance of wave frequency.
+--- @field wait_time number The time to wait before the next wave.
+--- @field factions table OLD: A list of factions from which a random will be selected.
+--- @field locations table OLD: A list of locations where waves can spawn, considered if the name is not the same as a faction name, or it is the same as a selected faction.
+--- @field wave_types table OLD: Array of weighted formation tables
+--- @field waves_left number The number of waves left to spawn.
+local WaveSpawner = {};
+
+WaveSpawner.__index = function(tbl, key)
+    -- local table takes priority (this is how base is accessed)
+    local retVal = rawget(tbl, key);
+    if retVal ~= nil then
+        return retVal;
+    end
+
+    -- next check the metatable
+    local mt = getmetatable(tbl)
+    -- Check for method/property in this metatable
+    local retVal = mt and rawget(mt, key)
+    if retVal ~= nil then
+        return retVal
+    end
+
+    -- next check the base metatable
+    local __base = rawget(tbl, "__base")
+    --if __base and __base.__index then
+    --    return __base.__index(__base, key)
+    --end
+    if __base and __base[key] ~= nil then
+        return __base[key]
+    end
+
+    return nil;
+end
+WaveSpawner.__newindex = function(tbl, key, value)
+    --if key ~= "magic" then
+    --else
+    --    rawset(tbl, key, value);
+    --end
+    
+    -- Call base class's __newindex if it exists
+    -- This is correct as we store custom data in the base class's addonData subtable
+    -- Our top level is only good for functions, nothing else
+    local mt = getmetatable(tbl)
+    local __base = mt and rawget(mt, "__base")
+    if __base and __base.__newindex then
+        return __base.__newindex(tbl, key, value)
+    end
+  
+    -- fallback: rawset if base doesn't handle it
+    rawset(tbl, key, value)
+end
+WaveSpawner.__type = "WaveSpawner";
+
 
 local WaveSpawnerManagerWeakList_MT = {}
 WaveSpawnerManagerWeakList_MT.__mode = "k"
+--- @type table<WaveSpawner, boolean>
 local WaveSpawnerManagerWeakList = setmetatable({}, WaveSpawnerManagerWeakList_MT)
 
 local isIn
@@ -58,6 +106,9 @@ isIn = function(element, list)
   end
   return false
 end
+
+
+
 
 
 
@@ -176,96 +227,6 @@ local units = {
     fury = {"hvsat","hvngrd"}
 };
 
---- Constructs a new WaveSpawner instance.
---- @param name string
---- @param factions table
---- @param locations table
---- @param wave_frequency number
---- @param waves_left number
---- @param variance number
---- @param wave_types table
---- @return WaveSpawner
-local function Construct(name, factions, locations, wave_frequency, waves_left, variance, wave_types)
-    local self = {}
-    self.name = name;
-    self.factions = factions or {}
-    self.locations = locations or {}
-    self.waves_left = waves_left or 0
-    self.wave_frequency = wave_frequency or 0
-    self.timer = 0
-    self.variance = variance or 0
-    --self.c_variance = 0
-    local f = self.wave_frequency * self.variance
-    self.c_variance = f + 2 * f * math.random()
-    self.wave_types = wave_types or {}
-    self = setmetatable(self, { __index = WaveSpawner })
-    WaveSpawnerManagerWeakList[self] = true
-    return self;
-end
-
---- Creates a new WaveSpawner instance.
---- @param name string
---- @param factions table
---- @param locations table
---- @param wave_frequency number
---- @param waves_left number
---- @param variance number
---- @param wave_types table
---- @return WaveSpawner
-function M.new(name, factions, locations, wave_frequency, waves_left, variance, wave_types)
-    return Construct(name, factions, locations, wave_frequency, waves_left, variance, wave_types)
-end
-
---- Checks if the WaveSpawner is alive. (Has waves left to spawn)
---- @param self WaveSpawner
---- @return boolean
-function WaveSpawner.IsAlive(self)
-    return self.waves_left > 0
-end
-
---- Saves the WaveSpawner state.
---- {INTERNAL USE}
---- @param self WaveSpawner
---- @return string name
---- @return table factions
---- @return table locations
---- @return number wave_frequency
---- @return number waves_left
---- @return number timer
---- @return number variance
---- @return number c_variance
---- @return table wave_types
-function WaveSpawner:Save(self)
-    return self.name,
-        self.factions,
-        self.locations,
-        self.wave_frequency,
-        self.waves_left,
-        self.timer,
-        self.variance,
-        self.c_variance,
-        self.wave_types
-end
-
---- Loads the WaveSpawner state.
---- {INTERNAL USE}
---- @param name string
---- @param factions table
---- @param locations table
---- @param wave_frequency number
---- @param waves_left number
---- @param timer number
---- @param variance number
---- @param c_variance number
---- @param wave_types table
---- @return WaveSpawner
-function WaveSpawner.Load(name, factions, locations, wave_frequency, waves_left, timer, variance, c_variance, wave_types)
-    local retVal = Construct(name, factions, locations, wave_frequency, waves_left, variance, wave_types);
-    retVal.timer = timer;
-    retVal.c_variance = c_variance;
-    return retVal;
-end
-
 --- Spawns a wave of units.
 --- @param name string
 --- @param wave_table table
@@ -290,38 +251,38 @@ local function spawnWave(name, wave_table, faction, location)
     return units
 end
 
---- Updates the WaveSpawner.
---- Spawns a wave if enough time has passed, choosing a unit list and location.
---- @param self WaveSpawner
---- @param dtime number
-local function update(self, dtime)
-    -- Advance the internal timer
-    self.timer = self.timer + dtime
 
-    -- Calculate the current spawn frequency (base + variance)
-    local current_frequency = self.wave_frequency + self.c_variance
+statemachine.Create("_waves:machine",
+    { "setup", function (state)
+        --- @cast state WaveSpawner
 
-    -- If enough time has passed, spawn a new wave
-    if self.timer * current_frequency >= 1 then
-        -- Reset timer for next wave
-        self.timer = self.timer - 1 / current_frequency
+        -- Calculate next spawn time with variance
+        local next_spawn = (1 / state.frequency);
+        next_spawn = next_spawn + next_spawn * (math.random() - 0.5) * state.variance;
+        state.wait_time = next_spawn;
 
-        -- Recalculate variance for next wave
-        local variance_base = self.wave_frequency * self.variance
-        self.c_variance = variance_base + 2 * variance_base * math.random()
-
-        -- Decrement remaining waves
-        self.waves_left = self.waves_left - 1
+        state:next();
+        return statemachine.FastResult();
+    end },
+    { "waiting", function (state)
+        --- @cast state WaveSpawner
+        if state:SecondsHavePassed(state.wait_time, true, false) then
+            state:next();
+            return statemachine.FastResult();
+        end
+    end },
+    { "spawning", function (state)
+        --- @cast state WaveSpawner
 
         -- Choose a unit list (e.g., a faction name) at random
-        local unit_list_name = utility.ChooseOne(unpack(self.factions))
+        local unit_list_name = utility.ChooseOne(unpack(state.factions))
 
         -- Build a list of valid spawn locations for this wave
         local valid_locations = {}
-        for _, location_name in pairs(self.locations) do
+        for _, location_name in pairs(state.locations) do
             -- If the location is NOT a unit list name, it's always valid.
             -- If the location IS a unit list name, it's only valid if it matches the chosen unit list.
-            if (not isIn(location_name, self.factions)) or (unit_list_name == location_name) then
+            if (not isIn(location_name, state.factions)) or (unit_list_name == location_name) then
                 table.insert(valid_locations, location_name)
             end
         end
@@ -330,22 +291,110 @@ local function update(self, dtime)
         local chosen_location = utility.ChooseOne(unpack(valid_locations))
 
         -- Pick a random wave type (weighted random)
-        local wave_type = utility.ChooseOneWeighted(unpack(self.wave_types))
+        local wave_type = utility.ChooseOneWeighted(unpack(state.wave_types))
 
         -- Spawn the wave using the chosen parameters
-        spawnWave(self.name, wave_type, unit_list_name, chosen_location)
-    end
+        spawnWave(state.name, wave_type, unit_list_name, chosen_location)
+
+        state.waves_left = state.waves_left - 1
+
+        if state.waves_left <= 0 then
+            state:switch(nil);
+            return;
+        end
+        state:switch("setup");
+    end });
+
+--- Constructs a new WaveSpawner instance.
+--- @param machine StateMachineIter
+--- @return WaveSpawner
+local function Construct(machine)
+    local spawner = setmetatable({ __base = machine }, WaveSpawner);
+    WaveSpawnerManagerWeakList[spawner] = true
+    return spawner;
 end
 
-hook.Add("Update", "_waveSpawner_Update", function(dtime, ttime)
+--- Creates a new WaveSpawner instance.
+--- @param name string
+--- @param factions table
+--- @param locations table
+--- @param wave_frequency number
+--- @param waves_left number
+--- @param variance number
+--- @param wave_types table
+--- @return WaveSpawner
+function M.new(name, factions, locations, wave_frequency, waves_left, variance, wave_types)
+    local machine = statemachine.Start("_waves:machine", nil, {
+        name = name,
+        frequency = wave_frequency or 30,
+        variance = variance or 0,
+        wait_time = 0,
+        factions = factions or {},
+        locations = locations or {},
+        wave_types = wave_types or {},
+        waves_left = waves_left or 0
+    });
+    return Construct(machine)
+end
+
+
+--- Checks if the WaveSpawner is alive. (Has waves left to spawn)
+--- @param self WaveSpawner
+--- @return boolean
+function WaveSpawner.IsAlive(self)
+    return self.waves_left > 0
+end
+
+--- Saves the WaveSpawner state.
+--- {INTERNAL USE}
+--- @param self WaveSpawner
+--- @return table StateMachineIter
+function WaveSpawner:Save(self)
+    return self.base;
+end
+
+--- Loads the WaveSpawner state.
+--- {INTERNAL USE}
+--- @param machine StateMachineIter
+--- @return WaveSpawner
+function WaveSpawner.Load(machine)
+    local retVal = Construct(machine);
+    return retVal;
+end
+
+local strong_list = nil;
+
+hook.Add("Update", "_waves:Update", function(dtime, ttime)
     for manager, _ in pairs(WaveSpawnerManagerWeakList) do
         if manager then
-            update(manager, dtime)
+            manager:run();
         end
     end
-end)
+end, config.get("hook_priority.Update.WaveSpawner"));
 
-customsavetype.Register(WaveSpawner)
+hook.AddSaveLoad("_waves",
+    function()
+        local ret = {};
+        for k, _ in pairs(WaveSpawnerManagerWeakList) do
+            if k then
+                table.insert(ret, k);
+            end
+        end
+        return ret;
+    end,
+    function(state)
+        strong_list = state or {};
+        
+        for k, v in pairs(strong_list) do
+            if not WaveSpawnerManagerWeakList[k] then
+                WaveSpawnerManagerWeakList[k] = v;
+                table.insert(strong_list, k);
+            end
+        end 
+    end,
+    function()
+        strong_list = nil;
+    end)
 
 logger.print(logger.LogLevel.DEBUG, nil, "_waves Loaded");
 

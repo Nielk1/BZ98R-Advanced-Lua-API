@@ -67,7 +67,7 @@ local Hooks = {};
 --- @type table<event_name, table<event_hook_identifier, HookHandler>>
 local HookLookup = {};
 
---- @type table<event_hook_identifier, {Save: function, Load: function}>
+--- @type table<event_hook_identifier, {Save: function, Load: function, PostLoad: function}>
 local SaveLoadHooks = {};
 
 --- Stack of hooks as they are called
@@ -271,19 +271,22 @@ end
 --- @param identifier string Identifier for this hook observer
 --- @param save function? Function to be executed for Save
 --- @param load function? Function to be executed for Load
+--- @param postload function? Function to be executed after all Load hooks are called
 --- @function _hook.AddSaveLoad
-function M.AddSaveLoad( identifier, save, load )
+function M.AddSaveLoad( identifier, save, load, postload )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if save == nil and load == nil then error("At least one of Parameters save or load must be supplied."); end
     if save ~= nil and not utility.isfunction(save) then error("Parameter save must be a function."); end
     if load ~= nil and not utility.isfunction(load) then error("Parameter load must be a function."); end
-    
+    if postload ~= nil and not utility.isfunction(postload) then error("Parameter postload must be a function."); end
+
     if SaveLoadHooks[ identifier ] == nil then
         SaveLoadHooks[identifier ] = {};
     end
 
     SaveLoadHooks[ identifier ]['Save'] = save;
     SaveLoadHooks[ identifier ]['Load'] = load;
+    SaveLoadHooks[ identifier ]['PostLoad'] = postload;
     
     logger.print(logger.LogLevel.DEBUG, nil, "Added Save/Load hooks for " .. identifier);
 end
@@ -326,7 +329,6 @@ end
 function M.CallLoad(SaveData)
     if SaveLoadHooks ~= nil then
         HookCallCounts["Load"] = (HookCallCounts["Load"] or 0) + 1;
-        local ret = {};
         for k, v in pairs( SaveLoadHooks ) do
             if v.Load ~= nil and utility.isfunction(v.Load) then
                 if SaveData[k] ~= nil then
@@ -344,8 +346,18 @@ function M.CallLoad(SaveData)
         end
         HookCallCounts["Load"] = (HookCallCounts["Load"] or 1) - 1;
         HookCallCounts["Load"] = HookCallCounts["Load"] > 0 and HookCallCounts["Load"] or nil;
+
+        -- PostLoad
+        HookCallCounts["PostLoad"] = (HookCallCounts["PostLoad"] or 0) + 1;
+        for k, v in pairs( SaveLoadHooks ) do
+            if v.PostLoad ~= nil and utility.isfunction(v.PostLoad) then
+                v.PostLoad();
+            end
+        end
+        HookCallCounts["PostLoad"] = (HookCallCounts["PostLoad"] or 1) - 1;
+        HookCallCounts["PostLoad"] = HookCallCounts["PostLoad"] > 0 and HookCallCounts["PostLoad"] or nil;
+        
         ProcPendingRemovals();
-        return ret
     end
     return
 end

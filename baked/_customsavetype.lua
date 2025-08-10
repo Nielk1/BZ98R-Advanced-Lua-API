@@ -30,6 +30,7 @@ local M_MT = {};
 --- @field __type string The type name of the custom savable type.
 --- @field __nosave boolean? If true, the type will not be saved or loaded, a nil will be saved instead.
 --- @field __noref boolean? If true, the type will not undergo checks for shared or looped references when saving.
+--- @field __base CustomSavableType? The base type to inherit from, if any.
 --- @field Save fun(...: any) | nil
 --- @field Load fun(): ... | nil
 --- @field BulkSave fun(): ... | nil
@@ -65,6 +66,21 @@ function M.Register(obj)
     end
     typeT.__type = obj.__type;
     M.CustomSavableTypes[obj.__type] = typeT;
+end
+
+--- Does this custom savable type implement the given type?
+--- @param obj CustomSavableType
+--- @param name string
+--- @return boolean
+function M.Implements(obj, name)
+    local type = obj;
+    while(type ~= nil) do
+        if type.__type == name then
+            return true;
+        end
+        type = type.__base
+    end
+    return false;
 end
 
 M = setmetatable(M, M_MT);

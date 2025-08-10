@@ -271,7 +271,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
     if PendingDirty then
         DisableAutomaticNavAdding = true;
         --- @todo this isn't supposed to be global, broke the code somewhere
-        NavSwapPairs = {}; -- old navs paired with thier new navs
+        local NavSwapPairs = {}; -- old navs paired with thier new navs
         for team = 1, 15 do
             -- grab the known overflow and pending navs for this team
             local PendingNavsForTeam = {};

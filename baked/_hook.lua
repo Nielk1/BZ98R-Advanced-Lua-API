@@ -137,7 +137,7 @@ end
 --- Table of all hooks.
 function M.GetTable() return Hooks end
 
-M_MT = {};
+local M_MT = {};
 
 --hookresult_meta.__index = function(table, key)
 --    return nil;

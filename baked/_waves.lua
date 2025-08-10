@@ -88,6 +88,7 @@ WaveSpawner.__newindex = function(tbl, key, value)
     -- fallback: rawset if base doesn't handle it
     rawset(tbl, key, value)
 end
+
 WaveSpawner.__type = "WaveSpawner";
 
 

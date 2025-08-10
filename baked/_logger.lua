@@ -291,6 +291,8 @@ function M.print(level, context, ...)
     end
 end
 
+--- [[START_IGNORE]]
+
 -- Replace original print function with wrapped ones
 if settings.intercept_print == M.InterceptPrint.WRAPPED then
     print = wrapPrint;
@@ -313,6 +315,8 @@ elseif settings.intercept_print == M.InterceptPrint.LOGGER then
         M.print(M.LogLevel.ERROR, filename .. lineinfo, ...);
     end
 end
+
+--- [[END_IGNORE]]
 
 --logger.print(logger.LogLevel.DEBUG, nil, "_logger Loaded");
 

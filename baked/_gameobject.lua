@@ -2049,7 +2049,8 @@ if utility.isfunction(SetTeamSlot) then
     end
 end
 
-
+--- #section Event Hooks
+--- Hook to game events.
 
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();

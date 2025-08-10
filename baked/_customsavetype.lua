@@ -18,23 +18,11 @@ logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loading");
 local M = {};
 local M_MT = {};
 
---customsavetype_meta.__index = function(table, key)
---    local retVal = rawget(table, key);
---    if retVal ~= nil then
---        return retVal; -- found in table
---    end
---    return rawget(customsavetype_meta, key); -- move on to base (looking for functions)
---end
-
 --- @class CustomSavableType
 --- @field __type string The type name of the custom savable type.
 --- @field __nosave boolean? If true, the type will not be saved or loaded, a nil will be saved instead.
 --- @field __noref boolean? If true, the type will not undergo checks for shared or looped references when saving.
 --- @field __base CustomSavableType? The base type to inherit from, if any.
---- @field Save fun(...: any) | nil
---- @field Load fun(): ... | nil
---- @field BulkSave fun(): ... | nil
---- @field BulkLoad fun(...: any) | nil
 
 --- @type table<string, CustomSavableType>
 M.CustomSavableTypes = {};

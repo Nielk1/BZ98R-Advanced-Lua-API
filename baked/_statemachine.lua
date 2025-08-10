@@ -84,7 +84,7 @@ local _api = require("_api");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 
-ReadOnly_MT = {};
+local ReadOnly_MT = {};
 ReadOnly_MT.__newindex = function(dtable, key, value)
     error("Attempt to update a read-only table.", 2)
 end

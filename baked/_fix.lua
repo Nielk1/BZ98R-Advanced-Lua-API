@@ -39,7 +39,9 @@ logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: SetLabel");
 --- @diagnostic disable-next-line: undefined-field
 if not _G.SetLabel and _G.SettLabel then
     --- @diagnostic disable-next-line: undefined-field
+--- [[START_IGNORE]]
     _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
+--- [[END_IGNORE]]
 end
 
 -- [Fix] Broken ObjectiveObjects iterator
@@ -47,6 +49,7 @@ if pre_patch then
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix: ObjectiveObjects iterator");
     local old_ObjectiveObjects = _G.ObjectiveObjects;
 
+--- [[START_IGNORE]]
     _G.ObjectiveObjects = function ()
         return coroutine.wrap(function()
             local iter = old_ObjectiveObjects();
@@ -111,6 +114,7 @@ if pre_patch then
             end
         end);
     end;
+--- [[END_IGNORE]]
 end
 
 -- [Fix][Polyfill] TeamSlot missing "PORTAL" = 90 / ["90"] = "PORTAL"
@@ -148,6 +152,7 @@ end
 -- [Fix][Polyfill] Fix for broken Formation order function
 if pre_patch then
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: Formation");
+--- [[START_IGNORE]]
     _G.Formation = Formation or function(me, him, priority)
         if(priority == nil) then
             priority = 1;
@@ -155,6 +160,7 @@ if pre_patch then
         --- @diagnostic disable-next-line: deprecated
         _G.SetCommand(me, AiCommand.FORMATION, priority, him);
     end
+--- [[END_IGNORE]]
 end
 
 -- [Fix] Powerups not using thrusters when falling if on an AI team

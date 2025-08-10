@@ -5,7 +5,7 @@
 --- @module '_patrol'
 --- @author John "Nielk1" Klein
 --- @author Janne Trollebø
---- @usage local statemachine = require("_patrol");
+--- @todo usage example
 
 
 local logger = require("_logger");
@@ -22,7 +22,7 @@ local gameobject = require("_gameobject");
 
 
 
-
+--- @class _patrol
 local M = {}
 
 

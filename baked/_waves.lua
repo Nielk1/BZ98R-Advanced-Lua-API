@@ -5,7 +5,7 @@
 --- @module '_waves'
 --- @author John "Nielk1" Klein
 --- @author Janne Trollebø
---- @usage local waves = require("_waves");
+--- @todo usage example
 
 local logger = require("_logger");
 
@@ -29,6 +29,9 @@ local paths = require("_paths");
 -- @param leader GameObject The leader gameobject.
 -- @see _hook.Add
 
+--- @class _waves
+--- @field WaveSpawnerManager table<WaveSpawner, boolean>
+--- @field WaveSpawner WaveSpawner
 local M = {}
 
 local WaveSpawnerManagerWeakList_MT = {}
@@ -37,27 +40,6 @@ local WaveSpawnerManagerWeakList = setmetatable({}, WaveSpawnerManagerWeakList_M
 
 local WaveSpawner;
 
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
-
-local function chooseA(...)
-    local t = {...};
-    local m = 0;
-    for i, v in pairs(t) do
-        m = m + v.chance; 
-    end
-    local rn = math.random()*m;
-    local n = 0;
-    for i, v in ipairs(t) do
-        if (v.chance+n) > rn then
-        return v.item;
-        end
-        n = n + v.chance;
-    end
-end
 
 local isIn
 isIn = function(element, list)
@@ -330,7 +312,7 @@ local function update(self, dtime)
         self.waves_left = self.waves_left - 1
 
         -- Choose a unit list (e.g., a faction name) at random
-        local unit_list_name = choose(unpack(self.factions))
+        local unit_list_name = utility.ChooseOne(unpack(self.factions))
 
         -- Build a list of valid spawn locations for this wave
         local valid_locations = {}
@@ -343,10 +325,10 @@ local function update(self, dtime)
         end
 
         -- Pick a random valid location
-        local chosen_location = choose(unpack(valid_locations))
+        local chosen_location = utility.ChooseOne(unpack(valid_locations))
 
         -- Pick a random wave type (weighted random)
-        local wave_type = chooseA(unpack(self.wave_types))
+        local wave_type = utility.ChooseOneWeighted(unpack(self.wave_types))
 
         -- Spawn the wave using the chosen parameters
         spawnWave(self.name, wave_type, unit_list_name, chosen_location)

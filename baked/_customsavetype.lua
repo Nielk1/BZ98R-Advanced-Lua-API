@@ -4,14 +4,17 @@
 ---
 --- @module '_customsavetype'
 --- @author John "Nielk1" Klein
---- @usage local customsavetype = require("_customsavetype");
+--- ```lua
+--- local customsavetype = require("_customsavetype");
 --- 
 --- customsavetype.Register(ObjectDef);
+--- ```
 
 local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loading");
 
+--- @class _customsavetype
 local M = {};
 local M_MT = {};
 
@@ -70,10 +73,7 @@ end
 
 M = setmetatable(M, M_MT);
 
--------------------------------------------------------------------------------
--- MapData - Core
--------------------------------------------------------------------------------
--- @section
+--- #section MapData - Core
 
 logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loaded");
 

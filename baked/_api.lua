@@ -183,17 +183,11 @@ local version = require("_version");
 -- @tparam ... parameters
 -- @tparam[opt] HookResult priorResult prior event handler's result
 
--------------------------------------------------------------------------------
--- Enums
--------------------------------------------------------------------------------
--- @section
+--- #section Enums
 
 
 
--------------------------------------------------------------------------------
--- Custom Types
--------------------------------------------------------------------------------
--- @section
+--- #section Custom Types
 
 local CustomTypeMap = nil; -- maps name to ID number
 --local DuplicateAntiLoopMemo = nil;
@@ -216,6 +210,7 @@ local SaveLoopCheck = nil;
 --- @type table<table, table>
 local SavePostCheck = nil;
 
+--- @class _api
 local _api = {};
 
 --- @vararg any data
@@ -346,10 +341,7 @@ function DeSimplifyForLoad(...)
     return table.unpack(output, 1, ArraySize);
 end
 
--------------------------------------------------------------------------------
--- Hooks
--------------------------------------------------------------------------------
--- @section
+--- #section Hooks
 
 --- Save is called when you save a game
 --- @local
@@ -618,7 +610,7 @@ function Receive(from, type, ...)
 end
 
 
--- @section Script Run
+--- #section Script Run
 
 logger.print(logger.LogLevel.DEBUG, nil, "_api Loaded");
 

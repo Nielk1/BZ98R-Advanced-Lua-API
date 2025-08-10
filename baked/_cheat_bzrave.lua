@@ -4,7 +4,9 @@
 ---
 --- @module '_cheat_bzrave'
 --- @author John "Nielk1" Klein
---- @usage require("_cheat_bzrave");
+--- ```lua
+--- require("_cheat_bzrave");
+--- ```
 
 local statemachine = require("_statemachine");
 local hook = require("_hook");

@@ -5,11 +5,13 @@
 ---
 --- @module '_config'
 --- @author John "Nielk1" Klein
---- @usage local config = require("_config");
---
--- if not config.locked then
---     config.hook_priority.DeleteObject.GameObject = -99999;
--- end
+--- ```lua
+--- local config = require("_config");
+---
+--- if not config.locked then
+---     config.hook_priority.DeleteObject.GameObject = -99999;
+--- end
+--- ```
 
 local logger = require("_logger");
 
@@ -32,47 +34,49 @@ local function resolve_path(tbl, path)
     return current
 end
 
-local M_MT = {};
-M_MT.locked = false;
-M_MT.data = {};
+local M = {};
+M.locked = false;
+M.data = {};
 
-local M = setmetatable({}, M_MT);
+--- @class _config
+--- @field locked boolean
+--- @field data table<string, any>
+local M = setmetatable({}, M);
 
 local dont_lock = true;
 
-M_MT.__index = function(dtable, key)
+M.__index = function(dtable, key)
     if key == "locked" then
-        return M_MT.locked;
+        return M.locked;
     end
     if key == "get" then
-        return M_MT.get;
+        return M.get;
     end
-    if M_MT.locked then
+    if M.locked then
         error("Config table is locked. No further changes allowed.");
     end
-    return rawget(M_MT.data, key);
+    return rawget(M.data, key);
   end
-M_MT.__newindex = function(dtable, key, value)
-    if M_MT.locked then
+M.__newindex = function(dtable, key, value)
+    if M.locked then
         error("Cannot set key '"..key.."' after config table is locked.");
     end
     if key == "locked" then
         error("Cannot set 'locked' key directly.");
     end
-    rawset(M_MT.data, key, value);
+    rawset(M.data, key, value);
 end
 
 --- Get a value from the config table using a period or colon delimited path.
 --- @param path string The path to the value, e.g. "hook_priority.Update.StateMachine"
 --- @return any The value at the specified path
---- @function get
-function M_MT.get(path)
+function M.get(path)
     -- Access a value using a period or colon delimited path
-    local value = resolve_path(M_MT.data, path)
-    if value ~= nil and not M_MT.locked then
-        M_MT.locked = true;
+    local value = resolve_path(M.data, path)
+    if value ~= nil and not M.locked then
+        M.locked = true;
         logger.print(logger.LogLevel.DEBUG, nil, "Config table is now locked.")
-        logger.print(logger.LogLevel.DEBUG, nil, table.show(M_MT.data, "config"))
+        logger.print(logger.LogLevel.DEBUG, nil, table.show(M.data, "config"))
     end
     return value
 end

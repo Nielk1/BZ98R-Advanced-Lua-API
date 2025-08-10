@@ -11,6 +11,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_paramdb Loading");
 
+--- @class _paramdb
 local M = {};
 
 local utility = require("_utility");

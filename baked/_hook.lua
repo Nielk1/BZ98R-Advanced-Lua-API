@@ -4,7 +4,8 @@
 ---
 --- @module '_hook'
 --- @author John "Nielk1" Klein
---- @usage local hook = require("_hook");
+--- ```lua
+--- local hook = require("_hook");
 --- 
 --- -- optional priority overrides, only applies when adding hooks
 --- -- consider removing this now that we have a centralized _config.lua
@@ -40,6 +41,7 @@
 --         return hook.AbortResult(EjectKillRetCodes.DoRespawnSafest);
 --     end
 -- end, 9999)
+--- ```
 
 local logger = require("_logger");
 
@@ -47,6 +49,7 @@ logger.print(logger.LogLevel.DEBUG, nil, "_hook Loading");
 
 local utility = require("_utility");
 
+--- @class _hook
 local M = {};
 
 --- @alias event_name string
@@ -205,7 +208,7 @@ end
 --- @param event string Event to be hooked
 --- @param identifier string Identifier for this hook observer
 --- @param func function Function to be executed
---- @param priority? number Higher numbers are higher priority
+--- @param priority number? Higher numbers are higher priority
 --- @function _hook.Add
 function M.Add( event, identifier, func, priority )
     if not utility.isstring(event) then error("Parameter event must be a string."); end
@@ -266,8 +269,8 @@ end
 
 --- Add a hook to listen to the Save and Load event.
 --- @param identifier string Identifier for this hook observer
---- @param save? function Function to be executed for Save
---- @param load? function Function to be executed for Load
+--- @param save function? Function to be executed for Save
+--- @param load function? Function to be executed for Load
 --- @function _hook.AddSaveLoad
 function M.AddSaveLoad( identifier, save, load )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end

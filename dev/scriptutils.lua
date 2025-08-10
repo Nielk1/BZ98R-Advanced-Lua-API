@@ -1,14 +1,11 @@
 --- BZ98R ScriptUtils Stub.
---
--- Stubs for ScriptUtils LDoc
---
--- @module ScriptUtils
+---
+--- Stubs for ScriptUtils LDoc
+---
+--- @module 'ScriptUtils'
 
--------------------------------------------------------------------------------
--- Types
--------------------------------------------------------------------------------
--- @section
--- Type declarations
+--- #section Types
+--- Type declarations
 
 --- A handle to a game object. This is a unique identifier for the object in the game world.
 --- @class Handle
@@ -22,56 +19,56 @@
 --- ODF ParameterDB
 --- @class ParameterDB
 
--------------------------------------------------------------------------------
--- Globals
--------------------------------------------------------------------------------
--- @section
--- The Lua scripting system defines some global variables that can be of use to user scripts.
+--- Objective Color Label
+--- @alias ColorLabel string
+
+--- TeamSlot Integer
+--- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90
+
+--- #section Globals
+--- The Lua scripting system defines some global variables that can be of use to user scripts.
 
 --- Contains current build version
 ---
---- Battlezone 1.5 versions start with "1"
+--- Battlezone 1.5 versions start with `"1"`
 ---
---- Battlezone 98 Redux versions start with "2"
+--- Battlezone 98 Redux versions start with `"2"`
 ---
---- For example "1.5.2.27u1"
---- \@field GameVersion string
+--- For example `"1.5.2.27u1"` or `"2.2.301"`
+--- @type string
 GameVersion = "1.5.2.27u1";
 
 --- Contains the index of the current language.
---- <ol>
----     <li>English</li>
----     <li>French</li>
----     <li>German</li>
----     <li>Spanish</li>
----     <li>Italian</li>
----     <li>Portuguese</li>
----     <li>Russian</li>
---- </ol>
---- [2.0+]
---- \@field Language integer
+--- 
+--- {VERSION 2.0+}
+--- 
+--- 1. English
+--- 2. French
+--- 3. German
+--- 4. Spanish
+--- 5. Italian
+--- 6. Portuguese
+--- 7. Russian
+--- @type integer
 Language = 1;
 
---- Contains the full name of the current language in all-caps: "ENGLISH", "FRENCH", "GERMAN", "SPANISH", "ITALIAN", "PORTUGUESE", or "RUSSIAN"
---- [2.0+]
---- \@field LanguageName string
+--- Contains the full name of the current language in all-caps: `"ENGLISH"`, `"FRENCH"`, `"GERMAN"`, `"SPANISH"`, `"ITALIAN"`, `"PORTUGUESE"`, or `"RUSSIAN"`
+--- {VERSION 2.0+}
+--- @type string
 LanguageName = "ENGLISH";
 
---- Contains the two-letter language code of the current language: "en", "fr", "de", "es", "it", "pt" or "ru"
---- [2.0+]
---- \@field LanguageSuffix string
+--- Contains the two-letter language code of the current language: `"en"`, `"fr"`, `"de"`, `"es"`, `"it"`, `"pt"` or `"ru"`
+--- {VERSION 2.0+}
+--- @type string
 LanguageSuffix = "en";
 
 --- Contains the most recently pressed game key (e.g. "Ctrl+Z")
---- \@field LastGameKey string
+--- @type string
 LastGameKey = "Ctrl+Z";
 
--------------------------------------------------------------------------------
--- Audio Messages
--------------------------------------------------------------------------------
--- @section
--- These functions control audio messages, 2D sounds typically used for radio messages, voiceovers, and narration.
--- Audio messages use the Voice Volume setting from the Audio Options menu.
+--- #section Audio Messages
+--- These functions control audio messages, 2D sounds typically used for radio messages, voiceovers, and narration.
+--- Audio messages use the Voice Volume setting from the Audio Options menu.
 
 --- Repeat the last audio message.
 function RepeatAudioMessage() end
@@ -80,12 +77,16 @@ function RepeatAudioMessage() end
 --- Returns an audio message handle.
 --- @param filename string
 --- @return AudioMessage
-function AudioMessage(filename) error("This function is provided by the engine."); end
+function AudioMessage(filename)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the audio message has stopped. Returns false otherwise.
 --- @param msg AudioMessage
 --- @return boolean
-function IsAudioMessageDone(msg) error("This function is provided by the engine."); end
+function IsAudioMessageDone(msg)
+    error("This function is provided by the engine.");
+end
 
 --- Stops the given audio message.
 --- @param msg AudioMessage
@@ -93,14 +94,13 @@ function StopAudioMessage(msg) end
 
 --- Returns true if <em>any</em> audio message is playing. Returns false otherwise.
 --- @return boolean
-function IsAudioMessagePlaying() error("This function is provided by the engine."); end
+function IsAudioMessagePlaying()
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Sound Effects
--------------------------------------------------------------------------------
--- @section
--- These functions control sound effects, either positional 3D sounds attached to objects or global 2D sounds.
--- Sound effects use the Effects Volume setting from the Audio Options menu.
+--- #section Sound Effects
+--- These functions control sound effects, either positional 3D sounds attached to objects or global 2D sounds.
+--- Sound effects use the Effects Volume setting from the Audio Options menu.
 
 --- Plays the given audio file, which must be an uncompressed RIFF WAVE (.WAV) file.
 --- Specifying an object handle creates a positional 3D sound that follows the object as it moves and stops automatically when the object goes away. Otherwise, the sound plays as a global 2D sound.
@@ -109,41 +109,57 @@ function IsAudioMessagePlaying() error("This function is provided by the engine.
 --- Volume ranges from 0 to 100, with 0 being silent and 100 being maximum volume. The default volume is 100 if not specified.
 --- Rate overrides the playback rate of the sound file, so a value of 22050 would cause a sound file recorded at 11025 Hz to play back twice as fast. The rate defaults to the file's native rate if not specified.
 --- @param filename string
---- @param h? Handle
---- @param priority? integer
---- @param loop? boolean
---- @param volume? integer
---- @param rate? integer
+--- @param h Handle?
+--- @param priority integer?
+--- @param loop boolean?
+--- @param volume integer?
+--- @param rate integer?
 function StartSound(filename, h, priority, loop, volume, rate) end
 
 --- Stops the sound using the given filename and associated with the given object. Use a handle of none or nil to stop a global 2D sound.
 --- @param filename string
---- @param h? Handle
+--- @param h Handle?
 function StopSound(filename, h) end
 
--------------------------------------------------------------------------------
--- Game Object
--------------------------------------------------------------------------------
--- @section
--- These functions create, manipulate, and query game objects (vehicles, buildings, people, powerups, and scrap) and return or take as a parameter a game object handle.
--- Object handles are always safe to use, even if the game object itself is missing or destroyed.
+--- #section Game Object
+--- These functions create, manipulate, and query game objects (vehicles, buildings, people, powerups, and scrap) and return or take as a parameter a game object handle.
+--- Object handles are always safe to use, even if the game object itself is missing or destroyed.
 
 --- Returns the handle of the game object with the given label. Returns nil if none exists.
 --- @param label string
 --- @return Handle?
 --- @deprecated See `_gameobject` module.
-function GetHandle(label) error("This function is provided by the engine."); end
+function GetHandle(label)
+    error("This function is provided by the engine.");
+end
 
 --- Creates a game object with the given odf name, team number, and location.
+---
+--- {(i)Multiplayer(i) Objects built by the host are always synchronized, objects built by clients will
+--- always be desynchronized initially, but can be synchronized by calling SetLocal().}
+---
+--- {MOD:Extra Utilities: To build a desynchronized object as the host, use exu.BuildAsyncObject().}
 --- @param odfname string
 --- @param teamnum TeamNum
---- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the location is a path this is the path point index, defaults to 0.
+--- @param location Vector|Matrix|Handle|string Position vector, transform matrix, Object, or path name.
+--- @param point integer? If the location is a path this is the path point index, defaults to 0.
 --- @return Handle?
 --- @deprecated See `_gameobject` module.
-function BuildObject(odfname, teamnum, location, point) error("This function is provided by the engine."); end
+function BuildObject(odfname, teamnum, location, point)
+    error("This function is provided by the engine.");
+end
 
 --- Removes the game object with the given handle.
+---
+--- {(!!)(!!) Unsafe to use on a handle passed in by CreateObject(h), doing so will crash the game. If you need this functionality,
+--- you should defer the deletion until the next Update(dt).}
+---
+--- {(!)Multiplayer(!) Very dangerous. There are innumerable cases which can cause objects to be improperly deleted and/or
+--- spawn explosion chunks which may only be visible to certain players. In order to safely delete a distributed object,
+--- ALL players must call RemoveObject(h) on the target object simultaneously. Additionally, attempting to delete the starting
+--- recycler in a strategy or MPI game will crash the game.}
+--- 
+--- {MOD:Extra Utilities: If you need to remove the multiplayer starting recyclers use exu.DisableStartingRecycler().}
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function RemoveObject(h) end
@@ -153,25 +169,33 @@ function RemoveObject(h) end
 --- @param odfname string
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsOdf(h, odfname) error("This function is provided by the engine."); end
+function IsOdf(h, odfname)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the odf name of the game object. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
 --- @deprecated See `_gameobject` module.
-function GetOdf(h) error("This function is provided by the engine."); end
+function GetOdf(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the base config of the game object which determines what VDF/SDF model it uses. Returns nil if none exists.
 --- @param h Handle
 --- @return string?
 --- @deprecated See `_gameobject` module.
-function GetBase(h) error("This function is provided by the engine."); end
+function GetBase(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the label of the game object (e.g. "avtank0_wingman"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
 --- @deprecated See `_gameobject` module.
-function GetLabel(h) error("This function is provided by the engine."); end
+function GetLabel(h)
+    error("This function is provided by the engine.");
+end
 
 --- Set the label of the game object (e.g. "tank1").
 --- @param h Handle
@@ -183,20 +207,26 @@ function SetLabel(h, label) end
 --- @param h Handle
 --- @return string?
 --- @deprecated See `_gameobject` module.
-function GetClassSig(h) error("This function is provided by the engine."); end
+function GetClassSig(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the class label of the game object (e.g. "wingman"). Returns nil if none exists.
 --- @param h Handle
 --- @return string?
 --- @deprecated See `_gameobject` module.
-function GetClassLabel(h) error("This function is provided by the engine."); end
+function GetClassLabel(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the numeric class identifier of the game object. Returns nil if none exists.
 --- Looking up the class id number in the ClassId table will convert it to a string. Looking up the class id string in the ClassId table will convert it back to a number.
 --- @param h Handle
 --- @return integer?
 --- @deprecated See `_gameobject` module.
-function GetClassId(h) error("This function is provided by the engine."); end
+function GetClassId(h)
+    error("This function is provided by the engine.");
+end
 
 --- This is a global table that converts between class identifier numbers and class identifier names.
 --- Many of these values likely never appear in game and are leftover from Interstate '76
@@ -298,68 +328,85 @@ ClassId = {
 --- @param h Handle
 --- @return string
 --- @deprecated See `_gameobject` module.
-function GetNation(h) error("This function is provided by the engine."); end
+function GetNation(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsValid(h) error("This function is provided by the engine."); end
+function IsValid(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsAlive(h) error("This function is provided by the engine."); end
+function IsAlive(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists and (if the object is a vehicle) controlled and piloted. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsAliveAndPilot(h) error("This function is provided by the engine."); end
+function IsAliveAndPilot(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists and is a vehicle. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsCraft(h) error("This function is provided by the engine."); end
+function IsCraft(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists and is a building. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsBuilding(h) error("This function is provided by the engine."); end
+function IsBuilding(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists and is a person. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsPerson(h) error("This function is provided by the engine."); end
+function IsPerson(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object exists and has less health than the threshold. Returns false otherwise.
 --- @param h Handle
---- @param threshold? number float
+--- @param threshold number? float
 --- @return boolean
-function IsDamaged(h, threshold) error("This function is provided by the engine."); end
+function IsDamaged(h, threshold)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object was recycled by a Construction Rig on the given team.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 --- @param team TeamNum
 --- @return boolean
-function IsRecycledByTeam(h, team) error("This function is provided by the engine."); end
+function IsRecycledByTeam(h, team)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Team Number
--------------------------------------------------------------------------------
--- @section
--- These functions get and set team number. Team 0 is the neutral or environment team.
+--- #section Team Number
+--- These functions get and set team number. Team 0 is the neutral or environment team.
 
 --- Returns the game object's team number.
 --- @param h Handle
 --- @return TeamNum
 --- @deprecated See `_gameobject` module.
-function GetTeamNum(h) error("This function is provided by the engine."); end
+function GetTeamNum(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object's team number.
 --- @param h Handle
@@ -372,7 +419,9 @@ function SetTeamNum(h, team) end
 --- @param h Handle
 --- @return TeamNum
 --- @deprecated See `_gameobject` module.
-function GetPerceivedTeam(h) error("This function is provided by the engine."); end
+function GetPerceivedTeam(h)
+    error("This function is provided by the engine.");
+end
 
 --- Set the game object's perceived team number (as opposed to its real team number).
 --- Units on the game object's perceived team will treat it as friendly until it "blows its cover" by attacking, at which point it will revert to its real team.
@@ -382,11 +431,8 @@ function GetPerceivedTeam(h) error("This function is provided by the engine."); 
 --- @deprecated See `_gameobject` module.
 function SetPerceivedTeam(h, t) end
 
--------------------------------------------------------------------------------
--- Target
--------------------------------------------------------------------------------
--- @section
--- These function get and set a unit's target.
+--- #section Target
+--- These function get and set a unit's target.
 
 --- Sets the local player's target.
 --- @param t Handle
@@ -394,7 +440,9 @@ function SetUserTarget(t) end
 
 --- Returns the local player's target. Returns nil if it has none.
 --- @return Handle?
-function GetUserTarget() error("This function is provided by the engine."); end
+function GetUserTarget()
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object's target.
 --- @param h Handle
@@ -404,13 +452,12 @@ function SetTarget(h, t) end
 --- Returns the game object's target. Returns nil if it has none.
 --- @param h Handle
 --- @return Handle?
-function GetTarget(h) error("This function is provided by the engine."); end
+function GetTarget(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Owner
--------------------------------------------------------------------------------
--- @section
--- These functions get and set owner. The default owner for a game object is the game object that created it.
+--- #section Owner
+--- These functions get and set owner. The default owner for a game object is the game object that created it.
 
 --- Sets the game object's owner.
 --- @todo confirm o can be nil
@@ -421,13 +468,12 @@ function SetOwner(h, o) end
 --- Returns the game object's owner. Returns nil if it has none.
 --- @param h Handle
 --- @return Handle?
-function GetOwner(h) error("This function is provided by the engine."); end
+function GetOwner(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Pilot Class
--------------------------------------------------------------------------------
--- @section
--- These functions get and set vehicle pilot class.
+--- #section Pilot Class
+--- These functions get and set vehicle pilot class.
 
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
 --- @param h Handle
@@ -439,33 +485,36 @@ function SetPilotClass(h, odfname) end
 --- @param h Handle
 --- @return string?
 --- @deprecated See `_gameobject` module.
-function GetPilotClass(h) error("This function is provided by the engine."); end
+function GetPilotClass(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Position and Orientation
--------------------------------------------------------------------------------
--- @section
--- These functions get and set position and orientation.
+--- #section Position and Orientation
+--- These functions get and set position and orientation.
 
 --- Teleports the game object to a target location.
 --- @param h Handle
 --- @param target Vector|Matrix|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @deprecated See `_gameobject` module.
 function SetPosition(h, target, point) end
 
 --- Returns the game object's or path point's position vector. Returns nil if none exists.
 --- @param target Handle|string
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return Vector?
 --- @todo Can't depricate this because it's used for paths too, at least for now
-function GetPosition(target, point) error("This function is provided by the engine."); end
+function GetPosition(target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the game object's front vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector?
 --- @deprecated See `_gameobject` module.
-function GetFront(h) error("This function is provided by the engine."); end
+function GetFront(h)
+    error("This function is provided by the engine.");
+end
 
 --- Teleports the game object to the given transform matrix.
 --- @param h Handle
@@ -477,19 +526,20 @@ function SetTransform(h, transform) end
 --- @param h Handle
 --- @return Matrix?
 --- @deprecated See `_gameobject` module.
-function GetTransform(h) error("This function is provided by the engine."); end
+function GetTransform(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Linear Velocity
--------------------------------------------------------------------------------
--- @section
--- These functions get and set linear velocity.
+--- #section Linear Velocity
+--- These functions get and set linear velocity.
 
 --- Returns the game object's linear velocity vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector
 --- @deprecated See `_gameobject` module.
-function GetVelocity(h) error("This function is provided by the engine."); end
+function GetVelocity(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object's angular velocity vector. 
 --- @param h Handle
@@ -497,17 +547,16 @@ function GetVelocity(h) error("This function is provided by the engine."); end
 --- @deprecated See `_gameobject` module.
 function SetVelocity(h, velocity) end
 
--------------------------------------------------------------------------------
--- Angular Velocity
--------------------------------------------------------------------------------
--- @section
--- These functions get and set angular velocity.
+--- #section Angular Velocity
+--- These functions get and set angular velocity.
 
 --- Returns the game object's angular velocity vector. Returns nil if none exists.
 --- @param h Handle
 --- @return Vector
 --- @deprecated See `_gameobject` module.
-function GetOmega(h) error("This function is provided by the engine."); end
+function GetOmega(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object's angular velocity vector.
 --- @param h Handle
@@ -515,62 +564,63 @@ function GetOmega(h) error("This function is provided by the engine."); end
 --- @deprecated See `_gameobject` module.
 function SetOmega(h, omega) end
 
--------------------------------------------------------------------------------
--- Position Helpers
--------------------------------------------------------------------------------
--- @section
--- These functions help generate position values close to a center point.
+--- #section Position Helpers
+--- These functions help generate position values close to a center point.
 
 --- Returns a ground position offset from the center by the radius in a direction controlled by the angle.
 --- If no radius is given, it uses a default radius of zero.
 --- If no angle is given, it uses a default angle of zero.
 --- An angle of zero is +X (due east), pi * 0.5 is +Z (due north), pi is -X (due west), and pi * 1.5 is -Z (due south).
 --- @param center Vector
---- @param radius? number
---- @param angle? number
+--- @param radius number?
+--- @param angle number?
 --- @return Vector
-function GetCircularPos(center, radius, angle) error("This function is provided by the engine."); end
+function GetCircularPos(center, radius, angle)
+    error("This function is provided by the engine.");
+end
 
 --- Returns a ground position in a ring around the center between minradius and maxradius with roughly the same terrain height as the terrain height at the center.
 --- This is good for scattering spawn positions around a point while excluding positions that are too high or too low.
 --- If no radius is given, it uses the default radius of zero.
 --- @param center Vector
---- @param minradius? number
---- @param maxradius? number
+--- @param minradius number?
+--- @param maxradius number?
 --- @return Vector
-function GetPositionNear(center, minradius, maxradius) error("This function is provided by the engine."); end
+function GetPositionNear(center, minradius, maxradius)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Shot
--------------------------------------------------------------------------------
--- @section
--- These functions query a game object for information about ordnance hits.
+--- #section Shot
+--- These functions query a game object for information about ordnance hits.
 
 --- Returns who scored the most recent hit on the game object. Returns nil if none exists.
 --- @param h Handle
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetWhoShotMe(h) error("This function is provided by the engine."); end
+function GetWhoShotMe(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the last time an enemy shot the game object.
 --- @param h Handle
 --- @return number float
 --- @deprecated See `_gameobject` module.
-function GetLastEnemyShot(h) error("This function is provided by the engine."); end
+function GetLastEnemyShot(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the last time a friend shot the game object.
 --- @param h Handle
 --- @return number float
 --- @deprecated See `_gameobject` module.
-function GetLastFriendShot(h) error("This function is provided by the engine."); end
+function GetLastFriendShot(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Alliances
--------------------------------------------------------------------------------
--- @section
--- These functions control and query alliances between teams.
--- The team manager assigns each player a separate team number, starting with 1 and going as high as 15. Team 0 is the neutral "environment" team.
--- Unless specifically overridden, every team is friendly with itself, neutral with team 0, and hostile to everyone else.
+--- #section Alliances
+--- These functions control and query alliances between teams.
+--- The team manager assigns each player a separate team number, starting with 1 and going as high as 15. Team 0 is the neutral "environment" team.
+--- Unless specifically overridden, every team is friendly with itself, neutral with team 0, and hostile to everyone else.
 
 --- Sets team alliances back to default.
 function DefaultAllies() end
@@ -596,7 +646,9 @@ function UnAlly(team1, team2) end
 --- @param team1 integer
 --- @param team2 integer
 --- @return boolean
-function IsTeamAllied(team1, team2) error("This function is provided by the engine."); end
+function IsTeamAllied(team1, team2)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if game object "me" considers game object "him" an ally. Returns false otherwise.
 --- Due to the possibility of player-initiated "half-alliances", IsAlly(me, him) might not return the same result as IsAlly(him, me).
@@ -604,21 +656,26 @@ function IsTeamAllied(team1, team2) error("This function is provided by the engi
 --- @param him Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsAlly(me, him) error("This function is provided by the engine."); end
+function IsAlly(me, him)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Objective Marker
--------------------------------------------------------------------------------
--- @section
--- These functions control objective markers.
--- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
+--- #section Objective Marker
+--- These functions control objective markers.
+--- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
 
 --- Sets the game object as an objective to all teams.
+---
+--- {(!)Multiplayer(!) The object `h` must be local to the caller and synchronized.
+--- Calling this function on a desynchronized object will result in the status not being propagated to remote players.}
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function SetObjectiveOn(h) end
 
 --- Sets the game object back to normal.
+---
+--- {(!)Multiplayer(!) The object `h` must be local to the caller and synchronized.
+--- Calling this function on a desynchronized object will result in the status not being propagated to remote players.}
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function SetObjectiveOff(h) end
@@ -628,13 +685,17 @@ function SetObjectiveOff(h) end
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsObjectiveOn(h) error("This function is provided by the engine."); end
+function IsObjectiveOn(h)
+    error("This function is provided by the engine.");
+end
 
 --- Gets the game object's visible name.
 --- @param h Handle
 --- @return string
 --- @deprecated See `_gameobject` module.
-function GetObjectiveName(h) error("This function is provided by the engine."); end
+function GetObjectiveName(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object's visible name.
 --- @param h Handle
@@ -643,25 +704,24 @@ function GetObjectiveName(h) error("This function is provided by the engine."); 
 function SetObjectiveName(h, name) end
 
 --- Sets the game object's visible name. This function is effectively an alias for SetObjectiveName.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 --- @param name string
 --- @deprecated See `_gameobject` module.
 function SetName(h, name) end
 
--------------------------------------------------------------------------------
--- Distance
--------------------------------------------------------------------------------
--- @section
--- These functions measure and return the distance between a game object and a reference point.
+--- #section Distance
+--- These functions measure and return the distance between a game object and a reference point.
 
 --- Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
 --- @param h1 Handle
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetDistance(h1, target, point) error("This function is provided by the engine."); end
+function GetDistance(h1, target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the units are closer than the given distance of each other. Returns false otherwise.
 --- (This function is equivalent to GetDistance (h1, h2) < d)
@@ -670,104 +730,87 @@ function GetDistance(h1, target, point) error("This function is provided by the 
 --- @param dist number
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsWithin(h1, h2, dist) error("This function is provided by the engine."); end
+function IsWithin(h1, h2, dist)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the bounding spheres of the two game objects are within the specified tolerance. The default tolerance is 1.3 meters if not specified.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h1 Handle
 --- @param h2 Handle
---- @param tolerance? number
+--- @param tolerance number?
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsTouching(h1, h2, tolerance) error("This function is provided by the engine."); end
+function IsTouching(h1, h2, tolerance)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Nearest
--------------------------------------------------------------------------------
--- @section
--- These functions find and return the game object of the requested type closest to a reference point.
+--- #section Nearest
+--- These functions find and return the game object of the requested type closest to a reference point.
 
 --- Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetNearestObject(target, point) error("This function is provided by the engine."); end
+function GetNearestObject(target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetNearestVehicle(target, point) error("This function is provided by the engine."); end
+function GetNearestVehicle(target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetNearestBuilding(target, point) error("This function is provided by the engine."); end
+function GetNearestBuilding(target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetNearestEnemy(target, point) error("This function is provided by the engine."); end
+function GetNearestEnemy(target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetNearestFriend(target, point) error("This function is provided by the engine."); end
+function GetNearestFriend(target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the friend closest to the given reference point. Returns nil if none exists.
---- [2.1+]
---- @diagnostic disable: undefined-doc-param
---- @overload fun(h: Handle): Handle? --- [2.0+]
---- @overload fun(path: string, point?: integer): Handle? --- [2.1+]
---- @overload fun(position: Vector): Handle? --- [2.1+]
---- @overload fun(transform: Matrix): Handle? --- [2.1+]
+--- {VERSION 2.0+}
+--- @overload fun(path: string, point: integer?): Handle? --- {VERSION 2.1+}
+--- @overload fun(position: Vector): Handle? --- {VERSION 2.1+}
+--- @overload fun(transform: Matrix): Handle? --- {VERSION 2.1+}
 --- @param h Handle The reference game object.
+--- @diagnostic disable-next-line: undefined-doc-param
 --- @param path string The path name.
---- @param point? integer The point on the path (optional).
+--- @diagnostic disable-next-line: undefined-doc-param
+--- @param point integer? The point on the path (optional).
+--- @diagnostic disable-next-line: undefined-doc-param
 --- @param position Vector The position vector.
+--- @diagnostic disable-next-line: undefined-doc-param
 --- @param transform Matrix The transform matrix.
 --- @return Handle? handle closest friend, or nil if none exists.
---- @diagnostic enable: undefined-doc-param
 --- @deprecated See `_gameobject` module.
-function GetNearestUnitOnTeam(...) end
-
---- Returns the craft or person on the given team closest to the given game object. Returns nil if none exists.
--- [2.0+]
--- @param h Handle
--- @param team int
--- @return Handle
--- @function GetNearestUnitOnTeam
-
---- Returns the craft or person on the given team closest to a point on the path. It uses the start of the path if no point is given. Returns nil if none exists.
--- [2.1+]
--- @param path string
--- @param point? integer
--- @param team int
--- @return Handle
--- @function GetNearestUnitOnTeam
-
---- Returns the craft or person on the given team closest to the position of the transform matrix. Returns nil if none exists.
--- [2.1+]
--- @param position vector
--- @param team int
--- @return Handle
--- @function GetNearestUnitOnTeam
-
---- Returns the craft or person on the given team closest to the position vector. Returns nil if none exists.
--- [2.1+]
--- @param transform matrix
--- @param team int
--- @return Handle
--- @function GetNearestUnitOnTeam
+function GetNearestUnitOnTeam(h) end
 
 --- Returns how many objects with the given team and odf name are closer than the given distance.
 --- @param h Handle
@@ -776,65 +819,68 @@ function GetNearestUnitOnTeam(...) end
 --- @param odfname string
 --- @return integer
 --- @deprecated See `_gameobject` module.
-function CountUnitsNearObject(h, dist, team, odfname) error("This function is provided by the engine."); end
+function CountUnitsNearObject(h, dist, team, odfname)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Iterators
--------------------------------------------------------------------------------
--- @section
--- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
+--- #section Iterators
+--- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
 
 --- Enumerates game objects within the given distance a target.
 --- @param dist number
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return fun():Handle iterator
 --- @deprecated See `_gameobject` module.
-function ObjectsInRange(dist, target, point) error("This function is provided by the engine."); end
+function ObjectsInRange(dist, target, point)
+    error("This function is provided by the engine.");
+end
 
 --- Enumerates all game objects.
 --- Use this function sparingly at runtime since it enumerates <em>all</em> game objects, including every last piece of scrap. If you're specifically looking for craft, use AllCraft() instead.
 --- @return fun():Handle iterator
 --- @deprecated See `_gameobject` module.
-function AllObjects() error("This function is provided by the engine."); end
+function AllObjects()
+    error("This function is provided by the engine.");
+end
 
 --- Enumerates all craft.
 --- @return fun():Handle iterator
 --- @deprecated See `_gameobject` module.
-function AllCraft() error("This function is provided by the engine."); end
+function AllCraft()
+    error("This function is provided by the engine.");
+end
 
 --- Enumerates all game objects currently selected by the local player.
 --- @return fun():Handle iterator
 --- @deprecated See `_gameobject` module.
-function SelectedObjects() error("This function is provided by the engine."); end
+function SelectedObjects()
+    error("This function is provided by the engine.");
+end
 
 --- Enumerates all game objects marked as objectives.
 --- @return fun():Handle iterator
 --- @deprecated See `_gameobject` module.
-function ObjectiveObjects() error("This function is provided by the engine."); end
+function ObjectiveObjects()
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Scrap Management
--------------------------------------------------------------------------------
--- @section
--- These functions remove scrap, either to reduce the global game object count or to remove clutter around a location.
+--- #section Scrap Management
+--- These functions remove scrap, either to reduce the global game object count or to remove clutter around a location.
 
 --- While the global scrap count is above the limit, remove the oldest scrap piece. It no limit is given, it uses the default limit of 300.
---- @param limit? integer
+--- @param limit integer?
 function GetRidOfSomeScrap(limit) end
 
 --- Clear all scrap within the given distance of a position vector, transform matrix, game object, or named path.
 --- It uses the start of the path if no point is given.
 --- @param distance number
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer
+--- @param point integer?
 function ClearScrapAround(distance, target, point) end
 
--------------------------------------------------------------------------------
--- Team Slots
--------------------------------------------------------------------------------
--- @section
--- These functions look up game objects in team slots.
+--- #section Team Slots
+--- These functions look up game objects in team slots.
 
 --- This is a global table that converts between team slot numbers and team slot names. For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
 --- Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
@@ -914,187 +960,212 @@ TeamSlot = {
 --- Get the game object in the specified team slot.
 --- It uses the local player team if no team is given.
 --- @param slot TeamSlotInteger
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return Handle
 --- @deprecated See `_gameobject` module.
 --- @note Team slots badly lag behind for remote players, even though the object will exist on the local machine as a remote tagged object.  This affects all TeamSlot based functions.
-function GetTeamSlot(slot, team) error("This function is provided by the engine."); end
+function GetTeamSlot(slot, team)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the game object controlled by the player on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetPlayerHandle(team) error("This function is provided by the engine."); end
+function GetPlayerHandle(team)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the Recycler on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetRecyclerHandle(team) error("This function is provided by the engine."); end
+function GetRecyclerHandle(team)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the Factory on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetFactoryHandle(team) error("This function is provided by the engine."); end
+function GetFactoryHandle(team)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the Armory on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetArmoryHandle(team) error("This function is provided by the engine."); end
+function GetArmoryHandle(team)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the Constructor on the given team. Returns nil if none exists.
 --- It uses the local player team if no team is given.
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetConstructorHandle(team) error("This function is provided by the engine."); end
+function GetConstructorHandle(team)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Team Pilots
--------------------------------------------------------------------------------
--- @section
--- These functions get and set pilot counts for a team.
+--- #section Team Pilots
+--- These functions get and set pilot counts for a team.
 
 --- Adds pilots to the team's pilot count, clamped between zero and maximum count.
 --- Returns the new pilot count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function AddPilot(team, count) error("This function is provided by the engine."); end
+function AddPilot(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the team's pilot count, clamped between zero and maximum count.
 --- Returns the new pilot count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function SetPilot(team, count) error("This function is provided by the engine."); end
+function SetPilot(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the team's pilot count.
 --- @param team TeamNum
 --- @return integer
-function GetPilot(team) error("This function is provided by the engine."); end
+function GetPilot(team)
+    error("This function is provided by the engine.");
+end
 
 --- Adds pilots to the team's maximum pilot count.
 --- Returns the new pilot count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function AddMaxPilot(team, count) error("This function is provided by the engine."); end
+function AddMaxPilot(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the team's maximum pilot count.
 --- Returns the new pilot count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function SetMaxPilot(team, count) error("This function is provided by the engine."); end
+function SetMaxPilot(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the team's maximum pilot count.
 --- @param team TeamNum
 --- @return integer
-function GetMaxPilot(team) error("This function is provided by the engine."); end
+function GetMaxPilot(team)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Team Scrap
--------------------------------------------------------------------------------
--- @section
--- These functions get and set scrap values for a team.
+--- #section Team Scrap
+--- These functions get and set scrap values for a team.
 
 --- Adds to the team's scrap count, clamped between zero and maximum count.
 --- Returns the new scrap count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function AddScrap(team, count) error("This function is provided by the engine."); end
+function AddScrap(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the team's scrap count, clamped between zero and maximum count.
 --- Returns the new scrap count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function SetScrap(team, count) error("This function is provided by the engine."); end
+function SetScrap(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the team's scrap count.
 --- @param team TeamNum
 --- @return integer
-function GetScrap(team) error("This function is provided by the engine."); end
+function GetScrap(team)
+    error("This function is provided by the engine.");
+end
 
 --- Adds to the team's maximum scrap count.
 --- Returns the new maximum scrap count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function AddMaxScrap(team, count) error("This function is provided by the engine."); end
+function AddMaxScrap(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the team's maximum scrap count.
 --- Returns the new maximum scrap count.
 --- @param team TeamNum
 --- @param count integer
 --- @return integer
-function SetMaxScrap(team, count) error("This function is provided by the engine."); end
+function SetMaxScrap(team, count)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the team's maximum scrap count.
 --- @param team TeamNum
 --- @return integer
-function GetMaxScrap(team) error("This function is provided by the engine."); end
+function GetMaxScrap(team)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Deploy
--------------------------------------------------------------------------------
--- @section
--- These functions control deployable craft (such as Turret Tanks or Producer units).
+--- #section Deploy
+--- These functions control deployable craft (such as Turret Tanks or Producer units).
 
 --- Returns true if the game object is a deployed craft. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsDeployed(h) error("This function is provided by the engine."); end
+function IsDeployed(h)
+    error("This function is provided by the engine.");
+end
 
 --- Tells the game object to deploy.
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function Deploy(h) end
 
--------------------------------------------------------------------------------
--- Selection
--------------------------------------------------------------------------------
--- @section
--- These functions access selection state (i.e. whether the player has selected a game object)
+--- #section Selection
+--- These functions access selection state (i.e. whether the player has selected a game object)
 
 --- Returns true if the game object is selected. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
-function IsSelected(h) error("This function is provided by the engine."); end
+function IsSelected(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Mission-Critical [2.0+]
--------------------------------------------------------------------------------
--- @section
--- The "mission critical" property indicates that a game object is vital to the success of the mission and disables the "Pick Me Up" and "Recycle" commands that (eventually) cause IsAlive() to report false.
+--- #section Mission-Critical
+--- {VERSION 2.0+}
+--- The "mission critical" property indicates that a game object is vital to the success of the mission and disables the "Pick Me Up" and "Recycle" commands that (eventually) cause IsAlive() to report false.
 
 --- Returns true if the game object is marked as mission-critical. Returns false otherwise.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param h Handle
 --- @return boolean
-function IsCritical(h) error("This function is provided by the engine."); end
+function IsCritical(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object's mission-critical status.
 --- If critical is true or not specified, the object is marked as mission-critical. Otherwise, the object is marked as not mission critical.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param h Handle
---- @param critical? boolean
+--- @param critical boolean?
 function SetCritical(h, critical) end
 
--------------------------------------------------------------------------------
--- Weapon
--------------------------------------------------------------------------------
--- @section
--- These functions access unit weapons and damage.
+--- #section Weapon
+--- These functions access unit weapons and damage.
 
 --- Sets what weapons the unit's AI process will use.
 --- To calculate the mask value, add up the values of the weapon hardpoint slots you want to enable.
@@ -1104,21 +1175,29 @@ function SetCritical(h, critical) end
 --- @deprecated See `_gameobject` module.
 function SetWeaponMask(h, mask) end
 
---- Gives the game object the named weapon in the given slot. If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
+--- Gives the game object the named weapon in the given slot. If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would.
+--- If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
 --- Returns true if it succeeded. Returns false otherwise.
 --- @param h Handle
---- @param weaponname? string
---- @param slot? integer
+--- @param weaponname string?
+--- @param slot integer?
+--- @return boolean success
 --- @deprecated See `_gameobject` module.
-function GiveWeapon(h, weaponname, slot) end
+function GiveWeapon(h, weaponname, slot)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the odf name of the weapon in the given slot on the game object. Returns nil if the game object does not exist or the slot is empty.
 --- For example, an "avtank" game object would return "gatstab" for index 0 and "gminigun" for index 1.
+---
+--- Remarks: Unsafe in CreateObject, will always return nil, should be deferred until the next Update
 --- @param h Handle
 --- @param slot integer
---- @return string
+--- @return string?
 --- @deprecated See `_gameobject` module.
-function GetWeaponClass(h, slot) error("This function is provided by the engine."); end
+function GetWeaponClass(h, slot)
+    error("This function is provided by the engine.");
+end
 
 --- Tells the game object to fire at the given target.
 --- @param me Handle
@@ -1132,68 +1211,69 @@ function FireAt(me, him) end
 --- @deprecated See `_gameobject` module.
 function Damage(h, amount) end
 
--------------------------------------------------------------------------------
--- Time
--------------------------------------------------------------------------------
--- @section
--- These function report various global time values.
+--- #section Time
+--- These function report various global time values.
 
 --- Returns the elapsed time in seconds since the start of the mission.
 --- @return number
-function GetTime() error("This function is provided by the engine."); end
+function GetTime()
+    error("This function is provided by the engine.");
+end
 
 --- Returns the simulation time step in seconds.
 --- @return number
-function GetTimeStep() error("This function is provided by the engine."); end
+function GetTimeStep()
+    error("This function is provided by the engine.");
+end
 
 --- Returns the current system time in milliseconds. This is mostly useful for performance profiling.
 --- @return number
-function GetTimeNow() error("This function is provided by the engine."); end
+function GetTimeNow()
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Mission
--------------------------------------------------------------------------------
--- @section
--- These functions control general mission properties like strategic AI and mission flow
+--- #section Mission
+--- These functions control general mission properties like strategic AI and mission flow
 
 --- Enables (or disables) strategic AI control for a given team. As of version 1.5.2.7, mission scripts must enable AI control for any team that intends to use an AIP.
---- IMPORTANT SAFETY TIP: only call this function from the "root" of the Lua mission script! The strategic AI gets set up shortly afterward and attempting to use SetAIControl later will crash the game.
+--- {(!!)When(!!) only call this function from the "root" of the Lua mission script! The strategic AI gets set up shortly afterward and attempting to use SetAIControl later will crash the game.}
 --- @param team TeamNum
---- @param control? boolean, defaults to true
+--- @param control boolean? defaults to true
 function SetAIControl(team, control) end
 
 --- Returns true if a given team is AI controlled. Returns false otherwise.
 --- Unlike SetAIControl, this function may be called at any time.
 --- @param team TeamNum
 --- @return boolean
-function GetAIControl(team) error("This function is provided by the engine."); end
+function GetAIControl(team)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the current AIP for the team. It uses team 2 if no team number is given.
---- @param team? TeamNum
+--- @param team TeamNum?
 --- @return string
 --- @function GetAIP 
-function GetAIP(team) error("This function is provided by the engine."); end
+function GetAIP(team)
+    error("This function is provided by the engine.");
+end
 
 --- Switches the team's AI plan. It uses team 2 if no team number is given.
 --- @param aipname string
---- @param team? TeamNum
+--- @param team TeamNum?
 function SetAIP(aipname, team) end
 
 --- Fails the mission after the given time elapses. If supplied with a filename (usually a .des), it sets the failure message to text from that file.
 --- @param time number
---- @param filename? string
+--- @param filename string?
 function FailMission(time, filename) end
 
 --- Succeeds the mission after the given time elapses. If supplied with a filename (usually a .des), it sets the success message to text from that file.
 --- @param time number
---- @param filename? string
+--- @param filename string?
 function SucceedMission(time, filename) end
 
--------------------------------------------------------------------------------
--- Objective Messages
--------------------------------------------------------------------------------
--- @section
--- These functions control the objective panel visible at the right of the screen.
+--- #section Objective Messages
+--- These functions control the objective panel visible at the right of the screen.
 
 --- Clears all objective messages.
 --- @deprecated See `_objective` module.
@@ -1201,17 +1281,17 @@ function ClearObjectives() end
 
 --- Adds an objective message with the given name and properties.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? ColorLabel Default to "WHITE".
---- @param duration? number defaults to 8 seconds
---- @param text? string Override text from the target objective file. [2.0+]
+--- @param color ColorLabel? Default to "WHITE".
+--- @param duration number? defaults to 8 seconds
+--- @param text string? Override text from the target objective file. {VERSION 2.0+}
 --- @deprecated See `_objective` module.
 function AddObjective(name, color, duration, text) end
 
 --- Updates the objective message with the given name. If no objective exists with that name, it does nothing.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? ColorLabel Default to "WHITE".
---- @param duration? number defaults to 8 seconds
---- @param text? string Override text from the target objective file. [2.0+]
+--- @param color ColorLabel? Default to "WHITE".
+--- @param duration number? defaults to 8 seconds
+--- @param text string? Override text from the target objective file. {VERSION 2.0+}
 --- @deprecated See `_objective` module.
 function UpdateObjective(name, color, duration, text) end
 
@@ -1220,24 +1300,21 @@ function UpdateObjective(name, color, duration, text) end
 --- @deprecated See `_objective` module.
 function RemoveObjective(name) end
 
--------------------------------------------------------------------------------
--- Cockpit Timer
--------------------------------------------------------------------------------
--- @section
--- These functions control the large timer at the top of the screen.
+--- #section Cockpit Timer
+--- These functions control the large timer at the top of the screen.
 
 --- Starts the cockpit timer counting down from the given time. If a warn time is given, the timer will turn yellow when it reaches that value. If an alert time is given, the timer will turn red when it reaches that value. All time values are in seconds.
 --- The start time can be up to 35999, which will appear on-screen as 9:59:59. If the remaining time is an hour or less, the timer will show only minutes and seconds.
 --- @param time integer
---- @param warn? integer
---- @param alert? integer
+--- @param warn integer?
+--- @param alert integer?
 function StartCockpitTimer(time, warn, alert) end
 
 --- Starts the cockpit timer counting up from the given time. If a warn time is given, the timer will turn yellow when it reaches that value. If an alert time is given, the timer will turn red when it reaches that value. All time values are in seconds.
 --- The on-screen timer will always show hours, minutes, and seconds The hours digit will malfunction after 10 hours.
 --- @param time integer
---- @param warn? integer
---- @param alert? integer
+--- @param warn integer?
+--- @param alert integer?
 function StartCockpitTimerUp(time, warn, alert) end
 
 --- Stops the cockpit timer.
@@ -1248,13 +1325,12 @@ function HideCockpitTimer() end
 
 --- Returns the current time in seconds on the cockpit timer.
 --- @return integer
-function GetCockpitTimer() error("This function is provided by the engine."); end
+function GetCockpitTimer()
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Earthquake
--------------------------------------------------------------------------------
--- @section
--- These functions control the global earthquake effect.
+--- #section Earthquake
+--- These functions control the global earthquake effect.
 
 --- Starts a global earthquake effect.
 --- @param magnitude number
@@ -1268,29 +1344,28 @@ function UpdateEarthQuake(magnitude) end
 --- Stops the global earthquake effect.
 function StopEarthquake() end
 
--------------------------------------------------------------------------------
--- Path Type
--------------------------------------------------------------------------------
--- @section
--- These functions get and set the looping type of a path.
--- Looking up the path type number in the PathType table will convert it to a string. Looking up the path type string in the PathType table will convert it to a number.
--- <ul>
---     <li>0: one-way</li>
---     <li>1: round-trip</li>
---     <li>2: loop</li>
--- </ul>
+--- #section Path Type
+--- These functions get and set the looping type of a path.
+--- Looking up the path type number in the PathType table will convert it to a string. Looking up the path type string in the PathType table will convert it to a number.
+--- <ul>
+---     <li>0: one-way</li>
+---     <li>1: round-trip</li>
+---     <li>2: loop</li>
+--- </ul>
 
 --- Changes the named path to the given path type.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param path string
 --- @param type integer
 function SetPathType(path, type) end
 
 --- Returns the type of the named path.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param path string
 --- @return integer
-function GetPathType(path) error("This function is provided by the engine."); end
+function GetPathType(path)
+    error("This function is provided by the engine.");
+end
 
 --- Changes the named path to one-way. Once a unit reaches the end of the path, it will stop.
 --- @param path string
@@ -1304,44 +1379,43 @@ function SetPathRoundTrip(path) end
 --- @param path string
 function SetPathLoop(path) end
 
--------------------------------------------------------------------------------
--- Path Points [2.0+]
--------------------------------------------------------------------------------
--- @section
+--- #section Path Points
+--- {VERSION 2.0+}
 
 --- Returns the number of points in the named path, or 0 if the path does not exist.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param path string
 --- @return integer
-function GetPathPointCount(path) error("This function is provided by the engine."); end
+function GetPathPointCount(path)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Path Area [2.0+]
--------------------------------------------------------------------------------
--- @section
--- These functions treat a path as the boundary of a closed polygonal area.
+--- #section Path Area
+--- {VERSION 2.0+}
+--- These functions treat a path as the boundary of a closed polygonal area.
 
 --- Returns how many times the named path loops around the given position vector, transform matrix, or object.
 --- Each full counterclockwise loop adds one and each full clockwise loop subtracts one.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param path string
 --- @param target Vector|Matrix|string
 --- @return integer
-function GetWindingNumber(path, target) error("This function is provided by the engine."); end
+function GetWindingNumber(path, target)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the given position vector, transform matrix, or object is inside the area bounded by the named path. Returns false otherwise.
 --- This function is equivalent to <pre>GetWindingNumber( path, h ) ~= 0</pre>
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param path string
 --- @param target Vector|Matrix|Handle
 --- @return boolean
-function IsInsideArea(path, target) error("This function is provided by the engine."); end
+function IsInsideArea(path, target)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
---- Unit Commands
--------------------------------------------------------------------------------
--- @section 
--- These These functions send commands to units or query their command state.
+--- #section Unit Commands 
+--- These These functions send commands to units or query their command state.
 
 --- This is a global table that converts between command numbers and command names. For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
 --- @enum AiCommand
@@ -1373,8 +1447,8 @@ AiCommand = {
     SEND = 24, -- 24
     GET_IN = 25, -- 25
     LAY_MINES = 26, -- 26
-    CLOAK = 27, -- 27 [2.1+]
-    DECLOAK = 28, -- 28 [2.1+]
+    CLOAK = 27, -- 27 {VERSION 2.1+}
+    DECLOAK = 28, -- 28 {VERSION 2.1+}
     [0] = "NONE", -- NONE
     [1] = "SELECT", -- SELECT
     [2] = "STOP", -- STOP
@@ -1402,53 +1476,67 @@ AiCommand = {
     [24] = "SEND", -- SEND
     [25] = "GET_IN", -- GET_IN
     [26] = "LAY_MINES", -- LAY_MINES
-    [27] = "CLOAK", -- CLOAK [2.1+]
-    [28] = "DECLOAK", -- DECLOAK [2.1+]
+    [27] = "CLOAK", -- CLOAK {VERSION 2.1+}
+    [28] = "DECLOAK", -- DECLOAK {VERSION 2.1+}
 }
 
 --- Returns true if the game object can be commanded. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function CanCommand(me) error("This function is provided by the engine."); end
+function CanCommand(me)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object is a producer that can build at the moment. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function CanBuild(me) error("This function is provided by the engine."); end
+function CanBuild(me)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object is a producer and currently busy. Returns false otherwise.
 --- @param me Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsBusy(me) error("This function is provided by the engine."); end
+function IsBusy(me)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object has reached the end of the named path. Returns false otherwise.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param me Handle
 --- @param path string
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsAtEndOfPath(me, path) error("This function is provided by the engine."); end
+function IsAtEndOfPath(me, path)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the current command for the game object. Looking up the command number in the AiCommand table will convert it to a string. Looking up the command string in the AiCommand table will convert it back to a number.
 --- @param me Handle
 --- @return AiCommand
 --- @deprecated See `_gameobject` module.
-function GetCurrentCommand(me) error("This function is provided by the engine."); end
+function GetCurrentCommand(me)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the target of the current command for the game object. Returns nil if it has none.
 --- @param me Handle
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetCurrentWho(me) error("This function is provided by the engine."); end
+function GetCurrentWho(me)
+    error("This function is provided by the engine.");
+end
 
 --- Gets the independence of a unit.
 --- @param me Handle
 --- @return integer
 --- @deprecated See `_gameobject` module.
-function GetIndependence(me) error("This function is provided by the engine."); end
+function GetIndependence(me)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the independence of a unit. 1 (the default) lets the unit take initiative (e.g. attack nearby enemies), while 0 prevents that.
 --- @param me Handle
@@ -1465,11 +1553,11 @@ function SetIndependence(me, independence) end
 --- "Param" is an optional odf name only used by command AiCommand.BUILD.
 --- @param me Handle
 --- @param command integer
---- @param priority? integer
---- @param who? Handle
---- @param where Matrix|Vector|string?
---- @param when? number
---- @param param? string
+--- @param priority integer?
+--- @param who Handle?
+--- @param where Matrix|Vector|string|nil
+--- @param when number?
+--- @param param string?
 --- @deprecated See `_gameobject` module.
 function SetCommand(me, command, priority, who, where, when, param) end
 
@@ -1477,7 +1565,7 @@ function SetCommand(me, command, priority, who, where, when, param) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param him Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Attack(me, him, priority) end
 
@@ -1485,7 +1573,7 @@ function Attack(me, him, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Goto(me, target, priority) end
 
@@ -1493,7 +1581,7 @@ function Goto(me, target, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param target Vector|Matrix|string
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Mine(me, target, priority) end
 
@@ -1501,22 +1589,24 @@ function Mine(me, target, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param him Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Follow(me, him, priority) end
 
 --- Returns true if the unit is currently following the given target.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param me Handle
 --- @param him Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsFollowing(me, him) error("This function is provided by the engine."); end
+function IsFollowing(me, him)
+    error("This function is provided by the engine.");
+end
 
 --- Commands the unit to defend its current location.
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Defend(me, priority) end
 
@@ -1524,7 +1614,7 @@ function Defend(me, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param him Handle
---- @param priority? integer
+--- @param priority integer?
 --- @function Defend2
 --- @deprecated See `_gameobject` module.
 function Defend2(me, him, priority) end
@@ -1532,7 +1622,7 @@ function Defend2(me, him, priority) end
 --- Commands the unit to stop at its current location.
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Stop(me, priority) end
 
@@ -1540,7 +1630,7 @@ function Stop(me, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param path string
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Patrol(me, path, priority) end
 
@@ -1549,7 +1639,7 @@ function Patrol(me, path, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param target Handle|string
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Retreat(me, target, priority) end
 
@@ -1557,7 +1647,7 @@ function Retreat(me, target, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param him Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function GetIn(me, him, priority) end
 
@@ -1565,7 +1655,7 @@ function GetIn(me, him, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param him Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Pickup(me, him, priority) end
 
@@ -1574,7 +1664,7 @@ function Pickup(me, him, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param target Vector|Matrix|string
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Dropoff(me, target, priority) end
 
@@ -1582,7 +1672,7 @@ function Dropoff(me, target, priority) end
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
 --- @param me Handle
 --- @param odfname string
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Build(me, odfname, priority) end
 
@@ -1592,64 +1682,65 @@ function Build(me, odfname, priority) end
 --- @param me Handle
 --- @param odfname string
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function BuildAt(me, odfname, target, priority) end
 
 --- Commands the unit to follow the given target closely. This function is equivalent to SetCommand(me, AiCommand.FORMATION, priority, him).
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param me Handle
 --- @param him Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Formation(me, him, priority) end
 
 --- Commands the unit to hunt for targets autonomously. This function is equivalent to SetCommand(me, AiCommand.HUNT, priority).
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param me Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Hunt(me, priority) end
 
 --- Commands the unit to recycle. This function is equivalent to SetCommand(me, AiCommand.RECYCLE, priority).
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param me Handle
---- @param priority? integer
+--- @param priority integer?
 --- @deprecated See `_gameobject` module.
 function Recycle(me, priority) end
--------------------------------------------------------------------------------
--- Tug Cargo
--------------------------------------------------------------------------------
--- @section
--- These functions query Tug and Cargo.
+
+--- #section Tug Cargo
+--- These functions query Tug and Cargo.
 
 --- Returns true if the unit is a tug carrying cargo.
 --- @param tug Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function HasCargo(tug) error("This function is provided by the engine."); end
+function HasCargo(tug)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the handle of the cargo if the unit is a tug carrying cargo. Returns nil otherwise.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param tug Handle
 --- @return Handle?
 --- @deprecated See `_gameobject` module.
-function GetCargo(tug) error("This function is provided by the engine."); end
+function GetCargo(tug)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the handle of the tug carrying the object. Returns nil if not carried.
 --- @param cargo Handle
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function GetTug(cargo) error("This function is provided by the engine."); end
+function GetTug(cargo)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Pilot Actions
--------------------------------------------------------------------------------
--- @section
--- These functions control the pilot of a vehicle.
+--- #section Pilot Actions
+--- These functions control the pilot of a vehicle.
 
 --- Commands the vehicle's pilot to eject.
 --- @param h Handle
@@ -1675,31 +1766,36 @@ function RemovePilot(h) end
 --- @param h Handle
 --- @return Handle
 --- @deprecated See `_gameobject` module.
-function HoppedOutOf(h) error("This function is provided by the engine."); end
+function HoppedOutOf(h)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Health Values
--------------------------------------------------------------------------------
--- @section
--- These functions get and set health values on a game object.
+--- #section Health Values
+--- These functions get and set health values on a game object.
 
 --- Returns the fractional health of the game object between 0 and 1.
 --- @param h Handle
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetHealth(h) error("This function is provided by the engine."); end
+function GetHealth(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the current health value of the game object.
 --- @param h Handle
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetCurHealth(h) error("This function is provided by the engine."); end
+function GetCurHealth(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the maximum health value of the game object.
 --- @param h Handle
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetMaxHealth(h) error("This function is provided by the engine."); end
+function GetMaxHealth(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the current health of the game object.
 --- @param h Handle
@@ -1720,34 +1816,37 @@ function SetMaxHealth(h, health) end
 function AddHealth(h, health) end
 
 --- Sets the unit's current health to maximum.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function GiveMaxHealth(h) end
 
--------------------------------------------------------------------------------
--- Ammo Values
--------------------------------------------------------------------------------
--- @section
--- These functions get and set ammo values on a game object.
+--- #section Ammo Values
+--- These functions get and set ammo values on a game object.
 
 --- Returns the fractional ammo of the game object between 0 and 1.
 --- @param h Handle
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetAmmo(h) error("This function is provided by the engine."); end
+function GetAmmo(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the current ammo value of the game object.
 --- @param h Handle
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetCurAmmo(h) error("This function is provided by the engine."); end
+function GetCurAmmo(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the maximum ammo value of the game object.
 --- @param h Handle
 --- @return number
 --- @deprecated See `_gameobject` module.
-function GetMaxAmmo(h) error("This function is provided by the engine."); end
+function GetMaxAmmo(h)
+    error("This function is provided by the engine.");
+end
 
 --- Sets the current ammo of the game object.
 --- @param h Handle
@@ -1768,22 +1867,21 @@ function SetMaxAmmo(h, ammo) end
 function AddAmmo(h, ammo) end
 
 --- Sets the unit's current ammo to maximum.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function GiveMaxAmmo(h) end
 
--------------------------------------------------------------------------------
--- Cinematic Camera
--------------------------------------------------------------------------------
--- These functions control the cinematic camera for in-engine cut scenes (or "cineractives" as the Interstate '76 team at Activision called them).
--- @section
+--- #section Cinematic Camera
+--- These functions control the cinematic camera for in-engine cut scenes (or "cineractives" as the Interstate '76 team at Activision called them).
 
 --- Starts the cinematic camera and disables normal input.
 --- Always returns true.
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraReady() error("This function is provided by the engine."); end
+function CameraReady()
+    error("This function is provided by the engine.");
+end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
@@ -1793,7 +1891,9 @@ function CameraReady() error("This function is provided by the engine."); end
 --- @param target Handle
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraPath(path, height, speed, target) error("This function is provided by the engine."); end
+function CameraPath(path, height, speed, target)
+    error("This function is provided by the engine.");
+end
 
 --- Moves a cinematic camera long a path at a given height and speed while looking along the path direction.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
@@ -1802,7 +1902,9 @@ function CameraPath(path, height, speed, target) error("This function is provide
 --- @param speed integer
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraPathDir(path, height, speed) error("This function is provided by the engine."); end
+function CameraPathDir(path, height, speed)
+    error("This function is provided by the engine.");
+end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target path.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
@@ -1812,12 +1914,16 @@ function CameraPathDir(path, height, speed) error("This function is provided by 
 --- @param target string
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraPathPath(path, height, speed, target) error("This function is provided by the engine."); end
+function CameraPathPath(path, height, speed, target)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true when the camera arrives at its destination. Returns false otherwise.
 --- @return boolean
 --- @deprecated See `_camera` module.
-function PanDone() error("This function is provided by the engine."); end
+function PanDone()
+    error("This function is provided by the engine.");
+end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object. The right, up, and forward offsets are in centimeters.
 --- Returns true if the base or handle game object does not exist. Returns false otherwise.
@@ -1828,46 +1934,56 @@ function PanDone() error("This function is provided by the engine."); end
 --- @param target Handle
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraObject(base, right, up, forward, target) error("This function is provided by the engine."); end
+function CameraObject(base, right, up, forward, target)
+    error("This function is provided by the engine.");
+end
 
 --- Finishes the cinematic camera and enables normal input.
 --- Always returns true.
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraFinish() error("This function is provided by the engine."); end
+function CameraFinish()
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the player canceled the cinematic. Returns false otherwise.
 --- @return boolean
 --- @deprecated See `_camera` module.
-function CameraCancelled() error("This function is provided by the engine."); end
+function CameraCancelled()
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Info Display
--------------------------------------------------------------------------------
--- @section
+--- #section Info Display
 
---- Returns true if the game object inspected by the info display matches the given odf name.
---- @param odfname string|Handle
+--- Returns true if the game object inspected by the info display matches the given odf or is the given handle.
+--- @overload fun(h: Handle): boolean
+--- @param odfname string
+--- @diagnostic disable-next-line: undefined-doc-param
+--- @param h Handle
 --- @return boolean
 --- @note see `_gameobject` module.
-function IsInfo(odfname) error("This function is provided by the engine."); end
+function IsInfo(odfname)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Network
--------------------------------------------------------------------------------
--- @section
--- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
+--- #section Network
+--- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
 
 --- Returns true if the game is a network game. Returns false otherwise.
 --- @return boolean
-function IsNetGame() error("This function is provided by the engine."); end
+function IsNetGame()
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the local machine is hosting a network game. Returns false otherwise.
 --- @return boolean
-function IsHosting() error("This function is provided by the engine."); end
+function IsHosting()
+    error("This function is provided by the engine.");
+end
 
 --- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.
---- Important safety tip: only call this on one machine at a time!
+--- {(!)When(!) Only call this on one machine at a time!}
+--- {(i)Multiplayer(i) Safe to call in singleplayer, has no function. If called on a remote object, it will break their ai irreversibly.}
 --- @param h Handle
 --- @deprecated See `_gameobject` module.
 function SetLocal(h) end
@@ -1876,15 +1992,22 @@ function SetLocal(h) end
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsLocal(h) error("This function is provided by the engine."); end
+function IsLocal(h)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the game object is remote to the machine the script is running on. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
 --- @deprecated See `_gameobject` module.
-function IsRemote(h) error("This function is provided by the engine."); end
+function IsRemote(h)
+    error("This function is provided by the engine.");
+end
 
 --- Adds a system text message to the chat window on the local machine.
+---
+--- {(!)Multiplayer(!) remarks: The displayed message is entirely local regardless of hosting status, if you want a message to be visible to all players
+--- you should Send() a message to all players to display the given message.}
 --- @param message string
 function DisplayMessage(message) end
 
@@ -1916,125 +2039,127 @@ function DisplayMessage(message) end
 --- @vararg any
 function Send(to, type, ...) end
 
--------------------------------------------------------------------------------
--- Read ODF
--------------------------------------------------------------------------------
--- @section
--- These functions read values from an external ODF, INI, or TRN file.
+--- #section Read ODF
+--- These functions read values from an external ODF, INI, or TRN file.
 
 --- Opens the named file as an ODF. If the file name has no extension, the function will append ".odf" automatically.
 --- If the file is not already open, the function reads in and parses the file into an internal database. If you need to read values from it relatively frequently, save the handle into a global variable to prevent it from closing.
 --- Returns the file handle if it succeeded. Returns nil if it failed.
 --- @param filename string
 --- @return ParameterDB
-function OpenODF(filename) error("This function is provided by the engine."); end
+function OpenODF(filename)
+    error("This function is provided by the engine.");
+end
 
 --- Reads a boolean value from the named label in the named section of the ODF file. Use a nil section to read labels that aren't in a section.
 --- It considers values starting with 'Y', 'y', 'T', 't', or '1' to be true and value starting with 'N', 'n', 'F', 'f', or '0' to be false. Other values are considered undefined.
 --- If a value is not found or is undefined, it uses the default value. If no default value is given, the default value is false. 
 --- Returns the value and whether the value was found.
 --- @param odf ParameterDB
---- @param section? string
+--- @param section string?
 --- @param label string
---- @param default? boolean
+--- @param default boolean?
 --- @return boolean
 --- @return boolean
-function GetODFBool(odf, section, label, default) error("This function is provided by the engine."); end
+function GetODFBool(odf, section, label, default)
+    error("This function is provided by the engine.");
+end
 
 --- Reads an integer value from the named label in the named section of the ODF file. Use nil as the section to read labels that aren't in a section. 
 --- If no value is found, it uses the default value. If no default value is given, the default value is 0. 
 --- Returns the value and whether the value was found.
 --- @param odf ParameterDB
---- @param section? string
+--- @param section string?
 --- @param label string
---- @param default? integer
+--- @param default integer?
 --- @return integer
 --- @return boolean
-function GetODFInt(odf, section, label, default) error("This function is provided by the engine."); end
+function GetODFInt(odf, section, label, default)
+    error("This function is provided by the engine.");
+end
 
 --- Reads a floating-point value from the named label in the named section of the ODF file. Use nil as the section to read labels that aren't in a section.
 --- If no value is found, it uses the default value. If no default value is given, the default value is 0.0.
 --- Returns the value and whether the value was found.
 --- @param odf ParameterDB
---- @param section? string
+--- @param section string?
 --- @param label string
---- @param default? number
+--- @param default number?
 --- @return number
 --- @return boolean
-function GetODFFloat(odf, section, label, default) error("This function is provided by the engine."); end
+function GetODFFloat(odf, section, label, default)
+    error("This function is provided by the engine.");
+end
 
 --- Reads a string value from the named label in the named section of the ODF file. Use nil as the section to read labels that aren't in a section.
 --- If a value is not found, it uses the default value. If no default value is given, the default value is nil.
 --- Returns the value and whether the value was found.
 --- @param odf ParameterDB
---- @param section? string
+--- @param section string?
 --- @param label string
---- @param default? string
+--- @param default string?
 --- @return string
 --- @return boolean
-function GetODFString(odf, section, label, default) error("This function is provided by the engine."); end
+function GetODFString(odf, section, label, default)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Terrain
--------------------------------------------------------------------------------
--- @section
--- These functions return height and normal from the terrain height field.
+--- #section Terrain
+--- These functions return height and normal from the terrain height field.
 
 --- Returns the terrain height and normal vector at a position vector, transform matrix, object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer
+--- @param point integer?
 --- @return number
 --- @return Vector
-function GetTerrainHeightAndNormal(target, point) error("This function is provided by the engine."); end
+function GetTerrainHeightAndNormal(target, point)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Floor
--------------------------------------------------------------------------------
--- These functions return height and normal from the terrain height field and the upward-facing polygons of any entities marked as floor owners.
--- @section
+--- #section Floor
+--- These functions return height and normal from the terrain height field and the upward-facing polygons of any entities marked as floor owners.
 
 --- Returns the floor height and normal vector at a position vector, transform matrix, object, or point on a named path.
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer
+--- @param point integer?
 --- @return number
 --- @return Vector
-function GetFloorHeightAndNormal(target, point) error("This function is provided by the engine."); end
+function GetFloorHeightAndNormal(target, point)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Map
--------------------------------------------------------------------------------
--- @section
+--- #section Map
 
 --- Returns the name of the BZN file for the map. This can be used to generate an ODF name for mission settings.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @return string
-function GetMissionFilename() error("This function is provided by the engine."); end
+function GetMissionFilename()
+    error("This function is provided by the engine.");
+end
 
 --- Returns the name of the TRN file for the map. This can be used with OpenODF() to read values from the TRN file.
 --- @return string
-function GetMapTRNFilename() error("This function is provided by the engine."); end
+function GetMapTRNFilename()
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Files [2.0+]
--------------------------------------------------------------------------------
--- @section
+--- #section Files
+--- {VERSION 2.0+}
 
 --- Returns the contents of the named file as a string, or nil if the file could not be opened.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param filename string
 --- @function string UseItem
 function UseItem(filename) end
 
--------------------------------------------------------------------------------
--- Effects [2.0+]
--------------------------------------------------------------------------------
--- @section
+--- #section Effects
+--- {VERSION 2.0+}
 
 --- Starts a full screen color fade.
 --- Ratio sets the opacity, with 0.0 transparent and 1.0 almost opaque
 --- Rate sets how fast the opacity decreases over time.
 --- R, G, and B set the color components and range from 0 to 255
---- [2.0+]
+--- {VERSION 2.0+}
 --- @param ratio number
 --- @param rate number
 --- @param r integer
@@ -2042,11 +2167,8 @@ function UseItem(filename) end
 --- @param b integer
 function ColorFade(ratio, rate, r, g, b) end
 
--------------------------------------------------------------------------------
--- Vector
--------------------------------------------------------------------------------
--- @section
--- This is a custom userdata representing a position or direction. It has three number components: x, y, and z.
+--- #section Vector
+--- This is a custom userdata representing a position or direction. It has three number components: x, y, and z.
 
 --- A Vector in 3D space
 --- @class Vector
@@ -2060,75 +2182,91 @@ function ColorFade(ratio, rate, r, g, b) end
 local Vector = {}
 
 --- Returns a vector whose components have the given number values. If no value is given for a component, the default value is 0.0.
---- @param x? number
---- @param y? number
---- @param z? number
+--- @param x number?
+--- @param y number?
+--- @param z number?
 --- @return Vector
-function SetVector(x, y, z) error("This function is provided by the engine."); end
+function SetVector(x, y, z)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the <a href="http://en.wikipedia.org/wiki/Dot_product">dot product</a> between vectors a and b.
 --- Equivalent to a.x * b.x + a.y * b.y + a.z * b.z.
 --- @param a Vector
 --- @param b Vector
 --- @return number
-function DotProduct(a, b) error("This function is provided by the engine."); end
+function DotProduct(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the <a href="http://en.wikipedia.org/wiki/Cross_product">cross product</a> between vectors a and b.
 --- Equivalent to SetVector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x).
 --- @param a Vector
 --- @param b Vector
 --- @return Vector
-function CrossProduct(a, b) error("This function is provided by the engine."); end
+function CrossProduct(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the vector scaled to unit length.
 --- Equivalent to SetVector(v.x * scale, v.y * scale, v.z * scale) where scale is 1.0f / sqrt(v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>).
 --- @param v Vector
 --- @return Vector
-function Normalize(v) error("This function is provided by the engine."); end
+function Normalize(v)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the length of the vector.
 --- Equivalent to sqrt(v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>).
 --- @param v Vector
 --- @return number
-function Length(v) error("This function is provided by the engine."); end
+function Length(v)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the squared length of the vector.
 --- Equivalent to v.x<sup>2</sup> + v.y<sup>2</sup> + v.z<sup>2</sup>.
 --- @param v Vector
 --- @return number
-function LengthSquared(v) error("This function is provided by the engine."); end
+function LengthSquared(v)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the 2D distance between vectors a and b.
 --- Equivalent to sqrt((b.x - a.x)<sup>2</sup> + (b.z - a.z)<sup>2</sup>).
 --- @param a Vector
 --- @param b Vector
 --- @return number
---- @function Distance2D
-function Distance2D(a, b) error("This function is provided by the engine."); end
+function Distance2D(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the squared 2D distance of the vector.
 --- Equivalent to (b.x - a.x)<sup>2</sup> + (b.z - a.z)<sup>2</sup>.
 --- @param a Vector
 --- @param b Vector
 --- @return number
---- @function Distance2DSquared
-function Distance2DSquared(a, b) error("This function is provided by the engine."); end
+function Distance2DSquared(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the 3D distance between vectors a and b.
 --- Equivalent to sqrt((b.x - a.x)<sup>2</sup> + (b.y - a.y)<sup>2</sup> + (b.z - a.z)<sup>2</sup>).
 --- @param a Vector
 --- @param b Vector
 --- @return number
---- @function Distance3D
-function Distance3D(a, b) error("This function is provided by the engine."); end
+function Distance3D(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the squared 3D distance of the vector.
 --- Equivalent to (b.x - a.x)<sup>2</sup> + (b.y - a.y)<sup>2</sup> + (b.z - a.z)<sup>2</sup>.
 --- @param a Vector
 --- @param b Vector
 --- @return number
---- @function Distance3DSquared
-function Distance3DSquared(a, b) error("This function is provided by the engine."); end
+function Distance3DSquared(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Negate the vector.
 ---
@@ -2136,7 +2274,9 @@ function Distance3DSquared(a, b) error("This function is provided by the engine.
 --- @param v Vector
 --- @return Vector v
 --- @function Vector.__unm
-function Vector.__unm(v) error("This function is provided by the engine."); end
+function Vector.__unm(v)
+    error("This function is provided by the engine.");
+end
 
 --- Add two vectors.
 ---
@@ -2145,7 +2285,9 @@ function Vector.__unm(v) error("This function is provided by the engine."); end
 --- @param v2 Vector
 --- @return Vector v
 --- @function Vector.__add
-function Vector.__add(v1, v2) error("This function is provided by the engine."); end
+function Vector.__add(v1, v2)
+    error("This function is provided by the engine.");
+end
 
 --- Subtract two vectors.
 ---
@@ -2154,7 +2296,9 @@ function Vector.__add(v1, v2) error("This function is provided by the engine.");
 --- @param v2 Vector
 --- @return Vector v
 --- @function Vector.__sub
-function Vector.__sub(v1, v2) error("This function is provided by the engine."); end
+function Vector.__sub(v1, v2)
+    error("This function is provided by the engine.");
+end
 
 --- Multiply a number by a vector.
 --
@@ -2194,7 +2338,9 @@ function Vector.__sub(v1, v2) error("This function is provided by the engine.");
 --- @param b Vector|number The vector or number to multiply.
 --- @return Vector vector The resulting vector after multiplication.
 --- @function Vector.__mul
-function Vector.__mul(a, b) error("This function is provided by the engine."); end
+function Vector.__mul(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Divide a number by a vector.
 --
@@ -2234,7 +2380,9 @@ function Vector.__mul(a, b) error("This function is provided by the engine."); e
 --- @param b Vector|number The vector or number to multiply.
 --- @return Vector vector The resulting vector after division.
 --- @function Vector.__mul
-function Vector.__div(a, b) error("This function is provided by the engine."); end
+function Vector.__div(a, b)
+    error("This function is provided by the engine.");
+end
 
 --- Check if two vectors are equal.
 ---
@@ -2242,13 +2390,12 @@ function Vector.__div(a, b) error("This function is provided by the engine."); e
 --- @param v2 Vector
 --- @return boolean
 --- @function Vector.__eq
-function Vector.__eq(v1, v2) error("This function is provided by the engine."); end
+function Vector.__eq(v1, v2)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Matrix
--------------------------------------------------------------------------------
--- @section
--- This is a custom userdata representing an orientation and position in space. It has four vector components (right, up, front, and posit) sharing space with twelve number components (right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z).
+--- #section Matrix
+--- This is a custom userdata representing an orientation and position in space. It has four vector components (right, up, front, and posit) sharing space with twelve number components (right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z).
 
 --- A Matrix
 --- @class Matrix
@@ -2266,20 +2413,22 @@ function Vector.__eq(v1, v2) error("This function is provided by the engine."); 
 --- @field posit_z number
 
 --- Returns a matrix whose components have the given number values. If no value is given for a component, the default value is zero. Be careful with this since it's easy to build a non-orthonormal matrix that will break all kinds of built-in assumptions.
---- @param right_x? number
---- @param right_y? number
---- @param right_z? number
---- @param up_x? number
---- @param up_y? number
---- @param up_z? number
---- @param front_x? number
---- @param front_y? number
---- @param front_z? number
---- @param posit_x? number
---- @param posit_y? number
---- @param posit_z? number
+--- @param right_x number?
+--- @param right_y number?
+--- @param right_z number?
+--- @param up_x number?
+--- @param up_y number?
+--- @param up_z number?
+--- @param front_x number?
+--- @param front_y number?
+--- @param front_z number?
+--- @param posit_x number?
+--- @param posit_y number?
+--- @param posit_z number?
 --- @return Matrix
-function SetMatrix(right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z) error("This function is provided by the engine."); end
+function SetMatrix(right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z)
+    error("This function is provided by the engine.");
+end
 
 local Matrix = {}
 
@@ -2287,200 +2436,204 @@ local Matrix = {}
 --- Equivalent to SetMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0).
 --- @return Matrix
 --- @function matrix IdentityMatrix
-function IdentityMatrix() error("This function is provided by the engine."); end
+function IdentityMatrix()
+    error("This function is provided by the engine.");
+end
 
---- Build a matrix representing a rotation by an angle around an axis. The angle is in radians. If no value is given for the angle or an axis component, the default value is zero. The axis must be unit-length (i.e. axis_x<sup>2</sup> + axis_y<sup>2</sup> + axis_z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
---- @param angle? number
---- @param axis_x? number
---- @param axis_y? number
---- @param axis_z? number
---- @return Matrix
-function BuildAxisRotationMatrix(angle, axis_x, axis_y, axis_z) error("This function is provided by the engine."); end
-
---- Build a matrix representing a rotation by an angle around an axis. The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
---- @param angle? number
+--- Build a matrix representing a rotation by an angle around an axis.
+--- @overload fun(angle: number, axis: Vector): Matrix --- The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
+--- @param angle number?
+--- @param axis_x number?
+--- @param axis_y number?
+--- @param axis_z number?
+--- @diagnostic disable-next-line: undefined-doc-param
 --- @param axis Vector
 --- @return Matrix
-function BuildAxisRotationMatrix(angle, axis) error("This function is provided by the engine."); end
+function BuildAxisRotationMatrix(angle, axis_x, axis_y, axis_z)
+    error("This function is provided by the engine.");
+end
 
---- Build a matrix with the given pitch, yaw, and roll angles and position. The angles are in radians. If no value is given for a component, the default value is zero.
---- @param pitch? number
---- @param yaw? number
---- @param roll? number
---- @param posit_x? number
---- @param posit_y? number
---- @param posit_z? number
---- @return Matrix
-function BuildPositionRotationMatrix(pitch, yaw, roll, posit_x, posit_y, posit_z) error("This function is provided by the engine."); end
-
---- Build a matrix with the given pitch, yaw, and roll angles and position. The angles are in radians. If no value is given for a component, the default value is zero.
---- @param pitch? number
---- @param yaw? number
---- @param roll? number
+--- Build a matrix with the given pitch, yaw, and roll angles and position.
+--- The angles are in radians. If no value is given for a component, the default value is zero.
+--- @overload fun(pitch: number, yaw: number, roll: number, position: Vector): Matrix
+--- @param pitch number?
+--- @param yaw number?
+--- @param roll number?
+--- @param posit_x number?
+--- @param posit_y number?
+--- @param posit_z number?
+--- @diagnostic disable-next-line: undefined-doc-param
 --- @param position Vector
 --- @return Matrix
-function BuildPositionRotationMatrix(pitch, yaw, roll, position) error("This function is provided by the engine."); end
+function BuildPositionRotationMatrix(pitch, yaw, roll, posit_x, posit_y, posit_z)
+    error("This function is provided by the engine.");
+end
 
 --- Build a matrix with zero position, its up axis along the specified up vector, oriented so that its front axis points as close as possible to the heading vector. If up is not specified, the default value is the Y axis. If heading is not specified, the default value is the Z axis.
---- @param up? Vector
---- @param heading? Vector
+--- @param up Vector?
+--- @param heading Vector?
 --- @return Matrix
-function BuildOrthogonalMatrix(up, heading) error("This function is provided by the engine."); end
+function BuildOrthogonalMatrix(up, heading)
+    error("This function is provided by the engine.");
+end
 
 --- Build a matrix with the given position vector, its front axis pointing along the direction vector, and zero roll. If position is not specified, the default value is a zero vector. If direction is not specified, the default value is the Z axis.
---- @param position? Vector
---- @param direction? Vector
+--- @param position Vector?
+--- @param direction Vector?
 --- @return Matrix
-function BuildDirectionalMatrix(position, direction) error("This function is provided by the engine."); end
+function BuildDirectionalMatrix(position, direction)
+    error("This function is provided by the engine.");
+end
 
 --- Multiply two matrices.
--- @tparam Matrix matrix1
--- @tparam Matrix matrix2
--- @treturn Matrix
--- @function matrix.__mul
+--- @tparam Matrix matrix1
+--- @tparam Matrix matrix2
+--- @treturn Matrix
+--- @function matrix.__mul
 
 --- Transform a vector by a matrix.
--- @tparam Matrix matrix
--- @tparam Vector vector
--- @treturn Matrix
--- @function matrix.__mul
+--- @tparam Matrix matrix
+--- @tparam Vector vector
+--- @treturn Matrix
+--- @function matrix.__mul
 
 --- Multiply a matrix by a vector or matrix.
 --- @overload fun(a: Matrix, b: Matrix): Matrix
 --- @overload fun(a: Matrix, b: Vector): Matrix
 --- @param a Matrix The Matrix to multiply.
 --- @param b Matrix|Vector The Matrix or Vector to multiply.
-function Matrix:__mul(a, b) error("This function is provided by the engine."); end
+function Matrix:__mul(a, b)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Portal Functions [2.1+]
--------------------------------------------------------------------------------
--- @section
--- These functions control the Portal building introduced in The Red Odyssey expansion.
+--- #section Portal Functions
+--- {VERSION 2.1+}
+--- These functions control the Portal building introduced in The Red Odyssey expansion.
 
 --- Sets the specified Portal direction to "out", indicated by a blue visual effect while active.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param portal Handle
 function PortalOut(portal) end
 
 --- Sets the specified Portal direction to "in", indicated by an orange visual effect while active.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param portal Handle
 function PortalIn(portal) end
 
 --- Deactivates the specified Portal, stopping the visual effect.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param portal Handle
 function DeactivatePortal(portal) end
 
 --- Activates the specified Portal, starting the visual effect.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param portal Handle
 function ActivatePortal(portal) end
 
 --- Returns true if the specified Portal direction is "in". Returns false otherwise.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param portal Handle
 --- @return boolean
-function IsIn(portal) error("This function is provided by the engine."); end
+function IsIn(portal)
+    error("This function is provided by the engine.");
+end
 
 --- Returns true if the specified Portal is active. Returns false otherwise.
 --- Important: note the capitalization!
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param portal Handle
 --- @return boolean
 --- @diagnostic disable-next-line: lowercase-global
-function isPortalActive(portal) error("This function is provided by the engine."); end
+function isPortalActive(portal)
+    error("This function is provided by the engine.");
+end
 
 --- Creates a game object with the given odf name and team number at the location of a portal.
 --- The object is created at the location of the visual effect and given a 50 m/s initial velocity.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param odfname string
 --- @param teamnum TeamNum
 --- @param portal Handle
 --- @return Handle
-function BuildObjectAtPortal(odfname, teamnum, portal) error("This function is provided by the engine."); end
+function BuildObjectAtPortal(odfname, teamnum, portal)
+    error("This function is provided by the engine.");
+end
 
--------------------------------------------------------------------------------
--- Cloak [2.1+]
--------------------------------------------------------------------------------
--- @section
--- These functions control the cloaking state of craft capable of cloaking.
+--- #section Cloak
+--- {VERSION 2.1+}
+--- These functions control the cloaking state of craft capable of cloaking.
 
 --- Makes the specified unit cloak if it can.
 --- Note: unlike SetCommand(h, AiCommand.CLOAK), this does not change the unit's current command.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 function Cloak(h) end
 
 --- Makes the specified unit de-cloak if it can.
 --- Note: unlike SetCommand(h, AiCommand.DECLOAK), this does not change the unit's current command.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 function Decloak(h) end
 
 --- Instantly sets the unit as cloaked (with no fade out).
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 function SetCloaked(h) end
 
 --- Instant sets the unit as uncloaked (with no fade in).
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 function SetDecloaked(h) end
 
 --- Returns true if the unit is cloaked. Returns false otherwise
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 --- @return boolean
-function IsCloaked(h) error("This function is provided by the engine."); end
+function IsCloaked(h)
+    error("This function is provided by the engine.");
+end
 
 --- Enable or disable cloaking for a specified cloaking-capable unit.
 --- Note: this does not grant a non-cloaking-capable unit the ability to cloak.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 --- @param enable boolean
 function EnableCloaking(h, enable) end
 
 --- Enable or disable cloaking for all cloaking-capable units.
 --- Note: this does not grant a non-cloaking-capable unit the ability to cloak.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param enable boolean
 function EnableAllCloaking(enable) end
 
--------------------------------------------------------------------------------
--- Hide [2.1+]
--------------------------------------------------------------------------------
--- @section
--- These functions hide and show game objects. When hidden, the object is invisible (similar to Phantom VIR and cloak) and undetectable on radar (similar to RED Field and cloak). The effect is similar to but separate from cloaking. For the most part, AI units ignore the hidden state.
+--- #section Hide
+--- {VERSION 2.1+}
+--- These functions hide and show game objects. When hidden, the object is invisible (similar to Phantom VIR and cloak) and undetectable on radar (similar to RED Field and cloak). The effect is similar to but separate from cloaking. For the most part, AI units ignore the hidden state.
 
 --- Hides a game object.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 function Hide(h) end
 
 --- Un-hides a game object.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param h Handle
 function UnHide(h) end
 
--------------------------------------------------------------------------------
--- Explosion [2.1+]
--------------------------------------------------------------------------------
--- @section
--- These functions create explosions at a specified location. They do not return a handle because explosions are not game objects and thus not visible to the scripting system.
+--- #section Explosion
+--- {VERSION 2.1+}
+--- These functions create explosions at a specified location. They do not return a handle because explosions are not game objects and thus not visible to the scripting system.
 
 --- Creates an explosion with the given odf name at the target position vector, transform matrix, object, or the start of the named path.
---- [2.1+]
+--- {VERSION 2.1+}
+---
+--- {(!)Multiplayer(!) Explosions are entirely local, this includes the visuals and the damage. This can be used to create clientside graphics.}
 --- @param odfname string
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 function MakeExplosion(odfname, target) end
 
--------------------------------------------------------------------------------
--- Bitwise
--------------------------------------------------------------------------------
--- @section
--- Bitwise operations on 32-bit integers.
+--- #section Bitwise
+--- Bitwise operations on 32-bit integers.
 
 --- Table of bitwise operation functions.
 --- @table bit
@@ -2491,106 +2644,105 @@ bit = {};
 --- This function is usually not needed since all bit operations already normalize all of their input arguments. Check the operational semantics for details.
 --- @param x integer
 --- @return integer
---- @usage print(0xffffffff)                --> 4294967295 (*)
+--- ```lua
+--- function printx(x) print("0x"..bit.tohex(x)) end
+--- print(0xffffffff)                --> 4294967295
 --- print(bit.tobit(0xffffffff))     --> -1
 --- printx(bit.tobit(0xffffffff))    --> 0xffffffff
 --- print(bit.tobit(0xffffffff + 1)) --> 0
 --- print(bit.tobit(2^40 + 1234))    --> 1234
-function bit.tobit(x) error("This function is provided by the engine."); end
+--- ```
+--- @todo (*) Check if the first 2 prints are correct on this lua
+function bit.tobit(x)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the bitwise not of its argument.
 --- @param x integer
 --- @return integer
-function bit.bnot(x) error("This function is provided by the engine."); end
+function bit.bnot(x)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the bitwise and of its arguments.
--- @tparam integer a
--- @tparam integer b
--- @tparam integer ...
--- @treturn integer
--- @function bit.band
-
---- Returns the bitwise and of its arguments.
---- @overload fun(a: integer, b: integer, ...: integer): integer
 --- @param a integer
 --- @param b integer
---- @param c integer
 --- @param ... integer
 --- @return integer
-function bit.band(a, b, c, ...) error("This function is provided by the engine."); end
+function bit.band(a, b, ...)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the bitwise or of its arguments.
--- @tparam integer a
--- @tparam integer b
--- @tparam integer ...
--- @treturn integer
--- @function bit.bor
-
---- Returns the bitwise or of its arguments.
---- @overload fun(a: integer, b: integer, ...: integer): integer
 --- @param a integer
 --- @param b integer
---- @param c integer
 --- @param ... integer
 --- @return integer
-function bit.bor(a, b, c, ...) error("This function is provided by the engine."); end
+function bit.bor(a, b, ...)
+    error("This function is provided by the engine.");
+end
 
 --- Returns the bitwise xor of its arguments.
--- @tparam integer a
--- @tparam integer b
--- @tparam integer ...
--- @treturn integer
--- @function bit.bxor
-
---- Returns the bitwise xor of its arguments.
---- @overload fun(a: integer, b: integer, ...: integer): integer
 --- @param a integer
 --- @param b integer
---- @param c integer
 --- @param ... integer
 --- @return integer
-function bit.bxor(a, b, c, ...) error("This function is provided by the engine."); end
+function bit.bxor(a, b, ...)
+    error("This function is provided by the engine.");
+end
 
 --- Bitwise logical left-shift.
 --- @param x integer The number to shift.
 --- @param disp integer The number of bits to shift.
 --- @return integer
-function bit.lshift(x,disp) error("This function is provided by the engine."); end
+function bit.lshift(x,disp)
+    error("This function is provided by the engine.");
+end
 
 --- Bitwise logical right-shift.
 --- @param x integer The number to shift.
 --- @param disp integer The number of bits to shift.
 --- @return integer
-function bit.rshift(x,disp) error("This function is provided by the engine."); end
+function bit.rshift(x,disp)
+    error("This function is provided by the engine.");
+end
 
 --- Bitwise arithmetic right-shift.
 --- @param x integer The number to shift.
 --- @param disp integer The number of bits to shift.
 --- @return integer
-function bit.arshift(x,disp) error("This function is provided by the engine."); end
+function bit.arshift(x,disp)
+    error("This function is provided by the engine.");
+end
 
 --- Bitwise left rotation.
 --- @param x integer The number to rotate.
 --- @param disp integer The number of bits to rotate.
 --- @return integer
-function bit.rol(x, disp) error("This function is provided by the engine."); end
+function bit.rol(x, disp)
+    error("This function is provided by the engine.");
+end
 
 --- Bitwise right rotation.
 --- @param x integer The number to rotate.
 --- @param disp integer The number of bits to rotate.
 --- @return integer
-function bit.ror(x, disp) error("This function is provided by the engine."); end
+function bit.ror(x, disp)
+    error("This function is provided by the engine.");
+end
 
 --- Converts its first argument to a hex string. The number of hex digits is given by the absolute value of the optional second argument. Positive numbers between 1 and 8 generate lowercase hex digits. Negative numbers generate uppercase hex digits. Only the least-significant 4*|n| bits are used. The default is to generate 8 lowercase hex digits.
 --- @param x number The number to convert to hex.
---- @param n? number The number of hex digits to generate. Positive numbers generate lowercase hex digits, negative numbers generate uppercase hex digits.
+--- @param n number? The number of hex digits to generate. Positive numbers generate lowercase hex digits, negative numbers generate uppercase hex digits.
 --- @return string The hex string representation of the number.
---- @usage print(bit.tohex(1))              --> 00000001
+--- ```lua
+--- print(bit.tohex(1))              --> 00000001
 --- print(bit.tohex(-1))             --> ffffffff
 --- print(bit.tohex(0xffffffff))     --> ffffffff
 --- print(bit.tohex(-1, -8))         --> FFFFFFFF
 --- print(bit.tohex(0x21, 4))        --> 0021
 --- print(bit.tohex(0x87654321, 4))  --> 4321
-function bit.tohex(x, n) error("This function is provided by the engine."); end
-
---- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90
+--- ```
+function bit.tohex(x, n)
+    error("This function is provided by the engine.");
+end

@@ -4,9 +4,11 @@
 ---
 --- @module '_navmanager'
 --- @author John "Nielk1" Klein
---- @usage local navmanager = require("_navmanager");
+--- ```lua
+--- local navmanager = require("_navmanager");
 --- 
 --- navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstChronologicalToGap);
+--- ```
 --- 
 --- @todo Determine if network handling is needed.
 --- @todo Look into soft-loading native module that gives nav data access.
@@ -31,6 +33,7 @@ local hook = require("_hook");
 -- @tparam GameObject new GameObject instance
 -- @see _hook.Add
 
+--- @class _navmanager
 local M = {};
 
 local PendingNavs = {};
@@ -78,37 +81,14 @@ end
 --- @field NavManager table A table containing custom data for this module.
 
 --- Build an important nav and add it to the collection.
--- Important navs will push non-important navs out of the way in the list.
--- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
--- @param team integer Team number of the nav to build
--- @param location Vector|Matrix|GameObject|Handle Position vector, ransform matrix, or Object
--- @return GameObject? nav The nav object that was built
--- @function BuildImportantNav
-
---- Build an important nav and add it to the collection.
--- Important navs will push non-important navs out of the way in the list.
--- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
--- @param team integer Team number of the nav to build
--- @param location string path name
--- @param point? integer path point index, defaults to 0.
--- @return GameObject? nav The nav object that was built
--- @function BuildImportantNav
-
---- Build an important nav and add it to the collection.
 --- Important navs will push non-important navs out of the way in the list.
---- @overload fun(odf: string, team: integer, location: Vector|Matrix|GameObject|Handle): GameObject?
---- @overload fun(odf: string, team: integer, name: string, point?: integer): GameObject?
---- @diagnostic disable: undefined-doc-param
 --- @param odf string? ODF of the nav to build, if nil uses the default nav ODF
 --- @param team integer Team number of the nav to build
---- @param location Vector|Matrix|Handle|string Position vector, ransform matrix, or Object.
---- @param name string path name
---- @param point? integer path point index, defaults to 0.
---- @diagnostic enable: undefined-doc-param
+--- @param location Vector|Matrix|Handle|GameObject|string Position vector, Transform matrix, or Object.
+--- @param point integer? path point index, defaults to 0.
 --- @return GameObject? nav The nav object that was built
-function M.BuildImportantNav(...)
-    local odf, team, location, point = ...;
-    -- @todo check params here
+function M.BuildImportantNav(odf, team, location, point)
+    --- @todo check params here
     --return BuildImportantNavInternal(odf, team, location, point);
 
     --- @todo Add a team manager to track team nations better such as scanning all the teamslots
@@ -227,13 +207,17 @@ end
 --- Enumerates all navs for a team.
 --- At least 10 indexes will be iterated, even if there are no navs in those slots.
 --- Navs not in the nav list, known internally as "Overflow Navs", will be returned with indexes above 10.
---- @param team integer Team number to enumerate
---- @param include_overflow? boolean If true "Overflow Navs" will be included in the enumeration after the initial 10.
---- @return fun(): (integer, GameObject?) Iterator function yielding index and nav object
---- @usage for i, nav in navmanager.AllNavGameObjects(1, true) do
+--- ```lua
+--- for i, nav in navmanager.AllNavGameObjects(1, true) do
 ---     print("Nav " .. i .. ": " .. tostring(nav));
 --- end
---- @usage local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
+--- ```
+--- ```lua
+--- local active_navs = utility.IteratorToArray(navmanager.AllNavGameObjects(1));
+--- ```
+--- @param team integer Team number to enumerate
+--- @param include_overflow boolean? If true "Overflow Navs" will be included in the enumeration after the initial 10.
+--- @return fun(): (integer, GameObject?) Iterator function yielding index and nav object
 function M.AllNavGameObjects(team, include_overflow)
     local slot_min = TeamSlot.MIN_BEACON
     local slot_max = TeamSlot.MAX_BEACON
@@ -256,10 +240,7 @@ function M.AllNavGameObjects(team, include_overflow)
     return iter
 end
 
--------------------------------------------------------------------------------
--- NavManager - Core
--------------------------------------------------------------------------------
--- @section
+--- #section NavManager - Core
 
 hook.Add("CreateObject", "_navmanager_CreateObject", function(object, isMapObject)
     if not DisableAutomaticNavAdding and object:GetClassSig() == "CPOD" then
@@ -289,6 +270,7 @@ end, config.get("hook_priority.DeleteObject.NavManager"));
 hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
     if PendingDirty then
         DisableAutomaticNavAdding = true;
+        --- @todo this isn't supposed to be global, broke the code somewhere
         NavSwapPairs = {}; -- old navs paired with thier new navs
         for team = 1, 15 do
             -- grab the known overflow and pending navs for this team

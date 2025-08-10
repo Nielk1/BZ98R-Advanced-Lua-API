@@ -4,7 +4,8 @@
 ---
 --- @module '_cheat_bzskip'
 --- @author John "Nielk1" Klein
---- @usage require("_cheat_bzrave");
+--- ```lua
+--- require("_cheat_bzrave");
 --- local hook = require("_hook");
 --- local camera = require("_camera");
 --- hook.Add("Cheat", "Mission:Cheat", function (cheat)
@@ -15,6 +16,7 @@
 ---         machine_state:next(); -- move to the next state
 ---     end
 --- end);
+--- ```
 
 local statemachine = require("_statemachine");
 local hook = require("_hook");

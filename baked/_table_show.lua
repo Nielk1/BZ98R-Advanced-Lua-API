@@ -27,9 +27,12 @@
 --- which logically are exactly not equivalent to the original code.
 ---
 --- @param t table the table
---- @param name? string name of the table
---- @param indent? string first indentation (optional)
---- @usage print(table.show(t, "t"))   -- a typical use
+--- @param name string? name of the table
+--- @param indent string? first indentation (optional)
+--- ```lua
+--- print(table.show(t, "t"))   -- a typical use
+--- ```
+
 function table.show(t, name, indent)
    local cart     -- a container
    local autoref  -- for self references

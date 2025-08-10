@@ -7,6 +7,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_utility Loading");
 
+--- @class _utility
 local M = {};
 --local utility_module_meta = {};
 
@@ -18,10 +19,7 @@ local M = {};
 --    return rawget(utility_meta, key); -- move on to base (looking for functions)
 --end
 
--------------------------------------------------------------------------------
--- Enumerations
--------------------------------------------------------------------------------
--- @section
+--- #section Enumerations
 
 --- TeamSlotStrings
 --- @enum TeamSlotString
@@ -573,10 +571,7 @@ function M.GetClassSig(input)
     return nil;
 end
 
--------------------------------------------------------------------------------
--- Type Check Functions
--------------------------------------------------------------------------------
--- @section
+--- #section Type Check Functions
 
 --- Is this object a function?
 --- @param object any Object in question
@@ -654,10 +649,7 @@ function M.isMatrix(object)
     return mt and mt.__type == "MAT_3D"
 end
 
--------------------------------------------------------------------------------
--- Utility - Table Operations
--------------------------------------------------------------------------------
--- @section
+--- #section Utility - Table Operations
 
 function M.shallowCopy(original)
     local copy = {}
@@ -667,48 +659,81 @@ function M.shallowCopy(original)
     return copy
 end
 
--------------------------------------------------------------------------------
--- Utility - Iterator Operations
--------------------------------------------------------------------------------
--- @section
+--- #section Utility - Array Operations
 
---- Convert an iterator to an array.
---- This function takes an iterator and converts it to an array. It handles both array-like and non-array-like iterators.
---- Sparse numeric indices will result in `nil` values in the array.
---- Duplicate numeric indices will overwrite previous values.
---- An empty iterator will return an empty array.
---- @param iterator function The iterator to convert
---- @return any[] array An array containing the values from the iterator
+--- Chooses a random item from a list of items.
+--- @param ... any The items to choose from.
+--- @return any item The chosen item.
+function M.ChooseOne(...)
+    local items = {...};
+    if #items == 0 then
+        error("ChooseOne requires at least one item");
+    end
+    local random_index = math.random(#items);
+    return items[random_index];
+end
+
+--- @class WeightedItem
+--- @field item any The item to be chosen.
+--- @field chance number The weight of the item.
+
+--- Chooses a random item from a list of weighted items.
+--- @param ... WeightedItem The items to choose from.
+--- @return any|WeightedItem item The chosen item.
+function M.ChooseOneWeighted(...)
+    local items = {...};
+    if #items == 0 then
+        error("ChooseOneWeighted requires at least one item");
+    end
+    local total_probability = 0;
+    for _, v in pairs(items) do
+        total_probability = total_probability + (v.chance or 1);
+    end
+    local random_index = math.random() * total_probability;
+    local running_weight = 0;
+    for _, v in ipairs(items) do
+        local chance = (v.chance or 1);
+        if (chance + running_weight) > random_index then
+            return v.item or v;
+        end
+        running_weight = running_weight + chance;
+    end
+    return items[1].item or items[1];
+end
+
+--- #section Utility - Iterator Operations
+
+--- Convert an iterator to an array or table.
+--- If the iterator returns only values, returns an array.
+--- If the iterator returns key-value pairs, returns a table.
+--- @param iterator (fun(): any?)|(fun(): (any, any?)) The iterator to convert
+--- @return table result The resulting array or table
 function M.IteratorToArray(iterator)
     if type(iterator) ~= "function" then
         error("IteratorToArray expects a function as the iterator", 2)
     end
 
-    local array = {}
-    local appendIndex = #array + 1
-    for index, value in iterator do
-        if type(index) == "number" and index > 0 and math.floor(index) == index then
-            -- Use the index directly if it's a positive integer
-            array[index] = value
+    local result = {}
+    local i = 1
+    while true do
+        local a, b = iterator()
+        if a == nil and b == nil then break end
+        if b == nil then
+            -- Value-only iterator: treat as array
+            result[i] = a
+            i = i + 1
         else
-            -- Append to the array for non-array-like indexes
-            array[appendIndex] = value
-            appendIndex = appendIndex + 1
+            -- Key-value iterator: treat as table
+            result[a] = b
         end
     end
-    return array
+    return result
 end
 
--------------------------------------------------------------------------------
--- Utility - Other
--------------------------------------------------------------------------------
--- @section
+--- #section Utility - Other
 
 
--------------------------------------------------------------------------------
--- Utility - Core
--------------------------------------------------------------------------------
--- @section
+--- #section Utility - Core
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 

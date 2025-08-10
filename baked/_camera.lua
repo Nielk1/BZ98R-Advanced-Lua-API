@@ -15,6 +15,7 @@ local gameobject = require("_gameobject");
 local _api = require("_api");
 local hook = require("_hook");
 
+--- @class _camera
 local M = {};
 
 local WorldTime = 0;
@@ -302,24 +303,6 @@ function M.PanDone()
     --- @diagnostic disable-next-line: deprecated
     return PanDone();
 end
-
---- Offsets a cinematic camera from a base game object while looking at a target game object.
--- Returns true if the base or handle game object does not exist. Returns false otherwise.
--- @param base GameObject|Handle
--- @param right number Meters to the right of the base object.
--- @param up number Meters above the base object.
--- @param forward number Meters in front of the base object.
--- @param target GameObject|Handle
--- @return boolean
--- @function CameraObject
-
---- Offsets a cinematic camera from a base game object while looking at a target game object.
--- Returns true if the base or handle game object does not exist. Returns false otherwise.
--- @param base GameObject|Handle
--- @param offset Vector
--- @param target GameObject|Handle
--- @return boolean
--- @function CameraObject
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object.
 --- Returns true if the base or handle game object does not exist. Returns false otherwise.

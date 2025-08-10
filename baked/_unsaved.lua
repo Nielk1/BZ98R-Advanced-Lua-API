@@ -4,15 +4,20 @@
 ---
 --- @module '_unsaved'
 --- @author John "Nielk1" Klein
---- @usage local unsaved = require("_unsaved");
+--- ```lua
+--- local unsaved = require("_unsaved");
 --- 
 --- data.unsavable = unsaved(data.unsavable);
+--- ```
 
 local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_unsaved Loading");
 
+--- @class _unsaved
+--- @field __nosave boolean Marks the table as unsaved, don't even bother with metatables
 local M = {};
+
 local M_MT = {};
 
 --local unsaved_meta = {};

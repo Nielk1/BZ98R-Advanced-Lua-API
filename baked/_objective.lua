@@ -4,8 +4,6 @@
 ---
 --- @module '_objective'
 --- @author John "Nielk1" Klein
---- @usage local objective = require("_objective");
---- 
 --- @todo write example usage
 
 local logger = require("_logger");
@@ -41,11 +39,11 @@ end
 
 --- Updates the objective message with the given name. If no objective exists with that name, it does nothing.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? ColorLabel Default to "WHITE".
---- @param duration? number defaults to 8 seconds
---- @param text? string Override text from the target objective file. [2.0+]
---- @param position? number Sort position of the objective. Defaults to the next available ID.
---- @param persistant? boolean If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+--- @param color ColorLabel? Default to "WHITE".
+--- @param duration number? defaults to 8 seconds
+--- @param text string? Override text from the target objective file. {VERSION 2.0+}
+--- @param position number? Sort position of the objective. Defaults to the next available ID.
+--- @param persistant boolean? If true, the objective will not be removed when the objectives are cleared. Defaults to false.
 function M.UpdateObjective(name, color, duration, text, position, persistant)
     if allObjectives[name] then
         local o = allObjectives[name];
@@ -78,11 +76,11 @@ end
 
 --- Adds an objective message with the given name and properties.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? ColorLabel Default to "WHITE".
---- @param duration? number defaults to 8 seconds
---- @param text? string Override text from the target objective file. [2.0+]
---- @param position? number Sort position of the objective. Defaults to the next available ID.
---- @param persistant? boolean If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+--- @param color ColorLabel? Default to "WHITE".
+--- @param duration number? defaults to 8 seconds
+--- @param text string? Override text from the target objective file. {VERSION 2.0+}
+--- @param position number? Sort position of the objective. Defaults to the next available ID.
+--- @param persistant boolean? If true, the objective will not be removed when the objectives are cleared. Defaults to false.
 function M.AddObjective(name, color, duration, text, position, persistant)
     --Resort all objectives
     if not allObjectives[name] then
@@ -129,11 +127,11 @@ end
 --- Replaces the objective message with the given name. If no objective exists with that name, it does nothing.
 --- @param oldname string Unique name for objective, usually a filename ending with otf from which data is loaded
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color? ColorLabel Default to "WHITE".
---- @param duration? number defaults to 8 seconds
---- @param text? string Override text from the target objective file. [2.0+]
---- @param position? number Sort position of the objective. Defaults to the removed objective's position or next available ID.
---- @param persistant? boolean If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+--- @param color ColorLabel? Default to "WHITE".
+--- @param duration number? defaults to 8 seconds
+--- @param text string? Override text from the target objective file. {VERSION 2.0+}
+--- @param position number? Sort position of the objective. Defaults to the removed objective's position or next available ID.
+--- @param persistant boolean? If true, the objective will not be removed when the objectives are cleared. Defaults to false.
 function M.ReplaceObjective(oldname, name, color, duration, text, position, persistant)
     local obj = allObjectives[name];
     M.RemoveObjective(oldname);
@@ -145,10 +143,7 @@ function M.ReplaceObjective(oldname, name, color, duration, text, position, pers
     end
 end
 
--------------------------------------------------------------------------------
--- Objective - Core
--------------------------------------------------------------------------------
--- @section
+--- #section Objective - Core
 
 hook.AddSaveLoad("_objective", function()
     return allObjectives, nextId;

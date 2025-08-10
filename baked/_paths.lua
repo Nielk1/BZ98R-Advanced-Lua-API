@@ -7,6 +7,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_paths Loading");
 
+--- @class _paths
 local M = {};
 
 --- Is this object a table?
@@ -16,11 +17,12 @@ function M.isPathWithString(object)
     return type(object) == 'table' and object[1] and type(object[1]) == 'string' and object[2] and type(object[2]) == 'number';
 end
 
--------------------------------------------------------------------------------
--- Paths - Iterator Operations
--------------------------------------------------------------------------------
--- @section
+--- #section Paths - Iterator Operations
 
+--- Iterate the vectors along the path.
+--- Return LUA style 1 based indexes for the path points.
+--- @param path string Path name
+--- @return fun(): (integer, Vector)
 function M.IteratePath(path)
     local count = GetPathPointCount(path);
     local i = 0;
@@ -32,20 +34,13 @@ function M.IteratePath(path)
         end
         return nil;
     end
-
     return iterator;
 end
 
--------------------------------------------------------------------------------
--- Paths - Other
--------------------------------------------------------------------------------
--- @section
+--- #section Paths - Other
 
 
--------------------------------------------------------------------------------
--- Paths - Core
--------------------------------------------------------------------------------
--- @section
+--- #section Paths - Core
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 

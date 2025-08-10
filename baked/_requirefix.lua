@@ -4,7 +4,13 @@
 ---
 --- @module '_requirefix'
 --- @author John "Nielk1" Klein
---- @usage require("_requirefix").addmod("12345").addmod("67890");
+--- ```lua
+--- require("_requirefix").addmod("12345").addmod("67890");
+--- ```
+--- ```lua
+--- require("_requirefix").addmod("12345");
+--- require("_requirefix").addmod("67890");
+--- ```
 
 local logger = require("_logger");
 

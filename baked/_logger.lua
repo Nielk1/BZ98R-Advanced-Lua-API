@@ -45,6 +45,7 @@ Get-Content -Path "BZLogger.txt" -Wait -Tail 0 -Encoding UTF8 | ForEach-Object {
 
 local CONTEXT_PAD = 32; -- Padding for context in log messages
 
+--- @class _logger
 local M = {};
 
 
@@ -100,9 +101,9 @@ local settings = {
 M.settings = settings; --- @todo make this readonly (at least through this window)
 
 --- @param odf ParameterDB
---- @param section? string
+--- @param section string?
 --- @param label string
---- @param default? any
+--- @param default any?
 --- @param boolVal any
 --- @param enumTable table<string, integer>
 --- @return any, boolean

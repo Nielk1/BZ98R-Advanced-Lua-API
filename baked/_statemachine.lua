@@ -4,7 +4,8 @@
 ---
 --- @module '_statemachine'
 --- @author John "Nielk1" Klein
---- @usage local statemachine = require("_statemachine");
+--- ```lua
+--- local statemachine = require("_statemachine");
 --- 
 --- statemachine.Create("TestMachine",
 --- {
@@ -68,6 +69,7 @@
 ---     MissionData.TestSMI1:run();
 ---     MissionData.TestSMI2:run();
 --- end);
+--- ```
 
 
 local logger = require("_logger");
@@ -91,6 +93,10 @@ end
 --- @field Abort boolean If true the machine should be considered aborted, allowing for cleanup
 --- @field Fast boolean If true the machine will attempt to run the next state immediately
 
+--- @class _statemachine
+--- @field game_time number Game time in seconds, used for state machine timing
+--- @field Machines table<string, StateMachineIter> Table of StateMachineIter instances, key is the template name and value is the StateMachineIter instance
+--- @field MachineFlags table<string, { is_ordered:boolean, index_to_name:table, name_to_index:table }> Table of flags for each StateMachineIter template, key is the template name and value is the flags table
 local M = {};
 M.game_time = 0;
 
@@ -595,7 +601,7 @@ end
 --- Wait a set period of time on this state.
 --- @param calls integer How many calls to wait
 --- @param next_state string Next state when timer hits zero
---- @param early_exit? function Function to check if the state should be exited early, return false, true, or next state name
+--- @param early_exit function? Function to check if the state should be exited early, return false, true, or next state name
 --- @return WrappedObjectForStateMachineIter
 function M.SleepCalls( calls, next_state, early_exit )
     if not utility.isinteger(calls) then error("Parameter calls must be an integer."); end
@@ -632,9 +638,9 @@ end
 --- This first time this is called the target time is latched in until true is returned.
 --- Ensure you call state:SecondsHavePassed() or state:SecondsHavePassed(nil) to clear the timer if it did not return true and you need to move on.
 --- @param self StateMachineIter StateMachineIter instance
---- @param seconds? number How many seconds to wait
---- @param lap? boolean If true the timer will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
---- @param first? boolean If true the timer returns true when it starts, requires lap to be true.
+--- @param seconds number? How many seconds to wait
+--- @param lap boolean? If true the timer will still return true when the time has passed, but will "lap" instead of "stop" and keep counting.
+--- @param first boolean? If true the timer returns true when it starts, requires lap to be true.
 --- @return boolean timeup True if the time is up
 function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)
     if seconds == nil then
@@ -680,7 +686,7 @@ end
 --- Wait a set period of time on this state.
 --- @param seconds number How many seconds to wait
 --- @param next_state string|nil Next state when timer hits zero
---- @param early_exit? StateMachineFunction Function to check if the state should be exited early, return false, true, or next state name
+--- @param early_exit StateMachineFunction? Function to check if the state should be exited early, return false, true, or next state name
 function M.SleepSeconds(seconds, next_state, early_exit )
     if not utility.isnumber(seconds) then error("Parameter seconds must be a number."); end
     if next_state ~= nil and not utility.isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
@@ -719,10 +725,7 @@ function M.SleepSeconds(seconds, next_state, early_exit )
     end, p = {seconds, next_state, early_exit} };
 end
 
--------------------------------------------------------------------------------
--- StateMachineIter - Core
--------------------------------------------------------------------------------
--- @section
+--- #section StateMachineIter - Core
 
 --- Save event function.
 --

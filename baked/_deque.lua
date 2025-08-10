@@ -89,7 +89,7 @@ local pop_left = function(self)
 end
 
 --- @param self Deque
---- @param n number
+--- @param n integer
 --- @function rotate_right
 local rotate_right = function(self, n)
     n = n or 1
@@ -98,7 +98,7 @@ local rotate_right = function(self, n)
 end
 
 --- @param self Deque
---- @param n number
+--- @param n integer
 --- @function rotate_left
 local rotate_left = function(self, n)
     n = n or 1
@@ -140,7 +140,7 @@ local remove_left = function(self, x)
 end
 
 --- @param self Deque
---- @return number
+--- @return integer
 --- @function length
 local length = function(self)
     return self.tail - self.head
@@ -154,7 +154,7 @@ local is_empty = function(self)
 end
 
 --- @param self Deque
---- @return table<number, any>
+--- @return table<integer, any>
 --- @function contents
 local contents = function(self)
     local r = {}
@@ -196,7 +196,7 @@ end
 
 --- Removes an element at the given relative index.
 --- @param self Deque The deque instance.
---- @param relative_index number The relative index of the element to remove (1-based, as used by `contents` and iterators).
+--- @param relative_index integer The relative index of the element to remove (1-based, as used by `contents` and iterators).
 --- @return boolean True if the element was successfully removed, false if the index is out of bounds.
 --- @function remove_at_relative
 --- @todo untested AI generated
@@ -211,7 +211,7 @@ end
 
 --- Internal function to remove multiple indexes from the deque.
 --- @param self Deque The deque instance.
---- @param indexes number[] A sorted list of absolute indexes to remove.
+--- @param indexes integer[] A sorted list of absolute indexes to remove.
 --- @todo untested AI generated
 local _remove_multiple_at_internal = function(self, indexes)
     local shift = 0 -- Tracks how far elements need to be shifted
@@ -239,7 +239,7 @@ end
 
 --- Removes multiple elements at the given relative indexes.
 --- @param self Deque The deque instance.
---- @param relative_indexes number[] A list of relative indexes to remove (1-based, as used by `contents` and iterators).
+--- @param relative_indexes integer[] A list of relative indexes to remove (1-based, as used by `contents` and iterators).
 --- @return boolean True if at least one element was removed, false if no valid indexes were provided.
 --- @function remove_multiple_at_relative
 --- @todo untested AI generated
@@ -268,9 +268,9 @@ local remove_multiple = function(self, relative_indexes)
 end
 
 --- @class Deque : CustomSavableType
---- @field head number The index of the first element.
---- @field tail number The index of the last element.
---- @field [number] any The elements stored in the deque.
+--- @field head integer The index of the first element.
+--- @field tail integer The index of the last element.
+--- @field [integer] any The elements stored in the deque.
 local methods = {
     push_right = push_right,
     push_left = push_left,
@@ -300,10 +300,7 @@ local new = function()
     return setmetatable(r, {__index = methods})
 end
 
--------------------------------------------------------------------------------
--- Deque - Core
--------------------------------------------------------------------------------
--- @section
+--- #section Deque - Core
 
 --- Save event function.
 --

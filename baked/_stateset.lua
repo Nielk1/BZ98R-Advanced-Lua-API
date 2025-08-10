@@ -7,7 +7,8 @@
 ---
 --- @module '_stateset'
 --- @author John "Nielk1" Klein
---- @usage local stateset = require("_stateset");
+--- ```lua
+--- local stateset = require("_stateset");
 --- 
 --- stateset.Create("TestSet")
 ---     :Add("state_a", function(runner, a, b)
@@ -28,6 +29,7 @@
 -- hook.Add("Update", "Custom_Update", function(turn)
 --     MissionData.TestSMI:run(1, 2);
 -- end);
+--- ```
 
 local logger = require("_logger");
 
@@ -37,6 +39,8 @@ local utility = require("_utility");
 local customsavetype = require("_customsavetype");
 local statemachine = require("_statemachine");
 
+--- @class _stateset
+--- @field Sets table<string, StateSet> Table of StateSet instances, key is the template name and value is the StateSet instance
 local M = {};
 
 M.Sets = {};
@@ -59,7 +63,7 @@ StateSet.__index = StateSet;
 --- @param self StateSet StateSet instance
 --- @param name string Name of the state
 --- @param state StateSetFunction|WrappedObjectForStateSetRunner Function to be called when the state is active, should return true if the state did something.
---- @param permitBased? boolean If true, the state is permit based
+--- @param permitBased boolean? If true, the state is permit based
 --- @return StateSet self For function chaining
 function StateSet.Add(self, name, state, permitBased)
     logger.print(logger.LogLevel.DEBUG, nil, "Add state '"..name.."' to StateSet '"..self.template.."'.", permitBased);
@@ -231,7 +235,7 @@ end
 --- Set state off.
 --- @param self StateSetRunner StateSetRunner instance
 --- @param name string Name of the state
---- @param force? boolean If true, the state is set off regardless of the current permits
+--- @param force boolean? If true, the state is set off regardless of the current permits
 --- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.off(self, name, force)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
@@ -283,10 +287,7 @@ function M.Start( name, init )
     return CreateStateSetRunner(name, init);
 end
 
--------------------------------------------------------------------------------
--- StateSetRunner - Core
--------------------------------------------------------------------------------
--- @section
+--- #section StateSetRunner - Core
 
 --- Save event function.
 --

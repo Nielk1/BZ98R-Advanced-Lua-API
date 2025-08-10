@@ -39,12 +39,12 @@ local bzcp_success, bzcp = optional("_bzcp");
 -- @field[opt] shim integer
 
 --- Compare two version strings.
--- @tparam string version1 The first version string
--- @tparam string version2 The second version string
--- @treturn integer -1, 0, or 1 depending on the comparison result
--- @function Compare
+--- @tparam string version1 The first version string
+--- @tparam string version2 The second version string
+--- @treturn integer -1, 0, or 1 depending on the comparison result
+--- @function Compare
 
---- @class Version
+--- @class _version
 --- @field game string The game version, e.g. "2.2.315"
 --- @field lua string The Lua version, e.g. "Lua 5.1"
 --- @field api string The version of this LUA Extended API, e.g. "0.1.1"
@@ -134,10 +134,7 @@ function M.Compare(version1, version2)
     return 0
 end
 
--------------------------------------------------------------------------------
--- Utility - Core
--------------------------------------------------------------------------------
--- @section
+--- #section Utility - Core
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 

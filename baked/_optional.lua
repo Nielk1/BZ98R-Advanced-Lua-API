@@ -4,18 +4,21 @@
 ---
 --- @module '_optional'
 --- @author John "Nielk1" Klein
---- @usage local optional = require("_optional");
+--- ```lua
+--- local optional = require("_optional");
 --- local missingSuccess, missingMod = optional("_missing");
 --- missingMod = missingSuccess and missingMod or nil;
 --- 
 --- local missing2Success, missingMod2 = require("_optional")("_missing2");
 --- missingMod2 = missing2Success and missingMod2 or nil;
+--- ```
 
 
 local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_optional Loading");
 
+--- @class _optional
 local M = {};
 local M_MT = {};
 
@@ -50,10 +53,7 @@ end
 
 M = setmetatable(M, M_MT);
 
--------------------------------------------------------------------------------
--- Utility - Core
--------------------------------------------------------------------------------
--- @section
+--- #section Utility - Core
 
 logger.print(logger.LogLevel.DEBUG, nil, "_optional Loaded");
 

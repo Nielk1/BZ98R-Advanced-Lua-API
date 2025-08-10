@@ -15,6 +15,7 @@ local hook = require("_hook");
 local unsaved = require("_unsaved");
 local customsavetype = require("_customsavetype");
 
+--- @class _gameobject
 local M = {};
 
 --- Is this object an instance of GameObject?
@@ -40,7 +41,7 @@ local GameObjectSeqNoDeadMemo = setmetatable({}, GameObjectWeakList_MT); -- maps
 --- @field id Handle Handle used by BZ98R
 --- @field addonData table Extended data saved into the object
 --- @field cache_memo table Unsaved data used for housekeeping that is regenerated at load
-GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
+local GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 function GameObject.__index(dtable, key)
     local retVal = rawget(dtable, key);
@@ -77,10 +78,7 @@ GameObject.__tostring = function(self)
     return "GameObject: " .. tostring(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Core
--------------------------------------------------------------------------------
--- @section
+--- #section Core
 
 --- Create new GameObject Intance.
 --- @param handle Handle Handle from BZ98R
@@ -212,16 +210,13 @@ function GameObject.BulkLoad(data)
     for v in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
 end
 
--------------------------------------------------------------------------------
--- Object Creation / Destruction
--------------------------------------------------------------------------------
--- @section
+--- #section Object Creation / Destruction
 
 --- Build Object.
 --- @param odf string Object Definition File (without ".odf")
 --- @param team TeamNum Team number for the object, 0 to 15
 --- @param pos Vector|Matrix|GameObject|Handle|string Vector, Matrix, GameObject, or pathpoint by name
---- @param point? integer index
+--- @param point integer? index
 --- @return GameObject? object Newly built GameObject
 function M.BuildObject(odf, team, pos, point)
     local handle = nil;
@@ -259,9 +254,9 @@ function M.GetGameObject(key)
 end
 
 --- Get the game object in the specified team slot.
---- @param slot TeamSlotInteger Slot number, see TeamSlot
 --- @see ScriptUtils.TeamSlot
---- @param team? TeamNum Team number, 0 to 15
+--- @param slot TeamSlotInteger Slot number, see TeamSlot
+--- @param team TeamNum? Team number, 0 to 15
 --- @return GameObject? object GameObject in the slot or nil if none found
 function M.GetTeamSlot(slot, team)
     if not utility.isnumber(slot) then error("Parameter slot must be a number") end
@@ -273,7 +268,7 @@ function M.GetTeamSlot(slot, team)
 end
 
 --- Get Player GameObject of team.
---- @param team? TeamNum Team number of player
+--- @param team TeamNum? Team number of player
 --- @return GameObject? player GameObject of player or nil
 --- @todo depricate functions like this and move them to a team manager, because of the issue noted on scriptutils for GetTeamSlot.
 function M.GetPlayer(team)
@@ -285,7 +280,7 @@ function M.GetPlayer(team)
 end
 
 --- Get Recycler GameObject of team.
---- @param team? TeamNum Team number of player
+--- @param team TeamNum? Team number of player
 --- @return GameObject? recycler GameObject of recycler or nil
 function M.GetRecycler(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -296,7 +291,7 @@ function M.GetRecycler(team)
 end
 
 --- Get Factory GameObject of team.
---- @param team? TeamNum Team number of player
+--- @param team TeamNum? Team number of player
 --- @return GameObject? factory GameObject of factory or nil
 function M.GetFactory(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -307,7 +302,7 @@ function M.GetFactory(team)
 end
 
 --- Get Armory GameObject of team.
---- @param team? TeamNum Team number of player
+--- @param team TeamNum? Team number of player
 --- @return GameObject? armory of armory or nil
 function M.GetArmory(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -318,7 +313,7 @@ function M.GetArmory(team)
 end
 
 --- Get Factory GameObject of team.
---- @param team? TeamNum Team number of player
+--- @param team TeamNum? Team number of player
 --- @return GameObject? constructor of constructor or nil
 function M.GetConstructor(team)
     if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
@@ -328,11 +323,8 @@ function M.GetConstructor(team)
     return M.FromHandle(handle);
 end
 
--------------------------------------------------------------------------------
--- Deploy
--------------------------------------------------------------------------------
--- @section
--- These functions control deployable craft (such as Turret Tanks or Producer units).
+--- #section Deploy
+--- These functions control deployable craft (such as Turret Tanks or Producer units).
 
 --- Returns true if the game object is a deployed craft. Returns false otherwise.
 --- @param self GameObject GameObject instance
@@ -353,11 +345,8 @@ function GameObject.Deploy(self)
     Deploy(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Unit Commands
--------------------------------------------------------------------------------
--- @section
--- These functions send commands to units or query their command state.
+--- #section Unit Commands
+--- These functions send commands to units or query their command state.
 
 --- Returns true if the game object can be commanded. Returns false otherwise.
 --- @param self GameObject
@@ -390,7 +379,7 @@ function GameObject.IsBusy(self)
 end
 
 --- Returns true if the game object has reached the end of the named path. Returns false otherwise.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param self GameObject
 --- @param path string
 --- @return boolean
@@ -449,17 +438,17 @@ end
 --- "Param" is an optional odf name only used by command AiCommand.BUILD.
 --- @param self GameObject
 --- @param command integer
---- @param priority? integer
---- @param who? GameObject|Handle
+--- @param priority integer?
+--- @param who GameObject|Handle?
 --- @param where Matrix|Vector|string?
---- @param when? number
---- @param param? string
+--- @param when number?
+--- @param param string?
 function GameObject.SetCommand(self, command, priority, who, where, when, param)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(command) then error("Parameter command must be a number") end
     if priority ~= nil and not utility.isnumber(priority) then error("Parameter priority must be a number") end
     if who ~= nil and not (M.isgameobject(who) or utility.isstring(who)) then error("Parameter who must be GameObject or string") end
-    if where ~= nil and not (utility.ismatrix(where) or utility.isvector(where) or utility.isstring(where)) then error("Parameter where must be Matrix, Vector, or string") end
+    if where ~= nil and not (utility.isMatrix(where) or utility.isVector(where) or utility.isstring(where)) then error("Parameter where must be Matrix, Vector, or string") end
     if when ~= nil and not utility.isnumber(when) then error("Parameter when must be a number") end
     if param ~= nil and not utility.isstring(param) then error("Parameter param must be a string") end
 
@@ -489,7 +478,7 @@ end
 --- Order GameObject to Attack target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Attack(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -509,7 +498,7 @@ end
 --- @function GameObject.Goto
 --- @param self GameObject GameObject instance
 --- @param target Vector|Matrix|GameObject|Handle|string Target Path name
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Goto(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -528,7 +517,7 @@ end
 --- Order GameObject to Mine target Path.
 --- @param self GameObject GameObject instance
 --- @param target Vector|Matrix|string Target Vector, Matrix, or Path name
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Mine(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if target ~= nil then
@@ -542,7 +531,7 @@ end
 --- Order GameObject to Follow target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Follow(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -579,7 +568,7 @@ end
 
 --- Order GameObject to Defend area.
 --- @param self GameObject GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Defend(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -589,7 +578,7 @@ end
 --- Order GameObject to Defend2 target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Defend2(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -607,7 +596,7 @@ end
 
 --- Order GameObject to Stop.
 --- @param self GameObject GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Stop(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -617,7 +606,7 @@ end
 --- Order GameObject to Patrol target path.
 --- @param self GameObject GameObject instance
 --- @param target string Target Path name
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Patrol(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(target) then error("Parameter target must be a string") end
@@ -628,7 +617,7 @@ end
 --- Order GameObject to Retreat.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle|string Target GameObject or Path name
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Retreat(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -647,7 +636,7 @@ end
 --- Order GameObject to GetIn target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.GetIn(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -666,7 +655,7 @@ end
 --- Order GameObject to Pickup target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Pickup(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -685,7 +674,7 @@ end
 --- Order GameObject to Pickup target path name.
 --- @param self GameObject GameObject instance
 --- @param target Vector|Matrix|string Target vector, matrix, or path name
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Dropoff(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if target ~= nil then
@@ -700,7 +689,7 @@ end
 --- Oddly this function does not include a location for the action, might want to use the far more powerful orders system.
 --- @param self GameObject GameObject instance
 --- @param odf string Object Definition
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Build(self, odf, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(odf) then error("Parameter odf must be a string") end
@@ -712,7 +701,7 @@ end
 --- @param self GameObject GameObject instance
 --- @param odf string Object Definition
 --- @param target Vector|Matrix|GameObject|Handle|string Target GameObject instance, vector, matrix, or path name
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.BuildAt(self, odf, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -731,7 +720,7 @@ end
 --- Order GameObject to Formation follow target GameObject.
 --- @param self GameObject GameObject instance
 --- @param target GameObject|Handle Target GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Formation(self, target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if M.isgameobject(target) then
@@ -749,7 +738,7 @@ end
 
 --- Order GameObject to Hunt area.
 --- @param self GameObject GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Hunt(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
@@ -758,17 +747,14 @@ end
 
 --- Order GameObject to Recycle.
 --- @param self GameObject GameObject instance
---- @param priority? integer Order priority, >0 removes user control
+--- @param priority integer? Order priority, >0 removes user control
 function GameObject.Recycle(self, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
     Recycle(self:GetHandle(), priority);
 end
 
--------------------------------------------------------------------------------
--- Position & Velocity
--------------------------------------------------------------------------------
--- @section
+--- #section Position & Velocity
 
 --- Get object's position vector.
 --- @param self GameObject GameObject instance
@@ -791,7 +777,7 @@ end
 --- Set the position of the GameObject.
 --- @param self GameObject GameObject instance
 --- @param position Vector|Matrix|string Vector position, Matrix position, or path name
---- @param point? integer Index of the path point in the path (optional)
+--- @param point integer? Index of the path point in the path (optional)
 function GameObject.SetPosition(self, position, point)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if position ~= nil then
@@ -859,10 +845,7 @@ function GameObject.SetOmega(self, omega)
     SetOmega(self:GetHandle(), omega);
 end
 
--------------------------------------------------------------------------------
--- Condition Checks
--------------------------------------------------------------------------------
--- @section
+--- #section Condition Checks
 
 --- Does the GameObject exist in the world?
 --- Returns true if the game object exists. Returns false otherwise.
@@ -922,11 +905,8 @@ function GameObject.IsPerson(self)
     return IsPerson(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Tug Cargo
--------------------------------------------------------------------------------
--- @section
--- These functions query Tug and Cargo.
+--- #section Tug Cargo
+--- These functions query Tug and Cargo.
 
 --- Returns true if the GameObject is a tug carrying cargo.
 --- @param self GameObject GameObject instance
@@ -959,11 +939,8 @@ function GameObject.GetTug(self)
     return M.FromHandle(handle);
 end
 
--------------------------------------------------------------------------------
--- Pilot Actions
--------------------------------------------------------------------------------
--- @section
--- These functions control the pilot of a vehicle.
+--- #section Pilot Actions
+--- These functions control the pilot of a vehicle.
 
 --- Commands the vehicle's pilot to eject.
 --- @param self GameObject
@@ -1008,10 +985,7 @@ function GameObject.HoppedOutOf(self)
     return M.FromHandle(handle);
 end
 
--------------------------------------------------------------------------------
--- Info Display
--------------------------------------------------------------------------------
--- @section
+--- #section Info Display
 
 --- Returns true if the game object inspected by the info display matches the current game object.
 --- @param self GameObject GameObject instance
@@ -1022,11 +996,8 @@ function GameObject.IsInfo(self)
     return IsInfo(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Network
--------------------------------------------------------------------------------
--- @section
--- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
+--- #section Network
+--- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
 
 --- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.
 --- Important safety tip: only call this on one machine at a time!
@@ -1065,11 +1036,8 @@ function GameObject.IsInitialized(self)
     return IsLocal(h) or IsRemote(h);
 end
 
--------------------------------------------------------------------------------
--- Weapon
--------------------------------------------------------------------------------
--- @section
--- These functions access unit weapons and damage.
+--- #section Weapon
+--- These functions access unit weapons and damage.
 
 --- Sets what weapons the unit's AI process will use.
 --- To calculate the mask value, add up the values of the weapon hardpoint slots you want to enable.
@@ -1086,8 +1054,8 @@ end
 --- Gives the game object the named weapon in the given slot. If no slot is given, it chooses a slot based on hardpoint type and weapon priority like a weapon powerup would. If the weapon name is empty, nil, or blank and a slot is given, it removes the weapon in that slot.
 --- Returns true if it succeeded. Returns false otherwise.
 --- @param self GameObject GameObject instance
---- @param weaponname? string
---- @param slot? integer
+--- @param weaponname string?
+--- @param slot integer?
 function GameObject.GiveWeapon(self, weaponname, slot)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if weaponname ~= nil and not utility.isstring(weaponname) then error("Parameter weaponname must be a string or nil.") end
@@ -1100,7 +1068,7 @@ end
 --- For example, an "avtank" game object would return "gatstab" for index 0 and "gminigun" for index 1.
 --- @param self GameObject GameObject instance
 --- @param slot integer
---- @return string
+--- @return string?
 function GameObject.GetWeaponClass(self, slot)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isnumber(slot) then error("Parameter slot must be number.") end
@@ -1136,14 +1104,15 @@ function GameObject.Damage(self, amount)
     Damage(self:GetHandle(), amount);
 end
 
--------------------------------------------------------------------------------
--- Health Values
--------------------------------------------------------------------------------
--- @section
--- These functions get and set health values on a game object.
+--- #section Health Values
+--- These functions get and set health values on a game object.
 
 --- Returns the fractional health of the game object between 0 and 1.
---- @usage if friend1:GetHealth() < 0.5 then friend1:Retreat("retreat_path"); end
+--- ```lua
+--- if friend1:GetHealth() < 0.5 then
+---     friend1:Retreat("retreat_path");
+--- end
+--- ```
 --- @param self GameObject GameObject instance
 --- @return number ratio health ratio
 function GameObject.GetHealth(self)
@@ -1208,11 +1177,8 @@ function GameObject.GiveMaxHealth(self)
     GiveMaxHealth(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Ammo Values
--------------------------------------------------------------------------------
--- @section
--- These functions get and set ammo values on a game object.
+--- #section Ammo Values
+--- These functions get and set ammo values on a game object.
 
 --- Returns the fractional ammo of the game object between 0 and 1.
 --- @param self GameObject GameObject instance
@@ -1279,11 +1245,8 @@ function GameObject.GiveMaxAmmo(self)
     GiveMaxAmmo(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Team Number
--------------------------------------------------------------------------------
--- @section
--- These functions get and set team number. Team 0 is the neutral or environment team.
+--- #section Team Number
+--- These functions get and set team number. Team 0 is the neutral or environment team.
 
 --- Returns the game object's team number.
 --- @param self GameObject GameObject instance
@@ -1342,11 +1305,8 @@ function GameObject.IsAlly(self, target)
     end
 end
 
--------------------------------------------------------------------------------
--- Owner
--------------------------------------------------------------------------------
--- @section
--- These functions get and set owner. The default owner for a game object is the game object that created it.
+--- #section Owner
+--- These functions get and set owner. The default owner for a game object is the game object that created it.
 
 --- Sets the game object's owner.
 --- @param self GameObject
@@ -1374,11 +1334,8 @@ function GameObject.GetOwner(self)
     return M.FromHandle(handle);
 end
 
--------------------------------------------------------------------------------
--- Pilot Class
--------------------------------------------------------------------------------
--- @section
--- These functions get and set vehicle pilot class.
+--- #section Pilot Class
+--- These functions get and set vehicle pilot class.
 
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
 --- @param self GameObject
@@ -1399,12 +1356,9 @@ function GameObject.GetPilotClass(self)
     return GetPilotClass(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Objective Marker
--------------------------------------------------------------------------------
--- @section
--- These functions control objective markers.
--- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
+--- #section Objective Marker
+--- These functions control objective markers.
+--- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
 
 --- Sets the game object as an objective to all teams.
 --- @param self GameObject GameObject instance
@@ -1481,16 +1435,13 @@ function GameObject.SetName(self, name)
     SetName(self:GetHandle(), name);
 end
 
--------------------------------------------------------------------------------
--- Distance
--------------------------------------------------------------------------------
--- @section
--- These functions measure and return the distance between a game object and a reference point.
+--- #section Distance
+--- These functions measure and return the distance between a game object and a reference point.
 
 --- Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
 --- @param self GameObject
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return number
 function GameObject.GetDistance(self, target, point)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
@@ -1529,10 +1480,10 @@ function GameObject.IsWithin(self, target, dist)
 end
 
 --- Returns true if the bounding spheres of the two game objects are within the specified tolerance. The default tolerance is 1.3 meters if not specified.
---- [2.1+]
+--- {VERSION 2.1+}
 --- @param self GameObject
 --- @param target GameObject|Handle
---- @param tolerance? number
+--- @param tolerance number?
 --- @return boolean
 function GameObject.IsTouching(self, target, tolerance)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
@@ -1549,11 +1500,8 @@ function GameObject.IsTouching(self, target, tolerance)
     end
 end
 
--------------------------------------------------------------------------------
--- Shot
--------------------------------------------------------------------------------
--- @section
--- These functions query a game object for information about ordnance hits.
+--- #section Shot
+--- These functions query a game object for information about ordnance hits.
 
 --- Returns who scored the most recent hit on the game object. Returns nil if none exists.
 --- @param self GameObject
@@ -1584,11 +1532,8 @@ function GameObject.GetLastFriendShot(self)
     return GetLastFriendShot(self:GetHandle());
 end
 
--------------------------------------------------------------------------------
--- Nearest
--------------------------------------------------------------------------------
--- @section
--- These functions find and return the game object of the requested type closest to a reference point.
+--- #section Nearest
+--- These functions find and return the game object of the requested type closest to a reference point.
 
 --- Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
 --- @overload fun(target: Vector): GameObject?
@@ -1597,7 +1542,7 @@ end
 --- @overload fun(target: Handle): GameObject?
 --- @overload fun(target: string, point?: integer): GameObject?
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return GameObject?
 function M.GetNearestObject(target, point)
     if M.isgameobject(target) then
@@ -1635,7 +1580,7 @@ end
 --- @overload fun(target: Handle): GameObject?
 --- @overload fun(target: string, point?: integer): GameObject?
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return GameObject?
 function M.GetNearestVehicle(target, point)
     if M.isgameobject(target) then
@@ -1673,7 +1618,7 @@ end
 --- @overload fun(target: Handle): GameObject?
 --- @overload fun(target: string, point?: integer): GameObject?
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return GameObject?
 function M.GetNearestBuilding(target, point)
     if M.isgameobject(target) then
@@ -1711,7 +1656,7 @@ end
 --- @overload fun(target: Handle): GameObject?
 --- @overload fun(target: string, point?: integer): GameObject?
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return GameObject?
 function M.GetNearestEnemy(target, point)
     if M.isgameobject(target) then
@@ -1743,14 +1688,14 @@ function GameObject.GetNearestEnemy(self)
 end
 
 --- Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
---- [2.0+]
+--- {VERSION 2.0+}
 --- @overload fun(target: Vector): GameObject?
 --- @overload fun(target: Matrix): GameObject?
 --- @overload fun(target: GameObject): GameObject?
 --- @overload fun(target: Handle): GameObject?
 --- @overload fun(target: string, point?: integer): GameObject?
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return GameObject?
 function M.GetNearestFriend(target, point)
     if M.isgameobject(target) then
@@ -1782,16 +1727,15 @@ function GameObject.GetNearestFriend(self)
 end
 
 --- Returns the friend closest to the given reference point. Returns nil if none exists.
---- [2.1+]
 --- @diagnostic disable: undefined-doc-param
---- @overload fun(h: GameObject): GameObject? --- [2.0+]
---- @overload fun(h: Handle): GameObject? --- [2.0+]
---- @overload fun(path: string, point?: integer): GameObject? --- [2.1+]
---- @overload fun(position: Vector): GameObject? --- [2.1+]
---- @overload fun(transform: Matrix): GameObject? --- [2.1+]
+--- @overload fun(h: GameObject): GameObject? --- {VERSION 2.0+}
+--- @overload fun(h: Handle): GameObject? --- {VERSION 2.0+}
+--- @overload fun(path: string, point?: integer): GameObject? --- {VERSION 2.1+}
+--- @overload fun(position: Vector): GameObject? --- {VERSION 2.1+}
+--- @overload fun(transform: Matrix): GameObject? --- {VERSION 2.1+}
 --- @param h Handle The reference game object.
 --- @param path string The path name.
---- @param point? integer The point on the path (optional).
+--- @param point integer? The point on the path (optional).
 --- @param position Vector The position vector.
 --- @param transform Matrix The transform matrix.
 --- @return GameObject? object closest friend, or nil if none exists.
@@ -1856,16 +1800,13 @@ function GameObject.CountUnitsNearObject(self, dist, team, odfname)
     return CountUnitsNearObject(self:GetHandle(), dist, team, odfname);
 end
 
--------------------------------------------------------------------------------
--- Iterators
--------------------------------------------------------------------------------
--- @section
--- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
+--- #section Iterators
+--- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
 
 --- Enumerates game objects within the given distance a target.
 --- @param dist number
 --- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point? integer If the target is a path this is the path point index, defaults to 0.
+--- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return fun(): GameObject iterator Iterator of GameObject values
 function M.ObjectsInRange(dist, target, point)
     if not utility.isnumber(dist) then error("Parameter dist must be number."); end
@@ -1935,10 +1876,7 @@ function M.ObjectiveObjects()
     end)
 end
 
--------------------------------------------------------------------------------
--- Other - Custom Functions
--------------------------------------------------------------------------------
--- @section
+--- #section Other - Custom Functions
 
 -- Returns the scrap cost of the game object.
 -- @param self GameObject GameObject instance
@@ -1996,15 +1934,14 @@ end
 --    return pilot;
 --end
 
--------------------------------------------------------------------------------
--- Other
--------------------------------------------------------------------------------
--- @section
+--- #section Other
 
 --- Is the GameObject this odf?
 --- @param self GameObject GameObject instance
 --- @param odf string ODF filename
---- @usage enemy1:IsOdf("svturr")
+--- ```lua
+--- enemy1:IsOdf("svturr")
+--- ```
 function GameObject.IsOdf(self, odf)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
@@ -2041,7 +1978,9 @@ end
 --- Is the GameObject this odf?
 --- @param self GameObject GameObject instance
 --- @param label string Label
---- @usage enemy1:SetLabel("special_object_7")
+--- ```lua
+--- enemy1:SetLabel("special_object_7")
+--- ```
 function GameObject.SetLabel(self, label)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     if not utility.isstring(label) then error("Parameter label must be a string."); end

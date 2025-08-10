@@ -9,11 +9,17 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_color Loading");
 
+--- @class _color
+--- @field ColorLabel table<string, string>
+--- @field ColorValues table<string, integer>
+--- @field RAVE_COLOR table<integer, integer>
+--- @field AnsiColorEscapeMap table<string, string>
 local M = {};
 
+--- @alias ColorValue integer
+
 --- Convert human readable color names to BZ98R color labels.
---- @type table<string,string>
---- @enum ColorLabel
+--- @enum ColorLabels
 M.ColorLabel = {
     Black       = "BLACK",     -- BLACK:     <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["Black"] = "BLACK"    </code></div>
     DarkGrey    = "DKGREY",    -- DKGREY:    <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">            ["DarkGrey"] = "DKGREY"   </code></div>
@@ -45,7 +51,6 @@ M.ColorLabel = {
 --- Convert BZ98R color labels to RGB color codes.
 --- This probably isn't useful but it's here.
 --- @enum ColorValues
---- @type table<string,ColorValue>
 M.ColorValues = {
     BLACK     = 0x000000FF, -- 0x000000FF: <div style="background-color: #000000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">               ["BLACK"] = 0x000000FF</code></div>
     DKGREY    = 0x4C4C4CFF, -- 0x4C4C4CFF: <div style="background-color: #4C4C4C; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;">              ["DKGREY"] = 0x4C4C4CFF</code></div>
@@ -69,7 +74,6 @@ M.ColorValues = {
 --- RAVE GUN! color cycle.
 --- Each color is represented as a hexadecimal number: 0xRRGGBBFF.
 --- @enum RAVE_COLOR
---- @type table<integer, ColorValue>
 M.RAVE_COLOR = {
      [1] = 0xFF0000FF, -- 0xFF0000FF: <div style="background-color: #FF0000; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [1] = 0xFF0000FF</code></div>
      [2] = 0xFF3300FF, -- 0xFF3300FF: <div style="background-color: #FF3300; color: #FFF; text-align: center; display: block; float:right; margin-left: 4px; margin-top: 1px; width:  300px; height: 1em; line-height: 1em; border: 1px solid black;"><code style="white-space: pre;"> [2] = 0xFF3300FF</code></div>
@@ -165,10 +169,7 @@ function M.GetClosestColorCode(color)
     return RGBGetClosestGameColor(r, g, b);
 end
 
--------------------------------------------------------------------------------
--- Ansi Color Escape Codes
--------------------------------------------------------------------------------
--- @section
+--- #section Ansi Color Escape Codes
 
 --- Ansi color codes for terminal output sorted by game color codes.
 --- @type table<ColorLabel, string>
@@ -371,7 +372,3 @@ logger.print(logger.LogLevel.DEBUG, nil, "COLOR TEST RAVE 16p      ["..rave_16..
 logger.print(logger.LogLevel.DEBUG, nil, "_color Loaded");
 
 return M;
-
--- Late aliases to prevent LDoc confusion
-
---- @alias ColorValue integer

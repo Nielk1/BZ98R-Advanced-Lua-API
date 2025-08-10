@@ -2652,7 +2652,6 @@ bit = {};
 --- print(bit.tobit(0xffffffff + 1)) --> 0
 --- print(bit.tobit(2^40 + 1234))    --> 1234
 --- ```
---- @todo (*) Check if the first 2 prints are correct on this lua
 function bit.tobit(x)
     error("This function is provided by the engine.");
 end

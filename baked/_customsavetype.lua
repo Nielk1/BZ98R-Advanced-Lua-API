@@ -26,10 +26,6 @@ local M_MT = {};
 --    return rawget(customsavetype_meta, key); -- move on to base (looking for functions)
 --end
 
--- @todo make this actually not save anything at all
---customsavetype_meta.__type = "customsavetype";
---customsavetype_meta.__nosave = true;
-
 --- @class CustomSavableType
 --- @field __type string The type name of the custom savable type.
 --- @field __nosave boolean? If true, the type will not be saved or loaded, a nil will be saved instead.

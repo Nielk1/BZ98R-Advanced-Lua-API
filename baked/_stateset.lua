@@ -291,7 +291,7 @@ end
 
 --- Save event function.
 --
--- INTERNAL USE.
+-- {INTERNAL USE}
 -- @param self StateSetRunner instance
 -- @return ...
 function StateSetRunner.Save(self)
@@ -300,7 +300,7 @@ end
 
 --- Load event function.
 --
--- INTERNAL USE.
+-- {INTERNAL USE}
 -- @param template
 -- @param active_states
 -- @param addonData

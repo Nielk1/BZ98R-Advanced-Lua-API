@@ -729,7 +729,7 @@ end
 
 --- Save event function.
 --
--- INTERNAL USE.
+-- {INTERNAL USE}
 -- @param self StateMachineIter instance
 -- @return template string StateMachineIter template name
 -- @return target_call integer? Timer's value, nil for not set
@@ -743,7 +743,7 @@ end
 
 --- Load event function.
 --
--- INTERNAL USE.
+-- {INTERNAL USE}
 -- @param template string StateMachineIter template name
 -- @param target_call integer? Timer's value, nil for not set
 -- @param target_time number? TargetTurn's value, nil for not set
@@ -756,7 +756,7 @@ end
 
 --- BulkLoad event function.
 --
--- INTERNAL USE.
+-- {INTERNAL USE}
 function StateMachineIter.BulkLoad()
     M.game_time = GetTime();
 end

@@ -303,18 +303,17 @@ end
 --- #section Deque - Core
 
 --- Save event function.
---
--- INTERNAL USE.
--- @param self StateSetRunner instance
--- @return ...
-function methods.Save(self)
+--- {INTERNAL USE}
+--- @param self StateSetRunner instance
+--- @return table
+function methods:Save(self)
     return self:contents();
 end
 
 --- Load event function.
---
--- INTERNAL USE.
--- @param contents
+--- {INTERNAL USE}
+--- @param contents table
+--- @return Deque Deque 
 function methods.Load(contents)
     local queue = new();
     for i = 1, #contents do

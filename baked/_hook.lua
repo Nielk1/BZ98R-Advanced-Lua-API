@@ -373,7 +373,7 @@ function M.CallAllNoReturn( event, ... )
     return nil;
 end
 
--- @todo this might be able to be replaced using table.pack to get accurate length, but that might waste speed/memory
+--- @todo this might be able to be replaced using table.pack to get accurate length, but that might waste speed/memory
 local function appendhelper(a, n, b, ...)
   if   n == 0 then return a
   else             return b, appendhelper(a, n-1, ...) end

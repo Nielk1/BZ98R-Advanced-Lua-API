@@ -192,7 +192,7 @@ function PatrolEngine.RemoveGameObject(self, handle)
     self.patrol_units[handle] = nil
 end
 
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param self PatrolEngine instance
 --- @return ...
 --- @package
@@ -202,7 +202,7 @@ end
 
 --- Load event function.
 ---
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param path_map table
 --- @param patrol_units table
 --- @param locations table

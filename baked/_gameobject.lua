@@ -128,7 +128,7 @@ function GameObject.GetSeqNo(self)
 end
 
 --- Save event function.
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param self GameObject GameObject instance
 --- @return ...
 --- @package
@@ -137,7 +137,7 @@ function GameObject.Save(self)
 end
 
 --- Load event function.
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param id any Handle
 --- @package
 function GameObject.Load(id)
@@ -145,7 +145,7 @@ function GameObject.Load(id)
 end
 
 --- BulkSave event function.
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @return ...
 --- @package
 function GameObject.BulkSave()
@@ -168,7 +168,7 @@ function GameObject.BulkSave()
 end
 
 --- BulkLoad event function.
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param data any Object data
 --- @package
 function GameObject.BulkLoad(data)

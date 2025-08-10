@@ -30,16 +30,23 @@ local paths = require("_paths");
 -- @see _hook.Add
 
 --- @class _waves
---- @field WaveSpawnerManager table<WaveSpawner, boolean>
---- @field WaveSpawner WaveSpawner
 local M = {}
+
+--- @class WaveSpawner : CustomSavableType
+--- @field name string Only used for debugging/logging.
+--- @field factions table A list of factions from which a random will be selected.
+--- @field locations table A list of locations where waves can spawn, considered if the name is not the same as a faction name, or it is the same as a selected faction.
+--- @field wave_frequency number
+--- @field waves_left number
+--- @field timer number Internal timer for wave spawning.
+--- @field variance number Wave frequency variance, percentage of wave_frequency.
+--- @field c_variance number Next wave variance, calculated from wave_frequency and variance.
+--- @field wave_types table Array of weighted formation tables
+local WaveSpawner = { __type = "WaveSpawner" }
 
 local WaveSpawnerManagerWeakList_MT = {}
 WaveSpawnerManagerWeakList_MT.__mode = "k"
 local WaveSpawnerManagerWeakList = setmetatable({}, WaveSpawnerManagerWeakList_MT)
-
-local WaveSpawner;
-
 
 local isIn
 isIn = function(element, list)
@@ -209,19 +216,7 @@ function M.new(name, factions, locations, wave_frequency, waves_left, variance, 
     return Construct(name, factions, locations, wave_frequency, waves_left, variance, wave_types)
 end
 
---- @class WaveSpawner : CustomSavableType
---- @field name string
---- @field waves_left number
---- @field wave_frequency number
---- @field timer number
---- @field variance number
---- @field c_variance number
---- @field wave_types table
---- @field factions table
---- @field locations table
-local WaveSpawner = { __type = "WaveSpawner" }
-
---- Checks if the WaveSpawner is alive.
+--- Checks if the WaveSpawner is alive. (Has waves left to spawn)
 --- @param self WaveSpawner
 --- @return boolean
 function WaveSpawner.IsAlive(self)
@@ -229,11 +224,18 @@ function WaveSpawner.IsAlive(self)
 end
 
 --- Saves the WaveSpawner state.
---- 
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param self WaveSpawner
---- @return string, table, table, number, number, number, number, number, table
-function WaveSpawner.Save(self)
+--- @return string name
+--- @return table factions
+--- @return table locations
+--- @return number wave_frequency
+--- @return number waves_left
+--- @return number timer
+--- @return number variance
+--- @return number c_variance
+--- @return table wave_types
+function WaveSpawner:Save(self)
     return self.name,
         self.factions,
         self.locations,
@@ -246,8 +248,7 @@ function WaveSpawner.Save(self)
 end
 
 --- Loads the WaveSpawner state.
---- 
---- INTERNAL USE.
+--- {INTERNAL USE}
 --- @param name string
 --- @param factions table
 --- @param locations table
@@ -257,6 +258,7 @@ end
 --- @param variance number
 --- @param c_variance number
 --- @param wave_types table
+--- @return WaveSpawner
 function WaveSpawner.Load(name, factions, locations, wave_frequency, waves_left, timer, variance, c_variance, wave_types)
     local retVal = Construct(name, factions, locations, wave_frequency, waves_left, variance, wave_types);
     retVal.timer = timer;

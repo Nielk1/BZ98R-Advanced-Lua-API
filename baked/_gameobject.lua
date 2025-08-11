@@ -44,14 +44,34 @@ local GameObjectSeqNoDeadMemo = setmetatable({}, GameObjectWeakList_MT); -- maps
 local GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 function GameObject.__index(dtable, key)
+    --local retVal = rawget(dtable, key);
+    --if retVal ~= nil then return retVal; end
+    --local addonData = rawget(dtable, "addonData");
+    --if addonData ~= nil then
+    --    retVal = rawget(rawget(dtable, "addonData"), key);
+    --    if retVal ~= nil then return retVal; end
+    --end
+    --return rawget(GameObject, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+
+    -- local table takes priority
     local retVal = rawget(dtable, key);
-    if retVal ~= nil then return retVal; end
-    local addonData = rawget(dtable, "addonData");
-    if addonData ~= nil then
-        retVal = rawget(rawget(dtable, "addonData"), key);
-        if retVal ~= nil then return retVal; end
+    if retVal ~= nil then
+        return retVal;
     end
-    return rawget(GameObject, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+
+    -- next check the addonData table
+    if rawget(dtable, "addonData") ~= nil and rawget(rawget(dtable, "addonData"), key) ~= nil then
+        return rawget(rawget(dtable, "addonData"), key);
+    end
+
+    -- next check the metatable
+    local mt = getmetatable(dtable)
+    local retVal = mt and rawget(mt, key)
+    if retVal ~= nil then
+        return retVal
+    end
+
+    return nil;
 end
 function GameObject.__newindex(dtable, key, value)
     if key == "addonData" then
@@ -67,7 +87,7 @@ function GameObject.__newindex(dtable, key, value)
         rawset(addonData, key, value);
         local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
         GameObjectAltered[objectId] = dtable;
-        -- @todo consider removing object from GameObjectAltered if addonData is empty
+        --- @todo consider removing object from GameObjectAltered if addonData is empty
     else
         rawset(dtable, key, value);
     end

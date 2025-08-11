@@ -171,22 +171,42 @@ local StateMachineIter = {}; -- the table representing the class, which will dou
 
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
 StateMachineIter.__index = function(table, key)
-  local retVal = rawget(table, key);
-  if retVal ~= nil then return retVal; end
-  if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then return rawget(rawget(table, "addonData"), key); end
-  return rawget(StateMachineIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+    --local retVal = rawget(table, key);
+    --if retVal ~= nil then return retVal; end
+    --if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then return rawget(rawget(table, "addonData"), key); end
+    --return rawget(StateMachineIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+    
+    -- local table takes priority
+    local retVal = rawget(table, key);
+    if retVal ~= nil then
+        return retVal;
+    end
+
+    -- next check the addonData table
+    if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then
+        return rawget(rawget(table, "addonData"), key);
+    end
+
+    -- next check the metatable
+    local mt = getmetatable(table)
+    local retVal = mt and rawget(mt, key)
+    if retVal ~= nil then
+        return retVal
+    end
+
+    return nil;
 end
 StateMachineIter.__newindex = function(table, key, value)
-  if key ~= "template" and key ~= "state_key" and key ~= "target_call" and key ~= "target_time" and key ~= "set_wait_time" and key ~= "addonData" then
-    local addonData = rawget(table, "addonData");
-    if addonData == nil then
-      rawset(table, "addonData", {});
-      addonData = rawget(table, "addonData");
+    if key ~= "template" and key ~= "state_key" and key ~= "target_call" and key ~= "target_time" and key ~= "set_wait_time" and key ~= "addonData" then
+        local addonData = rawget(table, "addonData");
+        if addonData == nil then
+            rawset(table, "addonData", {});
+            addonData = rawget(table, "addonData");
+        end
+        rawset(addonData, key, value);
+    else
+        rawset(table, key, value);
     end
-    rawset(addonData, key, value);
-  else
-    rawset(table, key, value);
-  end
 end
 StateMachineIter.__type = "StateMachineIter";
 

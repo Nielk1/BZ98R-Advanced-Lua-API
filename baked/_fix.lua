@@ -2,15 +2,13 @@
 ---
 --- Contains fixes for bugs in the game's lua implementation and other polyfils.
 --- 
---- <ul>
---- <li><b>Polyfill:</b> <code>table.unpack</code> for Lua 5.1 compatibility</li>
---- <li><b>Fix/Polyfill:</b> Remap <code>SettLabel</code> to <code>SetLabel</code> for BZ1.5</li>
---- <li><b>Fix:</b> Works around the possible stuck iterator in <code>ObjectiveObjects</code></li>
---- <li><b>Fix/Polyfill:</b> TeamSlot missing "PORTAL" = 90</li>
---- <li><b>Fix:</b> Tugs not respecting DropOff command due to invalid deploy state</li>
---- <li><b>Fix/Polyfill:</b> Fix for broken <code>Formation</code> order function</li>
---- <li><b>Fix:</b> Powerups not using thrusters when falling if on an AI team</li>
---- </ul>
+--- * **Polyfill:** `table.unpack` for Lua 5.1 compatibility
+--- * **Fix/Polyfill:** Remap `SettLabel` to `SetLabel` for BZ1.5
+--- * **Fix:** Works around the possible stuck iterator in `ObjectiveObjects`
+--- * **Fix/Polyfill:** TeamSlot missing "PORTAL" = 90
+--- * **Fix:** Tugs not respecting DropOff command due to invalid deploy state
+--- * **Fix/Polyfill:** Fix for broken `Formation` order function
+--- * **Fix:** Powerups not using thrusters when falling if on an AI team
 ---
 --- @module '_fix'
 --- @author John "Nielk1" Klein

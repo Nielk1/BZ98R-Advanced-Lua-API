@@ -76,6 +76,22 @@ M_MT.__index = function(table, key)
 end
 M = setmetatable(M, M_MT);
 
+local keys = {"game", "lua", "api", "bzcp", "shim"};
+local labels = {"Game", "Lua", "API", "BZCP", "BZCP Shim"};
+
+--- Iterate all versions in a simple format.
+--- This function returns an iterator that yields key, label, and version for each version token.
+--- @return fun(): (key: string, label: string, version: string|integer) Iterator function iterating over all versions for easy output
+function M.All()
+    return coroutine.wrap(function()
+        for i, key in ipairs(keys) do
+            local value = M[key];
+            if value ~= nil then
+                coroutine.yield(key, labels[i], value);
+            end
+        end
+    end);
+end
 
 -- Split version string into tokens: numbers and letters
 local function version_tokens(version)

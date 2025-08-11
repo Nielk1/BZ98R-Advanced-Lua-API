@@ -45,7 +45,7 @@ local M = {}
 local WaveSpawner = {};
 
 WaveSpawner.__index = function(tbl, key)
-    -- local table takes priority (this is how base is accessed)
+    -- local table takes priority
     local retVal = rawget(tbl, key);
     if retVal ~= nil then
         return retVal;
@@ -75,7 +75,7 @@ WaveSpawner.__newindex = function(tbl, key, value)
     --else
     --    rawset(tbl, key, value);
     --end
-    
+
     -- Call base class's __newindex if it exists
     -- This is correct as we store custom data in the base class's addonData subtable
     -- Our top level is only good for functions, nothing else
@@ -84,7 +84,7 @@ WaveSpawner.__newindex = function(tbl, key, value)
     if __base and __base.__newindex then
         return __base.__newindex(tbl, key, value)
     end
-  
+
     -- fallback: rawset if base doesn't handle it
     rawset(tbl, key, value)
 end

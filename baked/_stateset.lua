@@ -131,22 +131,42 @@ end
 --- @field addonData table Custom context data stored in the StateSetRunner
 local StateSetRunner = {}; -- the table representing the class, which will double as the metatable for the instances
 StateSetRunner.__index = function(table, key)
-  local retVal = rawget(table, key);
-  if retVal ~= nil then return retVal; end
-  if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then return rawget(rawget(table, "addonData"), key); end
-  return rawget(StateSetRunner, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+    --local retVal = rawget(table, key);
+    --if retVal ~= nil then return retVal; end
+    --if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then return rawget(rawget(table, "addonData"), key); end
+    --return rawget(StateSetRunner, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
+
+    -- local table takes priority
+    local retVal = rawget(table, key);
+    if retVal ~= nil then
+        return retVal;
+    end
+
+    -- next check the addonData table
+    if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then
+        return rawget(rawget(table, "addonData"), key);
+    end
+
+    -- next check the metatable
+    local mt = getmetatable(table)
+    local retVal = mt and rawget(mt, key)
+    if retVal ~= nil then
+        return retVal
+    end
+
+    return nil;
 end
 StateSetRunner.__newindex = function(table, key, value)
-  if key ~= "template" and key ~= "active_states" and key ~= "addonData" then
-    local addonData = rawget(table, "addonData");
-    if addonData == nil then
-      rawset(table, "addonData", {});
-      addonData = rawget(table, "addonData");
+    if key ~= "template" and key ~= "active_states" and key ~= "addonData" then
+        local addonData = rawget(table, "addonData");
+        if addonData == nil then
+            rawset(table, "addonData", {});
+            addonData = rawget(table, "addonData");
+        end
+        rawset(addonData, key, value);
+    else
+        rawset(table, key, value);
     end
-    rawset(addonData, key, value);
-  else
-    rawset(table, key, value);
-  end
 end
 StateSetRunner.__type = "StateSetRunner";
 

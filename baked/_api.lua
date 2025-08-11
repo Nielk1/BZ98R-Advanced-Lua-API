@@ -614,32 +614,12 @@ end
 
 logger.print(logger.LogLevel.DEBUG, nil, "_api Loaded");
 
-local version_game = version.game;
-local version_lua = version.lua;
-local version_api = version.api;
-local version_bzcp = version.bzcp;
-local version_shim = version.shim;
-
 print("Versions:")
-if version_game then
-    print("  Game: " .. version_game);
-else
-    print("  Game: ????");
-end
-if version_lua then
-    print("  Lua: " .. version_lua);
-else
-    print("  Lua: ????");
-end
-if version_api then
-    print("  API: " .. version_api);
-else
-    print("  API: ????");
-end
-if version_bzcp then
-    print("  BZCP: " .. version_bzcp);
-    if version_shim then
-        print("  BZCP Shim: " .. tostring(version_shim));
+for _,l,v in version.All() do
+    if v then
+        print("  " .. l .. ": " .. tostring(v));
+    else
+        print("  " .. l .. ": ????");
     end
 end
 

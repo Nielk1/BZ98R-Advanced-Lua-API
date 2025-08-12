@@ -215,7 +215,7 @@ local _api = {};
 
 --- @vararg any data
 --- @return any ...
-function SimplifyForSave(...)
+local function SimplifyForSave(...)
     local output = {...}; -- output array
     local ArraySize = 0;
     for k,v in pairs(output) do
@@ -272,7 +272,7 @@ local LoadUUIDToTable = nil;
 
 --- @vararg any data
 --- @return any ...
-function DeSimplifyForLoad(...)
+local function DeSimplifyForLoad(...)
     local output = {...}; -- output array
     local ArraySize = 0;
     for k,v in pairs(output) do
@@ -346,7 +346,7 @@ end
 --- [[START_IGNORE]]
 
 --- Save is called when you save a game
-function Save()
+local function _Save()
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Save()");
     CustomTypeMap = {};
     RefUUIID = 1;
@@ -412,7 +412,7 @@ function Save()
 end
 
 --- Load is called when you load a game, or when a Resync is loaded.
-function Load(...)
+local function _Load(...)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Load()");
     local args = ...;
 
@@ -472,7 +472,7 @@ end
 
 --- Called when the mission starts for the first time.
 --- Use this function to perform any one-time script initialization.
-function Start()
+local function _Start()
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Start()");
     
     --- @diagnostic disable-next-line: deprecated
@@ -488,7 +488,7 @@ end
 --- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
 --- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
 --- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
-function GameKey(key)
+local function _GameKey(key)
     logger.print(logger.LogLevel.TRACE, nil, "_api::GameKey('" .. key .. "')");
     hook.CallAllNoReturn( "GameKey", key );
     logger.print(logger.LogLevel.TRACE, nil, "_api::/GameKey");
@@ -498,7 +498,7 @@ end
 --- Handle is the game object that was created.
 --- This function will get a lot of traffic so it should not do too much work.
 --- Note that many game object functions may not work properly here.
-function CreateObject(h)
+local function _CreateObject(h)
     logger.print(logger.LogLevel.TRACE, nil, "_api::CreateObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h) );
     logger.print(logger.LogLevel.TRACE, nil, "_api::/CreateObject");
@@ -508,7 +508,7 @@ end
 --- Handle is the game object that was created.
 --- This function will get a lot of traffic so it should not do too much work.
 --- Note that many game object functions may not work properly here.
-function AddObject(h)
+local function _AddObject(h)
     logger.print(logger.LogLevel.TRACE, nil, "_api::AddObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "AddObject", gameobject.FromHandle(h) );
     logger.print(logger.LogLevel.TRACE, nil, "_api::/AddObject");
@@ -518,7 +518,7 @@ end
 --- Handle is the game object to be deleted.
 --- This function will get a lot of traffic so it should not do too much work.
 --- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
-function DeleteObject(h)
+local function _DeleteObject(h)
     logger.print(logger.LogLevel.TRACE, nil, "_api::DeleteObject(" .. tostring(h) .. ")");
     hook.CallAllNoReturn( "DeleteObject", gameobject.FromHandle(h) );
     logger.print(logger.LogLevel.TRACE, nil, "_api::/DeleteObject");
@@ -526,7 +526,7 @@ end
 
 --- Called once per tick after updating the network system and before simulating game objects.
 --- This function performs most of the mission script's game logic.
-function Update(dtime)
+local function _Update(dtime)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Update()");
 
     --local start = GetTimeNow();
@@ -544,7 +544,7 @@ end
 --- @param id integer DPID number for this player
 --- @param name string name for this player
 --- @param team integer Team number for this player
-function CreatePlayer(id, name, team)
+local function _CreatePlayer(id, name, team)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("CreatePlayer", id, name, team);
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/CreatePlayer");
@@ -554,7 +554,7 @@ end
 --- @param id integer DPID number for this player
 --- @param name string name for this player
 --- @param team integer Team number for this player
-function AddPlayer(id, name, team)
+local function _AddPlayer(id, name, team)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("AddPlayer", id, name, team);
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/AddPlayer");
@@ -564,7 +564,7 @@ end
 --- @param id integer DPID number for this player
 --- @param name string name for this player
 --- @param team integer Team number for this player
-function DeletePlayer(id, name, team)
+local function _DeletePlayer(id, name, team)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
     hook.CallAllNoReturn("DeletePlayer", id, name, team);
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/DeletePlayer");
@@ -572,7 +572,7 @@ end
 
 --- Command
 --- @param command string the command string
-function Command(command, ...)
+local function _Command(command, ...)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Command('" .. command .. "')");
     local args = ...;
     logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
@@ -587,7 +587,7 @@ end
 --- @param from integer x
 --- @param type string x
 --- @tparam ... data
-function Receive(from, type, ...)
+local function _Receive(from, type, ...)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Receive(" .. from .. ", '" .. type .. "')");
     local args = ...;
     logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
@@ -598,7 +598,77 @@ function Receive(from, type, ...)
     return retVal;
 end
 
+local WrappedEventCounter = 0;
+
 --- [[END_IGNORE]]
+
+--- Fix any base mission callbacks that are not using the new event system.
+--- This will wrap the existing functions in the hook system and replace them with the hook triggering wrappers.
+--- This is called automatically when the API is loaded but can be called again at the end of a script to ensure that all events are wrapped.
+--- If you are already purely using events then you do not need to call this function.
+function _api.FixEvents()
+    --- [[START_IGNORE]]
+    local WrappedAnEvent = false;
+
+    if _G["Save"] ~= _Save or _G["Load"] ~= _Load then
+        local SaveMap = _G["Save"] ~= _Save and _G["Save"] or nil;
+        local LoadMap = _G["Load"] ~= _Load and _G["Load"] or nil;
+        if SaveMap or LoadMap then
+            logger.print(logger.LogLevel.DEBUG, nil, "Wrapping Existing Save/Load functions");
+            hook.AddSaveLoad("OLD_" .. tostring(WrappedEventCounter), SaveMap, LoadMap);
+            WrappedAnEvent = true;
+        end
+        _G["Save"] = _Save;
+        _G["Load"] = _Load;
+    end
+
+    local function wrapEvent(globalName, eventName, newFunc, argTransform)
+        if _G[globalName] ~= newFunc then
+            if _G[globalName] then
+                logger.print(logger.LogLevel.DEBUG, nil, "Wrapping Existing " .. globalName .. " event");
+                local oldFunc = _G[globalName];
+                if argTransform then
+                    hook.Add(eventName, "OLD_" .. tostring(WrappedEventCounter) .. "_" .. globalName, function(...)
+                        oldFunc(argTransform(...));
+                    end);
+                else
+                    -- if no arg transform, just pass it straight through
+                    hook.Add(eventName, "OLD_" .. tostring(WrappedEventCounter) .. "_" .. globalName, oldFunc);
+                end
+                WrappedAnEvent = true;
+            end
+            _G[globalName] = newFunc;
+        end
+    end
+
+    -- Transform function for GameObject events
+    local function handleTransform(h, ...)
+        if h and h.GetHandle then
+            return h:GetHandle(), ...
+        end
+        return h, ...
+    end
+
+    wrapEvent("Start", "Start", _Start)
+    wrapEvent("GameKey", "GameKey", _GameKey)
+    wrapEvent("CreateObject", "CreateObject", _CreateObject, handleTransform)
+    wrapEvent("AddObject", "AddObject", _AddObject, handleTransform)
+    wrapEvent("DeleteObject", "DeleteObject", _DeleteObject, handleTransform)
+    wrapEvent("Update", "Update", _Update)
+    wrapEvent("CreatePlayer", "CreatePlayer", _CreatePlayer)
+    wrapEvent("AddPlayer", "AddPlayer", _AddPlayer)
+    wrapEvent("DeletePlayer", "DeletePlayer", _DeletePlayer)
+    wrapEvent("Command", "Command", _Command)
+    wrapEvent("Receive", "Receive", _Receive)
+
+    if WrappedAnEvent then
+        WrappedEventCounter = WrappedEventCounter + 1;
+    end
+
+    --- [[END_IGNORE]]
+end
+
+_api.FixEvents();
 
 --- @section Script Run
 

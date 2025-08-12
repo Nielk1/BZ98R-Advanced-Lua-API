@@ -4,6 +4,8 @@
 ---
 --- @module 'ScriptUtils'
 
+error("This is a stub for ScriptUtils, it does not contain any functionality. Do not include this file in your mod.");
+
 --- #section Types
 --- Type declarations
 
@@ -65,6 +67,136 @@ LanguageSuffix = "en";
 --- Contains the most recently pressed game key (e.g. "Ctrl+Z")
 --- @type string
 LastGameKey = "Ctrl+Z";
+
+--- #section Callbacks
+--- These are functions you are expected to implement in your script.
+--- The game will call these functions if they exist for game logic events.
+
+--- Save is called when you save a game
+--- #callback
+--- @return any ...
+--- @deprecated See `_api` module events.
+function Save()
+    error("This function is called by the engine.");
+end
+
+--- Load is called when you load a game, or when a Resync is loaded.
+--- #callback
+--- @vararg any
+--- @deprecated See `_api` module events.
+function Load(...)
+    error("This function is called by the engine.");
+end
+
+--- Called when the mission starts for the first time.
+--- Use this function to perform any one-time script initialization.
+--- #callback
+--- @deprecated See `_api` module events.
+function Start()
+    error("This function is called by the engine.");
+end
+
+--- Called any time a game key is pressed.
+--- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
+--- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
+--- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
+--- #callback
+--- @param key string The key that was pressed.
+--- @deprecated See `_api` module events.
+function GameKey(key)
+    error("This function is called by the engine.");
+end
+
+--- Called after any game object is created.
+--- Handle is the game object that was created.
+--- This function will get a lot of traffic so it should not do too much work.
+--- Note that many game object functions may not work properly here.
+--- #callback
+--- @param h Handle The game object handle that was created.
+--- @deprecated See `_api` module events.
+function CreateObject(h)
+    error("This function is called by the engine.");
+end
+
+--- Called after any game object is created.
+--- Handle is the game object that was created.
+--- This function will get a lot of traffic so it should not do too much work.
+--- Note that many game object functions may not work properly here.
+--- #callback
+--- @param h Handle The game object handle that was created.
+--- @deprecated See `_api` module events.
+function AddObject(h)
+    error("This function is called by the engine.");
+end
+
+--- Called before a game object is deleted.
+--- Handle is the game object to be deleted.
+--- This function will get a lot of traffic so it should not do too much work.
+--- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+--- #callback
+--- @param h Handle The game object handle to be deleted.
+--- @deprecated See `_api` module events.
+function DeleteObject(h)
+    error("This function is called by the engine.");
+end
+
+--- Called once per tick after updating the network system and before simulating game objects.
+--- This function performs most of the mission script's game logic.
+--- #callback
+--- @param dtime number The time since the last tick in seconds.
+--- @deprecated See `_api` module events.
+function Update(dtime)
+    error("This function is called by the engine.");
+end
+
+--- Called when a player joins the game world.
+--- #callback
+--- @param id integer DPID number for this player
+--- @param name string name for this player
+--- @param team integer Team number for this player
+--- @deprecated See `_api` module events.
+function CreatePlayer(id, name, team)
+    error("This function is called by the engine.");
+end
+
+--- Called when a player joins the game world.
+--- #callback
+--- @param id integer DPID number for this player
+--- @param name string name for this player
+--- @param team integer Team number for this player
+--- @deprecated See `_api` module events.
+function AddPlayer(id, name, team)
+    error("This function is called by the engine.");
+end
+
+--- Called when a player leaves the game world.
+--- #callback
+--- @param id integer DPID number for this player
+--- @param name string name for this player
+--- @param team integer Team number for this player
+--- @deprecated See `_api` module events.
+function DeletePlayer(id, name, team)
+    error("This function is called by the engine.");
+end
+
+--- Command
+--- #callback
+--- @param command string the command string
+--- @vararg any additional arguments
+--- @deprecated See `_api` module events.
+function Command(command, ...)
+    error("This function is called by the engine.");
+end
+
+--- Receive
+--- #callback
+--- @param from integer x
+--- @param type string x
+--- @vararg any data
+--- @deprecated See `_api` module events.
+function Receive(from, type, ...)
+    error("This function is called by the engine.");
+end
 
 --- #section Audio Messages
 --- These functions control audio messages, 2D sounds typically used for radio messages, voiceovers, and narration.
@@ -384,6 +516,7 @@ end
 --- @param h Handle
 --- @param threshold number? float
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsDamaged(h, threshold)
     error("This function is provided by the engine.");
 end
@@ -393,6 +526,7 @@ end
 --- @param h Handle
 --- @param team TeamNum
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsRecycledByTeam(h, team)
     error("This function is provided by the engine.");
 end
@@ -435,11 +569,13 @@ function SetPerceivedTeam(h, t) end
 --- These function get and set a unit's target.
 
 --- Sets the local player's target.
+--- @todo confirm target can be nil, if it can't this should be depricated
 --- @param t Handle
 function SetUserTarget(t) end
 
 --- Returns the local player's target. Returns nil if it has none.
 --- @return Handle?
+--- @deprecated See `_gameobject` module.
 function GetUserTarget()
     error("This function is provided by the engine.");
 end
@@ -447,11 +583,13 @@ end
 --- Sets the game object's target.
 --- @param h Handle
 --- @param t Handle
+--- @deprecated See `_gameobject` module.
 function SetTarget(h, t) end
 
 --- Returns the game object's target. Returns nil if it has none.
 --- @param h Handle
 --- @return Handle?
+--- @deprecated See `_gameobject` module.
 function GetTarget(h)
     error("This function is provided by the engine.");
 end
@@ -463,11 +601,13 @@ end
 --- @todo confirm o can be nil
 --- @param h Handle
 --- @param o Handle?
+--- @deprecated See `_gameobject` module.
 function SetOwner(h, o) end
 
 --- Returns the game object's owner. Returns nil if it has none.
 --- @param h Handle
 --- @return Handle?
+--- @deprecated See `_gameobject` module.
 function GetOwner(h)
     error("This function is provided by the engine.");
 end
@@ -1141,6 +1281,7 @@ function Deploy(h) end
 --- Returns true if the game object is selected. Returns false otherwise.
 --- @param h Handle
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsSelected(h)
     error("This function is provided by the engine.");
 end
@@ -1153,6 +1294,7 @@ end
 --- {VERSION 2.0+}
 --- @param h Handle
 --- @return boolean
+--- @deprecated See `_gameobject` module.
 function IsCritical(h)
     error("This function is provided by the engine.");
 end
@@ -1162,6 +1304,7 @@ end
 --- {VERSION 2.0+}
 --- @param h Handle
 --- @param critical boolean?
+--- @deprecated See `_gameobject` module.
 function SetCritical(h, critical) end
 
 --- #section Weapon
@@ -1347,11 +1490,10 @@ function StopEarthquake() end
 --- #section Path Type
 --- These functions get and set the looping type of a path.
 --- Looking up the path type number in the PathType table will convert it to a string. Looking up the path type string in the PathType table will convert it to a number.
---- <ul>
----     <li>0: one-way</li>
----     <li>1: round-trip</li>
----     <li>2: loop</li>
---- </ul>
+--- 
+--- 0. one-way
+--- 1. round-trip
+--- 2. loop
 
 --- Changes the named path to the given path type.
 --- {VERSION 2.0+}
@@ -2300,22 +2442,6 @@ function Vector.__sub(v1, v2)
     error("This function is provided by the engine.");
 end
 
---- Multiply a number by a vector.
---
--- Equivalent to SetVector( number * vector.x, number * vector.y, number * vector.z).
--- @tparam number number
--- @tparam Vector vector
--- @treturn Vector
--- @function Vector.__mul
-
---- Multiply a vector by a number.
---
--- Equivalent to SetVector(vector.x * number, vector.y * number, vector.z * number).
--- @tparam Vector vector
--- @tparam number number
--- @treturn Vector
--- @function Vector.__mul
-
 --- Multiply two vectors.
 --
 -- Equivlent to SetVector(vector1.x * vector2.x, vector1.y * vector2.y, vector1.z * vector2.z)
@@ -2341,30 +2467,6 @@ end
 function Vector.__mul(a, b)
     error("This function is provided by the engine.");
 end
-
---- Divide a number by a vector.
---
--- Equivalent to SetVector( number / vector.x, number / vector.y, number / vector.z).
--- @tparam number number
--- @tparam vector vector
--- @treturn Vector
--- @function Vector.__div
-
---- Divide a vector by a number.
---
--- Equivalent to SetVector(vector.x / number, vector.y / number, vector.z / number).
--- @tparam vector vector
--- @tparam number number
--- @treturn Vector
--- @function Vector.__div
-
---- Divide two vectors.
---
--- Equivalent to SetVector(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z)
--- @tparam vector vector1
--- @tparam vector vector2
--- @treturn Vector
--- @function Vector.__div
 
 --- Divide a vector by a number, number by a vector, or vector by a vector.
 ---
@@ -2512,26 +2614,31 @@ end
 
 --- Sets the specified Portal direction to "out", indicated by a blue visual effect while active.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param portal Handle
 function PortalOut(portal) end
 
 --- Sets the specified Portal direction to "in", indicated by an orange visual effect while active.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param portal Handle
 function PortalIn(portal) end
 
 --- Deactivates the specified Portal, stopping the visual effect.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param portal Handle
 function DeactivatePortal(portal) end
 
 --- Activates the specified Portal, starting the visual effect.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param portal Handle
 function ActivatePortal(portal) end
 
 --- Returns true if the specified Portal direction is "in". Returns false otherwise.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param portal Handle
 --- @return boolean
 function IsIn(portal)
@@ -2541,6 +2648,7 @@ end
 --- Returns true if the specified Portal is active. Returns false otherwise.
 --- Important: note the capitalization!
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param portal Handle
 --- @return boolean
 --- @diagnostic disable-next-line: lowercase-global
@@ -2551,6 +2659,7 @@ end
 --- Creates a game object with the given odf name and team number at the location of a portal.
 --- The object is created at the location of the visual effect and given a 50 m/s initial velocity.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param odfname string
 --- @param teamnum TeamNum
 --- @param portal Handle
@@ -2566,27 +2675,32 @@ end
 --- Makes the specified unit cloak if it can.
 --- Note: unlike SetCommand(h, AiCommand.CLOAK), this does not change the unit's current command.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 function Cloak(h) end
 
 --- Makes the specified unit de-cloak if it can.
 --- Note: unlike SetCommand(h, AiCommand.DECLOAK), this does not change the unit's current command.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 function Decloak(h) end
 
 --- Instantly sets the unit as cloaked (with no fade out).
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 function SetCloaked(h) end
 
 --- Instant sets the unit as uncloaked (with no fade in).
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 function SetDecloaked(h) end
 
 --- Returns true if the unit is cloaked. Returns false otherwise
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 --- @return boolean
 function IsCloaked(h)
@@ -2612,11 +2726,13 @@ function EnableAllCloaking(enable) end
 
 --- Hides a game object.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 function Hide(h) end
 
 --- Un-hides a game object.
 --- {VERSION 2.1+}
+--- @deprecated See `_gameobject` module.
 --- @param h Handle
 function UnHide(h) end
 

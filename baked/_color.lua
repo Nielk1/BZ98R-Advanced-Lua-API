@@ -1,6 +1,6 @@
 --- BZ98R LUA Extended API Color.
 ---
---- Crude custom type to make data not save/load exploiting the custom type system.
+--- Collection of color enumerations and functions.
 ---
 --- @module '_color'
 --- @author John "Nielk1" Klein

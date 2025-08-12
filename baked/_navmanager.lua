@@ -240,7 +240,7 @@ function M.AllNavGameObjects(team, include_overflow)
     return iter
 end
 
---- #section NavManager - Core
+--- @section NavManager - Core
 
 hook.Add("CreateObject", "_navmanager_CreateObject", function(object, isMapObject)
     if not DisableAutomaticNavAdding and object:GetClassSig() == "CPOD" then

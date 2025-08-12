@@ -40,29 +40,7 @@ M.CustomSavableTypes = {};
 --- @param obj CustomSavableType
 function M.Register(obj)
     if obj == nil or obj.__type == nil then error("Custom type malformed, no __type"); end
-    local typeT = {};
-    if obj.Save ~= nil then
-        typeT.Save = obj.Save;
-    --else
-    --    typeT.Save = function() end
-    end
-    if obj.Load ~= nil then
-        typeT.Load = obj.Load;
-    --else
-    --    typeT.Load = function() end
-    end
-    if obj.TypeSave ~= nil then
-        typeT.TypeSave = obj.TypeSave;
-    --else
-    --    typeT.TypeSave = function() end
-    end
-    if obj.TypeLoad ~= nil then
-        typeT.TypeLoad = obj.TypeLoad;
-    --else
-    --    typeT.TypeLoad = function() end
-    end
-    typeT.__type = obj.__type;
-    M.CustomSavableTypes[obj.__type] = typeT;
+    M.CustomSavableTypes[obj.__type] = obj;
 end
 
 --- Does this custom savable type implement the given type?
@@ -97,7 +75,7 @@ end
 
 M = setmetatable(M, M_MT);
 
---- #section MapData - Core
+--- @section MapData - Core
 
 logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loaded");
 

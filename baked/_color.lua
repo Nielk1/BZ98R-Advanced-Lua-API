@@ -169,7 +169,7 @@ function M.GetClosestColorCode(color)
     return RGBGetClosestGameColor(r, g, b);
 end
 
---- #section Ansi Color Escape Codes
+--- @section Ansi Color Escape Codes
 
 --- Ansi color codes for terminal output sorted by game color codes.
 --- @type table<ColorLabel, string>

@@ -143,7 +143,7 @@ function M.ReplaceObjective(oldname, name, color, duration, text, position, pers
     end
 end
 
---- #section Objective - Core
+--- @section Objective - Core
 
 hook.AddSaveLoad("_objective", function()
     return allObjectives, nextId;

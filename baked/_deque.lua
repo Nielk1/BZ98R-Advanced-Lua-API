@@ -300,7 +300,7 @@ local new = function()
     return setmetatable(r, {__index = methods})
 end
 
---- #section Deque - Core
+--- @section Deque - Core
 
 --- Save event function.
 --- {INTERNAL USE}

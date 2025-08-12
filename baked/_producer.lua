@@ -32,7 +32,7 @@ local color = require("_color");
 --- @class _producer
 local M = {};
 
---- #section Producer - Data
+--- @section Producer - Data
 
 --- @type TeamSlotInteger[]
 local ProducerTeamSlots = {
@@ -80,7 +80,7 @@ local ProducerOrders = {};
 -- 3. If the producer is available and the top priority item fails a soft-condition, it should do nothing and wait.
 --    * Not Enough Scrap
 
---- #section Producer - Memos
+--- @section Producer - Memos
 
 --- Memo of sets of producer odfs keyed by the built odf.
 --- @type table<string, table<string, boolean>>
@@ -97,7 +97,7 @@ local ProducerCache = {};
 --- @type table<TeamNum, boolean?>
 local ProducersDirty = {};
 
---- #section Producer - Logic
+--- @section Producer - Logic
 local c = color.AnsiColorEscapeMap;
 
 local function ToStringJobFragment(job)
@@ -499,7 +499,7 @@ function M.QueueJob(odf, team, location, builder, data)
     PrintQueue(team);
 end
 
---- #section Producer - Core
+--- @section Producer - Core
 
 hook.Add("CreateObject", "_producer_CreateObject", function(object, isMapObject)
     --- @cast object GameObject

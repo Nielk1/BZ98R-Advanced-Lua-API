@@ -6,7 +6,7 @@
 
 error("This is a stub for ScriptUtils, it does not contain any functionality. Do not include this file in your mod.");
 
---- #section Types
+--- @section Types
 --- Type declarations
 
 --- A handle to a game object. This is a unique identifier for the object in the game world.
@@ -27,7 +27,7 @@ error("This is a stub for ScriptUtils, it does not contain any functionality. Do
 --- TeamSlot Integer
 --- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90
 
---- #section Globals
+--- @section Globals
 --- The Lua scripting system defines some global variables that can be of use to user scripts.
 
 --- Contains current build version
@@ -68,12 +68,12 @@ LanguageSuffix = "en";
 --- @type string
 LastGameKey = "Ctrl+Z";
 
---- #section Callbacks
+--- @section Callbacks
 --- These are functions you are expected to implement in your script.
 --- The game will call these functions if they exist for game logic events.
 
 --- Save is called when you save a game
---- #callback
+--- @callback
 --- @return any ...
 --- @deprecated See `_api` module events.
 function Save()
@@ -81,7 +81,7 @@ function Save()
 end
 
 --- Load is called when you load a game, or when a Resync is loaded.
---- #callback
+--- @callback
 --- @vararg any
 --- @deprecated See `_api` module events.
 function Load(...)
@@ -90,7 +90,7 @@ end
 
 --- Called when the mission starts for the first time.
 --- Use this function to perform any one-time script initialization.
---- #callback
+--- @callback
 --- @deprecated See `_api` module events.
 function Start()
     error("This function is called by the engine.");
@@ -100,7 +100,7 @@ end
 --- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
 --- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
 --- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
---- #callback
+--- @callback
 --- @param key string The key that was pressed.
 --- @deprecated See `_api` module events.
 function GameKey(key)
@@ -111,7 +111,7 @@ end
 --- Handle is the game object that was created.
 --- This function will get a lot of traffic so it should not do too much work.
 --- Note that many game object functions may not work properly here.
---- #callback
+--- @callback
 --- @param h Handle The game object handle that was created.
 --- @deprecated See `_api` module events.
 function CreateObject(h)
@@ -122,7 +122,7 @@ end
 --- Handle is the game object that was created.
 --- This function will get a lot of traffic so it should not do too much work.
 --- Note that many game object functions may not work properly here.
---- #callback
+--- @callback
 --- @param h Handle The game object handle that was created.
 --- @deprecated See `_api` module events.
 function AddObject(h)
@@ -133,7 +133,7 @@ end
 --- Handle is the game object to be deleted.
 --- This function will get a lot of traffic so it should not do too much work.
 --- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
---- #callback
+--- @callback
 --- @param h Handle The game object handle to be deleted.
 --- @deprecated See `_api` module events.
 function DeleteObject(h)
@@ -142,7 +142,7 @@ end
 
 --- Called once per tick after updating the network system and before simulating game objects.
 --- This function performs most of the mission script's game logic.
---- #callback
+--- @callback
 --- @param dtime number The time since the last tick in seconds.
 --- @deprecated See `_api` module events.
 function Update(dtime)
@@ -150,7 +150,7 @@ function Update(dtime)
 end
 
 --- Called when a player joins the game world.
---- #callback
+--- @callback
 --- @param id integer DPID number for this player
 --- @param name string name for this player
 --- @param team integer Team number for this player
@@ -160,7 +160,7 @@ function CreatePlayer(id, name, team)
 end
 
 --- Called when a player joins the game world.
---- #callback
+--- @callback
 --- @param id integer DPID number for this player
 --- @param name string name for this player
 --- @param team integer Team number for this player
@@ -170,7 +170,7 @@ function AddPlayer(id, name, team)
 end
 
 --- Called when a player leaves the game world.
---- #callback
+--- @callback
 --- @param id integer DPID number for this player
 --- @param name string name for this player
 --- @param team integer Team number for this player
@@ -180,7 +180,7 @@ function DeletePlayer(id, name, team)
 end
 
 --- Command
---- #callback
+--- @callback
 --- @param command string the command string
 --- @vararg any additional arguments
 --- @deprecated See `_api` module events.
@@ -189,7 +189,7 @@ function Command(command, ...)
 end
 
 --- Receive
---- #callback
+--- @callback
 --- @param from integer x
 --- @param type string x
 --- @vararg any data
@@ -198,7 +198,7 @@ function Receive(from, type, ...)
     error("This function is called by the engine.");
 end
 
---- #section Audio Messages
+--- @section Audio Messages
 --- These functions control audio messages, 2D sounds typically used for radio messages, voiceovers, and narration.
 --- Audio messages use the Voice Volume setting from the Audio Options menu.
 
@@ -230,7 +230,7 @@ function IsAudioMessagePlaying()
     error("This function is provided by the engine.");
 end
 
---- #section Sound Effects
+--- @section Sound Effects
 --- These functions control sound effects, either positional 3D sounds attached to objects or global 2D sounds.
 --- Sound effects use the Effects Volume setting from the Audio Options menu.
 
@@ -253,7 +253,7 @@ function StartSound(filename, h, priority, loop, volume, rate) end
 --- @param h Handle?
 function StopSound(filename, h) end
 
---- #section Game Object
+--- @section Game Object
 --- These functions create, manipulate, and query game objects (vehicles, buildings, people, powerups, and scrap) and return or take as a parameter a game object handle.
 --- Object handles are always safe to use, even if the game object itself is missing or destroyed.
 
@@ -531,7 +531,7 @@ function IsRecycledByTeam(h, team)
     error("This function is provided by the engine.");
 end
 
---- #section Team Number
+--- @section Team Number
 --- These functions get and set team number. Team 0 is the neutral or environment team.
 
 --- Returns the game object's team number.
@@ -565,7 +565,7 @@ end
 --- @deprecated See `_gameobject` module.
 function SetPerceivedTeam(h, t) end
 
---- #section Target
+--- @section Target
 --- These function get and set a unit's target.
 
 --- Sets the local player's target.
@@ -594,7 +594,7 @@ function GetTarget(h)
     error("This function is provided by the engine.");
 end
 
---- #section Owner
+--- @section Owner
 --- These functions get and set owner. The default owner for a game object is the game object that created it.
 
 --- Sets the game object's owner.
@@ -612,7 +612,7 @@ function GetOwner(h)
     error("This function is provided by the engine.");
 end
 
---- #section Pilot Class
+--- @section Pilot Class
 --- These functions get and set vehicle pilot class.
 
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
@@ -629,7 +629,7 @@ function GetPilotClass(h)
     error("This function is provided by the engine.");
 end
 
---- #section Position and Orientation
+--- @section Position and Orientation
 --- These functions get and set position and orientation.
 
 --- Teleports the game object to a target location.
@@ -670,7 +670,7 @@ function GetTransform(h)
     error("This function is provided by the engine.");
 end
 
---- #section Linear Velocity
+--- @section Linear Velocity
 --- These functions get and set linear velocity.
 
 --- Returns the game object's linear velocity vector. Returns nil if none exists.
@@ -687,7 +687,7 @@ end
 --- @deprecated See `_gameobject` module.
 function SetVelocity(h, velocity) end
 
---- #section Angular Velocity
+--- @section Angular Velocity
 --- These functions get and set angular velocity.
 
 --- Returns the game object's angular velocity vector. Returns nil if none exists.
@@ -704,7 +704,7 @@ end
 --- @deprecated See `_gameobject` module.
 function SetOmega(h, omega) end
 
---- #section Position Helpers
+--- @section Position Helpers
 --- These functions help generate position values close to a center point.
 
 --- Returns a ground position offset from the center by the radius in a direction controlled by the angle.
@@ -730,7 +730,7 @@ function GetPositionNear(center, minradius, maxradius)
     error("This function is provided by the engine.");
 end
 
---- #section Shot
+--- @section Shot
 --- These functions query a game object for information about ordnance hits.
 
 --- Returns who scored the most recent hit on the game object. Returns nil if none exists.
@@ -757,7 +757,7 @@ function GetLastFriendShot(h)
     error("This function is provided by the engine.");
 end
 
---- #section Alliances
+--- @section Alliances
 --- These functions control and query alliances between teams.
 --- The team manager assigns each player a separate team number, starting with 1 and going as high as 15. Team 0 is the neutral "environment" team.
 --- Unless specifically overridden, every team is friendly with itself, neutral with team 0, and hostile to everyone else.
@@ -800,7 +800,7 @@ function IsAlly(me, him)
     error("This function is provided by the engine.");
 end
 
---- #section Objective Marker
+--- @section Objective Marker
 --- These functions control objective markers.
 --- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
 
@@ -850,7 +850,7 @@ function SetObjectiveName(h, name) end
 --- @deprecated See `_gameobject` module.
 function SetName(h, name) end
 
---- #section Distance
+--- @section Distance
 --- These functions measure and return the distance between a game object and a reference point.
 
 --- Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
@@ -885,7 +885,7 @@ function IsTouching(h1, h2, tolerance)
     error("This function is provided by the engine.");
 end
 
---- #section Nearest
+--- @section Nearest
 --- These functions find and return the game object of the requested type closest to a reference point.
 
 --- Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
@@ -963,7 +963,7 @@ function CountUnitsNearObject(h, dist, team, odfname)
     error("This function is provided by the engine.");
 end
 
---- #section Iterators
+--- @section Iterators
 --- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
 
 --- Enumerates game objects within the given distance a target.
@@ -1005,7 +1005,7 @@ function ObjectiveObjects()
     error("This function is provided by the engine.");
 end
 
---- #section Scrap Management
+--- @section Scrap Management
 --- These functions remove scrap, either to reduce the global game object count or to remove clutter around a location.
 
 --- While the global scrap count is above the limit, remove the oldest scrap piece. It no limit is given, it uses the default limit of 300.
@@ -1019,7 +1019,7 @@ function GetRidOfSomeScrap(limit) end
 --- @param point integer?
 function ClearScrapAround(distance, target, point) end
 
---- #section Team Slots
+--- @section Team Slots
 --- These functions look up game objects in team slots.
 
 --- This is a global table that converts between team slot numbers and team slot names. For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
@@ -1153,7 +1153,7 @@ function GetConstructorHandle(team)
     error("This function is provided by the engine.");
 end
 
---- #section Team Pilots
+--- @section Team Pilots
 --- These functions get and set pilot counts for a team.
 
 --- Adds pilots to the team's pilot count, clamped between zero and maximum count.
@@ -1206,7 +1206,7 @@ function GetMaxPilot(team)
     error("This function is provided by the engine.");
 end
 
---- #section Team Scrap
+--- @section Team Scrap
 --- These functions get and set scrap values for a team.
 
 --- Adds to the team's scrap count, clamped between zero and maximum count.
@@ -1259,7 +1259,7 @@ function GetMaxScrap(team)
     error("This function is provided by the engine.");
 end
 
---- #section Deploy
+--- @section Deploy
 --- These functions control deployable craft (such as Turret Tanks or Producer units).
 
 --- Returns true if the game object is a deployed craft. Returns false otherwise.
@@ -1275,7 +1275,7 @@ end
 --- @deprecated See `_gameobject` module.
 function Deploy(h) end
 
---- #section Selection
+--- @section Selection
 --- These functions access selection state (i.e. whether the player has selected a game object)
 
 --- Returns true if the game object is selected. Returns false otherwise.
@@ -1286,7 +1286,7 @@ function IsSelected(h)
     error("This function is provided by the engine.");
 end
 
---- #section Mission-Critical
+--- @section Mission-Critical
 --- {VERSION 2.0+}
 --- The "mission critical" property indicates that a game object is vital to the success of the mission and disables the "Pick Me Up" and "Recycle" commands that (eventually) cause IsAlive() to report false.
 
@@ -1307,7 +1307,7 @@ end
 --- @deprecated See `_gameobject` module.
 function SetCritical(h, critical) end
 
---- #section Weapon
+--- @section Weapon
 --- These functions access unit weapons and damage.
 
 --- Sets what weapons the unit's AI process will use.
@@ -1354,7 +1354,7 @@ function FireAt(me, him) end
 --- @deprecated See `_gameobject` module.
 function Damage(h, amount) end
 
---- #section Time
+--- @section Time
 --- These function report various global time values.
 
 --- Returns the elapsed time in seconds since the start of the mission.
@@ -1375,7 +1375,7 @@ function GetTimeNow()
     error("This function is provided by the engine.");
 end
 
---- #section Mission
+--- @section Mission
 --- These functions control general mission properties like strategic AI and mission flow
 
 --- Enables (or disables) strategic AI control for a given team. As of version 1.5.2.7, mission scripts must enable AI control for any team that intends to use an AIP.
@@ -1415,7 +1415,7 @@ function FailMission(time, filename) end
 --- @param filename string?
 function SucceedMission(time, filename) end
 
---- #section Objective Messages
+--- @section Objective Messages
 --- These functions control the objective panel visible at the right of the screen.
 
 --- Clears all objective messages.
@@ -1443,7 +1443,7 @@ function UpdateObjective(name, color, duration, text) end
 --- @deprecated See `_objective` module.
 function RemoveObjective(name) end
 
---- #section Cockpit Timer
+--- @section Cockpit Timer
 --- These functions control the large timer at the top of the screen.
 
 --- Starts the cockpit timer counting down from the given time. If a warn time is given, the timer will turn yellow when it reaches that value. If an alert time is given, the timer will turn red when it reaches that value. All time values are in seconds.
@@ -1472,7 +1472,7 @@ function GetCockpitTimer()
     error("This function is provided by the engine.");
 end
 
---- #section Earthquake
+--- @section Earthquake
 --- These functions control the global earthquake effect.
 
 --- Starts a global earthquake effect.
@@ -1487,7 +1487,7 @@ function UpdateEarthQuake(magnitude) end
 --- Stops the global earthquake effect.
 function StopEarthquake() end
 
---- #section Path Type
+--- @section Path Type
 --- These functions get and set the looping type of a path.
 --- Looking up the path type number in the PathType table will convert it to a string. Looking up the path type string in the PathType table will convert it to a number.
 --- 
@@ -1521,7 +1521,7 @@ function SetPathRoundTrip(path) end
 --- @param path string
 function SetPathLoop(path) end
 
---- #section Path Points
+--- @section Path Points
 --- {VERSION 2.0+}
 
 --- Returns the number of points in the named path, or 0 if the path does not exist.
@@ -1532,7 +1532,7 @@ function GetPathPointCount(path)
     error("This function is provided by the engine.");
 end
 
---- #section Path Area
+--- @section Path Area
 --- {VERSION 2.0+}
 --- These functions treat a path as the boundary of a closed polygonal area.
 
@@ -1556,7 +1556,7 @@ function IsInsideArea(path, target)
     error("This function is provided by the engine.");
 end
 
---- #section Unit Commands 
+--- @section Unit Commands 
 --- These These functions send commands to units or query their command state.
 
 --- This is a global table that converts between command numbers and command names. For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
@@ -1853,7 +1853,7 @@ function Hunt(me, priority) end
 --- @deprecated See `_gameobject` module.
 function Recycle(me, priority) end
 
---- #section Tug Cargo
+--- @section Tug Cargo
 --- These functions query Tug and Cargo.
 
 --- Returns true if the unit is a tug carrying cargo.
@@ -1881,7 +1881,7 @@ function GetTug(cargo)
     error("This function is provided by the engine.");
 end
 
---- #section Pilot Actions
+--- @section Pilot Actions
 --- These functions control the pilot of a vehicle.
 
 --- Commands the vehicle's pilot to eject.
@@ -1912,7 +1912,7 @@ function HoppedOutOf(h)
     error("This function is provided by the engine.");
 end
 
---- #section Health Values
+--- @section Health Values
 --- These functions get and set health values on a game object.
 
 --- Returns the fractional health of the game object between 0 and 1.
@@ -1963,7 +1963,7 @@ function AddHealth(h, health) end
 --- @deprecated See `_gameobject` module.
 function GiveMaxHealth(h) end
 
---- #section Ammo Values
+--- @section Ammo Values
 --- These functions get and set ammo values on a game object.
 
 --- Returns the fractional ammo of the game object between 0 and 1.
@@ -2014,7 +2014,7 @@ function AddAmmo(h, ammo) end
 --- @deprecated See `_gameobject` module.
 function GiveMaxAmmo(h) end
 
---- #section Cinematic Camera
+--- @section Cinematic Camera
 --- These functions control the cinematic camera for in-engine cut scenes (or "cineractives" as the Interstate '76 team at Activision called them).
 
 --- Starts the cinematic camera and disables normal input.
@@ -2095,7 +2095,7 @@ function CameraCancelled()
     error("This function is provided by the engine.");
 end
 
---- #section Info Display
+--- @section Info Display
 
 --- Returns true if the game object inspected by the info display matches the given odf or is the given handle.
 --- @overload fun(h: Handle): boolean
@@ -2108,7 +2108,7 @@ function IsInfo(odfname)
     error("This function is provided by the engine.");
 end
 
---- #section Network
+--- @section Network
 --- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
 
 --- Returns true if the game is a network game. Returns false otherwise.
@@ -2181,7 +2181,7 @@ function DisplayMessage(message) end
 --- @vararg any
 function Send(to, type, ...) end
 
---- #section Read ODF
+--- @section Read ODF
 --- These functions read values from an external ODF, INI, or TRN file.
 
 --- Opens the named file as an ODF. If the file name has no extension, the function will append ".odf" automatically.
@@ -2246,7 +2246,7 @@ function GetODFString(odf, section, label, default)
     error("This function is provided by the engine.");
 end
 
---- #section Terrain
+--- @section Terrain
 --- These functions return height and normal from the terrain height field.
 
 --- Returns the terrain height and normal vector at a position vector, transform matrix, object, or point on a named path.
@@ -2258,7 +2258,7 @@ function GetTerrainHeightAndNormal(target, point)
     error("This function is provided by the engine.");
 end
 
---- #section Floor
+--- @section Floor
 --- These functions return height and normal from the terrain height field and the upward-facing polygons of any entities marked as floor owners.
 
 --- Returns the floor height and normal vector at a position vector, transform matrix, object, or point on a named path.
@@ -2270,7 +2270,7 @@ function GetFloorHeightAndNormal(target, point)
     error("This function is provided by the engine.");
 end
 
---- #section Map
+--- @section Map
 
 --- Returns the name of the BZN file for the map. This can be used to generate an ODF name for mission settings.
 --- {VERSION 2.0+}
@@ -2285,7 +2285,7 @@ function GetMapTRNFilename()
     error("This function is provided by the engine.");
 end
 
---- #section Files
+--- @section Files
 --- {VERSION 2.0+}
 
 --- Returns the contents of the named file as a string, or nil if the file could not be opened.
@@ -2294,7 +2294,7 @@ end
 --- @function string UseItem
 function UseItem(filename) end
 
---- #section Effects
+--- @section Effects
 --- {VERSION 2.0+}
 
 --- Starts a full screen color fade.
@@ -2309,7 +2309,7 @@ function UseItem(filename) end
 --- @param b integer
 function ColorFade(ratio, rate, r, g, b) end
 
---- #section Vector
+--- @section Vector
 --- This is a custom userdata representing a position or direction. It has three number components: x, y, and z.
 
 --- A Vector in 3D space
@@ -2496,7 +2496,7 @@ function Vector.__eq(v1, v2)
     error("This function is provided by the engine.");
 end
 
---- #section Matrix
+--- @section Matrix
 --- This is a custom userdata representing an orientation and position in space. It has four vector components (right, up, front, and posit) sharing space with twelve number components (right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z).
 
 --- A Matrix
@@ -2608,7 +2608,7 @@ function Matrix:__mul(a, b)
     error("This function is provided by the engine.");
 end
 
---- #section Portal Functions
+--- @section Portal Functions
 --- {VERSION 2.1+}
 --- These functions control the Portal building introduced in The Red Odyssey expansion.
 
@@ -2668,7 +2668,7 @@ function BuildObjectAtPortal(odfname, teamnum, portal)
     error("This function is provided by the engine.");
 end
 
---- #section Cloak
+--- @section Cloak
 --- {VERSION 2.1+}
 --- These functions control the cloaking state of craft capable of cloaking.
 
@@ -2720,7 +2720,7 @@ function EnableCloaking(h, enable) end
 --- @param enable boolean
 function EnableAllCloaking(enable) end
 
---- #section Hide
+--- @section Hide
 --- {VERSION 2.1+}
 --- These functions hide and show game objects. When hidden, the object is invisible (similar to Phantom VIR and cloak) and undetectable on radar (similar to RED Field and cloak). The effect is similar to but separate from cloaking. For the most part, AI units ignore the hidden state.
 
@@ -2736,7 +2736,7 @@ function Hide(h) end
 --- @param h Handle
 function UnHide(h) end
 
---- #section Explosion
+--- @section Explosion
 --- {VERSION 2.1+}
 --- These functions create explosions at a specified location. They do not return a handle because explosions are not game objects and thus not visible to the scripting system.
 
@@ -2748,7 +2748,7 @@ function UnHide(h) end
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 function MakeExplosion(odfname, target) end
 
---- #section Bitwise
+--- @section Bitwise
 --- Bitwise operations on 32-bit integers.
 
 --- Table of bitwise operation functions.

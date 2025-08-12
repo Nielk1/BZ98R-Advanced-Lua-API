@@ -183,11 +183,11 @@ local version = require("_version");
 -- @tparam ... parameters
 -- @tparam[opt] HookResult priorResult prior event handler's result
 
---- #section Enums
+--- @section Enums
 
 
 
---- #section Custom Types
+--- @section Custom Types
 
 local CustomTypeMap = nil; -- maps name to ID number
 --local DuplicateAntiLoopMemo = nil;
@@ -341,7 +341,7 @@ function DeSimplifyForLoad(...)
     return table.unpack(output, 1, ArraySize);
 end
 
---- #section Hooks
+--- @section Hooks
 
 --- [[START_IGNORE]]
 
@@ -600,7 +600,7 @@ end
 
 --- [[END_IGNORE]]
 
---- #section Script Run
+--- @section Script Run
 
 logger.print(logger.LogLevel.DEBUG, nil, "_api Loaded");
 

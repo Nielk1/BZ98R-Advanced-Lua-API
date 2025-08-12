@@ -746,7 +746,7 @@ function M.SleepSeconds(seconds, next_state, early_exit )
     end, p = {seconds, next_state, early_exit} };
 end
 
---- #section StateMachineIter - Core
+--- @section StateMachineIter - Core
 
 --- Save event function.
 --

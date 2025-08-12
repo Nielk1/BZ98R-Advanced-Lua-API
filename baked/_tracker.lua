@@ -313,7 +313,7 @@ end
 
 local HaveStarted = false;
 
---- #section Tracker - Core
+--- @section Tracker - Core
 
 hook.Add("Start", "_tracker_Start", function(object, isMapObject)
     if not HaveStarted then

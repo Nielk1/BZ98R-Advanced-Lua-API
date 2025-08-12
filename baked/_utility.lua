@@ -19,7 +19,7 @@ local M = {};
 --    return rawget(utility_meta, key); -- move on to base (looking for functions)
 --end
 
---- #section Enumerations
+--- @section Enumerations
 
 --- TeamSlotStrings
 --- @enum TeamSlotString
@@ -571,7 +571,7 @@ function M.GetClassSig(input)
     return nil;
 end
 
---- #section Type Check Functions
+--- @section Type Check Functions
 
 --- Is this object a function?
 --- @param object any Object in question
@@ -649,7 +649,7 @@ function M.isMatrix(object)
     return mt and mt.__type == "MAT_3D"
 end
 
---- #section Utility - Table Operations
+--- @section Utility - Table Operations
 
 function M.shallowCopy(original)
     local copy = {}
@@ -659,7 +659,7 @@ function M.shallowCopy(original)
     return copy
 end
 
---- #section Utility - Array Operations
+--- @section Utility - Array Operations
 
 --- Chooses a random item from a list of items.
 --- @param ... any The items to choose from.
@@ -701,7 +701,7 @@ function M.ChooseOneWeighted(...)
     return items[1].item or items[1];
 end
 
---- #section Utility - Iterator Operations
+--- @section Utility - Iterator Operations
 
 --- Convert an iterator to an array or table.
 --- If the iterator returns only values, returns an array.
@@ -730,10 +730,10 @@ function M.IteratorToArray(iterator)
     return result
 end
 
---- #section Utility - Other
+--- @section Utility - Other
 
 
---- #section Utility - Core
+--- @section Utility - Core
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 

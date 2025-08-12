@@ -307,7 +307,7 @@ function M.Start( name, init )
     return CreateStateSetRunner(name, init);
 end
 
---- #section StateSetRunner - Core
+--- @section StateSetRunner - Core
 
 --- Save event function.
 --

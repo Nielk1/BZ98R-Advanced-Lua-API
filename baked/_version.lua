@@ -150,7 +150,7 @@ function M.Compare(version1, version2)
     return 0
 end
 
---- #section Utility - Core
+--- @section Utility - Core
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 

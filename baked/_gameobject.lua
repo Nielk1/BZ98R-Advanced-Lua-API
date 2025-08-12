@@ -106,7 +106,7 @@ GameObject.__tostring = function(self)
     return "GameObject: " .. tostring(self:GetHandle());
 end
 
---- #section Core
+--- @section Core
 
 --- Create new GameObject Intance.
 --- @param handle Handle Handle from BZ98R
@@ -238,7 +238,7 @@ function GameObject:TypeLoad(data)
     for v in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
 end
 
---- #section Object Creation / Destruction
+--- @section Object Creation / Destruction
 
 --- Creates a GameObject with the given odf name, team number, and location.
 ---
@@ -292,7 +292,7 @@ function M.GetGameObject(key)
     return M.FromHandle(handle);
 end
 
---- #section Info Display
+--- @section Info Display
 
 --- Returns true if the game object inspected by the info display matches the current game object.
 --- @param self GameObject GameObject instance
@@ -303,7 +303,7 @@ function GameObject:IsInfo()
     return IsInfo(self:GetHandle());
 end
 
---- #section Other - Custom Functions
+--- @section Other - Custom Functions
 
 -- Returns the scrap cost of the game object.
 -- @param self GameObject GameObject instance
@@ -361,7 +361,7 @@ end
 --    return pilot;
 --end
 
---- #section Condition Checks
+--- @section Condition Checks
 
 --- Is the GameObject this odf?
 --- @param self GameObject GameObject instance
@@ -532,7 +532,7 @@ function GameObject:IsRecycledByTeam(team)
     return IsRecycledByTeam(self:GetHandle(), team);
 end
 
---- #section Team Number
+--- @section Team Number
 --- These functions get and set team number. Team 0 is the neutral or environment team.
 
 --- Returns the game object's team number.
@@ -573,7 +573,7 @@ function GameObject:SetPerceivedTeam(team)
     SetPerceivedTeam(self:GetHandle(), team);
 end
 
---- #section Target
+--- @section Target
 --- These function get and set a unit's target.
 
 --- Set this as the local player's target.
@@ -643,7 +643,7 @@ function GameObject:GetTarget()
     return M.FromHandle(handle);
 end
 
---- #section Owner
+--- @section Owner
 --- These functions get and set owner. The default owner for a game object is the game object that created it.
 
 --- Sets the game object's owner.
@@ -673,7 +673,7 @@ function GameObject:GetOwner()
     return M.FromHandle(handle);
 end
 
---- #section Pilot Class
+--- @section Pilot Class
 --- These functions get and set vehicle pilot class.
 
 --- Sets the vehicle's pilot class to the given odf name. This does nothing useful for non-vehicle game objects. An odf name of nil resets the vehicle to the default assignment based on nation.
@@ -695,7 +695,7 @@ function GameObject:GetPilotClass()
     return GetPilotClass(self:GetHandle());
 end
 
---- #section Position & Velocity
+--- @section Position & Velocity
 
 --- Get object's position vector.
 --- @param self GameObject GameObject instance
@@ -786,7 +786,7 @@ function GameObject:SetOmega(omega)
     SetOmega(self:GetHandle(), omega);
 end
 
---- #section Shot
+--- @section Shot
 --- These functions query a game object for information about ordnance hits.
 
 --- Returns who scored the most recent hit on the game object. Returns nil if none exists.
@@ -818,7 +818,7 @@ function GameObject:GetLastFriendShot()
     return GetLastFriendShot(self:GetHandle());
 end
 
---- #section Alliances
+--- @section Alliances
 --- These functions control and query alliances between teams.
 --- The team manager assigns each player a separate team number, starting with 1 and going as high as 15. Team 0 is the neutral "environment" team.
 --- Unless specifically overridden, every team is friendly with itself, neutral with team 0, and hostile to everyone else.
@@ -842,7 +842,7 @@ function GameObject:IsAlly(target)
     end
 end
 
---- #section Objective Marker
+--- @section Objective Marker
 --- These functions control objective markers.
 --- Objectives are visible to all teams from any distance and from any direction, with an arrow pointing to off-screen objectives. There is currently no way to make team-specific objectives.
 
@@ -921,7 +921,7 @@ function GameObject:SetName(name)
     SetName(self:GetHandle(), name);
 end
 
---- #section Distance
+--- @section Distance
 --- These functions measure and return the distance between a game object and a reference point.
 
 --- Returns the distance in meters between the game object and a position vector, transform matrix, another object, or point on a named path.
@@ -986,7 +986,7 @@ function GameObject:IsTouching(target, tolerance)
     end
 end
 
---- #section Nearest
+--- @section Nearest
 --- These functions find and return the game object of the requested type closest to a reference point.
 
 --- Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
@@ -1254,7 +1254,7 @@ function GameObject:CountUnitsNearObject(dist, team, odfname)
     return CountUnitsNearObject(self:GetHandle(), dist, team, odfname);
 end
 
---- #section Iterators
+--- @section Iterators
 --- These functions return iterator functions for use with Lua's "for <variable> in <expression> do ... end" form. For example: "for h in AllCraft() do print(h, GetLabel(h)) end" will print the game object handle and label of every craft in the world.
 
 --- Enumerates game objects within the given distance a target.
@@ -1330,7 +1330,7 @@ function M.ObjectiveObjects()
     end)
 end
 
---- #section Team Slots
+--- @section Team Slots
 --- These functions look up game objects in team slots.
 
 --- Get the game object in the specified team slot.
@@ -1427,7 +1427,7 @@ function M.GetConstructor(team)
     return M.FromHandle(handle);
 end
 
---- #section Deploy
+--- @section Deploy
 --- These functions control deployable craft (such as Turret Tanks or Producer units).
 
 --- Returns true if the game object is a deployed craft. Returns false otherwise.
@@ -1449,7 +1449,7 @@ function GameObject:Deploy()
     Deploy(self:GetHandle());
 end
 
---- #section Selection
+--- @section Selection
 --- These functions access selection state (i.e. whether the player has selected a game object)
 
 --- Returns true if the game object is selected. Returns false otherwise.
@@ -1461,7 +1461,7 @@ function GameObject:IsSelected()
     return IsSelected(self:GetHandle());
 end
 
---- #section Mission-Critical
+--- @section Mission-Critical
 --- {VERSION 2.0+}
 --- The "mission critical" property indicates that a game object is vital to the success of the mission and disables the "Pick Me Up" and "Recycle" commands that (eventually) cause IsAlive() to report false.
 
@@ -1487,7 +1487,7 @@ function GameObject:SetCritical(critical)
     SetCritical(self:GetHandle(), critical);
 end
 
---- #section Weapon
+--- @section Weapon
 --- These functions access unit weapons and damage.
 
 --- Sets what weapons the unit's AI process will use.
@@ -1555,7 +1555,7 @@ function GameObject:Damage(amount)
     Damage(self:GetHandle(), amount);
 end
 
---- #section Unit Commands
+--- @section Unit Commands
 --- These functions send commands to units or query their command state.
 
 --- Returns true if the game object can be commanded. Returns false otherwise.
@@ -1952,7 +1952,7 @@ function GameObject:Recycle(priority)
     Recycle(self:GetHandle(), priority);
 end
 
---- #section Tug Cargo
+--- @section Tug Cargo
 --- These functions query Tug and Cargo.
 
 --- Returns true if the GameObject is a tug carrying cargo.
@@ -1986,7 +1986,7 @@ function GameObject:GetTug()
     return M.FromHandle(handle);
 end
 
---- #section Pilot Actions
+--- @section Pilot Actions
 --- These functions control the pilot of a vehicle.
 
 --- Commands the vehicle's pilot to eject.
@@ -2032,7 +2032,7 @@ function GameObject:HoppedOutOf()
     return M.FromHandle(handle);
 end
 
---- #section Health Values
+--- @section Health Values
 --- These functions get and set health values on a game object.
 
 --- Returns the fractional health of the game object between 0 and 1.
@@ -2105,7 +2105,7 @@ function GameObject:GiveMaxHealth()
     GiveMaxHealth(self:GetHandle());
 end
 
---- #section Ammo Values
+--- @section Ammo Values
 --- These functions get and set ammo values on a game object.
 
 --- Returns the fractional ammo of the game object between 0 and 1.
@@ -2173,7 +2173,7 @@ function GameObject:GiveMaxAmmo()
     GiveMaxAmmo(self:GetHandle());
 end
 
---- #section Network
+--- @section Network
 --- LuaMission currently has limited network support, but can detect if the mission is being run in multiplayer and if the local machine is hosting.
 
 --- Sets the game object as local to the machine the script is running on, transferring ownership from its original owner if it was remote.
@@ -2213,7 +2213,7 @@ function GameObject:IsInitialized()
     return IsLocal(h) or IsRemote(h);
 end
 
---- #section Portal Functions
+--- @section Portal Functions
 --- {VERSION 2.1+}
 --- These functions control the Portal building introduced in The Red Odyssey expansion.
 
@@ -2291,7 +2291,7 @@ function GameObject:BuildObjectAtPortal(odfname, teamnum)
     return M.FromHandle(handle);
 end
 
---- #section Cloak
+--- @section Cloak
 --- {VERSION 2.1+}
 --- These functions control the cloaking state of craft capable of cloaking.
 
@@ -2343,7 +2343,7 @@ function GameObject:IsCloaked()
     return IsCloaked(self:GetHandle());
 end
 
---- #section Hide
+--- @section Hide
 --- {VERSION 2.1+}
 --- These functions hide and show game objects. When hidden, the object is invisible (similar to Phantom VIR and cloak) and undetectable on radar (similar to RED Field and cloak). The effect is similar to but separate from cloaking. For the most part, AI units ignore the hidden state.
 
@@ -2365,7 +2365,7 @@ function GameObject:UnHide()
     UnHide(self:GetHandle());
 end
 
---- #section Event Hooks
+--- @section Event Hooks
 --- Hook to game events.
 
 hook.AddSaveLoad("GameObject", nil, nil, function()

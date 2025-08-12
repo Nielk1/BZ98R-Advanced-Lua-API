@@ -17,7 +17,7 @@ function M.isPathWithString(object)
     return type(object) == 'table' and object[1] and type(object[1]) == 'string' and object[2] and type(object[2]) == 'number';
 end
 
---- #section Paths - Iterator Operations
+--- @section Paths - Iterator Operations
 
 --- Iterate the vectors along the path.
 --- Return LUA style 1 based indexes for the path points.
@@ -37,10 +37,10 @@ function M.IteratePath(path)
     return iterator;
 end
 
---- #section Paths - Other
+--- @section Paths - Other
 
 
---- #section Paths - Core
+--- @section Paths - Core
 
 --utility_module = setmetatable(utility_module, utility_module_meta);
 

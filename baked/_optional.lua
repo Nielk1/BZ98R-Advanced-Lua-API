@@ -53,7 +53,7 @@ end
 
 M = setmetatable(M, M_MT);
 
---- #section Utility - Core
+--- @section Utility - Core
 
 logger.print(logger.LogLevel.DEBUG, nil, "_optional Loaded");
 

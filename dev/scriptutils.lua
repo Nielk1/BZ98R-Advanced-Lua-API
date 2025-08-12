@@ -570,7 +570,7 @@ function SetPerceivedTeam(h, t) end
 
 --- Sets the local player's target.
 --- @todo confirm target can be nil, if it can't this should be depricated
---- @param t Handle
+--- @param t Handle?
 function SetUserTarget(t) end
 
 --- Returns the local player's target. Returns nil if it has none.
@@ -582,7 +582,7 @@ end
 
 --- Sets the game object's target.
 --- @param h Handle
---- @param t Handle
+--- @param t Handle?
 --- @deprecated See `_gameobject` module.
 function SetTarget(h, t) end
 

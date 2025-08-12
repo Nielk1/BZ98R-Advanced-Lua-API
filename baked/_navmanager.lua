@@ -336,8 +336,8 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                         nav.SetObjectiveOff();
                                     end
                                     -- @todo make this multi-team logic
-                                    if GetUserTarget() == nav:GetHandle() then
-                                        SetUserTarget(newNav:GetHandle());
+                                    if gameobject.GetUserTarget() == nav then
+                                        newNav:SetAsUserTarget();
                                     end
 
                                     table.insert(NavSwapPairs, { nav, newNav });
@@ -378,8 +378,8 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                             nav.SetObjectiveOff();
                                         end
                                         -- @todo make this multi-team logic
-                                        if GetUserTarget() == nav:GetHandle() then
-                                            SetUserTarget(newNav:GetHandle());
+                                        if gameobject.GetUserTarget() == nav then
+                                            newNav:SetAsUserTarget();
                                         end
 
                                         table.insert(NavSwapPairs, { nav, newNav });
@@ -418,8 +418,8 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                                             nav.SetObjectiveOff();
                                         end
                                         -- @todo make this multi-team logic
-                                        if GetUserTarget() == nav:GetHandle() then
-                                            SetUserTarget(newNav:GetHandle());
+                                        if gameobject.GetUserTarget() == nav then
+                                            newNav:SetAsUserTarget();
                                         end
 
                                         table.insert(NavSwapPairs, { nav, newNav });

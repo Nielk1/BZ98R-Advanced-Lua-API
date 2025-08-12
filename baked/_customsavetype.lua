@@ -18,11 +18,20 @@ logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loading");
 local M = {};
 local M_MT = {};
 
+--- Custom Savable Type definition.  This allows for complex structures to be saved and loaded and preserve their function metatable assignment.
+--- If a custom type is registered, it will be used instead of the default serialization methods.
+--- {(i)Saving / Loading(i) Type Save/Load always run first, before any other save/load/postload hooks.
+--- This is needed to ensure the type instances that appear in later save/load calls will work properly.
+--- If a "TypePostLoad" is needed use a standard SaveLoad hook.}
 --- @class CustomSavableType
 --- @field __type string The type name of the custom savable type.
 --- @field __nosave boolean? If true, the type will not be saved or loaded, a nil will be saved instead.
 --- @field __noref boolean? If true, the type will not undergo checks for shared or looped references when saving.
 --- @field __base CustomSavableType? The base type to inherit from, if any.
+--- @field Save fun(self:CustomSavableType):... Called when saving an instance of this type. Return value is saved.
+--- @field Load fun(...: any?) Called when loading an instance of this type. Data is the value returned from Save.
+--- @field TypeSave fun():... Called on the type itself before any other data is saved.
+--- @field TypeLoad fun(...: any?) Called on the type itself, before any other data is loaded.
 
 --- @type table<string, CustomSavableType>
 M.CustomSavableTypes = {};
@@ -42,15 +51,15 @@ function M.Register(obj)
     --else
     --    typeT.Load = function() end
     end
-    if obj.BulkSave ~= nil then
-        typeT.BulkSave = obj.BulkSave;
+    if obj.TypeSave ~= nil then
+        typeT.TypeSave = obj.TypeSave;
     --else
-    --    typeT.BulkSave = function() end
+    --    typeT.TypeSave = function() end
     end
-    if obj.BulkLoad ~= nil then
-        typeT.BulkLoad = obj.BulkLoad;
+    if obj.TypeLoad ~= nil then
+        typeT.TypeLoad = obj.TypeLoad;
     --else
-    --    typeT.BulkLoad = function() end
+    --    typeT.TypeLoad = function() end
     end
     typeT.__type = obj.__type;
     M.CustomSavableTypes[obj.__type] = typeT;
@@ -69,6 +78,21 @@ function M.Implements(obj, name)
         type = type.__base
     end
     return false;
+end
+
+--- Extract the custom savable type if implemented
+--- @param obj CustomSavableType
+--- @param name string
+--- @return any?
+function M.Extract(obj, name)
+    local type = obj;
+    while(type ~= nil) do
+        if type.__type == name then
+            return type;
+        end
+        type = type.__base
+    end
+    return nil;
 end
 
 M = setmetatable(M, M_MT);

@@ -116,7 +116,6 @@ end
 --- @param self PatrolEngine
 --- @param handle GameObject_patrol
 function PatrolEngine.GiveRoute(self, handle)
-    --local unit = self.patrol_units[handle]
     local route = PatrolEngine.GetRandomRoute(self,handle._patrol.location)
     local attempts = 0
 
@@ -140,12 +139,21 @@ end
 
 --- Adds a handle to the patrol units.
 --- @param self PatrolEngine
---- @param handle GameObject
-function PatrolEngine.AddGameObject(self, handle)
-    --- @cast handle GameObject_patrol
+--- @param object GameObject
+function PatrolEngine.AddGameObject(self, object)
+    if gameobject.isgameobject(object) == false then
+        error("PatrolEngine.AddGameObject: object is not a GameObject");
+    end
+    --- @cast object GameObject
+    object = customsavetype.Extract(object, "GameObject");
+    if object == nil then
+        error("PatrolEngine.AddGameObject: object is not a GameObject");
+    end
+
+    --- @cast object GameObject_patrol
     local nearestLocation = nil
     local location = nil
-    local pos = handle:GetPosition()
+    local pos = object:GetPosition()
 
     for _, loc in pairs(self.locations) do
         local locPos = GetPosition(loc)
@@ -155,7 +163,7 @@ function PatrolEngine.AddGameObject(self, handle)
         end
     end
 
-    handle._patrol = {
+    object._patrol = {
         --handle = handle,
         location = location,
         oldLocation = nil,
@@ -163,8 +171,8 @@ function PatrolEngine.AddGameObject(self, handle)
         path = nil,
         busy = false
     };
-    self.patrol_units[handle] = true;
-    PatrolEngine.GiveRoute(self,handle)
+    self.patrol_units[object] = true;
+    PatrolEngine.GiveRoute(self,object)
 end
 
 local function keylist(t)
@@ -179,17 +187,24 @@ end
 --- @param self PatrolEngine
 --- @return table
 function PatrolEngine.GetGameObjects(self)
-    --return self.patrol_units
     return keylist(self.patrol_units);
 end
 
 --- Removes a handle from the patrol units.
 --- @param self PatrolEngine
---- @param handle GameObject
-function PatrolEngine.RemoveGameObject(self, handle)
-    --- @cast handle GameObject_patrol
-    handle._patrol = nil
-    self.patrol_units[handle] = nil
+--- @param object GameObject
+function PatrolEngine.RemoveGameObject(self, object)
+    if gameobject.isgameobject(object) == false then
+        error("PatrolEngine.RemoveGameObject: object is not a GameObject");
+    end
+    --- @cast object GameObject
+    object = customsavetype.Extract(object, "GameObject");
+    if object == nil then
+        error("PatrolEngine.RemoveGameObject: object is not a GameObject");
+    end
+    --- @cast object GameObject_patrol
+    object._patrol = nil
+    self.patrol_units[object] = nil
 end
 
 --- {INTERNAL USE}

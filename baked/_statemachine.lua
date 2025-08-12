@@ -775,10 +775,10 @@ function StateMachineIter.Load(template, target_call, target_time, set_wait_time
     return CreateStateMachineIter(template, target_call, target_time, set_wait_time, state_key, addonData);
 end
 
---- BulkLoad event function.
+--- TypeLoad event function.
 --
 -- {INTERNAL USE}
-function StateMachineIter.BulkLoad()
+function StateMachineIter.TypeLoad()
     M.game_time = GetTime();
 end
 

@@ -22,7 +22,15 @@ local M = {};
 --- @param object any Object in question
 --- @return boolean
 function M.isgameobject(object)
-    return (type(object) == "table" and object.__type == "GameObject");
+    --return (type(object) == "table" and object.__type == "GameObject");
+    return customsavetype.Implements(object, "GameObject");
+end
+
+--- Extract the GameObject from this object that implements GameObject.
+--- @param object any Object in question
+--- @return GameObject?
+function M.extractgameobject(object)
+    return customsavetype.Extract(object, "GameObject");
 end
 
 local GameObjectWeakList_MT = {};
@@ -42,7 +50,7 @@ local GameObjectSeqNoDeadMemo = setmetatable({}, GameObjectWeakList_MT); -- maps
 --- @field addonData table Extended data saved into the object
 --- @field cache_memo table Unsaved data used for housekeeping that is regenerated at load
 local GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
---GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
+
 function GameObject.__index(dtable, key)
     --local retVal = rawget(dtable, key);
     --if retVal ~= nil then return retVal; end
@@ -164,11 +172,11 @@ function GameObject:Load(id)
     return M.FromHandle(id);
 end
 
---- BulkSave event function.
+--- TypeSave event function.
 --- {INTERNAL USE}
 --- @return ...
 --- @package
-function GameObject:BulkSave()
+function GameObject:TypeSave()
     -- store all the custom data we have for GameObjects by their handle keys
     local returnData = {};
     for k,v in pairs(GameObjectWeakList) do
@@ -187,13 +195,13 @@ function GameObject:BulkSave()
     return returnData;
 end
 
---- BulkLoad event function.
+--- TypeLoad event function.
 --- {INTERNAL USE}
 --- @param data any Object data
 --- @package
-function GameObject:BulkLoad(data)
+function GameObject:TypeLoad(data)
 -- Xparam dataDead Dead object data
---function GameObject:BulkLoad(data,dataDead)
+--function GameObject:TypeLoad(data,dataDead)
     local _ObjectiveObjects = {};
 
     --- @diagnostic disable-next-line: deprecated
@@ -205,7 +213,7 @@ function GameObject:BulkLoad(data)
                     break; -- break out of inf loop issue
                 end
             _ObjectiveObjects[h] = true;
-                logger.print(logger.LogLevel.DEBUG, nil, "BulkLoad GameObject ObjectiveObjects: "..tostring(h));
+                logger.print(logger.LogLevel.DEBUG, nil, "TypeLoad GameObject ObjectiveObjects: "..tostring(h));
                 lastObject = h;
             end
     end
@@ -568,9 +576,9 @@ end
 --- #section Target
 --- These function get and set a unit's target.
 
---- Sets the local player's target.
+--- Set this as the local player's target.
 --- @param self GameObject
-function GameObject:SetUserTarget()
+function GameObject:SetAsUserTarget()
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
     --- @diagnostic disable-next-line: deprecated
     SetUserTarget(self:GetHandle());
@@ -585,8 +593,7 @@ function M.GetUserTarget()
     return M.FromHandle(handle);
 end
 
---- Sets the game object's target.
---- @todo confirm target can be nil
+--- Set the game object's target.
 --- @param self GameObject
 --- @param target GameObject|Handle|nil
 function GameObject:SetTarget(target)
@@ -605,6 +612,23 @@ function GameObject:SetTarget(target)
         --- @cast target Handle
         --- @diagnostic disable-next-line: deprecated
         SetTarget(self:GetHandle(), target);
+    end
+end
+
+--- Set this object as another object's target.
+--- @param self GameObject
+--- @param targeter GameObject|Handle
+function GameObject:SetAsTarget(self, targeter)
+    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+    if not M.isgameobject(targeter) and not utility.isHandle(targeter) then error("Parameter targeter must be GameObject instance or Handle."); end
+    if M.isgameobject(targeter) then
+        --- @cast targeter GameObject
+        --- @diagnostic disable-next-line: deprecated
+        SetTarget(targeter:GetHandle(), self:GetHandle());
+    else
+        --- @cast targeter Handle
+        --- @diagnostic disable-next-line: deprecated
+        SetTarget(targeter, self:GetHandle());
     end
 end
 
@@ -2343,6 +2367,10 @@ end
 
 --- #section Event Hooks
 --- Hook to game events.
+
+hook.AddSaveLoad("GameObject", nil, nil, function()
+
+end);
 
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();

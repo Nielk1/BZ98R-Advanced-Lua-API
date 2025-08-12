@@ -202,7 +202,11 @@ local function ProcessQueues()
                     if possibleProducers and next(producerTypes) then
                         for producerOdf, _ in pairs(possibleProducers) do
                             --logger.print(logger.LogLevel.DEBUG, nil, "\27[34m".."Candidate Builder "..producerOdf.."\27[0m")
+                            --- @type GameObject?
                             local producerObject = producerTypes[producerOdf];
+                            if producerObject then
+                                producerObject = gameobject.extractgameobject(producerObject);
+                            end
                             if producerObject and not ProducerOrders[producerObject] then
                                 --logger.print(logger.LogLevel.DEBUG, nil, table.show(queue:contents(), "queue["..tostring(team).."]"));
                                 logger.print(logger.LogLevel.DEBUG, nil, c.BLUE.."Candidate Found "..producerOdf.." > "..job.odf..c.RESET)

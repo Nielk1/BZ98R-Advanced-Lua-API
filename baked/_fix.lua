@@ -36,8 +36,8 @@ end
 logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: SetLabel");
 --- @diagnostic disable-next-line: undefined-field
 if not _G.SetLabel and _G.SettLabel then
-    --- @diagnostic disable-next-line: undefined-field
 --- [[START_IGNORE]]
+    --- @diagnostic disable-next-line: undefined-field
     _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
 --- [[END_IGNORE]]
 end
@@ -190,6 +190,8 @@ if pre_patch then
     end, config.get("hook_priority.Update.FixPowerupAi2"));
 
     hook.Add("CreateObject", "Fix:PowerupAi2:CreateObject", function(object)
+        -- we can safely assume we have a GameObject here, no need to test or extract
+
         --- @cast object GameObject_FixFallingPowerup
         
         -- ignore objects that are not local ( can't be done in CreateObject, too early)

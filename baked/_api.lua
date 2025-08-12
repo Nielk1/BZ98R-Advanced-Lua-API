@@ -375,9 +375,9 @@ function Save()
     local CustomSavableTypeDataTmpTable = {};
     for idNum,name in ipairs(CustomSavableTypeTmpTable) do
         local entry = customsavetype.CustomSavableTypes[name];
-        if entry.BulkSave ~= nil and utility.isfunction(entry.BulkSave) then
+        if entry.TypeSave ~= nil and utility.isfunction(entry.TypeSave) then
             logger.print(logger.LogLevel.DEBUG, nil, "Saved " .. entry.__type);
-            CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.BulkSave())};
+            CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.TypeSave())};
         else
             logger.print(logger.LogLevel.DEBUG, nil, "Saved " .. entry.__type .. " (nothing to save)");
             CustomSavableTypeDataTmpTable[idNum] = {};
@@ -433,15 +433,15 @@ function Load(...)
     logger.print(logger.LogLevel.TRACE, nil, "Loading custom types data");
     for idNum,data in ipairs(args.CustomSavableTypeData) do
         local entry = customsavetype.CustomSavableTypes[CustomTypeMap[idNum]];
-        if entry.BulkLoad ~= nil and utility.isfunction(entry.BulkLoad) then
+        if entry.TypeLoad ~= nil and utility.isfunction(entry.TypeLoad) then
             logger.print(logger.LogLevel.TRACE, nil, "Loaded " .. entry.__type);
 
             local ArraySize = 0;
             for k,v in pairs(data) do if k > ArraySize then ArraySize = k; end end
 
             -- maybe we should load DeSimplifyForLoad multiple times until we know for sure the data has no more refs?
-            entry.BulkLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));
-            logger.print(logger.LogLevel.TRACE, nil, "BulkLoad ran for " .. entry.__type);
+            entry.TypeLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));
+            logger.print(logger.LogLevel.TRACE, nil, "TypeLoad ran for " .. entry.__type);
         end
     end
     logger.print(logger.LogLevel.TRACE, nil, "Loaded custom types data");

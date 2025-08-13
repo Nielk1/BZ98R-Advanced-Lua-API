@@ -210,7 +210,6 @@ end
 --- {INTERNAL USE}
 --- @param self PatrolEngine instance
 --- @return ...
---- @package
 function PatrolEngine.Save(self)
     return self.path_map, keylist(self.patrol_units), self.locations, self.forcedAlert
 end
@@ -223,7 +222,6 @@ end
 --- @param locations table
 --- @param forcedAlert boolean
 --- @return PatrolEngine
---- @package
 function PatrolEngine.Load(path_map, patrol_units, locations, forcedAlert)
     local patrol_units_set = {};
     for _, unit in pairs(patrol_units) do

@@ -25,13 +25,14 @@ local hook = require("_hook");
 --- Nav GameObjects swapped.
 --- The old nav will be deleted after this event is called.
 --- This event allows for scripts to replace their nav references or copy over custom data.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
---
--- @event NavManager:NavSwap
--- @tparam GameObject old GameObject instance
--- @tparam GameObject new GameObject instance
--- @see _hook.Add
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param old GameObject GameObject instance
+--- @param new GameObject GameObject instance
+--- @diagnostic disable-next-line: luadoc-miss-type-name
+--- @alias NavManager:NavSwap fun(old:GameObject, new:GameObject)
+--- @diagnostic enable: undefined-doc-param
 
 --- @class _navmanager
 local M = {};

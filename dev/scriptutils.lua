@@ -3,6 +3,8 @@
 --- Stubs for ScriptUtils LDoc
 ---
 --- @module 'ScriptUtils'
+---
+--- @meta
 
 error("This is a stub for ScriptUtils, it does not contain any functionality. Do not include this file in your mod.");
 

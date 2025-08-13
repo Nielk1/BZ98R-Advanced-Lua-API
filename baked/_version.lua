@@ -81,6 +81,17 @@ local labels = {"Game", "Lua", "API", "BZCP", "BZCP Shim"};
 
 --- Iterate all versions in a simple format.
 --- This function returns an iterator that yields key, label, and version for each version token.
+--- ```lua
+--- local version = require("_version");
+--- print("Versions:")
+--- for _,l,v in version.All() do
+---     if v then
+---         print("  " .. l .. ": " .. tostring(v));
+---     else
+---         print("  " .. l .. ": ????");
+---     end
+--- end
+--- ```
 --- @return fun(): (key: string, label: string, version: string|integer) Iterator function iterating over all versions for easy output
 function M.All()
     return coroutine.wrap(function()

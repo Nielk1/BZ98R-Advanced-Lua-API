@@ -12,7 +12,6 @@ logger.print(logger.LogLevel.DEBUG, nil, "_gameobject Loading");
 local utility = require("_utility");
 local config = require("_config");
 local hook = require("_hook");
-local unsaved = require("_unsaved");
 local customsavetype = require("_customsavetype");
 
 --- @class _gameobject
@@ -158,8 +157,7 @@ end
 --- Save event function.
 --- {INTERNAL USE}
 --- @param self GameObject GameObject instance
---- @return ...
---- @package
+--- @return any ...
 function GameObject:Save()
     return self.id;
 end
@@ -167,15 +165,14 @@ end
 --- Load event function.
 --- {INTERNAL USE}
 --- @param id any Handle
---- @package
+--- @return GameObject?
 function GameObject:Load(id)
     return M.FromHandle(id);
 end
 
 --- TypeSave event function.
 --- {INTERNAL USE}
---- @return ...
---- @package
+--- @return any ...
 function GameObject:TypeSave()
     -- store all the custom data we have for GameObjects by their handle keys
     local returnData = {};
@@ -198,7 +195,6 @@ end
 --- TypeLoad event function.
 --- {INTERNAL USE}
 --- @param data any Object data
---- @package
 function GameObject:TypeLoad(data)
 -- Xparam dataDead Dead object data
 --function GameObject:TypeLoad(data,dataDead)
@@ -225,7 +221,7 @@ function GameObject:TypeLoad(data)
         -- IsObjectiveOn Memo
         local objectiveData = _ObjectiveObjects[k];
         if objectiveData ~= nil then
-            newGameObject.cache_memo = unsaved({ IsObjectiveOn = true });
+            newGameObject.cache_memo = customsavetype.NoSave({ IsObjectiveOn = true });
             _ObjectiveObjects[k] = nil; -- does this speed things up or slow them down?
         end
     end
@@ -855,7 +851,7 @@ function GameObject:SetObjectiveOn()
 
     --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
-        self.cache_memo = unsaved(self.cache_memo)
+        self.cache_memo = customsavetype.NoSave(self.cache_memo)
         self.cache_memo.IsObjectiveOn = true;
     end
 end
@@ -869,7 +865,7 @@ function GameObject:SetObjectiveOff()
 
     --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
-        self.cache_memo = unsaved(self.cache_memo)
+        self.cache_memo = customsavetype.NoSave(self.cache_memo)
         self.cache_memo.IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
     end
 end
@@ -2367,10 +2363,6 @@ end
 
 --- @section Event Hooks
 --- Hook to game events.
-
-hook.AddSaveLoad("GameObject", nil, nil, function()
-
-end);
 
 hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     local objectId = object:GetHandle();

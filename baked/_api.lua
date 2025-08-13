@@ -18,170 +18,186 @@ local gameobject = require("_gameobject");
 local customsavetype = require("_customsavetype");
 local version = require("_version");
 
---local updateDelta;
+--- @section Events
 
 --- Called when saving state to a save game file, allowing the script to preserve its state.
---
--- Any values returned by this function will be passed as parameters to Load when loading the save game file. Save supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
---
--- The console window will print the saved values in human-readable format.
---
--- Call method: @{_hook.CallSave|CallSave}
--- @event Save
--- @return ... saved data
--- @see _hook.AddSaveLoad
+---
+--- Any values returned by this function will be passed as parameters to Load when loading the save game file. Save supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+---
+--- The console window will print the saved values in human-readable format.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook AddSaveLoad CallSave
+--- @return any ... saved data
+--- @alias Save fun(): ...
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when loading state from a save game file, allowing the script to restore its state.
---
--- Data values returned from Save will be passed as parameters to Load in the same order they were returned. Load supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
---
--- The console window will print the loaded values in human-readable format.
---
--- Call method: @{_hook.CallLoad|CallLoad}
--- @event Load
--- @tparam ... loaded data
--- @see _hook.AddSaveLoad
+---
+--- Data values returned from Save will be passed as parameters to Load in the same order they were returned. Load supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+---
+--- The console window will print the loaded values in human-readable format.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook AddSaveLoad CallLoad
+--- @vararg any loaded data
+--- @alias Load fun(...: any)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when the mission starts for the first time.
---
--- Use this function to perform any one-time script initialization.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event Start
--- @see _hook.Add
+---
+--- Use this function to perform any one-time script initialization.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @alias Start fun()
+--- @diagnostic enable: undefined-doc-param
 
 --- Called any time a game key is pressed.
---
--- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
---
--- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
---
--- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event GameKey
--- @tparam string key zero or more modifiers (Ctrl, Shift, Alt) and a base key
--- @see _hook.Add
+---
+--- Key is a string that consisting of zero or more modifiers (Ctrl, Shift, Alt) and a base key.
+---
+--- The base key for keys corresponding to a printable ASCII character is the upper-case version of that character.
+---
+--- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param key string zero or more modifiers (Ctrl, Shift, Alt) and a base key
+--- @alias GameKey fun(key: string)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called once per tick after updating the network system and before simulating game objects.
---
--- This function performs most of the mission script's game logic.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event Update
--- @tparam float dtime Delta Time
--- @tparam float ttime Total Time
--- @see _hook.Add
+---
+--- This function performs most of the mission script's game logic.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param dtime number Delta Time
+--- @param ttime number Total Time
+--- @alias Update fun(dtime: number, ttime: number)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called after any game object is created.
---
--- Handle is the game object that was created.
---
--- This function will get a lot of traffic so it should not do too much work.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event CreateObject
--- @tparam GameObject object
--- @tparam[opt] bool isMapObject
--- @see _hook.Add
+---
+--- Handle is the game object that was created.
+---
+--- This function will get a lot of traffic so it should not do too much work.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param object GameObject
+--- @param isMapObject boolean?
+--- @alias CreateObject fun(object: GameObject, isMapObject: boolean?)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when a game object gets added to the mission
---
--- Handle is the game object that was added
---
--- This function is normally called for "important" game objects, and excludes things like Scrap pieces.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event AddObject
--- @tparam GameObject object
--- @see _hook.Add
+---
+--- Handle is the game object that was added
+---
+--- This function is normally called for "important" game objects, and excludes things like Scrap pieces.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param object GameObject
+--- @alias AddObject fun(object: GameObject)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called before a game object is fully deleted.
---
--- This function will get a lot of traffic so it should not do too much work.
---
--- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event DeleteObject
--- @tparam GameObject object 
--- @see _hook.Add
+---
+--- This function will get a lot of traffic so it should not do too much work.
+---
+--- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param object GameObject
+--- @alias DeleteObject fun(object: GameObject)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when a player joins the session.
---
--- Players that join before the host launches trigger CreatePlayer just before the first Update.
---
--- Players that join joining after the host launches trigger CreatePlayer on entering the pre-game lobby.
---
--- This function gets called for the local player.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event CreatePlayer
--- @see _hook.Add
--- @tparam int id DPID number for this player
--- @tparam string name name for this player
--- @tparam int team Team number for this player
+---
+--- Players that join before the host launches trigger CreatePlayer just before the first Update.
+---
+--- Players that join joining after the host launches trigger CreatePlayer on entering the pre-game lobby.
+---
+--- This function gets called for the local player.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param id integer DPID number for this player
+--- @param name string name for this player
+--- @param team integer Team number for this player
+--- @alias CreatePlayer fun(id: integer, name: string, team: integer)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when a player starts sending state updates.
---
--- This indicates that a player has finished loaded and started simulating.
---
--- This function is _not_ called for the local player.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event AddPlayer
--- @see _hook.Add
--- @tparam int id DPID number for this player
--- @tparam string name name for this player
--- @tparam int team Team number for this player
+---
+--- This indicates that a player has finished loaded and started simulating.
+---
+--- This function is _not_ called for the local player.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param id integer DPID number for this player
+--- @param name string name for this player
+--- @param team integer Team number for this player
+--- @alias AddPlayer fun(id: integer, name: string, team: integer)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when a player leaves the session.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
--- @event DeletePlayer
--- @see _hook.Add
--- @tparam int id DPID number for this player
--- @tparam string name name for this player
--- @tparam int team Team number for this player
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param id integer DPID number for this player
+--- @param name string name for this player
+--- @param team integer Team number for this player
+--- @alias DeletePlayer fun(id: integer, name: string, team: integer)
+--- @diagnostic enable: undefined-doc-param
 
 --- Called when a script-defined message arrives.
---
--- This function should return true if it handled the message and false, nil, or none if it did not.
---
--- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn} (TODO consider changing call type to stop after first true)
--- @event Receive
--- @see _hook.Add
--- @tparam int from network player id of the sender.
--- @tparam string type an arbitrary one-character string indicating the script-defined message type.
--- @tparam ... data values passed as parameters to Send will arrive as parameters to Receive in the same order they were sent. Receive supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
--- @tparam[opt] HookResult priorResult prior event handler's result
+---
+--- This function should return true if it handled the message and false, nil, or none if it did not.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllPassReturn
+--- @tod consider changing call type to stop after first true
+--- @param from integer network player id of the sender.
+--- @param type string an arbitrary one-character string indicating the script-defined message type.
+--- @vararg any values passed as parameters to Send will arrive as parameters to Receive in the same order they were sent. Receive supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
+--- @param priorResult HookResult? prior event handler's result
+--- @return boolean?
+--- @alias Receive fun(from: integer, type: string, ...: any, priorResult: HookResult?): boolean?
+--- @diagnostic enable: undefined-doc-param
 
 --- Called for any in-game chat command that was not handled by the system, allowing script-defined commands.
---
--- This function should return true if it handled the command and false, nil, or none if it did not.
---
--- LuaMission breaks the command into
---
--- Command is the string immediately following the '/'. For example, the command for "/foo" is "foo".
---
--- Arguments arrive as a string parameter to Command. For example "/foo 1 2 3" would receive "1 2 3".
---
--- The Lua string library provides several functions that can split the string into separate items.
---
--- You can use string.match with captures if you have a specific argument list:
--- <pre>local foo, bar, baz = string.match(arguments, "(%g+) (%g+) (%g+)")</pre>
---
--- You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
--- <pre>for arg in string.gmatch(arguments, "%g+") do ... end</pre>
---
--- Check the Lua <a href="http://lua-users.org/wiki/PatternsTutorial">patterns tutorial</a> and <a href="http://www.lua.org/manual/5.2/manual.html#6.4.1">patterns manual</a> for more details.
---
--- Call method: @{_hook.CallAllPassReturn|CallAllPassReturn}
--- @event Command
--- @see _hook.Add
--- @tparam string command
--- @tparam ... parameters
--- @tparam[opt] HookResult priorResult prior event handler's result
+---
+--- This function should return true if it handled the command and false, nil, or none if it did not.
+---
+--- LuaMission breaks the command into
+---
+--- Command is the string immediately following the '/'. For example, the command for "/foo" is "foo".
+---
+--- Arguments arrive as a string parameter to Command. For example "/foo 1 2 3" would receive "1 2 3".
+---
+--- The Lua string library provides several functions that can split the string into separate items.
+---
+--- You can use string.match with captures if you have a specific argument list:
+--- `local foo, bar, baz = string.match(arguments, "(%g+) (%g+) (%g+)")`
+---
+--- You can use string.gmatch, which returns an iterator, if you want to loop through arguments:
+--- `for arg in string.gmatch(arguments, "%g+") do ... end`
+---
+--- Check the Lua <a href="http://lua-users.org/wiki/PatternsTutorial">patterns tutorial</a> and <a href="http://www.lua.org/manual/5.2/manual.html#6.4.1">patterns manual</a> for more details.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllPassReturn
+--- @param command string
+--- @vararg any parameters
+--- @param priorResult HookResult? prior event handler's result
+--- @return boolean?
+--- @alias Command fun(command: string, ...: any, priorResult: HookResult?): boolean?
+--- @diagnostic enable: undefined-doc-param
 
 --- @section Enums
 

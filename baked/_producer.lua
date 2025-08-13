@@ -13,21 +13,21 @@ local config = require("_config");
 local utility = require("_utility");
 local hook = require("_hook");
 local gameobject = require("_gameobject");
-local unsaved = require("_unsaved");
 require("_table_show");
 local deque = require("_deque");
 local paramdb = require("_paramdb");
 local color = require("_color");
 
 --- Called when a producer as completed building an object.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
---
--- @event Producer:BuildComplete
--- @param object GameObject The object that was built.
--- @param producer GameObject The producer that built the object.
--- @param data any? The event data to be fired with the creation event.
--- @see _hook.Add
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param object GameObject The object that was built.
+--- @param producer GameObject The producer that built the object.
+--- @param data any? The event data to be fired with the creation event.
+--- @diagnostic disable-next-line: luadoc-miss-type-name
+--- @alias Producer:BuildComplete fun(object: GameObject, producer: GameObject, data: any?)
+--- @diagnostic enable: undefined-doc-param
 
 --- @class _producer
 local M = {};

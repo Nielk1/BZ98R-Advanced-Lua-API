@@ -7,6 +7,10 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_utility Loading");
 
+--- @class WeightedItem
+--- @field item any The item to be chosen.
+--- @field chance number The weight of the item.
+
 --- @class _utility
 local M = {};
 --local utility_module_meta = {};
@@ -672,10 +676,6 @@ function M.ChooseOne(...)
     local random_index = math.random(#items);
     return items[random_index];
 end
-
---- @class WeightedItem
---- @field item any The item to be chosen.
---- @field chance number The weight of the item.
 
 --- Chooses a random item from a list of weighted items.
 --- @param ... WeightedItem The items to choose from.

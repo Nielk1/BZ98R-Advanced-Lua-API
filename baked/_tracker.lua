@@ -21,7 +21,7 @@ local config = require("_config");
 local utility = require("_utility");
 local hook = require("_hook");
 local gameobject = require("_gameobject");
-local unsaved = require("_unsaved");
+local customsavetype = require("_customsavetype");
 require("_table_show");
 
 --- @class _tracker
@@ -93,7 +93,7 @@ local function AddTrackedObject(object, odf, sig, team)
     end
 
     if trackedObject then
-        object.tracker = unsaved(object.tracker)
+        object.tracker = customsavetype.NoSave(object.tracker)
         object.tracker.odf = odf;
         object.tracker.sig = sig;
         object.tracker.team = team;

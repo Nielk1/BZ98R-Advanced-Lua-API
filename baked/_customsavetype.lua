@@ -28,13 +28,24 @@ local M_MT = {};
 --- @field __nosave boolean? If true, the type will not be saved or loaded, a nil will be saved instead.
 --- @field __noref boolean? If true, the type will not undergo checks for shared or looped references when saving.
 --- @field __base CustomSavableType? The base type to inherit from, if any.
---- @field Save fun(self:CustomSavableType):... Called when saving an instance of this type. Return value is saved.
+--- @field Save fun(self: CustomSavableType):... Called when saving an instance of this type. Return value is saved.
 --- @field Load fun(...: any?) Called when loading an instance of this type. Data is the value returned from Save.
 --- @field TypeSave fun():... Called on the type itself before any other data is saved.
 --- @field TypeLoad fun(...: any?) Called on the type itself, before any other data is loaded.
 
 --- @type table<string, CustomSavableType>
 M.CustomSavableTypes = {};
+
+--- Creates a new table or augments the passed in table marking it as unsaved.
+--- @param data table? Table to augment with unsaved data. If nil, a new table is created.
+--- @return table
+function M.NoSave(data)
+    if data == nil then
+        data = {};
+    end
+    data.__nosave = true; -- mark it as unsaved, don't even bother with metatables
+    return data;
+end
 
 --- Register a custom savable type.
 --- @param obj CustomSavableType

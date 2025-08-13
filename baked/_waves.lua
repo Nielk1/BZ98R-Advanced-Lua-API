@@ -21,14 +21,15 @@ local paths = require("_paths");
 local statemachine = require("_statemachine");
 
 --- Called when a wave spawner has spawned a wave.
---
--- Call method: @{_hook.CallAllNoReturn|CallAllNoReturn}
---
--- @event WaveSpawner:Spawned
--- @param name string The name of the wave spawner.
--- @param units GameObject[] The gameobjects that were spawned.
--- @param leader GameObject The leader gameobject.
--- @see _hook.Add
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param name string The name of the wave spawner.
+--- @param units GameObject[] The gameobjects that were spawned.
+--- @param leader GameObject The leader gameobject.
+--- @diagnostic disable-next-line: luadoc-miss-type-name
+--- @alias WaveSpawner:Spawned fun(name: string, units: GameObject[], leader: GameObject)
+--- @diagnostic enable: undefined-doc-param
 
 --- @class _waves
 local M = {}
@@ -114,12 +115,12 @@ end
 
 
 --- Spawns units in a specified formation at a location, facing a direction.
---- @param formation string[]                       -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location Vector|string|PathWithIndex     -- Center position of the formation
---- @param dir Vector?                              -- Direction the formation faces (forward)
---- @param units string[]                           -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum                             -- Team to assign units to
---- @param seperation integer?                      -- Distance between units (optional, default 10)
+--- @param formation string[]                    Array of strings, each string is a row, numbers are unit indices in 'units'
+--- @param location Vector|string|PathWithIndex  Center position of the formation
+--- @param dir Vector?                           Direction the formation faces (forward)
+--- @param units string[]                        List of unit ODFs, indexed by number in formation
+--- @param team TeamNum                          Team to assign units to
+--- @param seperation integer?                   Distance between units (optional, default 10)
 --- @return GameObject[] units
 --- @return GameObject? leader
 function M.SpawnInFormation(formation, location, dir, units, team, seperation)

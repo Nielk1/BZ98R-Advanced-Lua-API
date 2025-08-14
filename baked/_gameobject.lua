@@ -230,8 +230,9 @@ function GameObject.TypeLoad(data)
     --    GameObjectDead[v] = newGameObject;
     --end
 
+    --- @todo skip this if we have access to SeqNo functions
     --- @diagnostic disable-next-line: empty-block
-    for v in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
+    for _ in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
 end
 
 --- @section Object Creation / Destruction
@@ -2383,8 +2384,9 @@ hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
 end, config.get("hook_priority.DeleteObject.GameObject"));
 
 hook.Add("Start", "GameObject_Start", function()
+    --- @todo skip this if we have access to SeqNo functions
     --- @diagnostic disable-next-line: empty-block
-    for v in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
+    for _ in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
 end, config.get("hook_priority.Start.GameObject"));
 
 --hook.Add("Update", "GameObject_Update", function(dtime)

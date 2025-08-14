@@ -323,14 +323,18 @@ hook.Add("Start", "_tracker_Start", function(object, isMapObject)
 end, config.get("hook_priority.Start.Tracker"));
 
 
-hook.Add("CreateObject", "_tracker_CreateObject", function(object, isMapObject)
+hook.Add("MapObject", "_tracker_MapObject", function(object)
 
     -- we're getting map objects, this means Start event hasn't fired yet but we're already looking at things to filter, bake the filters now
-    if not HaveStarted and isMapObject then
+    if not HaveStarted then
         CheckUpdated();
         HaveStarted = true;
     end
 
+    AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
+end, config.get("hook_priority.CreateObject.Tracker"));
+
+hook.Add("CreateObject", "_tracker_CreateObject", function(object)
     AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
 end, config.get("hook_priority.CreateObject.Tracker"));
 

@@ -243,7 +243,7 @@ end
 
 --- @section NavManager - Core
 
-hook.Add("CreateObject", "_navmanager_CreateObject", function(object, isMapObject)
+local function CreateObject(object)
     if not DisableAutomaticNavAdding and object:GetClassSig() == "CPOD" then
         local team = object:GetTeamNum();
         if team == 0 then
@@ -261,7 +261,10 @@ hook.Add("CreateObject", "_navmanager_CreateObject", function(object, isMapObjec
             PendingDirty = true;
         end
     end
-end, config.get("hook_priority.CreateObject.NavManager"));
+end
+
+hook.Add("MapObject", "_navmanager_MapObject", CreateObject, config.get("hook_priority.CreateObject.NavManager"));
+hook.Add("CreateObject", "_navmanager_CreateObject", CreateObject, config.get("hook_priority.CreateObject.NavManager"));
 hook.Add("DeleteObject", "_navmanager_DeleteObject", function(object)
     -- we can't get the signiture by this point so we have to use saved data
     if object.NavManager ~= nil then

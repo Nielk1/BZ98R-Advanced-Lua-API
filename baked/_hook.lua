@@ -436,6 +436,19 @@ function M.CallAllPassReturn( event, ... )
     return lastreturn;
 end
 
+--- Does this event have any hooks?
+--- For simple event calls this is not needed, but it's useful before loops triggering many instances of the same event.
+--- @param event string Event to be hooked
+--- @return boolean
+--- @function _hook.HasHooks
+function M.HasHooks( event )
+    local HookTable = Hooks[ event ]
+    if ( HookTable ~= nil ) then
+        return #HookTable > 0;
+    end
+    return false;
+end
+
 logger.print(logger.LogLevel.DEBUG, nil, "_hook Loaded");
 
 return M;

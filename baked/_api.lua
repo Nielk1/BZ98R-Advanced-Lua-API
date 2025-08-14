@@ -78,6 +78,16 @@ local version = require("_version");
 --- @alias Update fun(dtime: number, ttime: number)
 --- @diagnostic enable: undefined-doc-param
 
+--- Called after a map game object is created (map load time).
+---
+--- Handle is the game object that was created.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook Add CallAllNoReturn
+--- @param object GameObject
+--- @alias MapObject fun(object: GameObject)
+--- @diagnostic enable: undefined-doc-param
+
 --- Called after any game object is created.
 ---
 --- Handle is the game object that was created.
@@ -87,8 +97,7 @@ local version = require("_version");
 --- @diagnostic disable: undefined-doc-param
 --- @hook Add CallAllNoReturn
 --- @param object GameObject
---- @param isMapObject boolean?
---- @alias CreateObject fun(object: GameObject, isMapObject: boolean?)
+--- @alias CreateObject fun(object: GameObject)
 --- @diagnostic enable: undefined-doc-param
 
 --- Called when a game object gets added to the mission
@@ -490,10 +499,12 @@ end
 --- Use this function to perform any one-time script initialization.
 local function _Start()
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Start()");
-    
-    --- @diagnostic disable-next-line: deprecated
-    for h in AllObjects() do
-        hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h), true );
+
+    if hook.HasHooks("MapObject") then
+        --- @diagnostic disable-next-line: deprecated
+        for h in AllObjects() do
+            hook.CallAllNoReturn( "MapObject", gameobject.FromHandle(h));
+        end
     end
 
     hook.CallAllNoReturn( "Start" );

@@ -501,9 +501,19 @@ end
 
 --- @section Producer - Core
 
-hook.Add("CreateObject", "_producer_CreateObject", function(object, isMapObject)
+hook.Add("MapObject", "_producer_MapObject", function(object)
     --- @cast object GameObject
-    --- @cast isMapObject boolean
+    local sig = object:GetClassSig();
+    if sig == utility.ClassSig.recycler
+    or sig == utility.ClassSig.factory
+    or sig == utility.ClassSig.constructionrig
+    or sig == utility.ClassSig.armory then
+        ProducersDirty[object:GetTeamNum()] = true; -- mark the team as dirty so we can scan it next update
+    end
+end, config.get("hook_priority.CreateObject.Producer"));
+
+hook.Add("CreateObject", "_producer_CreateObject", function(object)
+    --- @cast object GameObject
     local sig = object:GetClassSig();
     if sig == utility.ClassSig.recycler
     or sig == utility.ClassSig.factory
@@ -512,9 +522,7 @@ hook.Add("CreateObject", "_producer_CreateObject", function(object, isMapObject)
         ProducersDirty[object:GetTeamNum()] = true; -- mark the team as dirty so we can scan it next update
     end
 
-    if not isMapObject then
-        ProcessCreated(object);
-    end
+    ProcessCreated(object);
 end, config.get("hook_priority.CreateObject.Producer"));
 
 hook.Add("DeleteObject", "_producer_DeleteObject", function(object)

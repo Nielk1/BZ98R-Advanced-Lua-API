@@ -78,7 +78,7 @@ local version = require("_version");
 --- @alias Update fun(dtime: number, ttime: number)
 --- @diagnostic enable: undefined-doc-param
 
---- Called after a map game object is created (map load time).
+--- Called for each map game object on initial map load.
 ---
 --- Handle is the game object that was created.
 ---

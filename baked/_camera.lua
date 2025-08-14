@@ -130,7 +130,7 @@ end
 --- @todo this function badly needs testing
 --- @return Vector pos
 --- @return Vector dir
-function M.GetCameraPosition()
+function M.GetPosition()
     if not InCamera then
         return SetVector(), SetVector();
     end

@@ -12,7 +12,7 @@
 ---     if cheat == "BZSKIP" then
 ---         local machine_state = mission_data.mission_states.StateMachines.main_objectives;
 ---         machine_state:SecondsHavePassed(); -- clear timer in case we were in one
----         camera.CameraFinish(); -- protected camera exit that won't crash
+---         camera.End(); -- protected camera exit that won't crash
 ---         machine_state:next(); -- move to the next state
 ---     end
 --- end);

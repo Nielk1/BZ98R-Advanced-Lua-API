@@ -453,7 +453,7 @@ local function _Load(...)
             logger.print(logger.LogLevel.TRACE, nil, "Loaded " .. entry.__type);
 
             local ArraySize = 0;
-            for k,v in pairs(data) do if k > ArraySize then ArraySize = k; end end
+            for k,_ in pairs(data) do if k > ArraySize then ArraySize = k; end end
 
             -- maybe we should load DeSimplifyForLoad multiple times until we know for sure the data has no more refs?
             entry.TypeLoad(DeSimplifyForLoad(table.unpack(data, 1, ArraySize)));

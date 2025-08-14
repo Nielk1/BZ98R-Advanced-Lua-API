@@ -207,10 +207,57 @@ function M.GetCameraPosition()
 end
 
 --- Starts the cinematic camera and disables normal input.
-function M.CameraReady()
+function M.Start()
     InCamera = true;
     --- @diagnostic disable-next-line: deprecated
     CameraReady();
+end
+
+--- Finishes the cinematic camera and enables normal input.
+--- Does nothing if camera is not active.
+function M.End()
+    if not InCamera then
+        return;
+    end
+    InCamera = false;
+    CheckCameraType(nil, nil);
+    --- @diagnostic disable-next-line: deprecated
+    CameraFinish();
+    CameraWasCancelled = nil;
+end
+
+--- Camera is currently active
+--- @return boolean
+function M.Active()
+    return InCamera;
+end
+
+--- Returns true when the camera arrives at its destination. Returns false otherwise.
+--- @return boolean
+function M.Done()
+    --- @diagnostic disable-next-line: deprecated
+    return PanDone();
+end
+
+--- Returns true if the player canceled the cinematic. Returns false otherwise.
+--- Cancelation becomes latched until UnCancel is called.
+--- Camera is latched as canceled in the engine itself after loading.
+--- @return boolean
+function M.Canceled()
+    if not InCamera then
+        -- if not in camera, cannot be cancelled, just call original just in case
+        --- @diagnostic disable-next-line: deprecated
+        return CameraCancelled();
+    end
+    --- @diagnostic disable-next-line: deprecated
+    CameraWasCancelled = CameraWasCancelled or CameraCancelled();
+    return CameraWasCancelled;
+end
+
+--- Resets the camera cancelled flag.
+--- This is needed if the camera cancelation was used to switch to another camera type.
+function M.UnCancel()
+    CameraWasCancelled = nil;
 end
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
@@ -220,11 +267,12 @@ end
 --- @param speed number speed in meters per second
 --- @param target GameObject|Handle
 --- @return boolean
-function M.CameraPath(path, height, speed, target)
+function M.FollowPathAimObject(path, height, speed, target)
     if gameobject.isgameobject(target) then
         --- @cast target GameObject
         target = target:GetHandle();
     end
+    -- we use floor instead of truncating so going negative can't cause a strange size step
     height = math.floor(height * 100); -- convert to centimeters
     speed = math.floor(speed * 100); -- convert to centimeters per second
     --- @cast target Handle
@@ -242,9 +290,10 @@ end
 --- @param target_height number?
 --- @param target_speed number? defaults to the same as speed
 --- @return boolean
-function M.CameraPathPathFollow(path, height, speed, target, target_height, target_speed)
+function M.FollowPathAimFollowPath(path, height, speed, target, target_height, target_speed)
     target_height = target_height or 0;
     target_speed = target_speed or speed;
+    -- we use floor instead of truncating so going negative can't cause a strange size step
     speed = math.floor(speed * 100); -- convert to centimeters per second
     height = math.floor(height * 100); -- convert to centimeters
     target_height = math.floor(target_height * 100); -- convert to centimeters
@@ -274,7 +323,9 @@ end
 --- @param height number
 --- @param speed number
 --- @return boolean
-function M.CameraPathDir(path, height, speed)
+--- @todo consider changing to a direction vector
+function M.FollowPathAimForward(path, height, speed)
+    -- we use floor instead of truncating so going negative can't cause a strange size step
     height = math.floor(height * 100); -- convert to centimeters
     speed = math.floor(speed * 100); -- convert to centimeters per second
     CheckCameraType("CameraPathDir", {path, height, speed});
@@ -289,19 +340,13 @@ end
 --- @param speed number
 --- @param target string
 --- @return boolean
-function M.CameraPathPath(path, height, speed, target)
+function M.FollowPathAimPath(path, height, speed, target)
+    -- we use floor instead of truncating so going negative can't cause a strange size step
     height = math.floor(height * 100); -- convert to centimeters
     speed = math.floor(speed * 100); -- convert to centimeters per second
     CheckCameraType("CameraPathPath", {path, height, speed, target});
     --- @diagnostic disable-next-line: deprecated
     return CameraPathPath(path, height, speed, target);
-end
-
---- Returns true when the camera arrives at its destination. Returns false otherwise.
---- @return boolean
-function M.PanDone()
-    --- @diagnostic disable-next-line: deprecated
-    return PanDone();
 end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object.
@@ -316,7 +361,7 @@ end
 --- @param target GameObject|Handle
 --- @diagnostic enable: undefined-doc-param
 --- @return boolean Exists true if the base or handle game object does not exist. Returns false otherwise.
-function M.CameraObject(base, right, up, forward, target)
+function M.FollowObjectAimObject(base, right, up, forward, target)
     if gameobject.isgameobject(base) then
         --- @cast base GameObject
         base = base:GetHandle();
@@ -331,6 +376,7 @@ function M.CameraObject(base, right, up, forward, target)
         --- @diagnostic disable-next-line: cast-type-mismatch
         --- @cast up GameObject|Handle
         target = up;
+        -- we use floor instead of truncating so going negative can't cause a strange size step
         --- @diagnostic disable-next-line: cast-type-mismatch
         --- @cast right Vector
         up = math.floor(right.y * 100); -- convert to centimeters
@@ -355,43 +401,6 @@ function M.CameraObject(base, right, up, forward, target)
     CheckCameraType("CameraObject", {base, right, up, forward, target});
     --- @diagnostic disable-next-line: deprecated
     return CameraObject(base, right, up, forward, target);
-end
-
---- Finishes the cinematic camera and enables normal input.
---- Does nothing if camera is not active.
-function M.CameraFinish()
-    if not InCamera then
-        return;
-    end
-    InCamera = false;
-    CheckCameraType(nil, nil);
-    --- @diagnostic disable-next-line: deprecated
-    CameraFinish();
-    CameraWasCancelled = nil;
-end
-
---- Returns true if the player canceled the cinematic. Returns false otherwise.
---- @return boolean
-function M.CameraCancelled()
-    if not InCamera then
-        -- if not in camera, cannot be cancelled, just call original just in case
-        --- @diagnostic disable-next-line: deprecated
-        return CameraCancelled();
-    end
-    --- @diagnostic disable-next-line: deprecated
-    CameraWasCancelled = CameraWasCancelled or CameraCancelled();
-    return CameraWasCancelled;
-end
-
---- Resets the camera cancelled flag.
-function M.ResetCameraCancelled()
-    CameraWasCancelled = nil;
-end
-
---- Camera is currently active
---- @return boolean
-function M.InCamera()
-    return InCamera;
 end
 
 hook.Add("Update", "_camera:Update", function(dtime, ttime)

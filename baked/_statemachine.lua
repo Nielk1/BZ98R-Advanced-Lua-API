@@ -147,26 +147,25 @@ local StateMachineIter = {}; -- the table representing the class, which will dou
 
 --- @alias StateMachineFunction fun(self:StateMachineIter, ...:any):any
 
---- @class WrappedObjectForStateMachineIter
---- @field f function State function to call
---- @field p table Parameters to pass to the state function
+--- Early exit function for state machine iterators, if a string or integer is returned it is the next state
+--- @alias StateMachineEarlyExitFunction fun(self:StateMachineIter, ...:any):boolean|string|integer|nil
 
 --- A simple name-only set of states
 --- @class StateMachineStateUnorderedSet
---- @field [string] StateMachineFunction|WrappedObjectForStateMachineIter State function
+--- @field [string] StateMachineFunction State function
 
 --- A simple ordered set of states
 --- @class StateMachineStateOrderedSet
---- @field [integer] StateMachineFunction|WrappedObjectForStateMachineIter|StateMachineNamedState|StateMachineNamedStateTruncated State function
+--- @field [integer] StateMachineFunction|StateMachineNamedState|StateMachineNamedStateTruncated State function
 
 --- Simple construct for a state function with a name
 --- @class StateMachineNamedState
 --- @field [1] string|nil name
---- @field [2] StateMachineFunction|WrappedObjectForStateMachineIter State function
+--- @field [2] StateMachineFunction State function
 
 --- A truncated version without the name, name is constructed at runtime from index
 --- @class StateMachineNamedStateTruncated
---- @field [1] StateMachineFunction|WrappedObjectForStateMachineIter State function
+--- @field [1] StateMachineFunction State function
 
 
 --GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
@@ -281,11 +280,6 @@ function StateMachineIter.run(self, ...)
             end
 
             return true, table.unpack(retVal);
-        elseif utility.istable(machine[currentState]) then
-            if utility.isfunction(machine[currentState].f) then
-                --logger.print(logger.LogLevel.DEBUG, nil, "StateMachineIter state '"..currentState.."' is "..type(machine[currentState].f).." '"..table.show(machine[currentState].p).."'");
-                return true, machine[currentState].f(self, machine[currentState].p, ...);
-            end
         end
 
         if runNext then
@@ -307,7 +301,7 @@ end
 
 --- Get next state for StateMachineIter.
 --- @param state StateMachineIter FuncArrayIter instance
---- @local
+--- @return string|integer|nil key The next state key, either a string name or an integer index if the StateMachineIter is ordered
 local function nextState(state)
     local flags = M.MachineFlags[ state.template ];
     if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
@@ -376,7 +370,7 @@ end
 
 --- Creates an StateMachineIter Template with the given indentifier.
 --- @param name string Name of the StateMachineIter Template (string)
---- @vararg StateMachineNamedState|StateMachineNamedStateTruncated|StateMachineStateOrderedSet|WrappedObjectForStateMachineIter|StateMachineFunction State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
+--- @vararg StateMachineNamedState|StateMachineNamedStateTruncated|StateMachineStateOrderedSet|StateMachineFunction State descriptor and/or state descriptor collections, can be a table of named state functions or an array of state descriptors.
 --- State descriptors are tables with the first element being the state name and the second element being the state function.
 --- If the second element is nil, the first element is considered the state function and the state name is generated automatically.
 --- If the state descriptor is instead a function it is treated as a nil state and the state name is generated automatically.
@@ -402,28 +396,17 @@ function M.Create( name, ... )
             --- @cast v function
             table.insert(super_states, {v}); -- wrap the state into an array of 1
         elseif utility.istable(v) then
-            -- we have a table, it could be an array, a map, or a special state function like sleep
+            -- we have a table, it could be an array or a map
             -- { ... }
             --- @cast v table
-            if utility.isfunction(v.f) and utility.istable(v.p) then
-                -- this is a special state function like sleep, so we are ordered but have no name
-                -- { f = func, p = { ... } } -- special state function
-                --- @cast v WrappedObjectForStateMachineIter
-                table.insert(super_states, {v}); -- wrap the state into an array of 1
-            elseif v[1] ~= nil then
+            if v[1] ~= nil then
                 -- this is probably an array so there's a few options
                 -- { ... }
-
                 if #v == 1 then
                     -- only one item
                     if utility.isfunction(v[1]) then
                         -- function wrapped in a state descriptor that lacks a name
                         -- { func }
-                        --- @cast v StateMachineNamedStateTruncated
-                        table.insert(super_states, {v}); -- wrap the state into an array of 1
-                    elseif utility.isfunction(v[1].f) and utility.istable(v[1].p) then
-                        -- special state function wrapped in a state descriptor that lacks a name
-                        -- { { f = func, p = { ... } } } -- special state function
                         --- @cast v StateMachineNamedStateTruncated
                         table.insert(super_states, {v}); -- wrap the state into an array of 1
                     else
@@ -622,24 +605,23 @@ end
 --- Wait a set period of time on this state.
 --- @param calls integer How many calls to wait
 --- @param next_state string Next state when timer hits zero
---- @param early_exit function? Function to check if the state should be exited early, return false, true, or next state name
---- @return WrappedObjectForStateMachineIter
+--- @param early_exit StateMachineEarlyExitFunction? Function to check if the state should be exited early, return false, true, or next state name
+--- @return StateMachineFunction
 function M.SleepCalls( calls, next_state, early_exit )
     if not utility.isinteger(calls) then error("Parameter calls must be an integer."); end
     if not utility.isstring(next_state) then error("Parameter next_state must be a string."); end
     if early_exit ~= nil and not utility.isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
-    return { f = function(state, params, ...)
-        local calls = params[1];
-        local next_state = params[2];
-        local early_exit = params[3];
+    return function(state, ...)
+        local ns = next_state;
         if early_exit ~= nil then
             local early_exit_result = early_exit(state, ...);
             if (early_exit_result) then
-                if utility.isstring(early_exit_result) then
+                if utility.isstring(early_exit_result) or utility.isinteger(early_exit_result) then
+                    --- @cast early_exit_result string|integer
                     state:switch(early_exit_result);
                 else
-                    state:switch(next_state);
+                    state:switch(ns);
                 end
                 return;
             end
@@ -647,12 +629,12 @@ function M.SleepCalls( calls, next_state, early_exit )
         if state.target_call == nil then
             state.target_call = calls;
         elseif state.target_call == 0 then
-            state:switch(next_state);
+            state:switch(ns);
             state.target_call = nil; -- ensure that the timer is reset
         else
             state.target_call = state.target_call - 1;
         end
-    end, p = {calls, next_state, early_exit} };
+    end;
 end
 
 --- Check if a set period of time has passed.
@@ -706,44 +688,37 @@ end
 
 --- Wait a set period of time on this state.
 --- @param seconds number How many seconds to wait
---- @param next_state string|nil Next state when timer hits zero
---- @param early_exit StateMachineFunction? Function to check if the state should be exited early, return false, true, or next state name
+--- @param next_state string|integer|nil Next state when timer hits zero, nil is auto-next for an ordered machine
+--- @param early_exit StateMachineEarlyExitFunction? Function to check if the state should be exited early, return false, true, or next state name
+--- @return StateMachineFunction
 function M.SleepSeconds(seconds, next_state, early_exit )
     if not utility.isnumber(seconds) then error("Parameter seconds must be a number."); end
-    if next_state ~= nil and not utility.isstring(next_state) then error("Parameter next_state must be a string or nil if StateMachine is ordered."); end
+    if next_state ~= nil and not (utility.isstring(next_state) or utility.isnumber(next_state)) then error("Parameter next_state must be a string, number, or nil depending on StateMachine configuration."); end
     if early_exit ~= nil and not utility.isfunction(early_exit) then error("Parameter early_exit must be a function or nil."); end
 
-    --- @todo change this to use closures instead of passing the params in an array, as there's actually no need
-    return { f = function(state, params, ...)
-        local seconds = params[1];
-        local next_state = params[2];
-        local early_exit = params[3];
-        if next_state == nil then
-            -- next_state is nil, so try to go to the next state by index
-            next_state = nextState(state);
+    return function(state, ...)
+        local ns = next_state;
+        if ns == nil then
+            ns = nextState(state);
         end
 
         if early_exit ~= nil then
             local early_exit_result = early_exit(state, ...);
-            if (early_exit_result) then
-                if utility.isstring(early_exit_result) then
+            if early_exit_result then
+                if utility.isstring(early_exit_result) or utility.isinteger(early_exit_result) then
+                    --- @cast early_exit_result string|integer
                     state:switch(early_exit_result);
                 else
-                    state:switch(next_state);
+                    state:switch(ns);
                 end
                 return;
             end
         end
-        --if state.target_time == nil then
-        --    state.target_time = _statemachine.game_time + seconds;
-        --elseif state.target_time <= _statemachine.game_time  then
-        --    state.target_time = nil; -- ensure that the timer is reset
-        --    state:switch(next_state);
-        --end
+
         if state:SecondsHavePassed(seconds) then
-            state:switch(next_state);
+            state:switch(ns);
         end
-    end, p = {seconds, next_state, early_exit} };
+    end;
 end
 
 --- @section StateMachineIter - Core

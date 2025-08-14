@@ -195,23 +195,23 @@ end
 --- TypeLoad event function.
 --- {INTERNAL USE}
 --- @param data any Object data
-function GameObject:TypeLoad(data)
+function GameObject.TypeLoad(data)
 -- Xparam dataDead Dead object data
 --function GameObject:TypeLoad(data,dataDead)
     local _ObjectiveObjects = {};
 
     --- @diagnostic disable-next-line: deprecated
     if not utility.isfunction(IsObjectiveOn) then
-            local lastObject = nil;
-            --- @diagnostic disable-next-line: deprecated
-            for h in ObjectiveObjects() do
-                if lastObject == h then
-                    break; -- break out of inf loop issue
-                end
-            _ObjectiveObjects[h] = true;
-                logger.print(logger.LogLevel.DEBUG, nil, "TypeLoad GameObject ObjectiveObjects: "..tostring(h));
-                lastObject = h;
+        local lastObject = nil;
+        --- @diagnostic disable-next-line: deprecated
+        for h in ObjectiveObjects() do
+            if lastObject == h then
+                break; -- break out of inf loop issue
             end
+             _ObjectiveObjects[h] = true;
+            logger.print(logger.LogLevel.DEBUG, nil, "TypeLoad GameObject ObjectiveObjects: "..tostring(h));
+            lastObject = h;
+        end
     end
 
     for k,v in pairs(data) do

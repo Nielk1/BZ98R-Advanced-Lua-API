@@ -166,7 +166,7 @@ end
 --- {INTERNAL USE}
 --- @param id any Handle
 --- @return GameObject?
-function GameObject:Load(id)
+function GameObject.Load(id)
     return M.FromHandle(id);
 end
 

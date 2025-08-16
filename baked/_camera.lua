@@ -1,6 +1,18 @@
 --- BZ98R LUA Extended API Camera.
 ---
 --- Camera API wrapper.
+--- Wraps all stock camera functions with cleaner names and adds some additional functionality.
+--- 
+--- <table><thead>
+---   <tr><th>Dolly       </th><th>Aim</th><th>Target    </th></tr>
+--- </thead><tbody>
+---   <tr><td>FollowPath  </td><td>Aim</td><td>Object    </td></tr>
+---   <tr><td>FollowPath  </td><td>Aim</td><td>FollowPath</td></tr>
+---   <tr><td>FollowPath  </td><td>Aim</td><td>Forward   </td></tr>
+---   <tr><td>FollowPath  </td><td>Aim</td><td>Path      </td></tr>
+---   <tr><td>FollowObject</td><td>Aim</td><td>Object    </td></tr>
+---   <tr><td>FollowObject</td><td>Aim</td><td>Object    </td></tr>
+--- </tbody></table>
 ---
 --- @module '_camera'
 --- @author John "Nielk1" Klein
@@ -127,6 +139,62 @@ local function GetPathVectorAfterTime(path, speed, time)
     return lastPosition, direction, true;
 end
 
+--- @section State
+
+--- Starts the cinematic camera and disables normal input.
+function M.Start()
+    InCamera = true;
+    --- @diagnostic disable-next-line: deprecated
+    CameraReady();
+end
+
+--- Finishes the cinematic camera and enables normal input.
+--- Does nothing if camera is not active.
+function M.End()
+    if not InCamera then
+        return;
+    end
+    InCamera = false;
+    CheckCameraType(nil, nil);
+    --- @diagnostic disable-next-line: deprecated
+    CameraFinish();
+    CameraWasCancelled = nil;
+end
+
+--- Camera is currently active
+--- @return boolean
+function M.Active()
+    return InCamera;
+end
+
+--- Returns true when the camera arrives at its destination. Returns false otherwise.
+--- @return boolean
+function M.Done()
+    --- @diagnostic disable-next-line: deprecated
+    return PanDone();
+end
+
+--- Returns true if the player canceled the cinematic. Returns false otherwise.
+--- Cancelation becomes latched until UnCancel is called.
+--- Camera is latched as canceled in the engine itself after loading.
+--- @return boolean
+function M.Canceled()
+    if not InCamera then
+        -- if not in camera, cannot be cancelled, just call original just in case
+        --- @diagnostic disable-next-line: deprecated
+        return CameraCancelled();
+    end
+    --- @diagnostic disable-next-line: deprecated
+    CameraWasCancelled = CameraWasCancelled or CameraCancelled();
+    return CameraWasCancelled;
+end
+
+--- Resets the camera cancelled flag.
+--- This is needed if the camera cancelation was used to switch to another camera type.
+function M.UnCancel()
+    CameraWasCancelled = nil;
+end
+
 --- @todo this function badly needs testing
 --- @return Vector pos
 --- @return Vector dir
@@ -206,59 +274,7 @@ function M.GetPosition()
     return SetVector(), SetVector();
 end
 
---- Starts the cinematic camera and disables normal input.
-function M.Start()
-    InCamera = true;
-    --- @diagnostic disable-next-line: deprecated
-    CameraReady();
-end
-
---- Finishes the cinematic camera and enables normal input.
---- Does nothing if camera is not active.
-function M.End()
-    if not InCamera then
-        return;
-    end
-    InCamera = false;
-    CheckCameraType(nil, nil);
-    --- @diagnostic disable-next-line: deprecated
-    CameraFinish();
-    CameraWasCancelled = nil;
-end
-
---- Camera is currently active
---- @return boolean
-function M.Active()
-    return InCamera;
-end
-
---- Returns true when the camera arrives at its destination. Returns false otherwise.
---- @return boolean
-function M.Done()
-    --- @diagnostic disable-next-line: deprecated
-    return PanDone();
-end
-
---- Returns true if the player canceled the cinematic. Returns false otherwise.
---- Cancelation becomes latched until UnCancel is called.
---- Camera is latched as canceled in the engine itself after loading.
---- @return boolean
-function M.Canceled()
-    if not InCamera then
-        -- if not in camera, cannot be cancelled, just call original just in case
-        --- @diagnostic disable-next-line: deprecated
-        return CameraCancelled();
-    end
-    --- @diagnostic disable-next-line: deprecated
-    CameraWasCancelled = CameraWasCancelled or CameraCancelled();
-    return CameraWasCancelled;
-end
-
---- Resets the camera cancelled flag.
---- This is needed if the camera cancelation was used to switch to another camera type.
-function M.UnCancel()
-    CameraWasCancelled = nil;
-end
+--- @section Sequence
 
 --- Moves a cinematic camera along a path at a given height and speed while looking at a target game object.
 --- Returns true when the camera arrives at its destination. Returns false otherwise.

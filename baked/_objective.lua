@@ -39,7 +39,7 @@ end
 
 --- Updates the objective message with the given name. If no objective exists with that name, it does nothing.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color ColorLabel? Default to "WHITE".
+--- @param color EColorLabel? Default to "WHITE".
 --- @param duration number? defaults to 8 seconds
 --- @param text string? Override text from the target objective file. {VERSION 2.0+}
 --- @param position number? Sort position of the objective. Defaults to the next available ID.
@@ -76,7 +76,7 @@ end
 
 --- Adds an objective message with the given name and properties.
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color ColorLabel? Default to "WHITE".
+--- @param color EColorLabel? Default to "WHITE".
 --- @param duration number? defaults to 8 seconds
 --- @param text string? Override text from the target objective file. {VERSION 2.0+}
 --- @param position number? Sort position of the objective. Defaults to the next available ID.
@@ -127,7 +127,7 @@ end
 --- Replaces the objective message with the given name. If no objective exists with that name, it does nothing.
 --- @param oldname string Unique name for objective, usually a filename ending with otf from which data is loaded
 --- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
---- @param color ColorLabel? Default to "WHITE".
+--- @param color EColorLabel? Default to "WHITE".
 --- @param duration number? defaults to 8 seconds
 --- @param text string? Override text from the target objective file. {VERSION 2.0+}
 --- @param position number? Sort position of the objective. Defaults to the removed objective's position or next available ID.

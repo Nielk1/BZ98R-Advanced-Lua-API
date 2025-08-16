@@ -168,6 +168,7 @@ if pre_patch then
     --- @class GameObject_FixFallingPowerup : GameObject
     --- @field PowerupFixes_team integer
     --- @field PowerupFixes_wrecker boolean?
+    --- @local
 
     --- @type table<GameObject_FixFallingPowerup, boolean>
     local PowerupFixes = {};

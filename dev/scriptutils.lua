@@ -6,7 +6,9 @@
 ---
 --- @meta
 
+--- [[START_IGNORE]]
 error("This is a stub for ScriptUtils, it does not contain any functionality. Do not include this file in your mod.");
+--- [[END_IGNORE]]
 
 --- @section Types
 --- Type declarations
@@ -28,6 +30,240 @@ error("This is a stub for ScriptUtils, it does not contain any functionality. Do
 
 --- TeamSlot Integer
 --- @alias TeamSlotInteger -1|0|1|2|3|4|5|14|15|24|25|34|35|44|45|54|55|59|60|64|65|69|70|74|75|79|80|89|90
+
+--- @section Enums
+
+--- Many of these values likely never appear in game and are leftover from Interstate '76
+--- @enum ClassId
+local _ClassId = {
+    NONE = 0,
+
+    HELICOPTER = 1,
+    STRUCTURE1 = 2, -- Wooden Structures
+    POWERUP = 3,
+    PERSON = 4,
+    SIGN = 5,
+    VEHICLE = 6,
+    SCRAP = 7,
+    BRIDGE = 8, -- A structure which can contain the floor
+    FLOOR = 9, -- The floor in a bridge
+    STRUCTURE2 = 10, -- Metal Structures
+    SCROUNGE = 11,
+    SPINNER = 15,
+
+    HEADLIGHT_MASK = 38,
+
+    EYEPOINT = 40,
+    COM = 42,
+
+    WEAPON = 50,
+    ORDNANCE = 51,
+    EXPLOSION = 52,
+    CHUNK = 53,
+    SORT_OBJECT = 54,
+    NONCOLLIDABLE = 55,
+
+    VEHICLE_GEOMETRY = 60,
+    STRUCTURE_GEOMETRY = 61,
+    WEAPON_GEOMETRY = 63,
+    ORDNANCE_GEOMETRY = 64,
+    TURRET_GEOMETRY = 65,
+    ROTOR_GEOMETRY = 66,
+    NACELLE_GEOMETRY = 67,
+    FIN_GEOMETRY = 68,
+    COCKPIT_GEOMETRY = 69,
+
+    WEAPON_HARDPOINT = 70,
+    CANNON_HARDPOINT = 71,
+    ROCKET_HARDPOINT = 72,
+    MORTAR_HARDPOINT = 73,
+    SPECIAL_HARDPOINT = 74,
+
+    FLAME_EMITTER = 75,
+    SMOKE_EMITTER = 76,
+    DUST_EMITTER = 77,
+
+    PARKING_LOT = 81,
+
+    [0] = "NONE",
+    [1] = "HELICOPTER",
+    [2] = "STRUCTURE1", -- Wooden Structures
+    [3] = "POWERUP",
+    [4] = "PERSON",
+    [5] = "SIGN",
+    [6] = "VEHICLE",
+    [7] = "SCRAP",
+    [8] = "BRIDGE", -- A structure which can contain the floor
+    [9] = "FLOOR", -- The floor in a bridge
+    [10] = "STRUCTURE2", -- Metal Structures
+    [11] = "SCROUNGE",
+    [15] = "SPINNER",
+    [38] = "HEADLIGHT_MASK",
+    [40] = "EYEPOINT",
+    [42] = "COM",
+    [50] = "WEAPON",
+    [51] = "ORDNANCE",
+    [52] = "EXPLOSION",
+    [53] = "CHUNK",
+    [54] = "SORT_OBJECT",
+    [55] = "NONCOLLIDABLE",
+    [60] = "VEHICLE_GEOMETRY",
+    [61] = "STRUCTURE_GEOMETRY",
+    [63] = "WEAPON_GEOMETRY",
+    [64] = "ORDNANCE_GEOMETRY",
+    [65] = "TURRET_GEOMETRY",
+    [66] = "ROTOR_GEOMETRY",
+    [67] = "NACELLE_GEOMETRY",
+    [68] = "FIN_GEOMETRY",
+    [69] = "COCKPIT_GEOMETRY",
+    [70] = "WEAPON_HARDPOINT",
+    [71] = "CANNON_HARDPOINT",
+    [72] = "ROCKET_HARDPOINT",
+    [73] = "MORTAR_HARDPOINT",
+    [74] = "SPECIAL_HARDPOINT",
+    [75] = "FLAME_EMITTER",
+    [76] = "SMOKE_EMITTER",
+    [77] = "DUST_EMITTER",
+    [81] = "PARKING_LOT",
+}
+
+--- For maintainability, always use this enum instead of raw team slot numbers.
+--- Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
+--- @enum TeamSlot
+local _TeamSlot = {
+    UNDEFINED = -1, -- invalid
+    PLAYER = 0,
+
+    RECYCLER = 1,
+    FACTORY = 2,
+    ARMORY = 3,
+    CONSTRUCT = 4,
+
+    MIN_OFFENSE = 5,
+    MAX_OFFENSE = 14,
+    MIN_DEFENSE = 15,
+    MAX_DEFENSE = 24,
+    MIN_UTILITY = 25,
+    MAX_UTILITY = 34,
+
+    MIN_BEACON = 35,
+    MAX_BEACON = 44,
+
+    MIN_POWER = 45,
+    MAX_POWER = 54,
+    MIN_COMM = 55,
+    MAX_COMM = 59,
+    MIN_REPAIR = 60,
+    MAX_REPAIR = 64,
+    MIN_SUPPLY = 65,
+    MAX_SUPPLY = 69,
+    MIN_SILO = 70,
+    MAX_SILO = 74,
+    MIN_BARRACKS = 75,
+    MAX_BARRACKS = 79,
+    MIN_GUNTOWER = 80,
+    MAX_GUNTOWER = 89,
+
+    PORTAL = 90, -- {VERSION 2.2.315+}
+
+    [-1] = "UNDEFINED", -- invalid
+    [0] = "PLAYER",
+
+    [1] = "RECYCLER",
+    [2] = "FACTORY",
+    [3] = "ARMORY",
+    [4] = "CONSTRUCT",
+
+    [5] = "MIN_OFFENSE",
+    [14] = "MAX_OFFENSE",
+    [15] = "MIN_DEFENSE",
+    [24] = "MAX_DEFENSE",
+    [25] = "MIN_UTILITY",
+    [34] = "MAX_UTILITY",
+
+    [35] = "MIN_BEACON",
+    [44] = "MAX_BEACON",
+
+    [45] = "MIN_POWER",
+    [54] = "MAX_POWER",
+    [55] = "MIN_COMM",
+    [59] = "MAX_COMM",
+    [60] = "MIN_REPAIR",
+    [64] = "MAX_REPAIR",
+    [65] = "MIN_SUPPLY",
+    [69] = "MAX_SUPPLY",
+    [70] = "MIN_SILO",
+    [74] = "MAX_SILO",
+    [75] = "MIN_BARRACKS",
+    [79] = "MAX_BARRACKS",
+    [80] = "MIN_GUNTOWER",
+    [89] = "MAX_GUNTOWER",
+
+    [90] = "PORTAL", -- {VERSION 2.2.315+}
+}
+
+--- For maintainability, always use this enum instead of raw command numbers.
+--- @enum AiCommand
+local _AiCommand = {
+    NONE = 0,
+    SELECT = 1,
+    STOP = 2,
+    GO = 3,
+    ATTACK = 4,
+    FOLLOW = 5,
+    FORMATION = 6,
+    PICKUP = 7,
+    DROPOFF = 8,
+    NO_DROPOFF = 9,
+    GET_REPAIR = 10,
+    GET_RELOAD = 11,
+    GET_WEAPON = 12,
+    GET_CAMERA = 13,
+    GET_BOMB = 14,
+    DEFEND = 15,
+    GO_TO_GEYSER = 16,
+    RESCUE = 17,
+    RECYCLE = 18,
+    SCAVENGE = 19,
+    HUNT = 20,
+    BUILD = 21,
+    PATROL = 22,
+    STAGE = 23,
+    SEND = 24,
+    GET_IN = 25,
+    LAY_MINES = 26,
+    CLOAK = 27, -- {VERSION 2.1+}
+    DECLOAK = 28, -- {VERSION 2.1+}
+    [0] = "NONE",
+    [1] = "SELECT",
+    [2] = "STOP",
+    [3] = "GO",
+    [4] = "ATTACK",
+    [5] = "FOLLOW",
+    [6] = "FORMATION",
+    [7] = "PICKUP",
+    [8] = "DROPOFF",
+    [9] = "NO_DROPOFF",
+    [10] = "GET_REPAIR",
+    [11] = "GET_RELOAD",
+    [12] = "GET_WEAPON",
+    [13] = "GET_CAMERA",
+    [14] = "GET_BOMB",
+    [15] = "DEFEND",
+    [16] = "GO_TO_GEYSER",
+    [17] = "RESCUE",
+    [18] = "RECYCLE",
+    [19] = "SCAVENGE",
+    [20] = "HUNT",
+    [21] = "BUILD",
+    [22] = "PATROL",
+    [23] = "STAGE",
+    [24] = "SEND",
+    [25] = "GET_IN",
+    [26] = "LAY_MINES",
+    [27] = "CLOAK", -- {VERSION 2.1+}
+    [28] = "DECLOAK", -- {VERSION 2.1+}
+}
 
 --- @section Globals
 --- The Lua scripting system defines some global variables that can be of use to user scripts.
@@ -364,98 +600,7 @@ end
 
 --- This is a global table that converts between class identifier numbers and class identifier names.
 --- Many of these values likely never appear in game and are leftover from Interstate '76
---- @enum ClassId
-ClassId = {
-    NONE = 0, -- 0
-
-    HELICOPTER = 1, -- 1
-    STRUCTURE1 = 2, -- 2 (Wooden Structures)
-    POWERUP = 3, -- 3
-    PERSON = 4, -- 4
-    SIGN = 5, -- 5
-    VEHICLE = 6, -- 6
-    SCRAP = 7, -- 7
-    BRIDGE = 8, -- 8 (A structure which can contain the floor)
-    FLOOR = 9, -- 9 (The floor in a bridge)
-    STRUCTURE2 = 10, -- 10 (Metal Structures)
-    SCROUNGE = 11, -- 11
-    SPINNER = 15, -- 15
-
-    HEADLIGHT_MASK = 38, -- 38
-
-    EYEPOINT = 40, -- 40
-    COM = 42, -- 42
-
-    WEAPON = 50, -- 50
-    ORDNANCE = 51, -- 51
-    EXPLOSION = 52, -- 52
-    CHUNK = 53, -- 53
-    SORT_OBJECT = 54, -- 54
-    NONCOLLIDABLE = 55, -- 55
-
-    VEHICLE_GEOMETRY = 60, -- 60
-    STRUCTURE_GEOMETRY = 61, -- 61
-    WEAPON_GEOMETRY = 63, -- 63
-    ORDNANCE_GEOMETRY = 64, -- 64
-    TURRET_GEOMETRY = 65, -- 65
-    ROTOR_GEOMETRY = 66, -- 66
-    NACELLE_GEOMETRY = 67, -- 67
-    FIN_GEOMETRY = 68, -- 68
-    COCKPIT_GEOMETRY = 69, -- 69
-
-    WEAPON_HARDPOINT = 70, -- 70
-    CANNON_HARDPOINT = 71, -- 71
-    ROCKET_HARDPOINT = 72, -- 72
-    MORTAR_HARDPOINT = 73, -- 73
-    SPECIAL_HARDPOINT = 74, -- 74
-
-    FLAME_EMITTER = 75, -- 75
-    SMOKE_EMITTER = 76, -- 76
-    DUST_EMITTER = 77, -- 77
-
-    PARKING_LOT = 81, -- 81
-
-    [0] = "NONE", -- NONE
-    [1] = "HELICOPTER", -- HELICOPTER
-    [2] = "STRUCTURE1", -- STRUCTURE1
-    [3] = "POWERUP", -- POWERUP
-    [4] = "PERSON", -- PERSON
-    [5] = "SIGN", -- SIGN
-    [6] = "VEHICLE", -- VEHICLE
-    [7] = "SCRAP", -- SCRAP
-    [8] = "BRIDGE", -- BRIDGE
-    [9] = "FLOOR", -- FLOOR
-    [10] = "STRUCTURE2", -- STRUCTURE2
-    [11] = "SCROUNGE", -- SCROUNGE
-    [15] = "SPINNER", -- SPINNER
-    [38] = "HEADLIGHT_MASK", -- HEADLIGHT_MASK
-    [40] = "EYEPOINT", -- EYEPOINT
-    [42] = "COM", -- COM
-    [50] = "WEAPON", -- WEAPON
-    [51] = "ORDNANCE", -- ORDNANCE
-    [52] = "EXPLOSION", -- EXPLOSION
-    [53] = "CHUNK", -- CHUNK
-    [54] = "SORT_OBJECT", -- SORT_OBJECT
-    [55] = "NONCOLLIDABLE", -- NONCOLLIDABLE
-    [60] = "VEHICLE_GEOMETRY", -- VEHICLE_GEOMETRY
-    [61] = "STRUCTURE_GEOMETRY", -- STRUCTURE_GEOMETRY
-    [63] = "WEAPON_GEOMETRY", -- WEAPON_GEOMETRY
-    [64] = "ORDNANCE_GEOMETRY", -- ORDNANCE_GEOMETRY
-    [65] = "TURRET_GEOMETRY", -- TURRET_GEOMETRY
-    [66] = "ROTOR_GEOMETRY", -- ROTOR_GEOMETRY
-    [67] = "NACELLE_GEOMETRY", -- NACELLE_GEOMETRY
-    [68] = "FIN_GEOMETRY", -- FIN_GEOMETRY
-    [69] = "COCKPIT_GEOMETRY", -- COCKPIT_GEOMETRY
-    [70] = "WEAPON_HARDPOINT", -- WEAPON_HARDPOINT
-    [71] = "CANNON_HARDPOINT", -- CANNON_HARDPOINT
-    [72] = "ROCKET_HARDPOINT", -- ROCKET_HARDPOINT
-    [73] = "MORTAR_HARDPOINT", -- MORTAR_HARDPOINT
-    [74] = "SPECIAL_HARDPOINT", -- SPECIAL_HARDPOINT
-    [75] = "FLAME_EMITTER", -- FLAME_EMITTER
-    [76] = "SMOKE_EMITTER", -- SMOKE_EMITTER
-    [77] = "DUST_EMITTER", -- DUST_EMITTER
-    [81] = "PARKING_LOT", -- PARKING_LOT
-}
+ClassId = _ClassId;
 
 --- Returns the one-letter nation code of the game object (e.g. "a" for American, "b" for Black Dog, "c" for Chinese, and "s" for Soviet).
 --- The nation code is usually but not always the same as the first letter of the odf name. The ODF file can override the nation in the [GameObjectClass] section, and player.odf is a hard-coded exception that uses "a" instead of "p".
@@ -1026,78 +1171,7 @@ function ClearScrapAround(distance, target, point) end
 
 --- This is a global table that converts between team slot numbers and team slot names. For example, TeamSlot.PLAYER or TeamSlot["PLAYER"] returns the team slot (0) for the player; TeamSlot[0] returns the team slot name ("PLAYER") for team slot 0. For maintainability, always use this table instead of raw team slot numbers.
 --- Slots starting with MIN_ and MAX_ represent the lower and upper bound of a range of slots.
---- @enum TeamSlot
-TeamSlot = {
-    UNDEFINED = -1, -- invalid, -1
-    PLAYER = 0, -- 0
-
-    RECYCLER = 1, -- 1
-    FACTORY = 2, -- 2
-    ARMORY = 3, -- 3
-    CONSTRUCT = 4, -- 4
-
-    MIN_OFFENSE = 5, -- 5
-    MAX_OFFENSE = 14, -- 14
-    MIN_DEFENSE = 15, -- 15
-    MAX_DEFENSE = 24, -- 24
-    MIN_UTILITY = 25, -- 25
-    MAX_UTILITY = 34, -- 34
-
-    MIN_BEACON = 35, -- 35
-    MAX_BEACON = 44, -- 44
-
-    MIN_POWER = 45, -- 45
-    MAX_POWER = 54, -- 54
-    MIN_COMM = 55, -- 55
-    MAX_COMM = 59, -- 59
-    MIN_REPAIR = 60, -- 60
-    MAX_REPAIR = 64, -- 64
-    MIN_SUPPLY = 65, -- 65
-    MAX_SUPPLY = 69, -- 69
-    MIN_SILO = 70, -- 70
-    MAX_SILO = 74, -- 74
-    MIN_BARRACKS = 75, -- 75
-    MAX_BARRACKS = 79, -- 79
-    MIN_GUNTOWER = 80, -- 80
-    MAX_GUNTOWER = 89, -- 89
-
-    PORTAL = 90, -- 90 [2.2.315+]
-
-    [-1] = "UNDEFINED", -- UNDEFINED
-    [0] = "PLAYER", -- PLAYER
-
-    [1] = "RECYCLER", -- RECYCLER
-    [2] = "FACTORY", -- FACTORY
-    [3] = "ARMORY", -- ARMORY
-    [4] = "CONSTRUCT", -- CONSTRUCT
-
-    [5] = "MIN_OFFENSE", -- MIN_OFFENSE
-    [14] = "MAX_OFFENSE", -- MAX_OFFENSE
-    [15] = "MIN_DEFENSE", -- MIN_DEFENSE
-    [24] = "MAX_DEFENSE", -- MAX_DEFENSE
-    [25] = "MIN_UTILITY", -- MIN_UTILITY
-    [34] = "MAX_UTILITY", -- MAX_UTILITY
-
-    [35] = "MIN_BEACON", -- MIN_BEACON
-    [44] = "MAX_BEACON", -- MAX_BEACON
-
-    [45] = "MIN_POWER", -- MIN_POWER
-    [54] = "MAX_POWER", -- MAX_POWER
-    [55] = "MIN_COMM", -- MIN_COMM
-    [59] = "MAX_COMM", -- MAX_COMM
-    [60] = "MIN_REPAIR", -- MIN_REPAIR
-    [64] = "MAX_REPAIR", -- MAX_REPAIR
-    [65] = "MIN_SUPPLY", -- MIN_SUPPLY
-    [69] = "MAX_SUPPLY", -- MAX_SUPPLY
-    [70] = "MIN_SILO", -- MIN_SILO
-    [74] = "MAX_SILO", -- MAX_SILO
-    [75] = "MIN_BARRACKS", -- MIN_BARRACKS
-    [79] = "MAX_BARRACKS", -- MAX_BARRACKS
-    [80] = "MIN_GUNTOWER", -- MIN_GUNTOWER
-    [89] = "MAX_GUNTOWER", -- MAX_GUNTOWER
-
-    [90] = "PORTAL", -- PORTAL [2.2.315+]
-}
+TeamSlot = _TeamSlot;
 
 --- Get the game object in the specified team slot.
 --- It uses the local player team if no team is given.
@@ -1561,68 +1635,9 @@ end
 --- @section Unit Commands 
 --- These These functions send commands to units or query their command state.
 
---- This is a global table that converts between command numbers and command names. For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3. For maintainability, always use this table instead of raw command numbers.
---- @enum AiCommand
-AiCommand = {
-    NONE = 0, -- 0
-    SELECT = 1, -- 1
-    STOP = 2, -- 2
-    GO = 3, -- 3
-    ATTACK = 4, -- 4
-    FOLLOW = 5, -- 5
-    FORMATION = 6, -- 6
-    PICKUP = 7, -- 7
-    DROPOFF = 8, -- 8
-    NO_DROPOFF = 9, -- 9
-    GET_REPAIR = 10, -- 10
-    GET_RELOAD = 11, -- 11
-    GET_WEAPON = 12, -- 12
-    GET_CAMERA = 13, -- 13
-    GET_BOMB = 14, -- 14
-    DEFEND = 15, -- 15
-    GO_TO_GEYSER = 16, -- 16
-    RESCUE = 17, -- 17
-    RECYCLE = 18, -- 18
-    SCAVENGE = 19, -- 19
-    HUNT = 20, -- 20
-    BUILD = 21, -- 21
-    PATROL = 22, -- 22
-    STAGE = 23, -- 23
-    SEND = 24, -- 24
-    GET_IN = 25, -- 25
-    LAY_MINES = 26, -- 26
-    CLOAK = 27, -- 27 {VERSION 2.1+}
-    DECLOAK = 28, -- 28 {VERSION 2.1+}
-    [0] = "NONE", -- NONE
-    [1] = "SELECT", -- SELECT
-    [2] = "STOP", -- STOP
-    [3] = "GO", -- GO
-    [4] = "ATTACK", -- ATTACK
-    [5] = "FOLLOW", -- FOLLOW
-    [6] = "FORMATION", -- FORMATION
-    [7] = "PICKUP", -- PICKUP
-    [8] = "DROPOFF", -- DROPOFF
-    [9] = "NO_DROPOFF", -- NO_DROPOFF
-    [10] = "GET_REPAIR", -- GET_REPAIR
-    [11] = "GET_RELOAD", -- GET_RELOAD
-    [12] = "GET_WEAPON", -- GET_WEAPON
-    [13] = "GET_CAMERA", -- GET_CAMERA
-    [14] = "GET_BOMB", -- GET_BOMB
-    [15] = "DEFEND", -- DEFEND
-    [16] = "GO_TO_GEYSER", -- GO_TO_GEYSER
-    [17] = "RESCUE", -- RESCUE
-    [18] = "RECYCLE", -- RECYCLE
-    [19] = "SCAVENGE", -- SCAVENGE
-    [20] = "HUNT", -- HUNT
-    [21] = "BUILD", -- BUILD
-    [22] = "PATROL", -- PATROL
-    [23] = "STAGE", -- STAGE
-    [24] = "SEND", -- SEND
-    [25] = "GET_IN", -- GET_IN
-    [26] = "LAY_MINES", -- LAY_MINES
-    [27] = "CLOAK", -- CLOAK {VERSION 2.1+}
-    [28] = "DECLOAK", -- DECLOAK {VERSION 2.1+}
-}
+--- This is a global table that converts between command numbers and command names. For example, AiCommand.GO or AiCommand["GO"] returns the command number (3) for the "go" command; AiCommand[3] returns the command name ("GO") for command number 3.
+--- For maintainability, always use this table instead of raw command numbers.
+AiCommand = _AiCommand;
 
 --- Returns true if the game object can be commanded. Returns false otherwise.
 --- @param me Handle

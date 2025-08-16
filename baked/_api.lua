@@ -3,6 +3,37 @@
 --- This API creates a full OOP wrapper and replacement the mission
 --- functions with an event based system for easier expansion.
 ---
+--- This module is the core of the API and offers the following features:
+--- * Loads the following modules
+---   * `_logger`
+---   * `_fix`
+---   * `_utility`
+---   * `_hook`
+---   * `_gameobject`
+---   * `_customsavetype`
+---   * `_version`
+--- * Create events for all default game functions and custom events
+---   * `Save` (`AddSaveLoad`) [**GAME**]
+---   * `Load` (`AddSaveLoad`) [**GAME**]
+---   * `PostLoad` (`AddSaveLoad`) [**CUSTOM**]
+---   * `Start` (`Add`) [**GAME**]
+---   * `GameKey` (`Add`) [**GAME**]
+---   * `Update` (`Add`) [**GAME**]
+---   * `MapObject` (`Add`) [**CUSTOM**]
+---   * `CreateObject` (`Add`) [**GAME**]
+---   * `AddObject` (`Add`) [**GAME**]
+---   * `DeleteObject` (`Add`) [**GAME**]
+---   * `CreatePlayer` (`Add`) [**GAME**]
+---   * `AddPlayer` (`Add`) [**GAME**]
+---   * `DeletePlayer` (`Add`) [**GAME**]
+---   * `Receive` (`Add`) [**GAME**]
+---   * `Command` (`Add`) [**GAME**]
+--- * Advanced Save/Load serialization system
+---   * Custom Type Support (via `_customsavetype`)
+---   * Multi-reference handling
+---   * Reference loop handling
+---     * Child-parent loop reference resolution
+---
 --- @module '_api'
 --- @author John "Nielk1" Klein
 
@@ -42,6 +73,15 @@ local version = require("_version");
 --- @hook AddSaveLoad CallLoad
 --- @vararg any loaded data
 --- @alias Load fun(...: any)
+--- @diagnostic enable: undefined-doc-param
+
+--- Called after loading state from a save game file, allowing the script to do any post-load adjustments to data.
+---
+--- This may be very useful to deal with ephemeral tables which might need to be loaded as hard-tables before converted to their weaktable storage in PostLoad.
+---
+--- @diagnostic disable: undefined-doc-param
+--- @hook AddSaveLoad CallLoad
+--- @alias PostLoad fun()
 --- @diagnostic enable: undefined-doc-param
 
 --- Called when the mission starts for the first time.

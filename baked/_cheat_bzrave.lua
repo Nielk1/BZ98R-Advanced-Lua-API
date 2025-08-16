@@ -1,6 +1,10 @@
 --- BZ98R LUA Extended API Cheat.
 ---
 --- BZRAVE cheat
+--- 
+--- Ctrl+Shift + BZRAVE
+--- 
+--- Replace all weapons with GTechno
 ---
 --- @module '_cheat_bzrave'
 --- @author John "Nielk1" Klein
@@ -12,6 +16,10 @@ local statemachine = require("_statemachine");
 local hook = require("_hook");
 local gameobject = require("_gameobject");
 local color = require("_color");
+
+--- @class Cheat_BZRAVE_effect_state : StateMachineIter
+--- @field rave_index number
+--- @local
 
 statemachine.Create("Cheat_BZRAVE",
     function (state, key) if key == "Ctrl+Shift+B" then state:next(); end end,
@@ -46,8 +54,7 @@ statemachine.Create("Cheat_BZRAVE",
         return true;
     else state:switch(1); end end
 );
---- @class Cheat_BZRAVE_effect_state : StateMachineIter
---- @field rave_index number
+
 statemachine.Create("Cheat_BZRAVE_effect",
     function (state)
         --- @cast state Cheat_BZRAVE_effect_state
@@ -75,6 +82,7 @@ statemachine.Create("Cheat_BZRAVE_effect",
         end
     end }
 );
+
 local Cheat_BZRAVE = statemachine.Start("Cheat_BZRAVE");
 hook.Add("GameKey", "Mission:GameKey:Cheat_BZRAVE", function (key)
     local success, result = Cheat_BZRAVE:run(key);

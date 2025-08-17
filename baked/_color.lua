@@ -14,23 +14,23 @@ logger.print(logger.LogLevel.DEBUG, nil, "_color Loading");
 --- Convert human readable color names to BZ98R color labels.
 --- @enum EColorLabel
 local EColorLabel = {
-    Black       = "BLACK",     -- <div style="background-color: #000000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkGrey    = "DKGREY",    -- <div style="background-color: #4C4C4C; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    Grey        = "GREY",      -- <div style="background-color: #999999; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    White       = "WHITE",     -- <div style="background-color: #FFFFFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    Blue        = "BLUE",      -- <div style="background-color: #007FFF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkBlue    = "DKBLUE",    -- <div style="background-color: #004C99; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    Green       = "GREEN",     -- <div style="background-color: #00FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkGreen   = "DKGREEN",   -- <div style="background-color: #009900; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    Yellow      = "YELLOW",    -- <div style="background-color: #FFFF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkYellow  = "DKYELLOW",  -- <div style="background-color: #999900; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    Red         = "RED",       -- <div style="background-color: #FF0000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkRed     = "DKRED",     -- <div style="background-color: #990000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
+    Black       = "BLACK",     -- <div class="colorbox" style="background-color: #000000; color: #FFF;"></div>
+    DarkGrey    = "DKGREY",    -- <div class="colorbox" style="background-color: #4C4C4C; color: #FFF;"></div>
+    Grey        = "GREY",      -- <div class="colorbox" style="background-color: #999999; color: #000;"></div>
+    White       = "WHITE",     -- <div class="colorbox" style="background-color: #FFFFFF; color: #000;"></div>
+    Blue        = "BLUE",      -- <div class="colorbox" style="background-color: #007FFF; color: #FFF;"></div>
+    DarkBlue    = "DKBLUE",    -- <div class="colorbox" style="background-color: #004C99; color: #FFF;"></div>
+    Green       = "GREEN",     -- <div class="colorbox" style="background-color: #00FF00; color: #000;"></div>
+    DarkGreen   = "DKGREEN",   -- <div class="colorbox" style="background-color: #009900; color: #FFF;"></div>
+    Yellow      = "YELLOW",    -- <div class="colorbox" style="background-color: #FFFF00; color: #000;"></div>
+    DarkYellow  = "DKYELLOW",  -- <div class="colorbox" style="background-color: #999900; color: #FFF;"></div>
+    Red         = "RED",       -- <div class="colorbox" style="background-color: #FF0000; color: #FFF;"></div>
+    DarkRed     = "DKRED",     -- <div class="colorbox" style="background-color: #990000; color: #FFF;"></div>
 
-    Cyan        = "CYAN",      -- {VERSION 2.2.315+} <div style="background-color: #00FFFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkCyan    = "DKCYAN",    -- {VERSION 2.2.315+} <div style="background-color: #009999; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    Magenta     = "MAGENTA",   -- {VERSION 2.2.315+} <div style="background-color: #FF00FF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DarkMagenta = "DKMAGENTA", -- {VERSION 2.2.315+} <div style="background-color: #990099; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
+    Cyan        = "CYAN",      -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #00FFFF; color: #000;"></div>
+    DarkCyan    = "DKCYAN",    -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #009999; color: #FFF;"></div>
+    Magenta     = "MAGENTA",   -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #FF00FF; color: #000;"></div>
+    DarkMagenta = "DKMAGENTA", -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #990099; color: #FFF;"></div>
 
     BLACK     = "BLACK",
     DKGREY    = "DKGREY",
@@ -73,89 +73,89 @@ M.ColorLabel = EColorLabel;
 --- This probably isn't useful but it's here.
 --- @enum ColorValues
 M.ColorValues = {
-    BLACK     = 0x000000FF, -- <div style="background-color: #000000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKGREY    = 0x4C4C4CFF, -- <div style="background-color: #4C4C4C; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    GREY      = 0x999999FF, -- <div style="background-color: #999999; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    WHITE     = 0xFFFFFFFF, -- <div style="background-color: #FFFFFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    BLUE      = 0x007FFFFF, -- <div style="background-color: #007FFF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKBLUE    = 0x004C99FF, -- <div style="background-color: #004C99; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    GREEN     = 0x00FF00FF, -- <div style="background-color: #00FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKGREEN   = 0x009900FF, -- <div style="background-color: #009900; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    YELLOW    = 0xFFFF00FF, -- <div style="background-color: #FFFF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKYELLOW  = 0x999900FF, -- <div style="background-color: #999900; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    RED       = 0xFF0000FF, -- <div style="background-color: #FF0000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKRED     = 0x990000FF, -- <div style="background-color: #990000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
+    BLACK     = 0x000000FF, -- <div class="colorbox" style="background-color: #000000; color: #FFF;"></div>
+    DKGREY    = 0x4C4C4CFF, -- <div class="colorbox" style="background-color: #4C4C4C; color: #FFF;"></div>
+    GREY      = 0x999999FF, -- <div class="colorbox" style="background-color: #999999; color: #000;"></div>
+    WHITE     = 0xFFFFFFFF, -- <div class="colorbox" style="background-color: #FFFFFF; color: #000;"></div>
+    BLUE      = 0x007FFFFF, -- <div class="colorbox" style="background-color: #007FFF; color: #FFF;"></div>
+    DKBLUE    = 0x004C99FF, -- <div class="colorbox" style="background-color: #004C99; color: #FFF;"></div>
+    GREEN     = 0x00FF00FF, -- <div class="colorbox" style="background-color: #00FF00; color: #000;"></div>
+    DKGREEN   = 0x009900FF, -- <div class="colorbox" style="background-color: #009900; color: #FFF;"></div>
+    YELLOW    = 0xFFFF00FF, -- <div class="colorbox" style="background-color: #FFFF00; color: #000;"></div>
+    DKYELLOW  = 0x999900FF, -- <div class="colorbox" style="background-color: #999900; color: #FFF;"></div>
+    RED       = 0xFF0000FF, -- <div class="colorbox" style="background-color: #FF0000; color: #FFF;"></div>
+    DKRED     = 0x990000FF, -- <div class="colorbox" style="background-color: #990000; color: #FFF;"></div>
     
-    CYAN      = 0x00FFFFFF, -- {VERSION 2.2.315+} <div style="background-color: #00FFFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKCYAN    = 0x009999FF, -- {VERSION 2.2.315+} <div style="background-color: #009999; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    MAGENTA   = 0xFF00FFFF, -- {VERSION 2.2.315+} <div style="background-color: #FF00FF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    DKMAGENTA = 0x990099FF, -- {VERSION 2.2.315+} <div style="background-color: #990099; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
+    CYAN      = 0x00FFFFFF, -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #00FFFF; color: #000;"></div>
+    DKCYAN    = 0x009999FF, -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #009999; color: #FFF;"></div>
+    MAGENTA   = 0xFF00FFFF, -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #FF00FF; color: #000;"></div>
+    DKMAGENTA = 0x990099FF, -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #990099; color: #FFF;"></div>
 };
 
 --- RAVE GUN! color cycle.
 --- Each color is represented as a hexadecimal number: 0xRRGGBBFF.
---- <div style="display: inline-block; background-color: #FF0000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF3300; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF6600; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF9900; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FFCC00; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FFFF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #CCFF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #99FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #66FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #33FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00FF33; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00FF66; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00FF99; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00FFCC; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00FFFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #00CCFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #0099FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #0066FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #0033FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #0000FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #3300FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #6600FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #9900FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #CC00FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF00FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF00CC; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF0099; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF0066; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
---- <div style="display: inline-block; background-color: #FF0033; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
+--- <div class="colorbox" style="background-color: #FF0000; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF3300; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF6600; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF9900; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FFCC00; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FFFF00; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #CCFF00; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #99FF00; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #66FF00; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #33FF00; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00FF00; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00FF33; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00FF66; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00FF99; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00FFCC; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00FFFF; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #00CCFF; color: #000;"></div>
+--- <div class="colorbox" style="background-color: #0099FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #0066FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #0033FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #0000FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #3300FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #6600FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #9900FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #CC00FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF00FF; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF00CC; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF0099; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF0066; color: #FFF;"></div>
+--- <div class="colorbox" style="background-color: #FF0033; color: #FFF;"></div>
 --- @enum RAVE_COLOR
 M.RAVE_COLOR = {
-     [1] = 0xFF0000FF, -- <div style="background-color: #FF0000; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [2] = 0xFF3300FF, -- <div style="background-color: #FF3300; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [3] = 0xFF6600FF, -- <div style="background-color: #FF6600; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [4] = 0xFF9900FF, -- <div style="background-color: #FF9900; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [5] = 0xFFCC00FF, -- <div style="background-color: #FFCC00; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [6] = 0xFFFF00FF, -- <div style="background-color: #FFFF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [7] = 0xCCFF00FF, -- <div style="background-color: #CCFF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [8] = 0x99FF00FF, -- <div style="background-color: #99FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-     [9] = 0x66FF00FF, -- <div style="background-color: #66FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [10] = 0x33FF00FF, -- <div style="background-color: #33FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [11] = 0x00FF00FF, -- <div style="background-color: #00FF00; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [12] = 0x00FF33FF, -- <div style="background-color: #00FF33; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [13] = 0x00FF66FF, -- <div style="background-color: #00FF66; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [14] = 0x00FF99FF, -- <div style="background-color: #00FF99; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [15] = 0x00FFCCFF, -- <div style="background-color: #00FFCC; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [16] = 0x00FFFFFF, -- <div style="background-color: #00FFFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [17] = 0x00CCFFFF, -- <div style="background-color: #00CCFF; color: #000; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [18] = 0x0099FFFF, -- <div style="background-color: #0099FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [19] = 0x0066FFFF, -- <div style="background-color: #0066FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [20] = 0x0033FFFF, -- <div style="background-color: #0033FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [21] = 0x0000FFFF, -- <div style="background-color: #0000FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [22] = 0x3300FFFF, -- <div style="background-color: #3300FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [23] = 0x6600FFFF, -- <div style="background-color: #6600FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [24] = 0x9900FFFF, -- <div style="background-color: #9900FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [25] = 0xCC00FFFF, -- <div style="background-color: #CC00FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [26] = 0xFF00FFFF, -- <div style="background-color: #FF00FF; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [27] = 0xFF00CCFF, -- <div style="background-color: #FF00CC; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [28] = 0xFF0099FF, -- <div style="background-color: #FF0099; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [29] = 0xFF0066FF, -- <div style="background-color: #FF0066; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
-    [30] = 0xFF0033FF, -- <div style="background-color: #FF0033; color: #FFF; width: 1em; height: 1em; line-height: 1em; border: 1px solid black;"></div>
+     [1] = 0xFF0000FF, -- <div class="colorbox" style="background-color: #FF0000; color: #FFF;"></div>
+     [2] = 0xFF3300FF, -- <div class="colorbox" style="background-color: #FF3300; color: #FFF;"></div>
+     [3] = 0xFF6600FF, -- <div class="colorbox" style="background-color: #FF6600; color: #FFF;"></div>
+     [4] = 0xFF9900FF, -- <div class="colorbox" style="background-color: #FF9900; color: #FFF;"></div>
+     [5] = 0xFFCC00FF, -- <div class="colorbox" style="background-color: #FFCC00; color: #FFF;"></div>
+     [6] = 0xFFFF00FF, -- <div class="colorbox" style="background-color: #FFFF00; color: #000;"></div>
+     [7] = 0xCCFF00FF, -- <div class="colorbox" style="background-color: #CCFF00; color: #000;"></div>
+     [8] = 0x99FF00FF, -- <div class="colorbox" style="background-color: #99FF00; color: #000;"></div>
+     [9] = 0x66FF00FF, -- <div class="colorbox" style="background-color: #66FF00; color: #000;"></div>
+    [10] = 0x33FF00FF, -- <div class="colorbox" style="background-color: #33FF00; color: #000;"></div>
+    [11] = 0x00FF00FF, -- <div class="colorbox" style="background-color: #00FF00; color: #000;"></div>
+    [12] = 0x00FF33FF, -- <div class="colorbox" style="background-color: #00FF33; color: #000;"></div>
+    [13] = 0x00FF66FF, -- <div class="colorbox" style="background-color: #00FF66; color: #000;"></div>
+    [14] = 0x00FF99FF, -- <div class="colorbox" style="background-color: #00FF99; color: #000;"></div>
+    [15] = 0x00FFCCFF, -- <div class="colorbox" style="background-color: #00FFCC; color: #000;"></div>
+    [16] = 0x00FFFFFF, -- <div class="colorbox" style="background-color: #00FFFF; color: #000;"></div>
+    [17] = 0x00CCFFFF, -- <div class="colorbox" style="background-color: #00CCFF; color: #000;"></div>
+    [18] = 0x0099FFFF, -- <div class="colorbox" style="background-color: #0099FF; color: #FFF;"></div>
+    [19] = 0x0066FFFF, -- <div class="colorbox" style="background-color: #0066FF; color: #FFF;"></div>
+    [20] = 0x0033FFFF, -- <div class="colorbox" style="background-color: #0033FF; color: #FFF;"></div>
+    [21] = 0x0000FFFF, -- <div class="colorbox" style="background-color: #0000FF; color: #FFF;"></div>
+    [22] = 0x3300FFFF, -- <div class="colorbox" style="background-color: #3300FF; color: #FFF;"></div>
+    [23] = 0x6600FFFF, -- <div class="colorbox" style="background-color: #6600FF; color: #FFF;"></div>
+    [24] = 0x9900FFFF, -- <div class="colorbox" style="background-color: #9900FF; color: #FFF;"></div>
+    [25] = 0xCC00FFFF, -- <div class="colorbox" style="background-color: #CC00FF; color: #FFF;"></div>
+    [26] = 0xFF00FFFF, -- <div class="colorbox" style="background-color: #FF00FF; color: #FFF;"></div>
+    [27] = 0xFF00CCFF, -- <div class="colorbox" style="background-color: #FF00CC; color: #FFF;"></div>
+    [28] = 0xFF0099FF, -- <div class="colorbox" style="background-color: #FF0099; color: #FFF;"></div>
+    [29] = 0xFF0066FF, -- <div class="colorbox" style="background-color: #FF0066; color: #FFF;"></div>
+    [30] = 0xFF0033FF, -- <div class="colorbox" style="background-color: #FF0033; color: #FFF;"></div>
 };
 
 --- @param color ColorValue The RGBA color value (0xRRGGBBAA)

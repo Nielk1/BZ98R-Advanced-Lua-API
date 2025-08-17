@@ -987,15 +987,22 @@ end
 --- These functions find and return the game object of the requested type closest to a reference point.
 
 --- Returns the game object closest to a position vector, transform matrix, another object, or point on a named path.
---- @overload fun(target: Vector): GameObject?
---- @overload fun(target: Matrix): GameObject?
---- @overload fun(target: GameObject): GameObject?
---- @overload fun(target: Handle): GameObject?
---- @overload fun(target: string, point?: integer): GameObject?
---- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point integer? If the target is a path this is the path point index, defaults to 0.
---- @return GameObject?
-function M.GetNearestObject(target, point)
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(object: GameObject|Handle): object: GameObject?
+--- @overload fun(position: Vector): object: GameObject?
+--- @overload fun(transform: Matrix): object: GameObject?
+--- @overload fun(name: string, point?: integer): object: GameObject?
+--- @param object GameObject|Handle The reference game object.
+--- @param position Vector The position vector.
+--- @param transform Matrix The transform matrix.
+--- @param name string The path name.
+--- @param point integer? The point on the path (optional).
+--- @return GameObject? object
+--- @diagnostic enable: undefined-doc-param
+function M.GetNearestObject(...)
+    local args = {...}
+    local target = args[1];
+    local point = args[2];
     if M.isgameobject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1025,15 +1032,22 @@ function GameObject:GetNearestObject()
 end
 
 --- Returns the craft closest to a position vector, transform matrix, another object, or point on a named path.
---- @overload fun(target: Vector): GameObject?
---- @overload fun(target: Matrix): GameObject?
---- @overload fun(target: GameObject): GameObject?
---- @overload fun(target: Handle): GameObject?
---- @overload fun(target: string, point?: integer): GameObject?
---- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point integer? If the target is a path this is the path point index, defaults to 0.
---- @return GameObject?
-function M.GetNearestVehicle(target, point)
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(object: GameObject|Handle): object: GameObject?
+--- @overload fun(position: Vector): object: GameObject?
+--- @overload fun(transform: Matrix): object: GameObject?
+--- @overload fun(name: string, point?: integer): object: GameObject?
+--- @param object GameObject|Handle The reference game object.
+--- @param position Vector The position vector.
+--- @param transform Matrix The transform matrix.
+--- @param name string The path name.
+--- @param point integer? The point on the path (optional).
+--- @return GameObject? object
+--- @diagnostic enable: undefined-doc-param
+function M.GetNearestVehicle(...)
+    local args = {...}
+    local target = args[1];
+    local point = args[2];
     if M.isgameobject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1063,15 +1077,22 @@ function GameObject:GetNearestVehicle()
 end
 
 --- Returns the building closest to a position vector, transform matrix, another object, or point on a named path.
---- @overload fun(target: Vector): GameObject?
---- @overload fun(target: Matrix): GameObject?
---- @overload fun(target: GameObject): GameObject?
---- @overload fun(target: Handle): GameObject?
---- @overload fun(target: string, point?: integer): GameObject?
---- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point integer? If the target is a path this is the path point index, defaults to 0.
---- @return GameObject?
-function M.GetNearestBuilding(target, point)
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(object: GameObject|Handle): object: GameObject?
+--- @overload fun(position: Vector): object: GameObject?
+--- @overload fun(transform: Matrix): object: GameObject?
+--- @overload fun(name: string, point?: integer): object: GameObject?
+--- @param object GameObject|Handle The reference game object.
+--- @param position Vector The position vector.
+--- @param transform Matrix The transform matrix.
+--- @param name string The path name.
+--- @param point integer? The point on the path (optional).
+--- @return GameObject? object
+--- @diagnostic enable: undefined-doc-param
+function M.GetNearestBuilding(...)
+    local args = {...}
+    local target = args[1];
+    local point = args[2];
     if M.isgameobject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1101,15 +1122,22 @@ function GameObject:GetNearestBuilding()
 end
 
 --- Returns the enemy closest to a position vector, transform matrix, another object, or point on a named path.
---- @overload fun(target: Vector): GameObject?
---- @overload fun(target: Matrix): GameObject?
---- @overload fun(target: GameObject): GameObject?
---- @overload fun(target: Handle): GameObject?
---- @overload fun(target: string, point?: integer): GameObject?
---- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point integer? If the target is a path this is the path point index, defaults to 0.
---- @return GameObject?
-function M.GetNearestEnemy(target, point)
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(object: GameObject|Handle): object: GameObject?
+--- @overload fun(position: Vector): object: GameObject?
+--- @overload fun(transform: Matrix): object: GameObject?
+--- @overload fun(name: string, point?: integer): object: GameObject?
+--- @param object GameObject|Handle The reference game object.
+--- @param position Vector The position vector.
+--- @param transform Matrix The transform matrix.
+--- @param name string The path name.
+--- @param point integer? The point on the path (optional).
+--- @return GameObject? object
+--- @diagnostic enable: undefined-doc-param
+function M.GetNearestEnemy(...)
+    local args = {...}
+    local target = args[1];
+    local point = args[2];
     if M.isgameobject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1140,15 +1168,22 @@ end
 
 --- Returns the friend closest to a position vector, transform matrix, another object, or point on a named path.
 --- {VERSION 2.0+}
---- @overload fun(target: Vector): GameObject?
---- @overload fun(target: Matrix): GameObject?
---- @overload fun(target: GameObject): GameObject?
---- @overload fun(target: Handle): GameObject?
---- @overload fun(target: string, point?: integer): GameObject?
---- @param target Vector|Matrix|GameObject|Handle|string Position vector, ransform matrix, Object, or path name.
---- @param point integer? If the target is a path this is the path point index, defaults to 0.
---- @return GameObject?
-function M.GetNearestFriend(target, point)
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(object: GameObject|Handle): object: GameObject?
+--- @overload fun(position: Vector): object: GameObject?
+--- @overload fun(transform: Matrix): object: GameObject?
+--- @overload fun(name: string, point?: integer): object: GameObject?
+--- @param object GameObject|Handle The reference game object.
+--- @param position Vector The position vector.
+--- @param transform Matrix The transform matrix.
+--- @param name string The path name.
+--- @param point integer? The point on the path (optional).
+--- @return GameObject? object
+--- @diagnostic enable: undefined-doc-param
+function M.GetNearestFriend(...)
+    local args = {...}
+    local target = args[1];
+    local point = args[2];
     if M.isgameobject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1179,26 +1214,25 @@ end
 
 --- Returns the friend closest to the given reference point. Returns nil if none exists.
 --- @diagnostic disable: undefined-doc-param
---- @overload fun(h: GameObject): GameObject? --- {VERSION 2.0+}
---- @overload fun(h: Handle): GameObject? --- {VERSION 2.0+}
---- @overload fun(path: string, point?: integer): GameObject? --- {VERSION 2.1+}
---- @overload fun(position: Vector): GameObject? --- {VERSION 2.1+}
---- @overload fun(transform: Matrix): GameObject? --- {VERSION 2.1+}
---- @param h Handle The reference game object.
---- @param path string The path name.
---- @param point integer? The point on the path (optional).
+--- @overload fun(object: GameObject|Handle): object: GameObject? --- {VERSION 2.0+}
+--- @overload fun(position: Vector): object: GameObject? --- {VERSION 2.1+}
+--- @overload fun(transform: Matrix): object: GameObject? --- {VERSION 2.1+}
+--- @overload fun(name: string, point?: integer): object: GameObject? --- {VERSION 2.1+}
+--- @param object GameObject|Handle The reference game object.
 --- @param position Vector The position vector.
 --- @param transform Matrix The transform matrix.
+--- @param name string The path name.
+--- @param point integer? The point on the path (optional).
 --- @return GameObject? object closest friend, or nil if none exists.
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestUnitOnTeam(...)
     local args = {...}
     if #args == 1 then
         if M.isgameobject(args[1]) then
-            local self = args[1]
-            --- @cast self GameObject
+            local object = args[1]
+            --- @cast object GameObject
             --- @diagnostic disable-next-line: deprecated
-            local handle = GetNearestUnitOnTeam(self:GetHandle());
+            local handle = GetNearestUnitOnTeam(object:GetHandle());
             if handle == nil then return nil end;
             return M.FromHandle(handle);
         else

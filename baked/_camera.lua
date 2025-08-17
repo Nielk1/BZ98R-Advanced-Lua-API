@@ -367,8 +367,9 @@ end
 
 --- Offsets a cinematic camera from a base game object while looking at a target game object.
 --- Returns true if the base or handle game object does not exist. Returns false otherwise.
---- @overload fun(base: GameObject|Handle, offset:Vector, target: GameObject|Handle): boolean
 --- @diagnostic disable: undefined-doc-param
+--- @overload fun(base: GameObject|Handle, right: number, up: number, forward: number, target: GameObject|Handle): exists: boolean
+--- @overload fun(base: GameObject|Handle, offset:Vector, target: GameObject|Handle): exists: boolean
 --- @param base GameObject|Handle
 --- @param right number Meters to the right of the base object.
 --- @param up number Meters above the base object.
@@ -376,8 +377,25 @@ end
 --- @param offset Vector
 --- @param target GameObject|Handle
 --- @diagnostic enable: undefined-doc-param
---- @return boolean Exists true if the base or handle game object does not exist. Returns false otherwise.
-function M.FollowObjectAimObject(base, right, up, forward, target)
+--- @return boolean exists true if the base or handle game object does not exist. Returns false otherwise.
+function M.FollowObjectAimObject(...)
+    local args = {...}
+
+    --- @type GameObject|Handle
+    local base = args[1];
+
+    --- @type GameObject|Handle
+    local target;
+
+    --- @type number
+    local right;
+
+    --- @type number
+    local up;
+
+    --- @type number
+    local forward;
+
     if gameobject.isgameobject(base) then
         --- @cast base GameObject
         base = base:GetHandle();
@@ -386,24 +404,24 @@ function M.FollowObjectAimObject(base, right, up, forward, target)
     end
     --- @cast base Handle
 
-    if right and up and not forward and not target
-       and utility.isVector(right) then
-        -- order is important here
-        --- @diagnostic disable-next-line: cast-type-mismatch
-        --- @cast up GameObject|Handle
-        target = up;
-        -- we use floor instead of truncating so going negative can't cause a strange size step
-        --- @diagnostic disable-next-line: cast-type-mismatch
-        --- @cast right Vector
-        up = math.floor(right.y * 100); -- convert to centimeters
-        forward = math.floor(right.z * 100); -- convert to centimeters
-        right = math.floor(right.x * 100); -- convert to centimeters
-    elseif utility.isnumber(right) and utility.isnumber(up) and utility.isnumber(forward) then
-        right = math.floor(right * 100); -- convert to centimeters
-        up = math.floor(up * 100); -- convert to centimeters
-        forward = math.floor(forward * 100); -- convert to centimeters
+    if #args == 5 then
+        target = args[5];
+        right = math.floor(args[2] * 100); -- convert to centimeters
+        up = math.floor(args[3] * 100); -- convert to centimeters
+        forward = math.floor(args[4] * 100); -- convert to centimeters
+    elseif #args == 3 then
+        if not utility.isVector(args[2]) then error("Parameter offset must be a Vector."); end
+        target = args[3];
+        right = math.floor(args[2].x * 100); -- convert to centimeters
+        up = math.floor(args[2].y * 100); -- convert to centimeters
+        forward = math.floor(args[2].z * 100); -- convert to centimeters
     else
-        error("Parameters right, up, and forward must be numbers or offset must be a Vector.");
+        error("Invalid number of arguments. Expected 3 or 5.");
+    end
+
+    if gameobject.isgameobject(base) then
+        --- @cast base GameObject
+        base = base:GetHandle();
     end
 
     if gameobject.isgameobject(target) then
@@ -413,6 +431,16 @@ function M.FollowObjectAimObject(base, right, up, forward, target)
         error("Parameter target must be Handle or GameObject instance.");
     end
     --- @cast target Handle
+    
+    if not utility.isHandle(base) then
+        error("Parameter base must be Handle or GameObject instance.");
+    end
+    if not utility.isHandle(target) then
+        error("Parameter target must be Handle or GameObject instance.");
+    end
+    if not utility.isnumber(right) or not utility.isnumber(up) or not utility.isnumber(forward) then
+        error("Parameters right, up, and forward must be numbers.");
+    end
 
     CheckCameraType("CameraObject", {base, right, up, forward, target});
     --- @diagnostic disable-next-line: deprecated

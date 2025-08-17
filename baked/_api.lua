@@ -653,7 +653,7 @@ end
 --- Receive
 --- @param from integer x
 --- @param type string x
---- @tparam ... data
+--- @vararg any
 local function _Receive(from, type, ...)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Receive(" .. from .. ", '" .. type .. "')");
     local args = ...;

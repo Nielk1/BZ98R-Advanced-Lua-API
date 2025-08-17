@@ -1082,22 +1082,22 @@ function GetNearestFriend(target, point)
 end
 
 --- Returns the friend closest to the given reference point. Returns nil if none exists.
---- {VERSION 2.0+}
---- @overload fun(path: string, point: integer?): Handle? --- {VERSION 2.1+}
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(h: Handle): Handle? --- {VERSION 2.0+}
 --- @overload fun(position: Vector): Handle? --- {VERSION 2.1+}
 --- @overload fun(transform: Matrix): Handle? --- {VERSION 2.1+}
+--- @overload fun(path: string, point: integer?): Handle? --- {VERSION 2.1+}
 --- @param h Handle The reference game object.
---- @diagnostic disable-next-line: undefined-doc-param
 --- @param path string The path name.
---- @diagnostic disable-next-line: undefined-doc-param
 --- @param point integer? The point on the path (optional).
---- @diagnostic disable-next-line: undefined-doc-param
 --- @param position Vector The position vector.
---- @diagnostic disable-next-line: undefined-doc-param
 --- @param transform Matrix The transform matrix.
 --- @return Handle? handle closest friend, or nil if none exists.
+--- @diagnostic enable: undefined-doc-param
 --- @deprecated See `_gameobject` module.
-function GetNearestUnitOnTeam(h) end
+function GetNearestUnitOnTeam(...)
+    error("This function is provided by the engine.");
+end
 
 --- Returns how many objects with the given team and odf name are closer than the given distance.
 --- @param h Handle
@@ -2337,6 +2337,8 @@ function ColorFade(ratio, rate, r, g, b) end
 --- @operator unm: Vector
 --- @operator add(Vector): Vector
 --- @operator sub(Vector): Vector
+--- @operator mul(number): Vector
+--- @operator mul(Vector): Vector
 
 local Vector = {}
 
@@ -2458,14 +2460,6 @@ end
 function Vector.__sub(v1, v2)
     error("This function is provided by the engine.");
 end
-
---- Multiply two vectors.
---
--- Equivlent to SetVector(vector1.x * vector2.x, vector1.y * vector2.y, vector1.z * vector2.z)
--- @tparam Vector vector1
--- @tparam Vector vector2
--- @treturn Vector
--- @function Vector.__mul
 
 --- Multiply a vector by a number, number by a vector, or vector by a vector.
 ---
@@ -2603,18 +2597,6 @@ end
 function BuildDirectionalMatrix(position, direction)
     error("This function is provided by the engine.");
 end
-
---- Multiply two matrices.
---- @tparam Matrix matrix1
---- @tparam Matrix matrix2
---- @treturn Matrix
---- @function matrix.__mul
-
---- Transform a vector by a matrix.
---- @tparam Matrix matrix
---- @tparam Vector vector
---- @treturn Matrix
---- @function matrix.__mul
 
 --- Multiply a matrix by a vector or matrix.
 --- @overload fun(a: Matrix, b: Matrix): Matrix

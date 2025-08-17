@@ -7,18 +7,6 @@
 --- ```lua
 --- local hook = require("_hook");
 --- 
---- -- optional priority overrides, only applies when adding hooks
---- -- consider removing this now that we have a centralized _config.lua
---- _api_hook_priority_override = {
----     ["Update"] = {
----         ["_statemachine_Update"] = 10000;
----         ["_funcarray_Update"] = 10000;
----     },
----     ["DeleteObject"] = {
----         ["GameObject_DeleteObject"] = -10000;
----     }
---- };
---- 
 --- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
 ---     
 --- end);
@@ -215,9 +203,6 @@ function M.Add( event, identifier, func, priority )
     if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
     if not utility.isfunction(func) then error("Parameter func must be a function."); end
     if priority == nil or not utility.isnumber(priority) then priority = 0; end
-
-    --- @diagnostic disable-next-line: undefined-global
-    priority = (_api_hook_priority_override and _api_hook_priority_override[event]) and _api_hook_priority_override[event][identifier] or priority;
 
     if Hooks[ event ] == nil then
         Hooks[ event ] = {};

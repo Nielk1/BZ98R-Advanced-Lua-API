@@ -47,22 +47,17 @@ M.Sets = {};
 
 --- @class StateSet
 --- @field template string Name of the StateSet template
---- @field StateMachines table Table of StateMachineIter instances, key is the state name and value is the StateMachineIter instance
 local StateSet = {};
 StateSet.__index = StateSet;
 
 --- @alias StateSetFunction fun(self:StateSetRunner, name:string, ...:any)
-
---- @class WrappedObjectForStateSetRunner
---- @field f fun(self:StateSetRunner, name:string, params:table, ...:any) Function to be called when the state is active, should return true if the state did something.
---- @field p table Parameters to pass to the state machine, first parameter is the StateSetRunner instance
 
 --- Add a state to the StateSet.
 --- If the state is basic either active or inactive based on last on/off call.
 --- If the state is permit based it is active if the on count is greater than 0.
 --- @param self StateSet StateSet instance
 --- @param name string Name of the state
---- @param state StateSetFunction|WrappedObjectForStateSetRunner Function to be called when the state is active, should return true if the state did something.
+--- @param state StateSetFunction Function to be called when the state is active, should return true if the state did something.
 --- @param permitBased boolean? If true, the state is permit based
 --- @return StateSet self For function chaining
 function StateSet.Add(self, name, state, permitBased)
@@ -77,44 +72,26 @@ function StateSet.Add(self, name, state, permitBased)
 end
 
 --- Wrap a state machine definition so it can be used in a StateSet.
---- This causes the StateMachineIter to be constructed and run in the context of the StateSetRunner.
---- The first paramater to the StateMachineIter after the default paramaters is the StateSetRunner instance,
---- those after are the extras passed to the StateSetRunner's run function.
---- Externally the StateMachineIter's state can be accessed via the StateSetRunner's StateMachines table under the key of the StateSet's state name.
---- @param name string Name of the state machine
---- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
---- @param init table? Initial data for the state machine, if nil uses empty table
---- @return WrappedObjectForStateSetRunner
-function M.WrapStateMachine(name, state_key, init )
-    if not utility.isstring(name) then error("Parameter name must be a string."); end
+--- Keep a reference to the original StateMachineIter to access its internal state.
+--- The StateMachineIter's run function is called with the StateSetRunner and the state name as its first two non-self paramaters.
+--- @param machine StateMachineIter Name of the state machine
+--- @return StateSetFunction
+function M.WrapStateMachine(machine)
+    if not statemachine.isstatemachineiter(machine) then error("Parameter machine must be a StateMachineIter."); end
 
-    return { f = function(state, name, params, ...)
-        local statemachine_name = params[1];
-        local statemachine_state_key = params[2];
-        local statemachine_init = params[3];
-
-        -- prepare location to hold StateMachineIter instances
-        -- if state.StateMachines == nil then state.StateMachines = {}; end
-
-        -- construct the StateMachineIter if it does not exist yet
-        local existingStateMachineRecord = state.StateMachines[name];
-        if existingStateMachineRecord == nil or not statemachine.isstatemachineiter(existingStateMachineRecord) then
-            -- the existing data is either nil or not a StateMachineIter
-            -- if it's not a StateMachineIter it's initial state data as someone pre-stuffed its addondata
-            local init_data = existingStateMachineRecord or {};
-            local templated_init_data = statemachine_init or {};
-            for k, v in pairs(templated_init_data) do
-                -- copy the initial data from the template only if it doesn't conflict with the pre-pushed addonData
-                if not init_data[k] then
-                    init_data[k] = v;
-                end
+    local my_machine = machine;
+    return function(state, name, ...)
+        -- we only grab the machine status bool return, forget the rest
+        --- @todo consider somehow merging the StateRunner's context into the self context of the StateMachineIter
+        local machine_return = my_machine:run(state, name, ...);
+        if statemachine.isstatemachineiterwrappedresult(machine_return) then
+            --- @cast machine_return StateMachineIterWrappedResult
+            if machine_return.Abort then
+                logger.print(logger.LogLevel.DEBUG, nil, "StateSetRunner state '"..state.template.."' StateMachineIter aborted, disabling StateSetRunner state.");
+                state:off(name, true); -- force off the state as the machine aborted
             end
-            state.StateMachines[name] = statemachine.Start(statemachine_name, statemachine_state_key, init_data);
         end
-
-        -- run the StateMachineIter in the context of the StateSetRunner
-        state.StateMachines[name]:run(...);
-    end, p = {name, state_key, init} };
+    end;
 end
 
 --- Is this object an instance of StateSetRunner?
@@ -177,7 +154,6 @@ local function CreateStateSetRunner(name, values)
     local self = setmetatable({}, StateSetRunner);
     self.template = name;
     self.active_states = {};
-    self.StateMachines = {};
 
     if values then
         if utility.istable(values) then
@@ -203,24 +179,9 @@ function StateSetRunner.run(self, ...)
     for name,v in pairs(self.active_states) do
         if v then
             local state = sets[name].f;
-            if utility.isfunction(state) then
+            --if utility.isfunction(state) then
                 foundState = foundState or state(self, name, ...);
-            elseif utility.istable(state) then
-                --- @cast state WrappedObjectForStateSetRunner
-                if utility.isfunction(state.f) then
-                    -- we only grab the machine status bool return, forget the rest
-                    local machine_return = state.f(self, name, state.p, ...);
-                    foundState = foundState or (machine_return and true); -- the machine status returned something other than false
-
-                    if statemachine.isstatemachineiterwrappedresult(machine_return) then
-                        --- @cast machine_return StateMachineIterWrappedResult
-                        if machine_return.Abort then
-                            logger.print(logger.LogLevel.DEBUG, nil, "StateSetRunner state '"..self.template.."' StateMachineIter aborted, disabling StateSetRunner state.");
-                            self:off(name, true); -- force off the state as the machine aborted
-                        end
-                    end
-                end
-            end
+            --end
         end
     end
 

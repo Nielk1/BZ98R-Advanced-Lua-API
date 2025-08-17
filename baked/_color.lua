@@ -9,7 +9,8 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_color Loading");
 
---- @section Enums
+--- @class _color
+local M = {};
 
 --- Convert human readable color names to BZ98R color labels.
 --- @enum EColorLabel
@@ -32,46 +33,41 @@ local EColorLabel = {
     Magenta     = "MAGENTA",   -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #FF00FF; color: #000;"></div>
     DarkMagenta = "DKMAGENTA", -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #990099; color: #FFF;"></div>
 
-    BLACK     = "BLACK",
-    DKGREY    = "DKGREY",
-    GREY      = "GREY",
-    WHITE     = "WHITE",
-    BLUE      = "BLUE",
-    DKBLUE    = "DKBLUE",
-    GREEN     = "GREEN",
-    DKGREEN   = "DKGREEN",
-    YELLOW    = "YELLOW",
-    DKYELLOW  = "DKYELLOW",
-    RED       = "RED",
-    DKRED     = "DKRED",
+    BLACK     = "BLACK",     -- <div class="colorbox" style="background-color: #000000; color: #FFF;"></div>
+    DKGREY    = "DKGREY",    -- <div class="colorbox" style="background-color: #4C4C4C; color: #FFF;"></div>
+    GREY      = "GREY",      -- <div class="colorbox" style="background-color: #999999; color: #000;"></div>
+    WHITE     = "WHITE",     -- <div class="colorbox" style="background-color: #FFFFFF; color: #000;"></div>
+    BLUE      = "BLUE",      -- <div class="colorbox" style="background-color: #007FFF; color: #FFF;"></div>
+    DKBLUE    = "DKBLUE",    -- <div class="colorbox" style="background-color: #004C99; color: #FFF;"></div>
+    GREEN     = "GREEN",     -- <div class="colorbox" style="background-color: #00FF00; color: #000;"></div>
+    DKGREEN   = "DKGREEN",   -- <div class="colorbox" style="background-color: #009900; color: #FFF;"></div>
+    YELLOW    = "YELLOW",    -- <div class="colorbox" style="background-color: #FFFF00; color: #000;"></div>
+    DKYELLOW  = "DKYELLOW",  -- <div class="colorbox" style="background-color: #999900; color: #FFF;"></div>
+    RED       = "RED",       -- <div class="colorbox" style="background-color: #FF0000; color: #FFF;"></div>
+    DKRED     = "DKRED",     -- <div class="colorbox" style="background-color: #990000; color: #FFF;"></div>
     
-    CYAN      = "CYAN",
-    DKCYAN    = "DKCYAN",
-    MAGENTA   = "MAGENTA",
-    DKMAGENTA = "DKMAGENTA",
+    CYAN      = "CYAN",      -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #00FFFF; color: #000;"></div>
+    DKCYAN    = "DKCYAN",    -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #009999; color: #FFF;"></div>
+    MAGENTA   = "MAGENTA",   -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #FF00FF; color: #000;"></div>
+    DKMAGENTA = "DKMAGENTA", -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #990099; color: #FFF;"></div>
 
-    ["Dark Grey"]    = "DKGREY",
-    ["Dark Blue"]    = "DKBLUE",
-    ["Dark Green"]   = "DKGREEN",
-    ["Dark Yellow"]  = "DKYELLOW",
-    ["Dark Red"]     = "DKRED",
-    ["Dark Cyan"]    = "DKCYAN",    -- {VERSION 2.2.315+}
-    ["Dark Magenta"] = "DKMAGENTA", -- {VERSION 2.2.315+}
+    ["Dark Grey"]    = "DKGREY",    -- <div class="colorbox" style="background-color: #4C4C4C; color: #FFF;"></div>
+    ["Dark Blue"]    = "DKBLUE",    -- <div class="colorbox" style="background-color: #004C99; color: #FFF;"></div>
+    ["Dark Green"]   = "DKGREEN",   -- <div class="colorbox" style="background-color: #009900; color: #FFF;"></div>
+    ["Dark Yellow"]  = "DKYELLOW",  -- <div class="colorbox" style="background-color: #999900; color: #FFF;"></div>
+    ["Dark Red"]     = "DKRED",     -- <div class="colorbox" style="background-color: #990000; color: #FFF;"></div>
+    ["Dark Cyan"]    = "DKCYAN",    -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #009999; color: #FFF;"></div>
+    ["Dark Magenta"] = "DKMAGENTA", -- {VERSION 2.2.315+} <div class="colorbox" style="background-color: #990099; color: #FFF;"></div>
 };
 
---- @section Types
-
 --- @alias ColorValue integer
-
---- @class _color
-local M = {};
 
 --- Convert human readable color names to BZ98R color labels.
 M.ColorLabel = EColorLabel;
 
 --- Convert BZ98R color labels to RGB color codes.
 --- This probably isn't useful but it's here.
---- @enum ColorValues
+--- @type table<string, ColorValue>
 M.ColorValues = {
     BLACK     = 0x000000FF, -- <div class="colorbox" style="background-color: #000000; color: #FFF;"></div>
     DKGREY    = 0x4C4C4CFF, -- <div class="colorbox" style="background-color: #4C4C4C; color: #FFF;"></div>
@@ -124,7 +120,7 @@ M.ColorValues = {
 --- <div class="colorbox" style="background-color: #FF0099; color: #FFF;"></div>
 --- <div class="colorbox" style="background-color: #FF0066; color: #FFF;"></div>
 --- <div class="colorbox" style="background-color: #FF0033; color: #FFF;"></div>
---- @enum RAVE_COLOR
+--- @type ColorValue[]
 M.RAVE_COLOR = {
      [1] = 0xFF0000FF, -- <div class="colorbox" style="background-color: #FF0000; color: #FFF;"></div>
      [2] = 0xFF3300FF, -- <div class="colorbox" style="background-color: #FF3300; color: #FFF;"></div>
@@ -230,11 +226,8 @@ function M.GetClosestColorCode(color)
     return RGBGetClosestGameColor(r, g, b);
 end
 
---- @section Ansi Color Escape Codes
-
 --- Ansi color codes for terminal output sorted by game color codes.
 --- @type table<ColorLabel, string>
---- @enum AnsiColorEscapeMap
 M.AnsiColorEscapeMap = {
     RESET     = "\27[0m",
     _         = "\27[0m",

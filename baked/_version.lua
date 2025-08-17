@@ -60,7 +60,7 @@ local labels = {"Game", "Lua", "API", "BZCP", "BZCP Shim"};
 ---     end
 --- end
 --- ```
---- @return fun(): (key: string, label: string, version: string|integer) Iterator function iterating over all versions for easy output
+--- @return fun(key: string, label: string, version: string|integer) Iterator function iterating over all versions for easy output
 function M.All()
     return coroutine.wrap(function()
         for i, key in ipairs(keys) do

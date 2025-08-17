@@ -229,7 +229,7 @@ local function ProcessQueues()
 
                                     if scrapCost <= MaxScrap and pilotCost <= Pilot then
                                         local sig = paramdb.GetClassSig(job.odf);
-                                        local range = utility.TeamSlotRange[sig];
+                                        local range = utility.TeamSlotRanges[sig];
                                         local valid_slot = not range or range[1] == TeamSlot.UNDEFINED or range[2] == TeamSlot.UNDEFINED and true or false;
                                         -- slot validity check disabled as it's not needed, consider making it optional
                                         valid_slot = true;

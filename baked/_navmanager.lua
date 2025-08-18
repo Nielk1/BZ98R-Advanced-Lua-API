@@ -49,7 +49,9 @@ local NationMemo = {};
 --- @param nation string? Nation id character, will take the first character if longer
 --- @return string ODF ODF of the default nav for the nation
 local function GetDefaultNavOdf(nation)
+    print("GetDefaultNavOdf called with nation: " .. tostring(nation));
     if nation == nil or #nation == 0 then
+        print("No nation provided, defaulting to apcamr");
         return "apcamr";
     end
     
@@ -57,23 +59,29 @@ local function GetDefaultNavOdf(nation)
 
     local odf = NationMemo[nation];
     if odf then
+        print("Found nation in memo: " .. tostring(odf));
         return odf;
     end
 
     odf = nation .. "pcamr";
 
-    -- OpenODF hoping to mirror game behavior, UseItem is also an option
-    if OpenODF(odf) then
+    -- OpenODF is bugged, not returning nil for items that don't exist
+    -- Also use UseItem to be 100% sure
+    --- @todo this is bugged returning a userdata for bpcamr despite it not existing, need to investigate. Useitem is not fooled.
+    if OpenODF(odf) and UseItem(odf) then
         NationMemo[nation] = odf;
+        print("Found nation odf: " .. tostring(odf));
         return odf;
     end
 
     if nation == "c" then
         NationMemo[nation] = "spcamr";
+        print("Defaulting nation odf to spcamr");
         return "spcamr";
     end
 
     NationMemo[nation] = "apcamr";
+    print("Defaulting nation odf to apcamr");
     return "apcamr";
 end
 
@@ -102,7 +110,7 @@ function M.BuildImportantNav(odf, team, location, point)
             if source then
                 local pilot = source:GetPilotClass();
                 if pilot and #pilot > 0 then
-                    nation = pilot[1];
+                    nation = pilot:sub(1, 1):lower();
                 else
                     nation = source:GetNation();
                 end

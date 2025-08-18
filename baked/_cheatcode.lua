@@ -51,7 +51,7 @@ local existing = {};
 statemachine.Create("CheatCode",
     function (state, key)
         --- @cast state CheatCodeStateMachineIter
-        print("CheatCode", state.code, state.index, key, "Ctrl+Shift+" .. state.code:sub(state.index, state.index));
+        --print("CheatCode", state.code, state.index, key, "Ctrl+Shift+" .. state.code:sub(state.index, state.index));
         if key == "Ctrl+Shift+" .. state.code:sub(state.index, state.index) then
             state.index = state.index + 1;
             if state.index > #state.code then

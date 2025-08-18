@@ -71,19 +71,50 @@ function StateSet.Add(self, name, state, permitBased)
     return self;
 end
 
---- Wrap a state machine definition so it can be used in a StateSet.
---- Keep a reference to the original StateMachineIter to access its internal state.
---- The StateMachineIter's run function is called with the StateSetRunner and the state name as its first two non-self paramaters.
---- @param machine StateMachineIter Name of the state machine
---- @return StateSetFunction
-function M.WrapStateMachine(machine)
-    if not statemachine.isstatemachineiter(machine) then error("Parameter machine must be a StateMachineIter."); end
 
-    local my_machine = machine;
+
+--- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
+--- @param name string Name of the StateMachineIter Template
+--- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
+--- @param init table? Initial data
+--- @return fun(existing: StateMachineIter|table, ...):StateMachineIter machine_creator
+local function CreateStateMachineCreateFunction(name, state_key, init)
+    return function(existing)
+        if existing ~= nil then
+            if statemachine.isstatemachineiter(existing) then
+                -- if the existing is a StateMachineIter, return it as is
+                return existing;
+            end
+            if utility.istable(existing) then
+                -- copy the existing table data into init
+                for k, v in pairs(existing) do
+                    init[k] = v;
+                end
+            end
+        end
+        return statemachine.Start(name, state_key, init);
+    end
+end
+
+--- Wrap a state machine definition so it can be used in a StateSet.
+--- The StateMachineIter's instance is stored in the `machines` table of the StateSetRunner instance, key is the state name.
+--- The StateMachineIter's run function is called with the StateSetRunner and the state name as its first two non-self paramaters.
+--- @param machine_creator fun(existing: StateMachineIter|table, ...):StateMachineIter Function that creates the StateMachineIter, if initial is already a StateMachineIter you should return it as is.
+--- @return StateSetFunction
+local function ConvertStateMachineCreatorToState(machine_creator)
+    --if not statemachine.isstatemachineiter(machine) then error("Parameter machine must be a StateMachineIter."); end
+
     return function(state, name, ...)
-        -- we only grab the machine status bool return, forget the rest
-        --- @todo consider somehow merging the StateRunner's context into the self context of the StateMachineIter
-        local machine_return = my_machine:run(state, name, ...);
+        --- @cast state StateSetRunnerWithMachines
+        
+        if state.machines == nil then
+            state.machines = {};
+        end
+
+        -- give the factory function a chance to create the StateMachineIter or adapt it if it needs to
+        state.machines[name] = machine_creator(state.machines[name]);
+
+        local machine_return = state.machines[name]:run(state, name, ...);
         if statemachine.isstatemachineiterwrappedresult(machine_return) then
             --- @cast machine_return StateMachineIterWrappedResult
             if machine_return.Abort then
@@ -94,6 +125,15 @@ function M.WrapStateMachine(machine)
     end;
 end
 
+--- Wrap a state machine definition so it can be used in a StateSet.
+--- The StateMachineIter's instance is stored in the `machines` table of the StateSetRunner instance, key is the state name.
+--- @param name string Name of the StateMachineIter Template
+--- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
+--- @param init table? Initial data
+--- @return StateSetFunction
+function M.WrapStateMachine(name, state_key, init)
+    return ConvertStateMachineCreatorToState(CreateStateMachineCreateFunction(name, state_key, init));
+end
 --- Is this object an instance of StateSetRunner?
 --- @param object any Object in question
 --- @return boolean
@@ -146,6 +186,10 @@ StateSetRunner.__newindex = function(table, key, value)
     end
 end
 StateSetRunner.__type = "StateSetRunner";
+
+--- @class StateSetRunnerWithMachines : StateSetRunner
+--- @field machines table<string, StateMachineIter>? Optional table of StateMachineIter instances used by this StateSetRunner
+
 
 --- Create StateSetRunner
 --- @param name string StateSetRunner template

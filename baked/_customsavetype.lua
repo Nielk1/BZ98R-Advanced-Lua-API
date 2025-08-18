@@ -59,12 +59,15 @@ end
 --- @param name string
 --- @return boolean
 function M.Implements(obj, name)
-    local type = obj;
-    while(type ~= nil) do
-        if type.__type == name then
+    local type_ = obj;
+    while (type_ ~= nil) do
+        if type(type_) ~= "table" then
+            return false; -- not a table, cannot be a custom savable type
+        end
+        if type_.__type == name then
             return true;
         end
-        type = type.__base
+        type_ = type_.__base
     end
     return false;
 end
@@ -74,12 +77,15 @@ end
 --- @param name string
 --- @return any?
 function M.Extract(obj, name)
-    local type = obj;
-    while(type ~= nil) do
-        if type.__type == name then
-            return type;
+    local type_ = obj;
+    while(type_ ~= nil) do
+        if type(type_) ~= "table" then
+            return nil; -- not a table, cannot be a custom savable type
         end
-        type = type.__base
+        if type_.__type == name then
+            return type_;
+        end
+        type_ = type_.__base
     end
     return nil;
 end

@@ -87,6 +87,9 @@ local function CreateStateMachineCreateFunction(name, state_key, init)
             end
             if utility.istable(existing) then
                 -- copy the existing table data into init
+                if init == nil then
+                    init = {};
+                end
                 for k, v in pairs(existing) do
                     init[k] = v;
                 end

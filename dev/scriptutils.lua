@@ -1471,7 +1471,6 @@ end
 --- Returns the current AIP for the team. It uses team 2 if no team number is given.
 --- @param team TeamNum?
 --- @return string
---- @function GetAIP 
 function GetAIP(team)
     error("This function is provided by the engine.");
 end
@@ -1774,7 +1773,6 @@ function Defend(me, priority) end
 --- @param me Handle
 --- @param him Handle
 --- @param priority integer?
---- @function Defend2
 --- @deprecated See `_gameobject` module.
 function Defend2(me, him, priority) end
 
@@ -2165,7 +2163,7 @@ end
 
 --- Adds a system text message to the chat window on the local machine.
 ---
---- {(!)Multiplayer(!) remarks: The displayed message is entirely local regardless of hosting status, if you want a message to be visible to all players
+--- {(!)Multiplayer(!) The displayed message is entirely local regardless of hosting status, if you want a message to be visible to all players
 --- you should Send() a message to all players to display the given message.}
 --- @param message string
 function DisplayMessage(message) end
@@ -2204,8 +2202,10 @@ function Send(to, type, ...) end
 --- Opens the named file as an ODF. If the file name has no extension, the function will append ".odf" automatically.
 --- If the file is not already open, the function reads in and parses the file into an internal database. If you need to read values from it relatively frequently, save the handle into a global variable to prevent it from closing.
 --- Returns the file handle if it succeeded. Returns nil if it failed.
+--- {(!!)(!!) This will not fail if the file does not exist but will return an empty database. There is no way to proove the database is empty from Lua so use `UseItem` to check if the file exists.}
 --- @param filename string
 --- @return ParameterDB
+--- @deprecated See `_paramdb` module.
 function OpenODF(filename)
     error("This function is provided by the engine.");
 end
@@ -2220,6 +2220,7 @@ end
 --- @param default boolean?
 --- @return boolean
 --- @return boolean
+--- @deprecated See `_paramdb` module.
 function GetODFBool(odf, section, label, default)
     error("This function is provided by the engine.");
 end
@@ -2233,6 +2234,7 @@ end
 --- @param default integer?
 --- @return integer
 --- @return boolean
+--- @deprecated See `_paramdb` module.
 function GetODFInt(odf, section, label, default)
     error("This function is provided by the engine.");
 end
@@ -2246,6 +2248,7 @@ end
 --- @param default number?
 --- @return number
 --- @return boolean
+--- @deprecated See `_paramdb` module.
 function GetODFFloat(odf, section, label, default)
     error("This function is provided by the engine.");
 end
@@ -2259,6 +2262,7 @@ end
 --- @param default string?
 --- @return string
 --- @return boolean
+--- @deprecated See `_paramdb` module.
 function GetODFString(odf, section, label, default)
     error("This function is provided by the engine.");
 end
@@ -2308,8 +2312,9 @@ end
 --- Returns the contents of the named file as a string, or nil if the file could not be opened.
 --- {VERSION 2.0+}
 --- @param filename string
---- @function string UseItem
-function UseItem(filename) end
+function UseItem(filename)
+    error("This function is provided by the engine.");
+end
 
 --- @section Effects
 --- {VERSION 2.0+}
@@ -2324,7 +2329,9 @@ function UseItem(filename) end
 --- @param r integer
 --- @param g integer
 --- @param b integer
-function ColorFade(ratio, rate, r, g, b) end
+function ColorFade(ratio, rate, r, g, b)
+    error("This function is provided by the engine.");
+end
 
 --- @section Vector
 --- This is a custom userdata representing a position or direction. It has three number components: x, y, and z.
@@ -2429,6 +2436,9 @@ function Distance3DSquared(a, b)
     error("This function is provided by the engine.");
 end
 
+-- DocGen doesn't want to doc operator functions, and the system gets confused on what to attach overloads to, so we're ignoring
+-- [[START_IGNORE]]
+
 --- Negate the vector.
 ---
 --- Equivalent to SetVector(-vector.x, -vector.y, -vector.z).
@@ -2507,6 +2517,8 @@ function Vector.__eq(v1, v2)
     error("This function is provided by the engine.");
 end
 
+-- [[END_IGNORE]]
+
 --- @section Matrix
 --- This is a custom userdata representing an orientation and position in space. It has four vector components (right, up, front, and posit) sharing space with twelve number components (right_x, right_y, right_z, up_x, up_y, up_z, front_x, front_y, front_z, posit_x, posit_y, posit_z).
 
@@ -2548,7 +2560,6 @@ local Matrix = {}
 --- Global value representing the identity matrix.
 --- Equivalent to SetMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0).
 --- @return Matrix
---- @function matrix IdentityMatrix
 function IdentityMatrix()
     error("This function is provided by the engine.");
 end
@@ -2598,6 +2609,9 @@ function BuildDirectionalMatrix(position, direction)
     error("This function is provided by the engine.");
 end
 
+-- DocGen doesn't want to doc operator functions, and the system gets confused on what to attach overloads to, so we're ignoring
+-- [[START_IGNORE]]
+
 --- Multiply a matrix by a vector or matrix.
 --- @overload fun(a: Matrix, b: Matrix): Matrix
 --- @overload fun(a: Matrix, b: Vector): Matrix
@@ -2606,6 +2620,8 @@ end
 function Matrix:__mul(a, b)
     error("This function is provided by the engine.");
 end
+
+-- [[END_IGNORE]]
 
 --- @section Portal Functions
 --- {VERSION 2.1+}
@@ -2751,7 +2767,6 @@ function MakeExplosion(odfname, target) end
 --- Bitwise operations on 32-bit integers.
 
 --- Table of bitwise operation functions.
---- @table bit
 --- @diagnostic disable-next-line: lowercase-global
 bit = {};
 

@@ -21,6 +21,7 @@ local config = require("_config");
 local utility = require("_utility");
 local gameobject = require("_gameobject");
 local hook = require("_hook");
+local paramdb = require("_paramdb");
 
 --- Nav GameObjects swapped.
 --- The old nav will be deleted after this event is called.
@@ -65,10 +66,7 @@ local function GetDefaultNavOdf(nation)
 
     odf = nation .. "pcamr";
 
-    -- OpenODF is bugged, not returning nil for items that don't exist
-    -- Also use UseItem to be 100% sure
-    --- @todo this is bugged returning a userdata for bpcamr despite it not existing, need to investigate. Useitem is not fooled.
-    if OpenODF(odf) and UseItem(odf) then
+    if paramdb.IsGameObject(odf) then
         NationMemo[nation] = odf;
         print("Found nation odf: " .. tostring(odf));
         return odf;

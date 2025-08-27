@@ -210,7 +210,7 @@ local version = require("_version");
 ---
 --- @diagnostic disable: undefined-doc-param
 --- @hook Add CallAllPassReturn
---- @tod consider changing call type to stop after first true
+--- @todo consider changing call type to stop after first true
 --- @param from integer network player id of the sender.
 --- @param type string an arbitrary one-character string indicating the script-defined message type.
 --- @vararg any values passed as parameters to Send will arrive as parameters to Receive in the same order they were sent. Receive supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.

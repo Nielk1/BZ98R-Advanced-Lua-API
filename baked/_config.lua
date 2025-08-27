@@ -103,6 +103,7 @@ end
 --- Update                         .Camera        =  8989
 --- Update                         .StateMachine  =  8998
 --- Update                         .WaveSpawner   =  8999
+--- Update                         .ParamDB       =  9900
 --- ```
 M.hook_priority = {
     DeleteObject = {
@@ -134,6 +135,7 @@ M.hook_priority = {
         StateMachine = 8998,
         WaveSpawner = 8999,
         --GameObject = 9999,
+        ParamDB = 9900,
     },
 }
 dont_lock = false;

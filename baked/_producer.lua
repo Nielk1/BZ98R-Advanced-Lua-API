@@ -167,7 +167,7 @@ local function ProcessQueues()
                 and producer:IsValid()
                 and producer:CanBuild()
                 and not producer:IsBusy() then
-                    local producerOdf = producer:GetOdf();
+                    local producerOdf = producer:GetOdf():lower();
                     producerTypes[producerOdf] = producer;
                 end
             end
@@ -193,7 +193,7 @@ local function ProcessQueues()
                         --- @cast builder GameObject?
                         if builder then
                             possibleProducers = {};
-                            possibleProducers[builder:GetOdf()] = true;
+                            possibleProducers[builder:GetOdf():lower()] = true;
                         end
                     end
                     if not possibleProducers then
@@ -293,7 +293,7 @@ end
 local function ProcessCreated(object)
     -- try to figure out which producer made it so if it is part of our system
 
-    local odf = object:GetOdf();
+    local odf = object:GetOdf():lower();
     --local distance =  2^53;
     local distance =  100; -- if we're over 100 away we likely weren't produced by the producer
     local closestProducer = nil;
@@ -394,34 +394,33 @@ local function ScanProducers(team)
         end
         ProducerCache[team][p] = producer; -- save it now so it's free
         if producer then
-            local producerOdf = producer:GetOdf();
+            local producerOdf = producer:GetOdf():lower();
             if producerOdf and not ProducerOdfsScanned[producerOdf] then
                 local label = producer:GetClassSig();
                 if label == utility.ClassSig.recycler
                 or label == utility.ClassSig.factory
                 or label == utility.ClassSig.constructionrig
                 or label == utility.ClassSig.armory then
-                    local producerOdfFile = OpenODF(producerOdf);
-                    if producerOdfFile then
-                        for i=1, 9 do
-                            local builableOdf = GetODFString(producerOdfFile, "ProducerClass", "buildItem" .. tostring(i));
-                            if builableOdf and builableOdf ~= "" then
-                                if not MemoOfProducersByProduced[builableOdf] then
-                                    MemoOfProducersByProduced[builableOdf] = {};
-                                end
-                                MemoOfProducersByProduced[builableOdf][producerOdf] = true;
+                    for i=1, 9 do
+                        local builableOdf = paramdb.GetValueString(producerOdf, "ProducerClass", "buildItem" .. tostring(i));
+                        if builableOdf and builableOdf ~= "" then
+                            builableOdf = builableOdf:lower();
+                            if not MemoOfProducersByProduced[builableOdf] then
+                                MemoOfProducersByProduced[builableOdf] = {};
                             end
+                            MemoOfProducersByProduced[builableOdf][producerOdf] = true;
                         end
-                        if label == utility.ClassSig.armory then
-                            for _, v in ipairs({"cannonItem","rocketItem","mortarItem","specialItem"}) do
-                                for i=1, 9 do
-                                    local builableOdf = GetODFString(producerOdfFile, "ArmoryClass", v .. tostring(i));
-                                    if builableOdf and builableOdf ~= "" then
-                                        if not MemoOfProducersByProduced[builableOdf] then
-                                            MemoOfProducersByProduced[builableOdf] = {};
-                                        end
-                                        MemoOfProducersByProduced[builableOdf][producerOdf] = true;
+                    end
+                    if label == utility.ClassSig.armory then
+                        for _, v in ipairs({"cannonItem","rocketItem","mortarItem","specialItem"}) do
+                            for i=1, 9 do
+                                local builableOdf = paramdb.GetValueString(producerOdf, "ArmoryClass", v .. tostring(i));
+                                if builableOdf and builableOdf ~= "" then
+                                    builableOdf = builableOdf:lower();
+                                    if not MemoOfProducersByProduced[builableOdf] then
+                                        MemoOfProducersByProduced[builableOdf] = {};
                                     end
+                                    MemoOfProducersByProduced[builableOdf][producerOdf] = true;
                                 end
                             end
                         end

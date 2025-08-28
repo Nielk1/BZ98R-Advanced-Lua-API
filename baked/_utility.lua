@@ -564,7 +564,7 @@ function M.GetClassLabel(input)
 end
 
 --- Get the ClassSig string for any ClassLabel or ClassSig.
---- @param input ClassLabel|ClassSig|string The class label or class signature.
+--- @param input ClassLabel|ClassSig|string? The class label or class signature.
 --- @return ClassSig? classSig The class signature.
 function M.GetClassSig(input)
     if input == nil then return nil; end

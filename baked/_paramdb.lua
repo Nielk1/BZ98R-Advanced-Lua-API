@@ -28,7 +28,7 @@ local hook = require("_hook");
 local OpenOdfs = {};
 
 --- Cache of parameter values
---- @type table<string, table<string, table<string, any>>>
+--- @type table<string, table<string, table<string, {[1]: any, [2]: boolean}>>>
 local DataCache = {};
 
 local game_time = 0;
@@ -38,7 +38,7 @@ local time_next_purge = 60;
 --- Caches the ODF handle for reuse, purging old entries periodically.
 --- @param odf string ODF file name
 --- @return ParameterDB db
-function M.OpenODF(odf)
+local function OpenAndCacheODF(odf)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
@@ -66,44 +66,48 @@ end
 
 --- @param odf string ODF file name
 --- @return ClassLabel? classlabel
+--- @return boolean success
 function M.GetClassLabel(odf)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["classlabel"] then
-        return DataCache[odf]["gameobjectclass"]["classlabel"];
+        return DataCache[odf]["gameobjectclass"]["classlabel"][1], DataCache[odf]["gameobjectclass"]["classlabel"][2];
     end
 
     --- @diagnostic disable-next-line: deprecated
-    local classLabel = GetODFString(odfHandle, "GameObjectClass", "classLabel");
+    local classLabel, success = GetODFString(odfHandle, "GameObjectClass", "classLabel");
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf]["gameobjectclass"] = DataCache[odf]["gameobjectclass"] or {};
-    DataCache[odf]["gameobjectclass"]["classlabel"] = classLabel;
-    return classLabel;
+    DataCache[odf]["gameobjectclass"]["classlabel"] = { classLabel, success };
+    return classLabel, success;
 end
 
 --- @param odf string ODF file name
 --- @return ClassSig? classlabel
+--- @return boolean success
 function M.GetClassSig(odf)
-    local classLabel = M.GetClassLabel(odf);
+    local classLabel, success = M.GetClassLabel(odf);
+    if not success then return nil, false; end
     local classSig = utility.GetClassSig(classLabel);
-    return classSig;
+    return classSig, success;
 end
 
 --- @param odf string ODF file name
 --- @return integer scrap cost
+--- @return boolean success
 function M.GetScrapCost(odf)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["scrapcost"] then
-        return DataCache[odf]["gameobjectclass"]["scrapcost"];
+        return DataCache[odf]["gameobjectclass"]["scrapcost"][1], DataCache[odf]["gameobjectclass"]["scrapcost"][2];
     end
     
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
     local sig = M.GetClassSig(odf)
     if sig == nil then error("GetClassSig() returned nil."); end
@@ -114,25 +118,27 @@ function M.GetScrapCost(odf)
         scrap = 0;
     end
 
+    local success = false;
     --- @diagnostic disable-next-line: deprecated
-    scrap = GetODFInt(odfHandle, "GameObjectClass", "scrapCost", scrap);
+    scrap, success = GetODFInt(odfHandle, "GameObjectClass", "scrapCost", scrap);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf]["gameobjectclass"] = DataCache[odf]["gameobjectclass"] or {};
-    DataCache[odf]["gameobjectclass"]["scrapcost"] = scrap;
-    return scrap;
+    DataCache[odf]["gameobjectclass"]["scrapcost"] = { scrap, success };
+    return scrap, success;
 end
 
 --- @param odf string ODF file name
 --- @return integer pilot cost
+--- @return boolean success
 function M.GetPilotCost(odf)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["pilotcost"] then
-        return DataCache[odf]["gameobjectclass"]["pilotcost"];
+        return DataCache[odf]["gameobjectclass"]["pilotcost"][1], DataCache[odf]["gameobjectclass"]["pilotcost"][2];
     end
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
     local sig = M.GetClassSig(odf)
     if sig == nil then error("GetClassSig() returned nil."); end
@@ -153,34 +159,36 @@ function M.GetPilotCost(odf)
         pilot = 0;
     end
 
+    local success = false;
     --- @diagnostic disable-next-line: deprecated
-    pilot = GetODFInt(odfHandle, "GameObjectClass", "pilotCost", pilot);
+    pilot, success = GetODFInt(odfHandle, "GameObjectClass", "pilotCost", pilot);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf]["gameobjectclass"] = DataCache[odf]["gameobjectclass"] or {};
-    DataCache[odf]["gameobjectclass"]["pilotcost"] = pilot;
-    return pilot;
+    DataCache[odf]["gameobjectclass"]["pilotcost"] = { pilot, success };
+    return pilot, success;
 end
 
 --- @todo This might not need to exist since it doesn't have special class code
 --- @param odf string ODF file name
 --- @return number time
+--- @return boolean success
 function M.GetBuildTime(odf)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["buildtime"] then
-        return DataCache[odf]["gameobjectclass"]["buildtime"];
+        return DataCache[odf]["gameobjectclass"]["buildtime"][1], DataCache[odf]["gameobjectclass"]["buildtime"][2];
     end
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
 
     --- @diagnostic disable-next-line: deprecated
-    local buildTime = GetODFFloat(odfHandle, "GameObjectClass", "buildTime", 5.0);
+    local buildTime, success = GetODFFloat(odfHandle, "GameObjectClass", "buildTime", 5.0);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf]["gameobjectclass"] = DataCache[odf]["gameobjectclass"] or {};
-    DataCache[odf]["gameobjectclass"]["buildtime"] = buildTime;
-    return buildTime;
+    DataCache[odf]["gameobjectclass"]["buildtime"] = { buildTime, success };
+    return buildTime, success;
 end
 
 --- Get a general string without handling of class defaults.
@@ -189,6 +197,7 @@ end
 --- @param key string Key name
 --- @param default string? Default value if the key is not found
 --- @return string value
+--- @return boolean success
 function M.GetValueString(odf, section, key, default)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
@@ -198,18 +207,18 @@ function M.GetValueString(odf, section, key, default)
     key = key:lower();
 
     if DataCache[odf] and DataCache[odf][section or ""] and DataCache[odf][section or ""][key] then
-        return DataCache[odf][section or ""][key];
+        return DataCache[odf][section or ""][key][1], DataCache[odf][section or ""][key][2];
     end
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
 
     --- @diagnostic disable-next-line: deprecated
-    local valueString = GetODFString(odfHandle, section, key, default);
+    local valueString, success = GetODFString(odfHandle, section, key, default);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf][section or ""] = DataCache[odf][section or ""] or {};
-    DataCache[odf][section or ""][key] = valueString;
-    return valueString;
+    DataCache[odf][section or ""][key] = { valueString, success };
+    return valueString, success;
 end
 
 --- Get a general integer without handling of class defaults.
@@ -218,6 +227,7 @@ end
 --- @param key string Key name
 --- @param default integer? Default value if the key is not found
 --- @return integer value
+--- @return boolean success
 function M.GetValueInt(odf, section, key, default)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
@@ -227,18 +237,18 @@ function M.GetValueInt(odf, section, key, default)
     key = key:lower();
 
     if DataCache[odf] and DataCache[odf][section or ""] and DataCache[odf][section or ""][key] then
-        return DataCache[odf][section or ""][key];
+        return DataCache[odf][section or ""][key][1], DataCache[odf][section or ""][key][2];
     end
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
 
     --- @diagnostic disable-next-line: deprecated
-    local valueString = GetODFInt(odfHandle, section, key, default);
+    local valueString, success = GetODFInt(odfHandle, section, key, default);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf][section or ""] = DataCache[odf][section or ""] or {};
-    DataCache[odf][section or ""][key] = valueString;
-    return valueString;
+    DataCache[odf][section or ""][key] = { valueString, success };
+    return valueString, success;
 end
 
 --- Get a general float without handling of class defaults.
@@ -247,6 +257,7 @@ end
 --- @param key string Key name
 --- @param default number? Default value if the key is not found
 --- @return number value
+--- @return boolean success
 function M.GetValueFloat(odf, section, key, default)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
@@ -256,18 +267,18 @@ function M.GetValueFloat(odf, section, key, default)
     key = key:lower();
 
     if DataCache[odf] and DataCache[odf][section or ""] and DataCache[odf][section or ""][key] then
-        return DataCache[odf][section or ""][key];
+        return DataCache[odf][section or ""][key][1], DataCache[odf][section or ""][key][2];
     end
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
 
     --- @diagnostic disable-next-line: deprecated
-    local valueString = GetODFFloat(odfHandle, section, key, default);
+    local valueString, success = GetODFFloat(odfHandle, section, key, default);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf][section or ""] = DataCache[odf][section or ""] or {};
-    DataCache[odf][section or ""][key] = valueString;
-    return valueString;
+    DataCache[odf][section or ""][key] = { valueString, success };
+    return valueString, success;
 end
 
 --- Get a general boolean without handling of class defaults.
@@ -276,6 +287,7 @@ end
 --- @param key string Key name
 --- @param default boolean? Default value if the key is not found
 --- @return boolean value
+--- @return boolean success
 function M.GetValueBool(odf, section, key, default)
     if not utility.isstring(odf) then error("Parameter odf must be a string."); end
     if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
@@ -285,18 +297,91 @@ function M.GetValueBool(odf, section, key, default)
     key = key:lower();
 
     if DataCache[odf] and DataCache[odf][section or ""] and DataCache[odf][section or ""][key] then
-        return DataCache[odf][section or ""][key];
+        return DataCache[odf][section or ""][key][1], DataCache[odf][section or ""][key][2];
     end
 
-    local odfHandle = M.OpenODF(odf);
+    local odfHandle = OpenAndCacheODF(odf);
     if odfHandle == nil then error("OpenODF() returned nil."); end
 
     --- @diagnostic disable-next-line: deprecated
-    local valueString = GetODFBool(odfHandle, section, key, default);
+    local valueString, success = GetODFBool(odfHandle, section, key, default);
     DataCache[odf] = DataCache[odf] or {};
     DataCache[odf][section or ""] = DataCache[odf][section or ""] or {};
-    DataCache[odf][section or ""][key] = valueString;
-    return valueString;
+    DataCache[odf][section or ""][key] = { valueString, success };
+    return valueString, success;
+end
+
+--- @param odf string ODF file name
+--- @param section string? Section name
+--- @param key string Key name
+--- @param default integer? Default value if the key is not found or is a boolean false
+--- @param boolVal integer? Value to return if the key is found and is a boolean true
+--- @param enumTable table<string, integer> Lookup table to convert enum value, a failed lookup will be considered a failure
+--- @return integer, boolean
+function M.GetValueIntegerEnum(odf, section, key, default, boolVal, enumTable)
+    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
+    if not utility.isstring(key) then error("Parameter key must be a string."); end
+    if enumTable == nil or type(enumTable) ~= "table" then error("Parameter enumTable must be a table."); end
+    odf = odf:lower();
+    section = section and section:lower();
+    key = key:lower();
+
+    if DataCache[odf] and DataCache[odf][section or ""] and DataCache[odf][section or ""][key] then
+        return DataCache[odf][section or ""][key][1], DataCache[odf][section or ""][key][2];
+    end
+
+    local odfHandle = OpenAndCacheODF(odf);
+    if odfHandle == nil then error("OpenODF() returned nil."); end
+
+    --- @type integer?
+    local value;
+    --- @type boolean?
+    local success;
+    --- @diagnostic disable-next-line: deprecated
+    local value, success = GetODFString(odfHandle, section, key);
+    if success then
+        --- @diagnostic disable-next-line: cast-type-mismatch
+        --- @cast value string?
+        if enumTable[value] then
+            --- @diagnostic disable-next-line: cast-local-type
+            value = enumTable[value];
+        else
+            success = false;
+        end
+    end
+    if not success then
+        --- @diagnostic disable-next-line: cast-type-mismatch
+        --- @cast value integer?
+        --- @diagnostic disable-next-line: cast-local-type, deprecated
+        value, success = GetODFInt(odfHandle, section, key);
+    end
+    if not success then
+        --- @diagnostic disable-next-line: cast-type-mismatch
+        --- @cast value boolean?
+        --- @diagnostic disable-next-line: cast-local-type, deprecated
+        value, success = GetODFBool(odfHandle, section, key);
+        if success then
+            if value then
+                --- @diagnostic disable-next-line: cast-type-mismatch
+                --- @cast value integer?
+                --- @diagnostic disable-next-line: cast-local-type
+                value = boolVal;
+            else
+                --- @diagnostic disable-next-line: cast-type-mismatch
+                --- @cast value integer?
+                --- @diagnostic disable-next-line: cast-local-type
+                value = default;
+            end
+        end
+    end
+    --- @diagnostic disable-next-line: cast-type-mismatch
+    --- @cast value integer
+   
+    DataCache[odf] = DataCache[odf] or {};
+    DataCache[odf][section or ""] = DataCache[odf][section or ""] or {};
+    DataCache[odf][section or ""][key] = { value, success };
+    return value, success;
 end
 
 hook.Add("Update", "_paramdb_Update", function(dtime, ttime)

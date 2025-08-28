@@ -100,19 +100,22 @@ local settings = {
 };
 M.settings = settings; --- @todo make this readonly (at least through this window)
 
---- @param odf ParameterDB
---- @param section string?
---- @param label string
---- @param default any?
---- @param boolVal any
---- @param enumTable table<string, integer>
---- @return any, boolean
+--- We can't use the nice fancy paramdb functions here since we want to load first so paramdb can log with us
+--- @param odf ParameterDB ODF file name
+--- @param section string? Section name
+--- @param key string Key name
+--- @param default integer? Default value if the key is not found or is a boolean false
+--- @param boolVal integer? Value to return if the key is found and is a boolean true
+--- @param enumTable table<string, integer> Lookup table to convert enum value, a failed lookup will be considered a failure
+--- @return integer, boolean
 --- @overload fun(odf: ParameterDB, section: string|nil, label: string, default: LogLevel, boolVal: LogLevel, enumTable: table<string, LogLevel>): LogLevel, boolean
-local function GetODFEnum(odf, section, label, default, boolVal, enumTable)
+local function GetODFEnum(odf, section, key, default, boolVal, enumTable)
+    --- @type integer?
     local value;
     --- @type boolean?
     local success;
-    local value, success = GetODFString(odf, section, label);
+    --- @diagnostic disable-next-line: deprecated
+    local value, success = GetODFString(odf, section, key);
     if success then
         --- @cast value string
         if enumTable[value] then
@@ -123,25 +126,29 @@ local function GetODFEnum(odf, section, label, default, boolVal, enumTable)
         end
     end
     if not success then
-        --- @diagnostic disable-next-line: cast-local-type
-        value, success = GetODFInt(odf, section, label);
+        --- @diagnostic disable-next-line: cast-local-type, deprecated
+        value, success = GetODFInt(odf, section, key);
     end
     if not success then
-        --- @diagnostic disable-next-line: cast-local-type
-        value, success = GetODFBool(odf, section, label);
+        --- @diagnostic disable-next-line: cast-local-type, deprecated
+        value, success = GetODFBool(odf, section, key);
         if success then
             if value then
                 --- @diagnostic disable-next-line: cast-local-type
                 value = boolVal;
             else
+                --- @diagnostic disable-next-line: cast-local-type
                 value = default;
             end
         end
     end
+    --- @diagnostic disable-next-line: cast-type-mismatch
+    --- @cast value integer
     return value, success;
 end
 
 --- @type ParameterDB?
+--- @diagnostic disable-next-line: deprecated
 local settingsFile = OpenODF("logger.cfg");
 if settingsFile then
     settings.level = GetODFEnum(settingsFile, "Logging", "level", M.LogLevel.NONE, M.LogLevel.DEBUG, M.LogLevel);
@@ -168,10 +175,11 @@ if settingsFile then
         settings.intercept_print = M.InterceptPrint.LOGGER;
     end
 
+    --- @diagnostic disable-next-line: deprecated
     settings.strip_colors = GetODFBool(settingsFile, "Logging", "strip_colors", false);
 
     -- loop untip GetODFString returns nil
-    for i = 1, 100 do
+    for i = 1, 1000 do
         --- @diagnostic disable-next-line: deprecated
         local pattern, success = GetODFString(settingsFile, "Logging", "suppress"..tostring(i));
         if not success or not pattern then

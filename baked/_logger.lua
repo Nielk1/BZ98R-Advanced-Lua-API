@@ -108,7 +108,7 @@ M.settings = settings; --- @todo make this readonly (at least through this windo
 --- @param boolVal integer? Value to return if the key is found and is a boolean true
 --- @param enumTable table<string, integer> Lookup table to convert enum value, a failed lookup will be considered a failure
 --- @return integer, boolean
---- @overload fun(odf: ParameterDB, section: string|nil, label: string, default: LogLevel, boolVal: LogLevel, enumTable: table<string, LogLevel>): LogLevel, boolean
+--- @overload fun(odf: ParameterDB, section: string|nil, key: string, default: LogLevel, boolVal: LogLevel, enumTable: table<string, LogLevel>): LogLevel, boolean
 local function GetODFEnum(odf, section, key, default, boolVal, enumTable)
     --- @type integer?
     local value;

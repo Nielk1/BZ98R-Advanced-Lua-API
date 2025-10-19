@@ -39,7 +39,7 @@ if not _G.SetLabel and _G.SettLabel then
 --- [[START_IGNORE]]
     --- @diagnostic disable-next-line: undefined-field
     _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
---- [[END_IGNORE]]
+-- [[END_IGNORE]]
 end
 
 -- [Fix] Broken ObjectiveObjects iterator
@@ -112,7 +112,7 @@ if pre_patch then
             end
         end);
     end;
---- [[END_IGNORE]]
+-- [[END_IGNORE]]
 end
 
 -- [Fix][Polyfill] TeamSlot missing "PORTAL" = 90 / ["90"] = "PORTAL"
@@ -158,7 +158,7 @@ if pre_patch then
         --- @diagnostic disable-next-line: deprecated
         _G.SetCommand(me, AiCommand.FORMATION, priority, him);
     end
---- [[END_IGNORE]]
+-- [[END_IGNORE]]
 end
 
 -- [Fix] Powerups not using thrusters when falling if on an AI team

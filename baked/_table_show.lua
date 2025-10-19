@@ -6,11 +6,11 @@
 ---
 --- Modified slightly by RiciLake to avoid the unnecessary table traversal in tablecount().
 ---
---- Modified slightly by John "Nielk1" Klein for LDoc.
+--- Modified slightly by John "Nielk1" Klein for Lua Language Server.
 ---
 --- @author Julio Manuel Fernandez-Diaz
 --- @module '_table_show'
-
+---
 --- Convert table to string representation.
 ---
 --- Heavily based on "Saving tables with cycles", PIL2, p. 113.

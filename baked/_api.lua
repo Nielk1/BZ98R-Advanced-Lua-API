@@ -408,7 +408,7 @@ end
 
 --- @section Hooks
 
---- [[START_IGNORE]]
+-- [[START_IGNORE]]
 
 --- Save is called when you save a game
 local function _Save()
@@ -667,14 +667,14 @@ end
 
 local WrappedEventCounter = 0;
 
---- [[END_IGNORE]]
+-- [[END_IGNORE]]
 
 --- Fix any base mission callbacks that are not using the new event system.
 --- This will wrap the existing functions in the hook system and replace them with the hook triggering wrappers.
 --- This is called automatically when the API is loaded but can be called again at the end of a script to ensure that all events are wrapped.
 --- If you are already purely using events then you do not need to call this function.
 function _api.FixEvents()
-    --- [[START_IGNORE]]
+    -- [[START_IGNORE]]
     local WrappedAnEvent = false;
 
     if _G["Save"] ~= _Save or _G["Load"] ~= _Load then
@@ -732,7 +732,7 @@ function _api.FixEvents()
         WrappedEventCounter = WrappedEventCounter + 1;
     end
 
-    --- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 end
 
 _api.FixEvents();

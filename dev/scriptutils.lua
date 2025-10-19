@@ -1,14 +1,14 @@
 --- BZ98R ScriptUtils Stub.
 ---
---- Stubs for ScriptUtils LDoc
+--- Definitions for Lua Language Server
 ---
 --- @module 'ScriptUtils'
 ---
 --- @meta
 
---- [[START_IGNORE]]
+-- [[START_IGNORE]]
 error("This is a stub for ScriptUtils, it does not contain any functionality. Do not include this file in your mod.");
---- [[END_IGNORE]]
+-- [[END_IGNORE]]
 
 --- @section Types
 --- Type declarations
@@ -282,6 +282,7 @@ GameVersion = "1.5.2.27u1";
 --- 
 --- {VERSION 2.0+}
 --- 
+--- ```
 --- 1. English
 --- 2. French
 --- 3. German
@@ -289,6 +290,7 @@ GameVersion = "1.5.2.27u1";
 --- 5. Italian
 --- 6. Portuguese
 --- 7. Russian
+--- ```
 --- @type integer
 Language = 1;
 
@@ -2493,7 +2495,7 @@ end
 ---
 --- Equivalent to SetVector( number / vector.x, number / vector.y, number / vector.z).
 ---
---- Equivalent to SetVector(vector.x / number, vector.y / number, vector.z / number).
+--- Equivalent to SetVector(vector.x / numbe  r, vector.y / number, vector.z / number).
 ---
 --- Equivalent to SetVector(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z)
 --- @overload fun(a: Vector, b: number): Vector

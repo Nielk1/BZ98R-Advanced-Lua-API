@@ -324,7 +324,7 @@ elseif settings.intercept_print == M.InterceptPrint.LOGGER then
     end
 end
 
---- [[END_IGNORE]]
+-- [[END_IGNORE]]
 
 --logger.print(logger.LogLevel.DEBUG, nil, "_logger Loaded");
 

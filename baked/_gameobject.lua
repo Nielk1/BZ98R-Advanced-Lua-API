@@ -13,6 +13,7 @@ local utility = require("_utility");
 local config = require("_config");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
+local network = require("_network");
 
 --- @class _gameobject
 local M = {};
@@ -266,7 +267,7 @@ end
 --- Remove GameObject from world.
 ---
 --- {(!!)(!!) Unsafe to use on a handle passed in by CreateObject(h), doing so will crash the game. If you need this functionality,
---- you should defer the deletion until the next Update(dt).}
+--- you should defer the deletion until the next Update.}
 ---
 --- {(!)Multiplayer(!) Very dangerous. There are innumerable cases which can cause objects to be improperly deleted and/or
 --- spawn explosion chunks which may only be visible to certain players. In order to safely delete a distributed object,
@@ -275,8 +276,45 @@ end
 --- @param self GameObject GameObject instance
 function GameObject:RemoveObject()
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+
     --- @diagnostic disable-next-line: deprecated
     RemoveObject(self:GetHandle());
+end
+
+if IsNetGame() then
+--- [[START_IGNORE]]
+    GameObject.RemoveObject = function(self)
+        if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
+        network.Send(0, "_", "GameObject", "RemoveObject", self:GetSeqNo())
+    end
+
+    local packet_id = config.get("network_packet_id.api");
+    hook.Add("Receive", "GameObject_Receive", function(sender, channel, mod, fun, seqNo)
+        if channel ~= packet_id then return end
+        if seqNo and mod == "GameObject" and fun == "RemoveObject" then
+            local gameObject = M.FromSeqNo(seqNo);
+            if gameObject ~= nil then
+                --- @diagnostic disable-next-line: deprecated
+                RemoveObject(gameObject:GetHandle());
+            else
+                -- register a coroutine that tries to remove the object for 1 second before giving up
+                local endTime = GetTime() + 1;
+                local co = coroutine.create(function()
+                    while GetTime() < endTime do
+                        local obj = M.FromSeqNo(seqNo);
+                        if obj ~= nil then
+                            --- @diagnostic disable-next-line: deprecated
+                            RemoveObject(obj:GetHandle());
+                            return;
+                        end
+                        coroutine.yield();
+                    end
+                end);
+                network.RegisterDelayed(co);
+            end
+        end
+    end, config.get("hook_priority.Receive.GameObject"))
+-- [[END_IGNORE]]
 end
 
 --- Get GameObject by Label.

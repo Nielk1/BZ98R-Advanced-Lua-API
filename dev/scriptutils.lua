@@ -920,12 +920,14 @@ function LockAllies(lock) end
 
 --- Makes the two teams allies of each other.
 --- This function affects both teams so Ally(1, 2) and Ally(2, 1) produces the identical results, unlike the "half-allied" state created by the "ally" game key.
+--- {(i)(i)BZCC would require the use of Ally(1, 2) and Ally(2, 1) so if you are making portable code you will need both or will need to monkey-patch BZCC's version.}
 --- @param team1 integer
 --- @param team2 integer
 function Ally(team1, team2) end
 
 --- Makes the two teams enemies of each other.
 --- This function affects both teams so UnAlly(1, 2) and UnAlly(2, 1) produces the identical results, unlike the "half-enemy" state created by the "unally" game key.
+--- {(i)(i)BZCC would require the use of UnAlly(1, 2) and UnAlly(2, 1) so if you are making portable code you will need both or will need to monkey-patch BZCC's version.}
 --- @param team1 integer
 --- @param team2 integer
 function UnAlly(team1, team2) end
@@ -2198,6 +2200,7 @@ function DisplayMessage(message) end
 --- @param to integer
 --- @param type string
 --- @vararg any
+--- @deprecated See `_network` module.
 function Send(to, type, ...) end
 
 --- @section Read ODF

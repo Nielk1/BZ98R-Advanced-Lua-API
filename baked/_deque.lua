@@ -293,9 +293,12 @@ local methods = {
 
 methods.__type = "Deque";
 
+--- @class _deque
+local M = {}
+
+--- Create a new Deque
 --- @return Deque
---- @function new
-local new = function()
+function M.new()
     local r = {head = 0, tail = 0}
     return setmetatable(r, {__index = methods})
 end
@@ -315,7 +318,7 @@ end
 --- @param contents table
 --- @return Deque Deque 
 function methods.Load(contents)
-    local queue = new();
+    local queue = M.new();
     for i = 1, #contents do
         queue:push_right(contents[i]);
     end
@@ -326,6 +329,4 @@ customsavetype.Register(methods);
 
 logger.print(logger.LogLevel.DEBUG, nil, "_deque Loaded");
 
-return {
-    new = new,
-}
+return M;

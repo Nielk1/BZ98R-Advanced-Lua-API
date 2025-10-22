@@ -158,7 +158,7 @@ end
 
 --- @type ParameterDB?
 --- @diagnostic disable-next-line: deprecated
-local settingsFile = OpenODF("logger.cfg");
+local settingsFile = OpenODF("config.cfg");
 if settingsFile then
     settings.level = GetODFEnum(settingsFile, "Logging", "level", M.LogLevel.NONE, M.LogLevel.DEBUG, M.LogLevel);
     if settings.level < M.LogLevel.NONE then
@@ -195,7 +195,7 @@ if settingsFile then
     --- @diagnostic disable-next-line: deprecated
     settings.strip_colors = GetODFBool(settingsFile, "Logging", "strip_colors", false);
 
-    -- loop untip GetODFString returns nil
+    -- loop until GetODFString returns nil
     for i = 1, 1000 do
         --- @diagnostic disable-next-line: deprecated
         local pattern, success = GetODFString(settingsFile, "Logging", "suppress"..tostring(i));

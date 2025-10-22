@@ -18,6 +18,8 @@ logger.print(logger.LogLevel.DEBUG, nil, "_requirefix Loading");
 
 local modPaths = {};
 local modPathSet = {};
+
+--- @class _requirefix
 local moduleTable = {};
 --local modFileExistCache = {};
 
@@ -80,6 +82,9 @@ table.insert(package.loaders, 2, function(modulename) -- TODO is priority 2 too 
     return errmsg;
 end);
 
+--- Add a workshop mod folder to the search paths
+--- @param mod_id string The ID of the mod to add
+--- @return _requirefix self Module self reference to allow chaining
 function moduleTable.addmod(mod_id)
     logger.print(logger.LogLevel.DEBUG, nil, "Add module require path '"..mod_id.."'");
 	if not modPathSet[mod_id] then
@@ -88,6 +93,24 @@ function moduleTable.addmod(mod_id)
 	end
     return moduleTable; -- chaining
 end;
+
+logger.print(logger.LogLevel.DEBUG, nil, "Processing config.cfg");
+--- @type ParameterDB?
+--- @diagnostic disable-next-line: deprecated
+local settingsFile = OpenODF("config.cfg");
+if settingsFile then
+    -- loop until GetODFString returns nil
+    for i = 1, 1000 do
+        --- @diagnostic disable-next-line: deprecated
+        local mod, success = GetODFString(settingsFile, "RequireFix", "include"..tostring(i));
+        if not success or not mod then
+            break;
+        end
+        moduleTable.addmod(mod);
+    end
+    settingsFile = nil;
+end
+logger.print(logger.LogLevel.DEBUG, nil, "Processed config.cfg");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_requirefix Loaded");
 

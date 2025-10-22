@@ -151,7 +151,7 @@ end
 if pre_patch then
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: Formation");
 --- [[START_IGNORE]]
-    _G.Formation = Formation or function(me, him, priority)
+    _G.Formation = function(me, him, priority)
         if(priority == nil) then
             priority = 1;
         end

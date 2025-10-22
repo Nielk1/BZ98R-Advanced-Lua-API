@@ -1847,7 +1847,9 @@ function BuildAt(me, odfname, target, priority) end
 
 --- Commands the unit to follow the given target closely. This function is equivalent to SetCommand(me, AiCommand.FORMATION, priority, him).
 --- Priority 0 leaves the unit commandable while the default priority 1 makes it uncommandable.
---- {VERSION 2.1+}
+--- {VERSION 2.2.315+}
+--- {(!!)Version(!!)While this was added in version 2.1 it is broken and must be monkey-patched to use SetCommand instead.
+--- The game in error treats the function as if it was `Formation(me, priority)` before version 2.2.315+.}
 --- @param me Handle
 --- @param him Handle
 --- @param priority integer?

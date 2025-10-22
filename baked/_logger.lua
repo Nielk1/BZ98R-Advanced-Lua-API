@@ -68,6 +68,13 @@ M.LogLevel = {
     TRACE = 5, -- Trace messages
 };
 
+--- Log Structure
+--- @enum LogStructure
+M.LogStructure = {
+    TEXT  = 0, -- Logs have text, best for human reading
+    DATA = 1, -- Logs have data structures, best for automations
+};
+
 --- @type table<LogLevel, string>
 local LogLevelName = {
     [M.LogLevel.NONE]  = "NONE ",
@@ -88,12 +95,14 @@ M.LogFormat = {
 --- @class DebugSettings
 --- @field level LogLevel
 --- @field format LogFormat
+--- @field structure LogStructure -- Only used by log callers to know what to send
 --- @field intercept_print InterceptPrint
 --- @field strip_colors boolean
 --- @field suppress string[] -- Patterns to suppress in log messages
 local settings = {
     level = M.LogLevel.NONE,
     format = M.LogFormat.RAW,
+    structure = M.LogStructure.TEXT,
     intercept_print = M.InterceptPrint.NONE,
     strip_colors = false, -- Strip ANSI color codes, but only from dedicated logging function, print/error not touched
     suppress = {}, -- Patterns to suppress in log messages
@@ -165,6 +174,14 @@ if settingsFile then
     end
     if settings.format > M.LogFormat.WRAPPED then
         settings.format = M.LogFormat.WRAPPED;
+    end
+
+    settings.structure = GetODFEnum(settingsFile, "Logging", "structure", M.LogStructure.TEXT, M.LogStructure.DATA, M.LogStructure);
+    if settings.structure < M.LogStructure.TEXT then
+        settings.structure = M.LogStructure.TEXT;
+    end
+    if settings.structure > M.LogStructure.DATA then
+        settings.structure = M.LogStructure.DATA;
     end
 
     settings.intercept_print = GetODFEnum(settingsFile, "Logging", "intercept_print", M.InterceptPrint.NONE, M.InterceptPrint.WRAPPED, M.InterceptPrint);
@@ -297,6 +314,172 @@ function M.print(level, context, ...)
             end
         end
     end
+end
+
+local function encode_json(obj)
+    -- Minimal JSON encoder for numbers, strings, booleans, nil, and tables with string keys
+    local t = type(obj)
+    if t == "number" or t == "boolean" then
+        return tostring(obj), t
+    elseif t == "string" then
+        return string.format("%q", obj)
+    elseif t == "table" then
+        local is_array = true
+        local n = 0
+        for k, _ in pairs(obj) do
+            n = n + 1
+            if type(k) ~= "number" or k ~= n then
+                is_array = false
+                break
+            end
+        end
+        local items = {}
+        if is_array then
+            for i = 1, n do
+                local r = encode_json(obj[i])
+                table.insert(items, r)
+            end
+            return "[" .. table.concat(items, ",") .. "]", t
+        else
+            for k, v in pairs(obj) do
+                local r = encode_json(v)
+                table.insert(items, string.format("%q:%s", k, r))
+            end
+            return "{" .. table.concat(items, ",") .. "}", t
+        end
+    elseif t == "nil" then
+        return "null", t
+    elseif t == "userdata" then
+        local mt = getmetatable(obj)
+        if mt then
+            if mt.__type == "BZHandle" then
+                return string.format("{$type=\"BZHandle\",\"id\":\"%s\"}", tostring(obj):sub(-8)), mt.__type
+            elseif mt.__type == "VECTOR_3D" then
+                return string.format("{$type=\"VECTOR_3D\",\"x\":%d,\"y\":%d,\"z\":%d}", obj.x, obj.y, obj.z), mt.__type
+            elseif mt.__type == "MAT_3D" then
+                return string.format("{$type=\"MAT_3D\",\"right\":%s,\"up\":%s,\"forward\":%s,\"pos\":%s}",
+                    encode_json(obj.right), encode_json(obj.up), encode_json(obj.forward), encode_json(obj.pos)), mt.__type
+            else
+                error("Unsupported userdata type: " .. tostring(mt.__type))
+            end
+        else
+            error("Unsupported type: " .. t)
+        end
+    else
+        error("Unsupported type: " .. t)
+    end
+end
+
+--- Print multiple log lines of data
+--- @param level LogLevel|integer
+--- @param context string?
+--- @param name string
+--- @param data any
+function M.data(level, context, name, data)
+    local seen = {}
+    local tables = {}
+    local order = {}
+
+    local function get_id(tbl)
+        -- Use the table's memory address as its unique ID
+        local addr = tostring(tbl):sub(-8)
+        if not seen[addr] then
+            seen[addr] = addr
+        end
+        return addr
+    end
+
+    --local function is_string_key_table(tbl)
+    --    for k, _ in pairs(tbl) do
+    --        if type(k) ~= "string" then return false end
+    --    end
+    --    return true
+    --end
+
+    local function is_array(tbl)
+        local n = 0
+        for k, _ in pairs(tbl) do
+            if type(k) ~= "number" then return false end
+            n = n + 1
+        end
+        return n == #tbl
+    end
+
+    local function has_non_string_key(tbl)
+        for k, _ in pairs(tbl) do
+            if type(k) ~= "string" then return true end
+        end
+        return false
+    end
+
+    local function serialize(tbl)
+        local id = get_id(tbl)
+        if tables[id] then
+            return {["$ref"] = id}
+        end
+        local out
+        local __type = tbl.__type;
+        if not __type and is_array(tbl) then
+            -- Array: encode as JSON array
+            out = {}
+            tables[id] = out
+            table.insert(order, id)
+            for i = 1, #tbl do
+                local v = tbl[i]
+                if type(v) == "table" then
+                    local val_ref_id = get_id(v)
+                    out[i] = {["$ref"] = val_ref_id}
+                    serialize(v)
+                else
+                    out[i] = v
+                end
+            end
+        elseif has_non_string_key(tbl) then
+            -- Not array, has non-string keys: use $entries
+            out = {}
+            tables[id] = out
+            table.insert(order, id)
+            out["__type"] = __type
+            out["$entries"] = {}
+            for k, v in pairs(tbl) do
+                local key_serialized = type(k) == "table" and {["$ref"] = get_id(k)} or k
+                if type(k) == "table" then serialize(k) end
+                local value_serialized = type(v) == "table" and {["$ref"] = get_id(v)} or v
+                if type(v) == "table" then serialize(v) end
+                table.insert(out["$entries"], {key = key_serialized, value = value_serialized})
+            end
+        else
+            -- Only string keys: encode as JSON object
+            out = {}
+            tables[id] = out
+            table.insert(order, id)
+            out["__type"] = __type
+            for k, v in pairs(tbl) do
+                if type(v) == "table" then
+                    local val_ref_id = get_id(v)
+                    out[k] = {["$ref"] = val_ref_id}
+                    serialize(v)
+                else
+                    out[k] = v
+                end
+            end
+        end
+        return out
+    end
+
+    -- Start serialization
+    serialize(data)
+
+    -- Output lines
+    M.print(level, context, "START|" .. name)
+    -- Iterate in arbitrary order since table addresses are not sequential
+    for i = #order, 1, -1 do
+        local id = order[i]
+        local t = tables[id]
+        local json_str, type = encode_json(t)
+        M.print(level, context, type .. "|" .. id .. "|" .. json_str)
+    end
+    M.print(level, context, "END|" .. name)
 end
 
 --- [[START_IGNORE]]

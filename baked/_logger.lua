@@ -316,49 +316,56 @@ function M.print(level, context, ...)
     end
 end
 
-local function encode_json(obj)
+--- Encode data for  serialization
+---@param obj any
+---@return string value serialized value
+---@return string type
+local function encode_data(obj)
     -- Minimal JSON encoder for numbers, strings, booleans, nil, and tables with string keys
     local t = type(obj)
     if t == "number" or t == "boolean" then
         return tostring(obj), t
     elseif t == "string" then
-        return string.format("%q", obj)
+        return string.format("%q", obj), t
     elseif t == "table" then
-        local is_array = true
-        local n = 0
-        for k, _ in pairs(obj) do
-            n = n + 1
-            if type(k) ~= "number" or k ~= n then
-                is_array = false
+        local array_portion = 0;
+        local items = {}
+        for i, v in ipairs(obj) do
+            if v == nil then
+                array_portion = i
                 break
             end
+            local r = encode_data(v)
+            table.insert(items, r)
         end
-        local items = {}
-        if is_array then
-            for i = 1, n do
-                local r = encode_json(obj[i])
-                table.insert(items, r)
+        for k, v in pairs(obj) do
+            if type(k) == "number" and k > 0 and k <= array_portion then
+                -- already handled in array portion
+            else
+                local r = encode_data(v)
+                if type(k) == "string" and string.match(k, "^[A-Za-z][A-Za-z0-9]*$") then
+                    table.insert(items, string.format("%s=%s", k, r))
+                else
+                    table.insert(items, string.format("[%q]=%s", tostring(k), r))
+                end
             end
-            return "[" .. table.concat(items, ",") .. "]", t
-        else
-            for k, v in pairs(obj) do
-                local r = encode_json(v)
-                table.insert(items, string.format("%q:%s", k, r))
-            end
-            return "{" .. table.concat(items, ",") .. "}", t
         end
+        return "{" .. table.concat(items, ",") .. "}", t
     elseif t == "nil" then
-        return "null", t
+        return "nil", t
     elseif t == "userdata" then
         local mt = getmetatable(obj)
         if mt then
             if mt.__type == "BZHandle" then
-                return string.format("{$type=\"BZHandle\",\"id\":\"%s\"}", tostring(obj):sub(-8)), mt.__type
+                return string.format("0x%s", tostring(obj):sub(-8)), mt.__type
             elseif mt.__type == "VECTOR_3D" then
-                return string.format("{$type=\"VECTOR_3D\",\"x\":%d,\"y\":%d,\"z\":%d}", obj.x, obj.y, obj.z), mt.__type
+                return string.format("{x=%d,y=%d,z=%d}", obj.x, obj.y, obj.z), mt.__type
             elseif mt.__type == "MAT_3D" then
-                return string.format("{$type=\"MAT_3D\",\"right\":%s,\"up\":%s,\"forward\":%s,\"pos\":%s}",
-                    encode_json(obj.right), encode_json(obj.up), encode_json(obj.forward), encode_json(obj.pos)), mt.__type
+                return string.format("{right_x=%d,right_y=%d,right_z=%d,up_x=%d,up_y=%d,up_z=%d,front_x=%d,front_y=%d,front_z=%d,pos_x=%d,pos_y=%d,pos_z=%d}",
+                    obj.right_x, obj.right_y, obj.right_z,
+                    obj.up_x, obj.up_y, obj.up_z,
+                    obj.front_x, obj.front_y, obj.front_z,
+                    obj.pos_x, obj.pos_y, obj.pos_z), mt.__type
             else
                 error("Unsupported userdata type: " .. tostring(mt.__type))
             end
@@ -476,7 +483,7 @@ function M.data(level, context, name, data)
     for i = #order, 1, -1 do
         local id = order[i]
         local t = tables[id]
-        local json_str, type = encode_json(t)
+        local json_str, type = encode_data(t)
         M.print(level, context, type .. "|" .. id .. "|" .. json_str)
     end
     M.print(level, context, "END|" .. name)

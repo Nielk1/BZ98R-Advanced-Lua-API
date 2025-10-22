@@ -130,27 +130,37 @@ local function PrintQueue(team)
     end
     local queue = ProducerQueue[team];
     if queue then
-        local queueString = "";
-        for job in queue:iter_left() do
-            --- @cast job ProductionQueue
-            queueString = queueString.."[";
-            if job.builder then
-                queueString = utility.TeamSlotString[job.builder]..">";
+        if logger.settings.structure == logger.LogStructure.DATA then
+            local producerOutput = {};
+            --for producer, job in pairs(ProducerOrders) do
+            --    producerOutput[producer:GetHandle()] = job;
+            --end
+            --logger.data(logger.LogLevel.DEBUG, "<PRODUCER>", "ProducerOrders", producerOutput);
+            logger.data(logger.LogLevel.DEBUG, "<PRODUCER>", "ProducerOrders", ProducerOrders);
+            logger.data(logger.LogLevel.DEBUG, "<PRODUCER>", "BuildQueue["..tostring(team).."]", queue:contents());
+        else
+            local queueString = "";
+            for job in queue:iter_left() do
+                --- @cast job ProductionQueue
+                queueString = queueString.."[";
+                if job.builder then
+                    queueString = utility.TeamSlotString[job.builder]..">";
+                end
+                queueString = queueString..ToStringJobFragment(job);            
+                queueString = queueString.."]";
             end
-            queueString = queueString..ToStringJobFragment(job);            
-            queueString = queueString.."]";
-        end
 
-        local orderString = "";
-        for producer, job in pairs(ProducerOrders) do
-            if producer then
-                orderString = orderString..ProducerTypeColors[producer:GetClassSig()].."["..producer:GetOdf()..">";
-                orderString = orderString..ToStringJobFragment(job);
-                orderString = orderString.."]"..c.RESET;
+            local orderString = "";
+            for producer, job in pairs(ProducerOrders) do
+                if producer then
+                    orderString = orderString..ProducerTypeColors[producer:GetClassSig()].."["..producer:GetOdf()..">";
+                    orderString = orderString..ToStringJobFragment(job);
+                    orderString = orderString.."]"..c.RESET;
+                end
             end
-        end
 
-        logger.print(logger.LogLevel.DEBUG, "<PRODUCER>", "QUEUE|"..tostring(team).."|"..orderString.."|"..queueString);
+            logger.print(logger.LogLevel.DEBUG, "<PRODUCER>", "QUEUE|"..tostring(team).."|"..orderString.."|"..queueString);
+        end
     end
 end
 
@@ -290,6 +300,8 @@ local function ProcessQueues()
     end
 end
 
+--- Check if this new object was made by one of our producers
+--- @param object GameObject The object that was just created
 local function ProcessCreated(object)
     -- try to figure out which producer made it so if it is part of our system
 
@@ -446,7 +458,7 @@ function M.QueueJob(odf, team, location, builder, data)
 
     -- very agressive caching of producers
     -- instead of doing this every enqueue it could be done when a producer class is created via CreateObject (waiting till next update perhapse?)
-    ScanProducers(team);
+    --ScanProducers(team);
 
     ---- get the possible producers for this ODF
     --local KnownProducerODFs = MemoOfProducersByProduced[odf];
@@ -574,7 +586,7 @@ logger.print(logger.LogLevel.DEBUG, nil, "_producer Loaded");
 return M;
 
 --- @class ProducerData
---- @field post_build_check GameObject?
+--- @field post_build_check GameObject? Object just built by the producer
 
 --- @class GameObject_producer : GameObject
 --- @field _producer ProducerData?

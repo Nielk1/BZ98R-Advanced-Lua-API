@@ -9,6 +9,7 @@
 --- * **Fix:** Tugs not respecting DropOff command due to invalid deploy state
 --- * **Fix/Polyfill:** Fix for broken `Formation` order function
 --- * **Fix:** Powerups not using thrusters when falling if on an AI team
+--- * **Fix:** Producer (sometimes used by crazy modders) can't use IsBusy/CanBuild
 ---
 --- @module '_fix'
 --- @author John "Nielk1" Klein
@@ -232,6 +233,38 @@ if pre_patch then
         "Fix:PowerupAi2",
         function() return PowerupFixes; end,
         function(data) PowerupFixes = data; end);
+end
+
+-- [Fix] Producer (sometimes used by crazy modders) can't use IsBusy/CanBuild
+if pre_patch then
+    logger.print(logger.LogLevel.DEBUG, nil, " - Fix: Producer CanBuild");
+--- [[START_IGNORE]]
+    local old_CanBuild = CanBuild;
+    function _G.CanBuild(h)
+        --- @diagnostic disable-next-line: deprecated
+        if _G.GetClassSig(h) == utility.ClassSig.PRODUCER then
+            --- @diagnostic disable-next-line: deprecated
+            return _G.IsDeployed(h);
+        end
+        return old_CanBuild(h);
+    end
+-- [[END_IGNORE]]
+
+    logger.print(logger.LogLevel.DEBUG, nil, " - Fix (partial): Producer IsBusy");
+--- [[START_IGNORE]]
+    local old_IsBusy = IsBusy;
+    function _G.IsBusy(h)
+        --- @diagnostic disable-next-line: deprecated
+        if _G.GetClassSig(h) == utility.ClassSig.PRODUCER then
+            --- @diagnostic disable-next-line: deprecated
+            if _G.IsDeployed(h) then
+                return false;
+            end
+            return true; -- unknown state so always busy as a hack
+        end
+        return old_IsBusy(h);
+    end
+-- [[END_IGNORE]]
 end
 
 logger.print(logger.LogLevel.DEBUG, nil, "_fix Loaded");

@@ -282,15 +282,16 @@ end
 
 if network.IsNetGame() then
     -- [[START_IGNORE]]
+    local packet_id = config.get("network_packet_id.api");
+
     GameObject.RemoveObject = function(self)
         if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-        network.Send(0, "_", "GameObject", "RemoveObject", self:GetSeqNo())
+        network.Send(0, packet_id, "gameobject", "RemoveObject", self:GetSeqNo())
     end
 
-    local packet_id = config.get("network_packet_id.api");
-    hook.Add("Receive", "GameObject_Receive", function(sender, channel, mod, fun, seqNo)
+    hook.Add("Receive", "GameObject_Receive", function(sender, channel, module, func, seqNo)
         if channel ~= packet_id then return end
-        if seqNo and mod == "GameObject" and fun == "RemoveObject" then
+        if seqNo and module == "gameobject" and func == "RemoveObject" then
             local gameObject = M.FromSeqNo(seqNo);
             if gameObject ~= nil then
                 --- @diagnostic disable-next-line: deprecated
@@ -1590,11 +1591,12 @@ end
 --- Returns true if the game object is a producer and currently busy. Returns false otherwise.
 --- An undeployed builder that needs to deploy will always indicate false.
 --- A deployed (if needed) producer with a buildClass set is considered busy. The buildClass may be cleared after the CreateObject call.
+--- (!)Version(!) May return `nil` for `producer` class on versions before 2.2.315}
 --- @param self GameObject
---- @return boolean
+--- @return boolean Busy
 function GameObject:IsBusy()
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    --- @diagnostic disable-next-line: deprecated
+    --- @diagnostic disable-next-line: deprecated, return-type-mismatch
     return IsBusy(self:GetHandle());
 end
 

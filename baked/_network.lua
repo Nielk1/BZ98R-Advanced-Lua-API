@@ -15,6 +15,19 @@ local M = {};
 local config = require("_config");
 local hook = require("_hook");
 
+--- Mapping of network IDs to team IDs.
+--- @type table<integer, TeamNum>
+M.NetToTeam = {}
+
+--- Mapping of team IDs to network IDs.
+--- @type table<TeamNum, integer>
+M.TeamToNet = {}
+
+--- The local machine's network ID
+--- Should almost never be nil
+--- @type integer?
+M.NetID = nil;
+
 --- Returns true if the game is a network game. Returns false otherwise.
 --- @return boolean
 function M.IsNetGame()
@@ -41,38 +54,64 @@ end
 --- Type is a one-character string indicating the script-defined message type.
 --- Other parameters will be sent as data and passed to the recipient's Receive function as parameters. Send supports nil, boolean, handle, integer, number, string, vector, and matrix data types. It does not support function, thread, or arbitrary userdata types.
 --- The sent packet can contain up to 244 bytes of data (255 bytes maximum for an Anet packet minus 6 bytes for the packet header and 5 bytes for the reliable transmission header)
---- <table style="border-collapse:collapse;border:3px solid black;"><tbody>
----   <tr><th style="border:2px solid black;" colspan="2">Type</th><th style="border:2px solid black;">Bytes</th></tr>
----   <tr><td style="border:2px solid black;" colspan="2">nil</td><td style="border:2px solid black;">1</td></tr>
----   <tr><td style="border:2px solid black;" colspan="2">boolean</td><td style="border:2px solid black;">1</td></tr>
----   <tr><td style="border:2px solid black;" rowspan="2">handle</td><td style="border:2px solid black;">invalid (zero)</td><td style="border:2px solid black;">1</td></tr>
----   <tr><td style="border:2px solid black;">valid (nonzero)</td><td style="border:2px solid black;">1 + sizeof(int) = 5</td></tr>
----   <tr><td style="border:2px solid black;" rowspan="5">number</td><td style="border:2px solid black;">zero</td><td style="border:2px solid black;">1</td></tr>
----   <tr><td style="border:2px solid black;">char (integer -128 to 127)</td><td style="border:2px solid black;">1 + sizeof(char) = 2</td></tr>
----   <tr><td style="border:2px solid black;">short (integer -32768 to 32767)</td><td style="border:2px solid black;">1 + sizeof(short) = 3</td></tr>
----   <tr><td style="border:2px solid black;">int (integer)</td><td style="border:2px solid black;">1 + sizeof(int) = 5</td></tr>
----   <tr><td style="border:2px solid black;">double (non-integer)</td><td style="border:2px solid black;">1 + sizeof(double) = 9</td></tr>
----   <tr><td style="border:2px solid black;" rowspan="2">string</td><td style="border:2px solid black;">length &lt; 31</td><td style="border:2px solid black;">1 + length</td></tr>
----   <tr><td style="border:2px solid black;">length &gt;= 31</td><td style="border:2px solid black;">2 + length</td></tr>
----   <tr><td style="border:2px solid black;" rowspan="2">table</td><td style="border:2px solid black;">count &lt; 31</td><td style="border:2px solid black;">1 + count + size of keys and values</td></tr>
----   <tr><td style="border:2px solid black;">count &gt;= 31</td><td style="border:2px solid black;">2 + count + size of keys and values</td></tr>
----   <tr><td style="border:2px solid black;" rowspan="2">userdata</td><td style="border:2px solid black;">VECTOR_3D</td><td style="border:2px solid black;">1 + sizeof(VECTOR_3D) = 13</td></tr>
----   <tr><td style="border:2px solid black;">MAT_3D</td><td style="border:2px solid black;">1 + sizeof(REDUCED_MAT) = 12</td></tr>
+--- <table><tbody>
+---   <tr><th colspan="2">Type</th><th>Bytes</th></tr>
+---   <tr><td colspan="2">nil</td><td>1</td></tr>
+---   <tr><td colspan="2">boolean</td><td>1</td></tr>
+---   <tr><td rowspan="2">handle</td><td>invalid (zero)</td><td>1</td></tr>
+---   <tr><td>valid (nonzero)</td><td>1 + sizeof(int) = 5</td></tr>
+---   <tr><td rowspan="5">number</td><td>zero</td><td>1</td></tr>
+---   <tr><td>char (integer -128 to 127)</td><td>1 + sizeof(char) = 2</td></tr>
+---   <tr><td>short (integer -32768 to 32767)</td><td>1 + sizeof(short) = 3</td></tr>
+---   <tr><td>int (integer)</td><td>1 + sizeof(int) = 5</td></tr>
+---   <tr><td>double (non-integer)</td><td>1 + sizeof(double) = 9</td></tr>
+---   <tr><td rowspan="2">string</td><td>length &lt; 31</td><td>1 + length</td></tr>
+---   <tr><td>length &gt;= 31</td><td>2 + length</td></tr>
+---   <tr><td rowspan="2">table</td><td>count &lt; 31</td><td>1 + count + size of keys and values</td></tr>
+---   <tr><td>count &gt;= 31</td><td>2 + count + size of keys and values</td></tr>
+---   <tr><td rowspan="2">userdata</td><td>VECTOR_3D</td><td>1 + sizeof(VECTOR_3D) = 13</td></tr>
+---   <tr><td>MAT_3D</td><td>1 + sizeof(REDUCED_MAT) = 12</td></tr>
 --- </tbody></table>
 --- @param to integer
 --- @param type string
 --- @vararg any
 function M.Send(to, type, ...)
+    --- @todo Break packets apart if they are too big, might be worth having a special "SendBig" function as finding where to split or if need to is slow
+    --- Use a format like to, SPLIT_ID, Part, Parts, Len, {...} where Len is there to deal with nils at bookends
+
     --- @diagnostic disable-next-line: deprecated
     Send(to, type, ...);
 end
 
-
 local network_emulation = {};
 
---- Non non-network games just hard-wire it to trigger Receive
-if not M.IsNetGame() then
+if M.IsNetGame() then
+    local gameobject = require("_gameobject");
+
+    hook.Add("CreatePlayer", "_network_CreatePlayer", function(id, name, team)
+        M.NetToTeam[id] = team;
+        M.TeamToNet[team] = id;
+
+        --- @todo confirm if this part of the code works
+        local player = gameobject.GetPlayer();
+        if player and player:GetTeamNum() == team then
+            M.NetID = id;
+        end
+    end, config.get("hook_priority.CreatePlayer.Network"));
+    hook.Add("AddPlayer", "_network_AddPlayer", function(id, name, team)
+        M.NetToTeam[id] = team;
+        M.TeamToNet[team] = id;
+    end, config.get("hook_priority.AddPlayer.Network"));
+    hook.Add("RemovePlayer", "_network_RemovePlayer", function(id, name, team)
+        M.NetToTeam[id] = nil;
+        M.TeamToNet[team] = nil;
+    end, config.get("hook_priority.RemovePlayer.Network"));
+else
     -- [[START_IGNORE]]
+
+    M.NetID = 1;
+    M.NetToTeam[M.NetID] = 1;
+    M.TeamToNet[1] = M.NetID;
 
     M.Send = function(to, type, ...)
         -- if the message is not broadcast or to self
@@ -80,7 +119,7 @@ if not M.IsNetGame() then
             return;
         end
         
-        table.insert(network_emulation, {to, type, {...}});
+        table.insert(network_emulation, {type, {...}, select('#', ...)});
     end
 
     local objective = require("_objective");
@@ -91,8 +130,6 @@ if not M.IsNetGame() then
         objectives_shown[objective_index] = GetTime() + 8;
         objective_index = objective_index + 1;
     end
-
-    -- [[END_IGNORE]]
 
     -- Remove old objectives after some delay
     hook.Add("Update", "_network_Update_objectives", function(dtime, ttime)
@@ -111,6 +148,8 @@ if not M.IsNetGame() then
             objective_index = 1;
         end
     end, config.get("hook_priority.Update.Network") - 0.1);
+
+    -- [[END_IGNORE]]
 end
 
 local routines = {};
@@ -151,11 +190,8 @@ hook.Add("Update", "_network_Update", function(dtime, ttime)
     -- Emulate network messages last, to simulate some network-y-ness
     if network_emulation[1] then
         for _, packet in ipairs(network_emulation) do
-            local to = packet[1];
-            local type = packet[2];
-            local args = packet[3];
             --- @diagnostic disable-next-line: deprecated
-            Receive(to, type, table.unpack(args));
+            Receive(1, packet[1], table.unpack(packet[2], 1, packet[3]));
         end
         network_emulation = {};
     end

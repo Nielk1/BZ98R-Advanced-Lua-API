@@ -141,7 +141,13 @@ M = setmetatable(M, M_MT);
 --- Update                         .StateMachine  =  8998
 --- Update                         .WaveSpawner   =  8999
 --- Update                         .ParamDB       =  9900
---- Update                         .Network       =  9990
+--- Update                         .Network       =  9999
+--- -----------------------------------------------------
+--- CreatePlayer                   .Network       =  9999
+--- -----------------------------------------------------
+--- AddPlayer                      .Network       =  9999
+--- -----------------------------------------------------
+--- RemovePlayer                   .Network       =  9999
 --- -----------------------------------------------------
 --- Receive                        .GameObject    =  9999
 --- ```
@@ -174,13 +180,22 @@ M.hook_priority = {
         Camera = 8989,
         StateMachine = 8998,
         WaveSpawner = 8999,
-        --GameObject = 9999,
         ParamDB = 9900,
-        Network = 9990,
+        --GameObject = 9998,
+        Network = 9999,
     },
     Receive = {
         GameObject = 9999,
-    }
+    },
+    CreatePlayer = {
+        Network = 9999,
+    },
+    AddPlayer = {
+        Network = 9999,
+    },
+    RemovePlayer = {
+        Network = 9999,
+    },
 }
 
 --- Network Packet IDs

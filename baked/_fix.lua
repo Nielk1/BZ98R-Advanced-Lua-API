@@ -31,7 +31,7 @@ local pre_patch = version.Compare(version.game, "2.2.315") < 0;
 -- [Polyfill] table.unpack for Lua 5.1 compatibility
 if not _G.table.unpack then
     logger.print(logger.LogLevel.DEBUG, nil, " - Polyfill: table.unpack");
-    _G.table.unpack = _G.table.unpack or _G.unpack; -- Lua 5.1 compatibility
+    _G.table.unpack = _G.unpack; -- Lua 5.1 compatibility
 end
 
 -- [Polyfill] Remap SettLabel to SetLabel for BZ1.5
@@ -261,7 +261,7 @@ if pre_patch then
             if _G.IsDeployed(h) then
                 return false;
             end
-            return true; -- unknown state so always busy as a hack
+            return nil; -- unknown state
         end
         return old_IsBusy(h);
     end

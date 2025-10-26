@@ -24,6 +24,7 @@ local utility = require("_utility");
 local paramdb = require("_paramdb");
 local config = require("_config");
 local gameobject = require("_gameobject");
+local network = require("_network");
 
 local pre_patch = version.Compare(version.game, "2.2.315") < 0;
 
@@ -37,10 +38,10 @@ end
 logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: SetLabel");
 --- @diagnostic disable-next-line: undefined-field
 if not _G.SetLabel and _G.SettLabel then
---- [[START_IGNORE]]
+    -- [[START_IGNORE]]
     --- @diagnostic disable-next-line: undefined-field
     _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
--- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 end
 
 -- [Fix] Broken ObjectiveObjects iterator
@@ -48,7 +49,7 @@ if pre_patch then
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix: ObjectiveObjects iterator");
     local old_ObjectiveObjects = _G.ObjectiveObjects;
 
---- [[START_IGNORE]]
+    -- [[START_IGNORE]]
     _G.ObjectiveObjects = function ()
         return coroutine.wrap(function()
             local iter = old_ObjectiveObjects();
@@ -113,7 +114,7 @@ if pre_patch then
             end
         end);
     end;
--- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 end
 
 -- [Fix][Polyfill] TeamSlot missing "PORTAL" = 90 / ["90"] = "PORTAL"
@@ -151,7 +152,7 @@ end
 -- [Fix][Polyfill] Fix for broken Formation order function
 if pre_patch then
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: Formation");
---- [[START_IGNORE]]
+    -- [[START_IGNORE]]
     _G.Formation = function(me, him, priority)
         if(priority == nil) then
             priority = 1;
@@ -159,7 +160,7 @@ if pre_patch then
         --- @diagnostic disable-next-line: deprecated
         _G.SetCommand(me, AiCommand.FORMATION, priority, him);
     end
--- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 end
 
 -- [Fix] Powerups not using thrusters when falling if on an AI team
@@ -217,7 +218,7 @@ if pre_patch then
         logger.print(logger.LogLevel.DEBUG, nil, "Falling AI Powerup detected!");
         object.PowerupFixes_team = currentTeam;
         PowerupFixes[object] = true;
-        if not IsNetGame() and IsTeamAllied(currentTeam, 1) and IsTeamAllied(1, currentTeam) then
+        if not network.IsNetGame() and IsTeamAllied(currentTeam, 1) and IsTeamAllied(1, currentTeam) then
             if sig == utility.ClassSig.POWERUP_CAMERA then
                 -- camera pods are annoying because you can see from them
                 object:SetTeamNum(0);
@@ -238,7 +239,7 @@ end
 -- [Fix] Producer (sometimes used by crazy modders) can't use IsBusy/CanBuild
 if pre_patch then
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix: Producer CanBuild");
---- [[START_IGNORE]]
+    -- [[START_IGNORE]]
     local old_CanBuild = CanBuild;
     function _G.CanBuild(h)
         --- @diagnostic disable-next-line: deprecated
@@ -248,10 +249,10 @@ if pre_patch then
         end
         return old_CanBuild(h);
     end
--- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 
     logger.print(logger.LogLevel.DEBUG, nil, " - Fix (partial): Producer IsBusy");
---- [[START_IGNORE]]
+    -- [[START_IGNORE]]
     local old_IsBusy = IsBusy;
     function _G.IsBusy(h)
         --- @diagnostic disable-next-line: deprecated
@@ -264,7 +265,7 @@ if pre_patch then
         end
         return old_IsBusy(h);
     end
--- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 end
 
 logger.print(logger.LogLevel.DEBUG, nil, "_fix Loaded");

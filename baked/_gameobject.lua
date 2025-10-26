@@ -280,8 +280,8 @@ function GameObject:RemoveObject()
     RemoveObject(self:GetHandle());
 end
 
-if IsNetGame() then
---- [[START_IGNORE]]
+if network.IsNetGame() then
+    -- [[START_IGNORE]]
     GameObject.RemoveObject = function(self)
         if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
         network.Send(0, "_", "GameObject", "RemoveObject", self:GetSeqNo())
@@ -313,7 +313,7 @@ if IsNetGame() then
             end
         end
     end, config.get("hook_priority.Receive.GameObject"))
--- [[END_IGNORE]]
+    -- [[END_IGNORE]]
 end
 
 --- Get GameObject by Label.

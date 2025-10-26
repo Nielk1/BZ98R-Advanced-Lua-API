@@ -488,7 +488,7 @@ function M.data(level, context, name, data)
     M.print(level, context, "END|" .. name)
 end
 
---- [[START_IGNORE]]
+-- [[START_IGNORE]]
 
 -- Replace original print function with wrapped ones
 if settings.intercept_print == M.InterceptPrint.WRAPPED then

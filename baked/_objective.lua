@@ -98,6 +98,21 @@ function M.AddObjective(name, color, duration, text, position, persistant)
     end
 end
 
+--- Adds or Update an objective message with the given name and properties.
+--- @param name string Unique name for objective, usually a filename ending with otf from which data is loaded
+--- @param color EColorLabel? Default to "WHITE".
+--- @param duration number? defaults to 8 seconds
+--- @param text string? Override text from the target objective file. {VERSION 2.0+}
+--- @param position number? Sort position of the objective. Defaults to the next available ID.
+--- @param persistant boolean? If true, the objective will not be removed when the objectives are cleared. Defaults to false.
+function M.AddOrUpdateObjective(name, color, duration, text, position, persistant)
+    if allObjectives[name] then
+        M.UpdateObjective(name, color, duration, text, position, persistant);
+    else
+        M.AddObjective(name, color, duration, text, position, persistant);
+    end
+end
+
 --- Removes the objective message with the given file name. Messages after the removed message will be moved up to fill the vacancy. If no objective exists with that file name, it does nothing.
 --- @param name string
 function M.RemoveObjective(name)

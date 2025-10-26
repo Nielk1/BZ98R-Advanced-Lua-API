@@ -29,6 +29,13 @@ function M.IsHosting()
     return IsHosting();
 end
 
+--- Adds a system text message to the chat window on the local machine.
+--- @param message string
+function M.DisplayMessage(message)
+    --- @diagnostic disable-next-line: deprecated
+    DisplayMessage(message);
+end
+
 --- Send a script-defined message across the network.
 --- To is the player network id of the recipient. None, nil, or 0 broadcasts to all players.
 --- Type is a one-character string indicating the script-defined message type.
@@ -65,7 +72,8 @@ local network_emulation = {};
 
 --- Non non-network games just hard-wire it to trigger Receive
 if not M.IsNetGame() then
---- [[START_IGNORE]]
+    -- [[START_IGNORE]]
+
     M.Send = function(to, type, ...)
         -- if the message is not broadcast or to self
         if to ~= nil and to ~= 0 and to ~= 1 then
@@ -74,7 +82,35 @@ if not M.IsNetGame() then
         
         table.insert(network_emulation, {to, type, {...}});
     end
--- [[END_IGNORE]]
+
+    local objective = require("_objective");
+    local objective_index = 1;
+    local objectives_shown = {};
+    M.DisplayMessage = function(message)
+        objective.AddObjective(tostring(objective_index) .. ".NTWRK", "WHITE", 8, message, nil, true);
+        objectives_shown[objective_index] = GetTime() + 8;
+        objective_index = objective_index + 1;
+    end
+
+    -- [[END_IGNORE]]
+
+    -- Remove old objectives after some delay
+    hook.Add("Update", "_network_Update_objectives", function(dtime, ttime)
+        local now = GetTime();
+        local remove = {};
+        for index, expire_time in pairs(objectives_shown) do
+            if now > expire_time then
+                objective.RemoveObjective(tostring(index) .. ".NTWRK");
+                table.insert(remove, index);
+            end
+        end
+        for _, index in ipairs(remove) do
+            objectives_shown[index] = nil;
+        end
+        if next(objectives_shown) == nil then
+            objective_index = 1;
+        end
+    end, config.get("hook_priority.Update.Network") - 0.1);
 end
 
 local routines = {};

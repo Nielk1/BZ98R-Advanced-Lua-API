@@ -2175,6 +2175,7 @@ end
 --- {(!)Multiplayer(!) The displayed message is entirely local regardless of hosting status, if you want a message to be visible to all players
 --- you should Send() a message to all players to display the given message.}
 --- @param message string
+--- @deprecated See `_network` module.
 function DisplayMessage(message) end
 
 --- Send a script-defined message across the network.

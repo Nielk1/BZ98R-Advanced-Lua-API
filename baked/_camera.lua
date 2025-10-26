@@ -399,7 +399,7 @@ function M.FollowObjectAimObject(...)
     if gameobject.isgameobject(base) then
         --- @cast base GameObject
         base = base:GetHandle();
-    elseif not utility.isHandle(base) then
+    elseif not utility.IsHandle(base) then
         error("Parameter base must be Handle or GameObject instance.");
     end
     --- @cast base Handle
@@ -410,7 +410,7 @@ function M.FollowObjectAimObject(...)
         up = math.floor(args[3] * 100); -- convert to centimeters
         forward = math.floor(args[4] * 100); -- convert to centimeters
     elseif #args == 3 then
-        if not utility.isVector(args[2]) then error("Parameter offset must be a Vector."); end
+        if not utility.IsVector(args[2]) then error("Parameter offset must be a Vector."); end
         target = args[3];
         right = math.floor(args[2].x * 100); -- convert to centimeters
         up = math.floor(args[2].y * 100); -- convert to centimeters
@@ -427,18 +427,18 @@ function M.FollowObjectAimObject(...)
     if gameobject.isgameobject(target) then
         --- @cast target GameObject
         target = target:GetHandle();
-    elseif not utility.isHandle(target) then
+    elseif not utility.IsHandle(target) then
         error("Parameter target must be Handle or GameObject instance.");
     end
     --- @cast target Handle
     
-    if not utility.isHandle(base) then
+    if not utility.IsHandle(base) then
         error("Parameter base must be Handle or GameObject instance.");
     end
-    if not utility.isHandle(target) then
+    if not utility.IsHandle(target) then
         error("Parameter target must be Handle or GameObject instance.");
     end
-    if not utility.isnumber(right) or not utility.isnumber(up) or not utility.isnumber(forward) then
+    if not utility.IsNumber(right) or not utility.IsNumber(up) or not utility.IsNumber(forward) then
         error("Parameters right, up, and forward must be numbers.");
     end
 

@@ -197,7 +197,7 @@ local CompactMode = M.CompactionStrategy.DoNothing; -- default to chronological
 --- @function _navmanager.SetCompactionStrategy
 function M.SetCompactionStrategy(strategy)
     local strat = strategy;
-    if utility.isstring(strategy) then
+    if utility.IsString(strategy) then
         strat = M.CompactionStrategy[strategy];
         --- @cast strat integer
     end
@@ -328,7 +328,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                         local nav = PendingNavsForTeam[i];
                         if nav and nav:IsValid() then
                             if CountOpenSlots > 0 then -- should be impossible to fail this but whatever
-                                if utility.isfunction(nav.SetTeamSlot) then
+                                if utility.IsFunction(nav.SetTeamSlot) then
                                     nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
                                     SlotListIndex = SlotListIndex + 1;
                                 else
@@ -370,7 +370,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                         if nav and nav:IsValid() then
                             if nav.NavManager and nav.NavManager.important then
                                 if CountOpenSlots > 0 then
-                                    if utility.isfunction(nav.SetTeamSlot) then
+                                    if utility.IsFunction(nav.SetTeamSlot) then
                                         nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
                                         SlotListIndex = SlotListIndex + 1;
                                     else
@@ -410,7 +410,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
                             local nav = PendingNavsForTeamAfterFirstPass[i];
                             if nav and nav:IsValid() then
                                 if CountOpenSlots > 0 then
-                                    if utility.isfunction(nav.SetTeamSlot) then
+                                    if utility.IsFunction(nav.SetTeamSlot) then
                                         nav:SetTeamSlot(OpenSlotList[SlotListIndex], team); -- this will add the nav to the collection and set the slot
                                         SlotListIndex = SlotListIndex + 1;
                                     else

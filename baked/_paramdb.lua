@@ -39,7 +39,7 @@ local time_next_purge = 60;
 --- @param odf string ODF file name
 --- @return ParameterDB db
 local function OpenAndCacheODF(odf)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     local found = OpenOdfs[odf];
@@ -68,7 +68,7 @@ end
 --- @return ClassLabel? classlabel
 --- @return boolean success
 function M.GetClassLabel(odf)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     local odfHandle = OpenAndCacheODF(odf);
@@ -100,7 +100,7 @@ end
 --- @return integer scrap cost
 --- @return boolean success
 function M.GetScrapCost(odf)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["scrapcost"] then
@@ -131,7 +131,7 @@ end
 --- @return integer pilot cost
 --- @return boolean success
 function M.GetPilotCost(odf)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["pilotcost"] then
@@ -173,7 +173,7 @@ end
 --- @return number time
 --- @return boolean success
 function M.GetBuildTime(odf)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
     odf = odf:lower();
 
     if DataCache[odf] and DataCache[odf]["gameobjectclass"] and DataCache[odf]["gameobjectclass"]["buildtime"] then
@@ -199,9 +199,9 @@ end
 --- @return string value
 --- @return boolean success
 function M.GetValueString(odf, section, key, default)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
-    if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
-    if not utility.isstring(key) then error("Parameter key must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
+    if section ~= nil and not utility.IsString(section) then error("Parameter section must be a string or nil."); end
+    if not utility.IsString(key) then error("Parameter key must be a string."); end
     odf = odf:lower();
     section = section and section:lower();
     key = key:lower();
@@ -229,9 +229,9 @@ end
 --- @return integer value
 --- @return boolean success
 function M.GetValueInt(odf, section, key, default)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
-    if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
-    if not utility.isstring(key) then error("Parameter key must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
+    if section ~= nil and not utility.IsString(section) then error("Parameter section must be a string or nil."); end
+    if not utility.IsString(key) then error("Parameter key must be a string."); end
     odf = odf:lower();
     section = section and section:lower();
     key = key:lower();
@@ -259,9 +259,9 @@ end
 --- @return number value
 --- @return boolean success
 function M.GetValueFloat(odf, section, key, default)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
-    if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
-    if not utility.isstring(key) then error("Parameter key must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
+    if section ~= nil and not utility.IsString(section) then error("Parameter section must be a string or nil."); end
+    if not utility.IsString(key) then error("Parameter key must be a string."); end
     odf = odf:lower();
     section = section and section:lower();
     key = key:lower();
@@ -289,9 +289,9 @@ end
 --- @return boolean value
 --- @return boolean success
 function M.GetValueBool(odf, section, key, default)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
-    if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
-    if not utility.isstring(key) then error("Parameter key must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
+    if section ~= nil and not utility.IsString(section) then error("Parameter section must be a string or nil."); end
+    if not utility.IsString(key) then error("Parameter key must be a string."); end
     odf = odf:lower();
     section = section and section:lower();
     key = key:lower();
@@ -319,9 +319,9 @@ end
 --- @param enumTable table<string, integer> Lookup table to convert enum value, a failed lookup will be considered a failure
 --- @return integer, boolean
 function M.GetValueIntegerEnum(odf, section, key, default, boolVal, enumTable)
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
-    if section ~= nil and not utility.isstring(section) then error("Parameter section must be a string or nil."); end
-    if not utility.isstring(key) then error("Parameter key must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
+    if section ~= nil and not utility.IsString(section) then error("Parameter section must be a string or nil."); end
+    if not utility.IsString(key) then error("Parameter key must be a string."); end
     if enumTable == nil or type(enumTable) ~= "table" then error("Parameter enumTable must be a table."); end
     odf = odf:lower();
     section = section and section:lower();

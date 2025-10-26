@@ -201,7 +201,7 @@ function GameObject.TypeLoad(data)
     local _ObjectiveObjects = {};
 
     --- @diagnostic disable-next-line: deprecated
-    if not utility.isfunction(IsObjectiveOn) then
+    if not utility.IsFunction(IsObjectiveOn) then
         local lastObject = nil;
         --- @diagnostic disable-next-line: deprecated
         for h in ObjectiveObjects() do
@@ -347,7 +347,7 @@ end
 --- ```
 function GameObject:IsOdf(odf)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(odf) then error("Parameter odf must be a string."); end
+    if not utility.IsString(odf) then error("Parameter odf must be a string."); end
     --- @diagnostic disable-next-line: deprecated
     IsOdf(self:GetHandle(), odf);
 end
@@ -386,7 +386,7 @@ end
 --- ```
 function GameObject:SetLabel(label)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(label) then error("Parameter label must be a string."); end
+    if not utility.IsString(label) then error("Parameter label must be a string."); end
     --- @diagnostic disable-next-line: deprecated
     SetLabel(self:GetHandle(),label);
 end
@@ -525,7 +525,7 @@ end
 --- @param team TeamNum new team number
 function GameObject:SetTeamNum(team)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(team) then error("Parameter amt must be number."); end
+    if not utility.IsNumber(team) then error("Parameter amt must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetTeamNum(self:GetHandle(), team);
 end
@@ -544,7 +544,7 @@ end
 --- @param team TeamNum new team number
 function GameObject:SetPerceivedTeam(team)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(team) then error("Parameter amt must be number."); end
+    if not utility.IsNumber(team) then error("Parameter amt must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetPerceivedTeam(self:GetHandle(), team);
 end
@@ -574,7 +574,7 @@ end
 --- @param target GameObject|Handle|nil
 function GameObject:SetTarget(target)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if target ~= nil and not M.isgameobject(target) and not utility.isHandle(target) then error("Parameter target must be GameObject instance, Handle, or nil."); end
+    if target ~= nil and not M.isgameobject(target) and not utility.IsHandle(target) then error("Parameter target must be GameObject instance, Handle, or nil."); end
     if target == nil then
         --- @diagnostic disable-next-line: deprecated
         SetTarget(self:GetHandle(), nil);
@@ -596,7 +596,7 @@ end
 --- @param targeter GameObject|Handle
 function GameObject:SetAsTarget(self, targeter)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not M.isgameobject(targeter) and not utility.isHandle(targeter) then error("Parameter targeter must be GameObject instance or Handle."); end
+    if not M.isgameobject(targeter) and not utility.IsHandle(targeter) then error("Parameter targeter must be GameObject instance or Handle."); end
     if M.isgameobject(targeter) then
         --- @cast targeter GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -657,7 +657,7 @@ end
 --- @param odf string?
 function GameObject:SetPilotClass(odf)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(odf) and odf ~= nil then error("Parameter odf must be a string or nil."); end
+    if not utility.IsString(odf) and odf ~= nil then error("Parameter odf must be a string or nil."); end
     --- @diagnostic disable-next-line: deprecated
     SetPilotClass(self:GetHandle(), odf);
 end
@@ -719,7 +719,7 @@ end
 --- @param transform Matrix transform matrix
 function GameObject:SetTransform(transform)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isMatrix(transform) then error("Parameter transform must be a Matrix") end
+    if not utility.IsMatrix(transform) then error("Parameter transform must be a Matrix") end
     --- @diagnostic disable-next-line: deprecated
     SetTransform(self:GetHandle(), transform);
 end
@@ -738,7 +738,7 @@ end
 --- @param velocity Vector Vector velocity
 function GameObject:SetVelocity(velocity)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isVector(velocity) then error("Parameter velocity must be a Vector") end
+    if not utility.IsVector(velocity) then error("Parameter velocity must be a Vector") end
     --- @diagnostic disable-next-line: deprecated
     SetVelocity(self:GetHandle(), velocity);
 end
@@ -757,7 +757,7 @@ end
 --- @param omega any
 function GameObject:SetOmega(omega)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isVector(omega) then error("Parameter omega must be a Vector") end
+    if not utility.IsVector(omega) then error("Parameter omega must be a Vector") end
     --- @diagnostic disable-next-line: deprecated
     SetOmega(self:GetHandle(), omega);
 end
@@ -830,7 +830,7 @@ function GameObject:SetObjectiveOn()
     SetObjectiveOn(self:GetHandle());
 
     --- @diagnostic disable-next-line: deprecated
-    if not utility.isfunction(IsObjectiveOn) then
+    if not utility.IsFunction(IsObjectiveOn) then
         self.cache_memo = customsavetype.NoSave(self.cache_memo)
         self.cache_memo.IsObjectiveOn = true;
     end
@@ -844,7 +844,7 @@ function GameObject:SetObjectiveOff()
     SetObjectiveOff(self:GetHandle());
 
     --- @diagnostic disable-next-line: deprecated
-    if not utility.isfunction(IsObjectiveOn) then
+    if not utility.IsFunction(IsObjectiveOn) then
         self.cache_memo = customsavetype.NoSave(self.cache_memo)
         self.cache_memo.IsObjectiveOn = nil; -- if a function to check this is implemented, use it instead
     end
@@ -857,7 +857,7 @@ function GameObject:IsObjectiveOn()
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
 
     --- @diagnostic disable-next-line: deprecated
-    if utility.isfunction(IsObjectiveOn) then
+    if utility.IsFunction(IsObjectiveOn) then
         --- @diagnostic disable-next-line: deprecated
         return IsObjectiveOn(self:GetHandle());
     else
@@ -880,7 +880,7 @@ end
 --- @param name string Name of the objective
 function GameObject:SetObjectiveName(name)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(name) then error("Parameter name must be a string."); end
+    if not utility.IsString(name) then error("Parameter name must be a string."); end
     --- @diagnostic disable-next-line: deprecated
     SetObjectiveName(self:GetHandle(), name);
 end
@@ -892,7 +892,7 @@ end
 --- @see GameObject.SetObjectiveName
 function GameObject:SetName(name)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(name) then error("Parameter name must be a string."); end
+    if not utility.IsString(name) then error("Parameter name must be a string."); end
     --- @diagnostic disable-next-line: deprecated
     SetName(self:GetHandle(), name);
 end
@@ -1223,7 +1223,7 @@ function M.GetNearestUnitOnTeam(...)
             return M.FromHandle(handle);
         end
     elseif #args == 2 then
-        if utility.isstring(args[1]) then
+        if utility.IsString(args[1]) then
             local path = args[1]
             --- @cast path string
             --- @diagnostic disable-next-line: deprecated
@@ -1257,9 +1257,9 @@ end
 --- @return integer
 function GameObject:CountUnitsNearObject(dist, team, odfname)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(dist) then error("Parameter dist must be number."); end
-    if not utility.isnumber(team) then error("Parameter team must be number."); end
-    if not utility.isstring(odfname) then error("Parameter odfname must be string."); end
+    if not utility.IsNumber(dist) then error("Parameter dist must be number."); end
+    if not utility.IsNumber(team) then error("Parameter team must be number."); end
+    if not utility.IsString(odfname) then error("Parameter odfname must be string."); end
     --- @diagnostic disable-next-line: deprecated
     return CountUnitsNearObject(self:GetHandle(), dist, team, odfname);
 end
@@ -1273,7 +1273,7 @@ end
 --- @param point integer? If the target is a path this is the path point index, defaults to 0.
 --- @return fun(): GameObject iterator Iterator of GameObject values
 function M.ObjectsInRange(dist, target, point)
-    if not utility.isnumber(dist) then error("Parameter dist must be number."); end
+    if not utility.IsNumber(dist) then error("Parameter dist must be number."); end
     if M.isgameobject(target) then
         --- @cast target GameObject
         return coroutine.wrap(function()
@@ -1349,8 +1349,8 @@ end
 --- @param team TeamNum? Team number, 0 to 15
 --- @return GameObject? object GameObject in the slot or nil if none found
 function M.GetTeamSlot(slot, team)
-    if not utility.isnumber(slot) then error("Parameter slot must be a number") end
-    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number") end
+    if not utility.IsNumber(slot) then error("Parameter slot must be a number") end
+    if team ~= nil and not utility.IsNumber(team) then error("Parameter team must be a number") end
     --- @diagnostic disable-next-line: deprecated
     local handle = GetTeamSlot(slot, team);
     if handle == nil then return nil end;
@@ -1358,7 +1358,7 @@ function M.GetTeamSlot(slot, team)
 end
 
 --- @diagnostic disable-next-line: undefined-global
-if utility.isfunction(SetTeamSlot) then
+if utility.IsFunction(SetTeamSlot) then
     --- Set the game object in the specified team slot.
     --- This could have major sideffects so be careful with it.
     --- 
@@ -1371,7 +1371,7 @@ if utility.isfunction(SetTeamSlot) then
     --- @see ScriptUtils.TeamSlot
     function GameObject:SetTeamSlot(slot)
         if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-        if not utility.isnumber(slot) then error("Parameter slot must be a number") end
+        if not utility.IsNumber(slot) then error("Parameter slot must be a number") end
         
         --- @diagnostic disable-next-line: undefined-global
         local handle = SetTeamSlot(self:GetHandle(), slot);
@@ -1386,7 +1386,7 @@ end
 --- @return GameObject? player GameObject of player or nil
 --- @todo depricate functions like this and move them to a team manager, because of the issue noted on scriptutils for GetTeamSlot.
 function M.GetPlayer(team)
-    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.IsNumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetPlayerHandle(team);
     if handle == nil then return nil end;
@@ -1397,7 +1397,7 @@ end
 --- @param team TeamNum? Team number of player
 --- @return GameObject? recycler GameObject of recycler or nil
 function M.GetRecycler(team)
-    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.IsNumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetRecyclerHandle(team);
     if handle == nil then return nil end;
@@ -1408,7 +1408,7 @@ end
 --- @param team TeamNum? Team number of player
 --- @return GameObject? factory GameObject of factory or nil
 function M.GetFactory(team)
-    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.IsNumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetFactoryHandle(team);
     if handle == nil then return nil end;
@@ -1419,7 +1419,7 @@ end
 --- @param team TeamNum? Team number of player
 --- @return GameObject? armory of armory or nil
 function M.GetArmory(team)
-    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.IsNumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetArmoryHandle(team);
     if handle == nil then return nil end;
@@ -1430,7 +1430,7 @@ end
 --- @param team TeamNum? Team number of player
 --- @return GameObject? constructor of constructor or nil
 function M.GetConstructor(team)
-    if team ~= nil and not utility.isnumber(team) then error("Parameter team must be a number if supplied") end;
+    if team ~= nil and not utility.IsNumber(team) then error("Parameter team must be a number if supplied") end;
     --- @diagnostic disable-next-line: deprecated
     local handle = GetConstructorHandle(team);
     if handle == nil then return nil end;
@@ -1492,7 +1492,7 @@ end
 --- @param critical boolean? defaults to true
 function GameObject:SetCritical(critical)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if critical ~= nil and not utility.isboolean(critical) then error("Parameter critical must be boolean or nil."); end
+    if critical ~= nil and not utility.IsBoolean(critical) then error("Parameter critical must be boolean or nil."); end
     --- @diagnostic disable-next-line: deprecated
     SetCritical(self:GetHandle(), critical);
 end
@@ -1507,7 +1507,7 @@ end
 --- @param mask integer
 function GameObject:SetWeaponMask(mask)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(mask) then error("Parameter mask must be number."); end
+    if not utility.IsNumber(mask) then error("Parameter mask must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetWeaponMask(self:GetHandle(), mask);
 end
@@ -1519,8 +1519,8 @@ end
 --- @param slot integer?
 function GameObject:GiveWeapon(weaponname, slot)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if weaponname ~= nil and not utility.isstring(weaponname) then error("Parameter weaponname must be a string or nil.") end
-    if slot ~= nil and not utility.isnumber(slot) then error("Parameter slot must be a number or nil.") end
+    if weaponname ~= nil and not utility.IsString(weaponname) then error("Parameter weaponname must be a string or nil.") end
+    if slot ~= nil and not utility.IsNumber(slot) then error("Parameter slot must be a number or nil.") end
     --- @diagnostic disable-next-line: deprecated
     return GiveWeapon(self:GetHandle(), weaponname, slot);
 end
@@ -1532,7 +1532,7 @@ end
 --- @return string?
 function GameObject:GetWeaponClass(slot)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(slot) then error("Parameter slot must be number.") end
+    if not utility.IsNumber(slot) then error("Parameter slot must be number.") end
     --- @diagnostic disable-next-line: deprecated
     return GetWeaponClass(self:GetHandle(), slot);
 end
@@ -1560,7 +1560,7 @@ end
 --- @param amount number damage amount
 function GameObject:Damage(amount)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(amount) then error("Parameter amt must be number."); end
+    if not utility.IsNumber(amount) then error("Parameter amt must be number."); end
     --- @diagnostic disable-next-line: deprecated
     Damage(self:GetHandle(), amount);
 end
@@ -1605,7 +1605,7 @@ end
 --- @return boolean
 function GameObject:IsAtEndOfPath(path)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(path) then error("Parameter path must be a string") end
+    if not utility.IsString(path) then error("Parameter path must be a string") end
     --- @diagnostic disable-next-line: deprecated
     return IsAtEndOfPath(self:GetHandle(), path);
 end
@@ -1644,7 +1644,7 @@ end
 --- @param independence integer
 function GameObject:SetIndependence(independence)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(independence) then error("Parameter independence must be a number") end
+    if not utility.IsNumber(independence) then error("Parameter independence must be a number") end
     --- @diagnostic disable-next-line: deprecated
     SetIndependence(self:GetHandle(), independence);
 end
@@ -1665,12 +1665,12 @@ end
 --- @param param string?
 function GameObject:SetCommand(command, priority, who, where, when, param)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(command) then error("Parameter command must be a number") end
-    if priority ~= nil and not utility.isnumber(priority) then error("Parameter priority must be a number") end
-    if who ~= nil and not (M.isgameobject(who) or utility.isstring(who)) then error("Parameter who must be GameObject or string") end
-    if where ~= nil and not (utility.isMatrix(where) or utility.isVector(where) or utility.isstring(where)) then error("Parameter where must be Matrix, Vector, or string") end
-    if when ~= nil and not utility.isnumber(when) then error("Parameter when must be a number") end
-    if param ~= nil and not utility.isstring(param) then error("Parameter param must be a string") end
+    if not utility.IsNumber(command) then error("Parameter command must be a number") end
+    if priority ~= nil and not utility.IsNumber(priority) then error("Parameter priority must be a number") end
+    if who ~= nil and not (M.isgameobject(who) or utility.IsString(who)) then error("Parameter who must be GameObject or string") end
+    if where ~= nil and not (utility.IsMatrix(where) or utility.IsVector(where) or utility.IsString(where)) then error("Parameter where must be Matrix, Vector, or string") end
+    if when ~= nil and not utility.IsNumber(when) then error("Parameter when must be a number") end
+    if param ~= nil and not utility.IsString(param) then error("Parameter param must be a string") end
 
     if who ~= nil and M.isgameobject(who) then
         --- @cast who GameObject
@@ -1817,7 +1817,7 @@ end
 --- @param priority integer? Order priority, >0 removes user control
 function GameObject:Patrol(target, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(target) then error("Parameter target must be a string") end
+    if not utility.IsString(target) then error("Parameter target must be a string") end
     --- @diagnostic disable-next-line: deprecated
     Patrol(self:GetHandle(), target, priority);
 end
@@ -1900,7 +1900,7 @@ end
 --- @param priority integer? Order priority, >0 removes user control
 function GameObject:Build(odf, priority)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(odf) then error("Parameter odf must be a string") end
+    if not utility.IsString(odf) then error("Parameter odf must be a string") end
     --- @diagnostic disable-next-line: deprecated
     Build(self:GetHandle(), odf, priority)
 end
@@ -2082,7 +2082,7 @@ end
 --- @param health number health amount
 function GameObject:SetCurHealth(health)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(health) then error("Parameter health must be number."); end
+    if not utility.IsNumber(health) then error("Parameter health must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetCurHealth(self:GetHandle(), health);
 end
@@ -2092,7 +2092,7 @@ end
 --- @param health number health amount
 function GameObject:SetMaxHealth(health)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(health) then error("Parameter health must be number."); end
+    if not utility.IsNumber(health) then error("Parameter health must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetMaxHealth(self:GetHandle(), health);
 end
@@ -2102,7 +2102,7 @@ end
 --- @param health number health amount
 function GameObject:AddHealth(health)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(health) then error("Parameter health must be number."); end
+    if not utility.IsNumber(health) then error("Parameter health must be number."); end
     --- @diagnostic disable-next-line: deprecated
     AddHealth(self:GetHandle(), health);
 end
@@ -2150,7 +2150,7 @@ end
 --- @param ammo any ammo amount
 function GameObject:SetCurAmmo(ammo)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(ammo) then error("Parameter ammo must be number."); end
+    if not utility.IsNumber(ammo) then error("Parameter ammo must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetCurAmmo(self:GetHandle(), ammo);
 end
@@ -2160,7 +2160,7 @@ end
 --- @param ammo any ammo amount
 function GameObject:SetMaxAmmo(ammo)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(ammo) then error("Parameter ammo must be number."); end
+    if not utility.IsNumber(ammo) then error("Parameter ammo must be number."); end
     --- @diagnostic disable-next-line: deprecated
     SetMaxAmmo(self:GetHandle(), ammo);
 end
@@ -2170,7 +2170,7 @@ end
 --- @param ammo any ammo amount
 function GameObject:AddAmmo(ammo)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isnumber(ammo) then error("Parameter ammo must be number."); end
+    if not utility.IsNumber(ammo) then error("Parameter ammo must be number."); end
     --- @diagnostic disable-next-line: deprecated
     AddAmmo(self:GetHandle(), ammo);
 end
@@ -2293,8 +2293,8 @@ end
 --- @return GameObject?
 function GameObject:BuildObjectAtPortal(odfname, teamnum)
     if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
-    if not utility.isstring(odfname) then error("Parameter odfname must be a string."); end
-    if not utility.isnumber(teamnum) then error("Parameter teamnum must be a number."); end
+    if not utility.IsString(odfname) then error("Parameter odfname must be a string."); end
+    if not utility.IsNumber(teamnum) then error("Parameter teamnum must be a number."); end
     --- @diagnostic disable-next-line: deprecated
     local handle = BuildObjectAtPortal(odfname, teamnum, self:GetHandle());
     if handle == nil then return nil end;

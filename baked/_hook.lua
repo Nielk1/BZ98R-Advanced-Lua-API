@@ -199,10 +199,10 @@ end
 --- @param priority number? Higher numbers are higher priority
 --- @function _hook.Add
 function M.Add( event, identifier, func, priority )
-    if not utility.isstring(event) then error("Parameter event must be a string."); end
-    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
-    if not utility.isfunction(func) then error("Parameter func must be a function."); end
-    if priority == nil or not utility.isnumber(priority) then priority = 0; end
+    if not utility.IsString(event) then error("Parameter event must be a string."); end
+    if not utility.IsString(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.IsFunction(func) then error("Parameter func must be a function."); end
+    if priority == nil or not utility.IsNumber(priority) then priority = 0; end
 
     if Hooks[ event ] == nil then
         Hooks[ event ] = {};
@@ -237,8 +237,8 @@ end
 --- @param identifier string Identifier for this hook observer
 --- @function _hook.Remove
 function M.Remove( event, identifier )
-    if not utility.isstring(event) then error("Parameter event must be a string."); end
-    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.IsString(event) then error("Parameter event must be a string."); end
+    if not utility.IsString(identifier) then error("Parameter identifier must be a string."); end
 
     if HookLookup[ event ][ identifier ] ~= nil then
         if HookCallCounts[event] then
@@ -259,11 +259,11 @@ end
 --- @param postload function? Function to be executed after all Load hooks are called
 --- @function _hook.AddSaveLoad
 function M.AddSaveLoad( identifier, save, load, postload )
-    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.IsString(identifier) then error("Parameter identifier must be a string."); end
     if save == nil and load == nil then error("At least one of Parameters save or load must be supplied."); end
-    if save ~= nil and not utility.isfunction(save) then error("Parameter save must be a function."); end
-    if load ~= nil and not utility.isfunction(load) then error("Parameter load must be a function."); end
-    if postload ~= nil and not utility.isfunction(postload) then error("Parameter postload must be a function."); end
+    if save ~= nil and not utility.IsFunction(save) then error("Parameter save must be a function."); end
+    if load ~= nil and not utility.IsFunction(load) then error("Parameter load must be a function."); end
+    if postload ~= nil and not utility.IsFunction(postload) then error("Parameter postload must be a function."); end
 
     if SaveLoadHooks[ identifier ] == nil then
         SaveLoadHooks[identifier ] = {};
@@ -280,7 +280,7 @@ end
 --- @param identifier string Identifier for this hook observer
 --- @function _hook.RemoveSaveLoad
 function M.RemoveSaveLoad( identifier )
-    if not utility.isstring(identifier) then error("Parameter identifier must be a string."); end
+    if not utility.IsString(identifier) then error("Parameter identifier must be a string."); end
     if not SaveLoadHooks[ identifier ] then return; end
 
     -- This should be safe since they are stored by identifier, no arrays being looped
@@ -297,7 +297,7 @@ function M.CallSave()
         HookCallCounts["Save"] = (HookCallCounts["Save"] or 0) + 1;
         local ret = {};
         for k, v in pairs( SaveLoadHooks ) do 
-            if v.Save ~= nil and utility.isfunction(v.Save) then
+            if v.Save ~= nil and utility.IsFunction(v.Save) then
                 ret[k] = {v.Save()};
             end
         end
@@ -315,11 +315,11 @@ function M.CallLoad(SaveData)
     if SaveLoadHooks ~= nil then
         HookCallCounts["Load"] = (HookCallCounts["Load"] or 0) + 1;
         for k, v in pairs( SaveLoadHooks ) do
-            if v.Load ~= nil and utility.isfunction(v.Load) then
+            if v.Load ~= nil and utility.IsFunction(v.Load) then
                 if SaveData[k] ~= nil then
                     local ArraySize = 0;
                     for k2, _ in pairs(SaveData[k]) do
-                        if utility.isinteger(k2) and k2 > ArraySize then
+                        if utility.IsInteger(k2) and k2 > ArraySize then
                             ArraySize = k2;
                         end
                     end
@@ -335,7 +335,7 @@ function M.CallLoad(SaveData)
         -- PostLoad
         HookCallCounts["PostLoad"] = (HookCallCounts["PostLoad"] or 0) + 1;
         for k, v in pairs( SaveLoadHooks ) do
-            if v.PostLoad ~= nil and utility.isfunction(v.PostLoad) then
+            if v.PostLoad ~= nil and utility.IsFunction(v.PostLoad) then
                 v.PostLoad();
             end
         end
@@ -412,7 +412,7 @@ function M.CallAllPassReturn( event, ... )
     if lastreturn ~= nil then
         local ArraySize = 0;
         for k, _ in pairs(lastreturn) do
-            if utility.isinteger(k) and k > ArraySize then
+            if utility.IsInteger(k) and k > ArraySize then
                 ArraySize = k;
             end
         end

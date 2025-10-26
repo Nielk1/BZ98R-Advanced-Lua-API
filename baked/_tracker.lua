@@ -274,10 +274,10 @@ end
 --- @param team integer Team number to track.
 --- @param enabled boolean? Enable or disable tracking for the team. Defaults to true.
 function M.setFilterTeam(team, enabled)
-    if not utility.isinteger(team) then error("Team must be an integer") end
+    if not utility.IsInteger(team) then error("Team must be an integer") end
     if team > 15 or team < 0 then error("Team must be between 0 and 15") end
     if enabled == nil then enabled = true end
-    if not utility.isboolean(enabled) then error("Enabled must be a boolean") end
+    if not utility.IsBoolean(enabled) then error("Enabled must be a boolean") end
     
     Desired_TrackerData_Filter_Teams[team] = enabled or nil;
 end
@@ -289,9 +289,9 @@ end
 --- @param class ClassSig|ClassLabel Class name to track.
 --- @param enabled boolean? Enable or disable tracking for the class. Defaults to true.
 function M.setFilterClass(class, enabled)
-    if not utility.isstring(class) then error("Class must be a string") end
+    if not utility.IsString(class) then error("Class must be a string") end
     if enabled == nil then enabled = true end
-    if not utility.isboolean(enabled) then error("Enabled must be a boolean") end
+    if not utility.IsBoolean(enabled) then error("Enabled must be a boolean") end
     local classItem = utility.GetClassSig(class);
     if classItem == nil then error("Class does not exist") end
 
@@ -305,7 +305,7 @@ end
 --- @param odf string Odf name to track.
 --- @param enabled boolean? Enable or disable tracking for the odf. Defaults to true.
 function M.setFilterOdf(odf, enabled)
-    if not utility.isstring(odf) then error("Odf must be a string") end
+    if not utility.IsString(odf) then error("Odf must be a string") end
     if enabled == nil then enabled = true end
 
     Desired_TrackerData_Filter_Odfs[odf] = enabled or nil;

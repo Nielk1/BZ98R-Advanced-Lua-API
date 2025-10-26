@@ -85,7 +85,7 @@ local function CreateStateMachineCreateFunction(name, state_key, init)
                 -- if the existing is a StateMachineIter, return it as is
                 return existing;
             end
-            if utility.istable(existing) then
+            if utility.IsTable(existing) then
                 -- copy the existing table data into init
                 if init == nil then
                     init = {};
@@ -203,7 +203,7 @@ local function CreateStateSetRunner(name, values)
     self.active_states = {};
 
     if values then
-        if utility.istable(values) then
+        if utility.IsTable(values) then
             for k, v in pairs(values) do
                 self[k] = v;
             end
@@ -222,7 +222,7 @@ function StateSetRunner.run(self, ...)
 
     local foundState = false;
     local sets = M.Sets[ self.template ];
-    if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
+    if not utility.IsTable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     for name,v in pairs(self.active_states) do
         if v then
             local state = sets[name].f;
@@ -241,10 +241,10 @@ end
 --- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.on(self, name)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
-    if not utility.isstring(name) then error("Parameter name must be string."); end
+    if not utility.IsString(name) then error("Parameter name must be string."); end
     logger.print(logger.LogLevel.DEBUG, nil, 'StateSetRunner:on("'..name..'")');
     local sets = M.Sets[self.template ];
-    if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
+    if not utility.IsTable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
     if state.p then
@@ -267,10 +267,10 @@ end
 --- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.off(self, name, force)
     if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
-    if not utility.isstring(name) then error("Parameter name must be string."); end
+    if not utility.IsString(name) then error("Parameter name must be string."); end
     logger.print(logger.LogLevel.DEBUG, nil, 'StateSetRunner:off("'..name..'")');
     local sets = M.Sets[ self.template ];
-    if not utility.istable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
+    if not utility.IsTable(sets) then error("StateSetRunner Template '"..self.template.."' not found."); end
     local state = sets[name];
     if state == nil then error("State '"..name.."' not found in StateSetRunner Template '"..self.template.."'."); end
     if state.p and not force then
@@ -290,7 +290,7 @@ end
 --- @param name string Name of the StateSetRunner Template
 --- @return StateSet StateSet for calling Add and AddPermit, can not be saved.
 function M.Create( name )
-    if not utility.isstring(name) then error("Parameter name must be a string."); end
+    if not utility.IsString(name) then error("Parameter name must be a string."); end
 
     logger.print(logger.LogLevel.DEBUG, nil, "Create StateSetRunner Template '"..name.."'.", M.Sets[name] ~= nil);
     
@@ -308,8 +308,8 @@ end
 --- @param name string Name of the StateSetRunner Template
 --- @param init table? Initial data
 function M.Start( name, init )
-    if not utility.isstring(name) then error("Parameter name must be a string."); end
-    if init ~= nil and not utility.istable(init) then error("Parameter init must be table or nil."); end
+    if not utility.IsString(name) then error("Parameter name must be a string."); end
+    if init ~= nil and not utility.IsTable(init) then error("Parameter init must be table or nil."); end
     if (M.Sets[ name ] == nil) then error('StateSetRunner Template "' .. name .. '" not found.'); end
 
     return CreateStateSetRunner(name, init);

@@ -587,50 +587,50 @@ end
 --- Is this object a function?
 --- @param object any Object in question
 --- @return boolean
-function M.isfunction(object)
+function M.IsFunction(object)
     return (type(object) == "function");
 end
 
 --- Is this object a table?
 --- @param object any Object in question
 --- @return boolean
-function M.istable(object)
+function M.IsTable(object)
     return (type(object) == 'table');
 end
 
 --- Is this object a string?
 --- @param object any Object in question
 --- @return boolean
-function M.isstring(object)
+function M.IsString(object)
     return (type(object) == "string");
 end
 
 --- Is this object a boolean?
 --- @param object any Object in question
 --- @return boolean
-function M.isboolean(object)
+function M.IsBoolean(object)
     return (type(object) == "boolean");
 end
 
 --- Is this object a number?
 --- @param object any Object in question
 --- @return boolean
-function M.isnumber(object)
+function M.IsNumber(object)
     return (type(object) == "number");
 end
 
 --- Is this object an integer?
 --- @param object any Object in question
 --- @return boolean
-function M.isinteger(object)
-    if not M.isnumber(object) then return false end;
+function M.IsInteger(object)
+    if not M.IsNumber(object) then return false end;
     return object == math.floor(object);
 end
 
 --- Is this object a Handle?
 --- @param object any Object in question
 --- @return boolean
-function M.isHandle(object)
+function M.IsHandle(object)
     if type(object) ~= "userdata" then
         return false
     end
@@ -641,7 +641,7 @@ end
 --- Is this object a Vector?
 --- @param object any Object in question
 --- @return boolean
-function M.isVector(object)
+function M.IsVector(object)
     if type(object) ~= "userdata" then
         return false
     end
@@ -652,7 +652,7 @@ end
 --- Is this object a Matrix?
 --- @param object any Object in question
 --- @return boolean
-function M.isMatrix(object)
+function M.IsMatrix(object)
     if type(object) ~= "userdata" then
         return false
     end

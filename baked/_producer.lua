@@ -108,12 +108,12 @@ local function ToStringJobFragment(job)
     if job.location then
         local location = job.location;
         --- @cast location PathWithIndex
-        if utility.istable(location)
+        if utility.IsTable(location)
             and #location == 2
-            and utility.isstring(location[1])
-            and utility.isinteger(location[2]) then
+            and utility.IsString(location[1])
+            and utility.IsInteger(location[2]) then
             queueString = queueString.."@"..location[1]..":"..tostring(location[2]);
-        elseif utility.isVector(location) then
+        elseif utility.IsVector(location) then
             --- @cast location Vector
             queueString = queueString.."@"..tostring(location.x)..","..tostring(location.y)..","..tostring(location.z);
         else
@@ -258,10 +258,10 @@ local function ProcessQueues()
                                                 if hasPosition then
                                                     local location = job.location;
                                                     --- @cast location PathWithIndex
-                                                    if utility.istable(location)
+                                                    if utility.IsTable(location)
                                                         and #location == 2
-                                                        and utility.isstring(location[1])
-                                                        and utility.isinteger(location[2]) then
+                                                        and utility.IsString(location[1])
+                                                        and utility.IsInteger(location[2]) then
                                                         location = GetPosition(location[1], location[2]);
                                                     end
                                                     --- @cast location string|Vector

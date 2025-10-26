@@ -287,7 +287,7 @@ local function SimplifyForSave(...)
         if k > ArraySize then
             ArraySize = k;
         end
-        if utility.istable(v) then -- it's a table, start special logic
+        if utility.IsTable(v) then -- it's a table, start special logic
             if not v.__nosave then
                 local ORIG = v;
                 local existingUUID = SaveUUIDMap[ORIG];
@@ -344,7 +344,7 @@ local function DeSimplifyForLoad(...)
         if k > ArraySize then
             ArraySize = k;
         end
-        if utility.istable(v) then -- it's a table, start special logic
+        if utility.IsTable(v) then -- it's a table, start special logic
             local PriorData = v.__refid and LoadUUIDToTable[v.__refid] or v.__ref and LoadUUIDToTable[v.__ref] or nil;
             local TableFromLoad = nil;
             local metatableToApply = nil;
@@ -440,7 +440,7 @@ local function _Save()
     local CustomSavableTypeDataTmpTable = {};
     for idNum,name in ipairs(CustomSavableTypeTmpTable) do
         local entry = customsavetype.CustomSavableTypes[name];
-        if entry.TypeSave ~= nil and utility.isfunction(entry.TypeSave) then
+        if entry.TypeSave ~= nil and utility.IsFunction(entry.TypeSave) then
             logger.print(logger.LogLevel.DEBUG, nil, "Saved " .. entry.__type);
             CustomSavableTypeDataTmpTable[idNum] = {SimplifyForSave(entry.TypeSave())};
         else
@@ -498,7 +498,7 @@ local function _Load(...)
     logger.print(logger.LogLevel.TRACE, nil, "Loading custom types data");
     for idNum,data in ipairs(args.CustomSavableTypeData) do
         local entry = customsavetype.CustomSavableTypes[CustomTypeMap[idNum]];
-        if entry.TypeLoad ~= nil and utility.isfunction(entry.TypeLoad) then
+        if entry.TypeLoad ~= nil and utility.IsFunction(entry.TypeLoad) then
             logger.print(logger.LogLevel.TRACE, nil, "Loaded " .. entry.__type);
 
             local ArraySize = 0;
@@ -514,7 +514,7 @@ local function _Load(...)
     logger.print(logger.LogLevel.TRACE, nil, "Calling all hooked load functions");
 
     local ArraySize = 0;
-    for k,_ in pairs(args.HooksData) do if utility.isinteger(k) and k > ArraySize then ArraySize = k; end end
+    for k,_ in pairs(args.HooksData) do if utility.IsInteger(k) and k > ArraySize then ArraySize = k; end end
 
     local loadParams = { DeSimplifyForLoad(table.unpack(args.HooksData, 1, ArraySize)) };
 
@@ -525,7 +525,7 @@ local function _Load(...)
     end
 
     ArraySize = 0;
-    for k,_ in pairs(loadParams) do if utility.isinteger(k) and k > ArraySize then ArraySize = k; end end
+    for k,_ in pairs(loadParams) do if utility.IsInteger(k) and k > ArraySize then ArraySize = k; end end
     hook.CallLoad(table.unpack(loadParams, 1, ArraySize));
 
     CustomTypeMap = nil;

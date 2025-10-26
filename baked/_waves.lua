@@ -128,10 +128,10 @@ function M.SpawnInFormation(formation, location, dir, units, team, seperation)
 
     --- @type Vector?
     local locationVector = nil;
-    if utility.isVector(location) then
+    if utility.IsVector(location) then
         --- @cast location Vector
         locationVector = location;
-    elseif utility.isstring(location) then
+    elseif utility.IsString(location) then
         --- @cast location string
         local pathSize = GetPathPointCount(location);
         if pathSize <= 0 then
@@ -165,11 +165,11 @@ function M.SpawnInFormation(formation, location, dir, units, team, seperation)
         error("location must be a Vector, string, or PathWithIndex");
     end
 
-    if dir ~= nil and not utility.isVector(dir) then
+    if dir ~= nil and not utility.IsVector(dir) then
         error("dir must be a Vector or nil if derived from path");
     end
 
-    if not utility.istable(units) or #units == 0 or #units > 9 then
+    if not utility.IsTable(units) or #units == 0 or #units > 9 then
         error("units must be a non-empty array of no more than 9 unit ODFs");
     end
 

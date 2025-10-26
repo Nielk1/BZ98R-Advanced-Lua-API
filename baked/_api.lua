@@ -656,7 +656,7 @@ end
 --- @vararg any
 local function _Receive(from, type, ...)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Receive(" .. from .. ", '" .. type .. "')");
-    local args = ...;
+    local args = {...};
     logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
     
     local retVal = nil;

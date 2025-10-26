@@ -51,29 +51,23 @@ local GameObjectSeqNoDeadMemo = setmetatable({}, GameObjectWeakList_MT); -- maps
 --- @field cache_memo table Unsaved data used for housekeeping that is regenerated at load
 local GameObject = {}; -- the table representing the class, which will double as the metatable for the instances
 
-function GameObject.__index(dtable, key)
-    --local retVal = rawget(dtable, key);
-    --if retVal ~= nil then return retVal; end
-    --local addonData = rawget(dtable, "addonData");
-    --if addonData ~= nil then
-    --    retVal = rawget(rawget(dtable, "addonData"), key);
-    --    if retVal ~= nil then return retVal; end
-    --end
-    --return rawget(GameObject, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
-
+--- @param table table
+--- @param key any
+--- @return any? value
+function GameObject.__index(table, key)
     -- local table takes priority
-    local retVal = rawget(dtable, key);
+    local retVal = rawget(table, key);
     if retVal ~= nil then
         return retVal;
     end
 
     -- next check the addonData table
-    if rawget(dtable, "addonData") ~= nil and rawget(rawget(dtable, "addonData"), key) ~= nil then
-        return rawget(rawget(dtable, "addonData"), key);
+    if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then
+        return rawget(rawget(table, "addonData"), key);
     end
 
     -- next check the metatable
-    local mt = getmetatable(dtable)
+    local mt = getmetatable(table)
     local retVal = mt and rawget(mt, key)
     if retVal ~= nil then
         return retVal
@@ -81,25 +75,30 @@ function GameObject.__index(dtable, key)
 
     return nil;
 end
-function GameObject.__newindex(dtable, key, value)
+
+--- @param table table
+--- @param key any
+--- @param value any
+function GameObject.__newindex(table, key, value)
     if key == "addonData" then
-        rawset(dtable, "addonData", value);
-        local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
-        GameObjectAltered[objectId] = dtable;
+        rawset(table, "addonData", value);
+        local objectId = table:GetHandle();--string.sub(tostring(table:GetHandle()),4);
+        GameObjectAltered[objectId] = table;
     elseif key ~= "id" and key ~= "addonData" then
-        local addonData = rawget(dtable, "addonData");
+        local addonData = rawget(table, "addonData");
         if addonData == nil then
-            rawset(dtable, "addonData", {});
-            addonData = rawget(dtable, "addonData");
+            rawset(table, "addonData", {});
+            addonData = rawget(table, "addonData");
         end
         rawset(addonData, key, value);
-        local objectId = dtable:GetHandle();--string.sub(tostring(table:GetHandle()),4);
-        GameObjectAltered[objectId] = dtable;
+        local objectId = table:GetHandle();--string.sub(tostring(table:GetHandle()),4);
+        GameObjectAltered[objectId] = table;
         --- @todo consider removing object from GameObjectAltered if addonData is empty
     else
-        rawset(dtable, key, value);
+        rawset(table, key, value);
     end
 end
+
 GameObject.__type = "GameObject";
 GameObject.__noref = true;
 GameObject.__tostring = function(self)
@@ -310,7 +309,7 @@ if IsNetGame() then
                         coroutine.yield();
                     end
                 end);
-                network.RegisterDelayed(co);
+                network.Defer(co);
             end
         end
     end, config.get("hook_priority.Receive.GameObject"))
@@ -337,64 +336,6 @@ function GameObject:IsInfo()
     --- @diagnostic disable-next-line: deprecated
     return IsInfo(self:GetHandle());
 end
-
---- @section Other - Custom Functions
-
--- Returns the scrap cost of the game object.
--- @param self GameObject GameObject instance
--- @return integer scrap cost
---function M.GetScrapCost(self)
---    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
---    
---    --- @todo move this to a cached ODF data handler
---    local odf = self:GetOdf();
---    if odf == nil then error("GetOdf() returned nil."); end
---    local odfHandle = OpenODF(odf);
---    if odfHandle == nil then error("OpenODF() returned nil."); end
---
---    local scrap = 2147483647; -- GameObject default
---    
---    local sig = self:GetClassSig();
---    if sig == utility.ClassSig.person then
---        scrap = 0;
---    end
---
---    scrap = GetODFInt(odfHandle, "GameObjectClass", "scrapCost", scrap);
---    return scrap;
---end
-
--- Returns the pilot cost of the game object.
--- @param self GameObject GameObject instance
--- @return integer pilot cost
---function M.GetPilotCost(self)
---    if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
---    
---    --- @todo move this to a cached ODF data handler
---    local odf = self:GetOdf();
---    if odf == nil then error("GetOdf() returned nil."); end
---    local odfHandle = OpenODF(odf);
---    if odfHandle == nil then error("OpenODF() returned nil."); end
---
---    local pilot = 0; -- GameObject default
---
---    local sig = self:GetClassSig();
---    if sig == utility.ClassSig.craft then
---        pilot = 1;
---    elseif sig == utility.ClassSig.person then
---        pilot = 1;
---    elseif sig == utility.ClassSig.producer then
---        pilot = 0;
---    elseif sig == utility.ClassSig.sav then
---        pilot = 0;
---    elseif sig == utility.ClassSig.torpedo then
---        pilot = 0;
---    elseif sig == utility.ClassSig.turret then
---        pilot = 0;
---    end
---
---    local pilot = GetODFInt(odfHandle, "GameObjectClass", "pilotCost", pilot);
---    return pilot;
---end
 
 --- @section Condition Checks
 

@@ -2119,13 +2119,14 @@ end
 --- @section Info Display
 
 --- Returns true if the game object inspected by the info display matches the given odf or is the given handle.
---- @overload fun(h: Handle): boolean
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(odfname: string): boolean
+--- @overload fun(h: Handle): boolean -- see `_gameobject` module.
 --- @param odfname string
---- @diagnostic disable-next-line: undefined-doc-param
 --- @param h Handle
 --- @return boolean
---- @note see `_gameobject` module.
-function IsInfo(odfname)
+--- @diagnostic enable: undefined-doc-param
+function IsInfo(...)
     error("This function is provided by the engine.");
 end
 
@@ -2134,12 +2135,14 @@ end
 
 --- Returns true if the game is a network game. Returns false otherwise.
 --- @return boolean
+--- @deprecated See `_network` module.
 function IsNetGame()
     error("This function is provided by the engine.");
 end
 
 --- Returns true if the local machine is hosting a network game. Returns false otherwise.
 --- @return boolean
+--- @deprecated See `_network` module.
 function IsHosting()
     error("This function is provided by the engine.");
 end
@@ -2572,31 +2575,34 @@ function IdentityMatrix()
 end
 
 --- Build a matrix representing a rotation by an angle around an axis.
---- @overload fun(angle: number, axis: Vector): Matrix --- The angle is in radians. If no value is given for the angle, the default value is zero. The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
---- @param angle number?
+--- @diagnostic disable: undefined-doc-param
+--- @overload fun(angle: number, axis: Vector): Matrix
+--- @overload fun(angle: number, axis_x: number, axis_y: number, axis_z: number): Matrix
+--- @param angle number? Angle in radians defaulting to 0
 --- @param axis_x number?
 --- @param axis_y number?
 --- @param axis_z number?
---- @diagnostic disable-next-line: undefined-doc-param
---- @param axis Vector
+--- @param axis Vector The axis must be unit-length (i.e. axis.x<sup>2</sup> + axis.y<sup>2</sup> + axis.z<sup>2</sup> = 1.0 or the resulting matrix will be wrong.
 --- @return Matrix
-function BuildAxisRotationMatrix(angle, axis_x, axis_y, axis_z)
+--- @diagnostic enable: undefined-doc-param
+function BuildAxisRotationMatrix(...)
     error("This function is provided by the engine.");
 end
 
 --- Build a matrix with the given pitch, yaw, and roll angles and position.
---- The angles are in radians. If no value is given for a component, the default value is zero.
+--- @diagnostic disable: undefined-doc-param
 --- @overload fun(pitch: number, yaw: number, roll: number, position: Vector): Matrix
---- @param pitch number?
---- @param yaw number?
---- @param roll number?
---- @param posit_x number?
---- @param posit_y number?
---- @param posit_z number?
---- @diagnostic disable-next-line: undefined-doc-param
+--- @overload fun(pitch: number, yaw: number, roll: number, posit_x: number, posit_y: number, posit_z: number): Matrix
+--- @param pitch number? Pitch angle in radians defaulting to 0
+--- @param yaw number? Yaw angle in radians defaulting to 0
+--- @param roll number? Roll angle in radians defaulting to 0
+--- @param posit_x number? X position defaulting to 0
+--- @param posit_y number? Y position defaulting to 0
+--- @param posit_z number? Z position defaulting to 0
 --- @param position Vector
 --- @return Matrix
-function BuildPositionRotationMatrix(pitch, yaw, roll, posit_x, posit_y, posit_z)
+--- @diagnostic enable: undefined-doc-param
+function BuildPositionRotationMatrix(...)
     error("This function is provided by the engine.");
 end
 

@@ -15,6 +15,20 @@ local M = {};
 local config = require("_config");
 local hook = require("_hook");
 
+--- Returns true if the game is a network game. Returns false otherwise.
+--- @return boolean
+function M.IsNetGame()
+    --- @diagnostic disable-next-line: deprecated
+    return IsNetGame();
+end
+
+--- Returns true if the local machine is hosting a network game. Returns false otherwise.
+--- @return boolean
+function M.IsHosting()
+    --- @diagnostic disable-next-line: deprecated
+    return IsHosting();
+end
+
 --- Send a script-defined message across the network.
 --- To is the player network id of the recipient. None, nil, or 0 broadcasts to all players.
 --- Type is a one-character string indicating the script-defined message type.
@@ -47,15 +61,18 @@ function M.Send(to, type, ...)
 end
 
 
+local network_emulation = {};
+
 --- Non non-network games just hard-wire it to trigger Receive
-if not IsNetGame() then
+if not M.IsNetGame() then
 --- [[START_IGNORE]]
     M.Send = function(to, type, ...)
-        --- @todo figure out if this logic is needed or if the game does it itself
-        --- @todo limit to only broadcast or own id (1?)
-
-        --- @diagnostic disable-next-line: deprecated
-        Receive(to, type, ...);
+        -- if the message is not broadcast or to self
+        if to ~= nil and to ~= 0 and to ~= 1 then
+            return;
+        end
+        
+        table.insert(network_emulation, {to, type, {...}});
     end
 -- [[END_IGNORE]]
 end
@@ -64,7 +81,7 @@ local routines = {};
 
 --- Register a coroutine to be executed each Update until it finishes.
 --- @param fun thread|function Coroutine or function that returns nil|false when finished
-function M.RegisterDelayed(fun)
+function M.Defer(fun)
     routines[fun] = true;
 end
 
@@ -93,6 +110,18 @@ hook.Add("Update", "_network_Update", function(dtime, ttime)
 
     for _, routine in ipairs(dead) do
         routines[routine] = nil;
+    end
+
+    -- Emulate network messages last, to simulate some network-y-ness
+    if network_emulation[1] then
+        for _, packet in ipairs(network_emulation) do
+            local to = packet[1];
+            local type = packet[2];
+            local args = packet[3];
+            --- @diagnostic disable-next-line: deprecated
+            Receive(to, type, table.unpack(args));
+        end
+        network_emulation = {};
     end
 end, config.get("hook_priority.Update.Network"));
 

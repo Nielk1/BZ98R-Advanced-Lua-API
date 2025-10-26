@@ -12,7 +12,8 @@ logger.print(logger.LogLevel.DEBUG, nil, "_objective Loading");
 
 local hook = require("_hook");
 
---- @class ObjectiveManager
+--- ObjectiveManager
+--- @class _objective
 local M = {};
 
 local allObjectives = {};

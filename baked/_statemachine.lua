@@ -167,14 +167,10 @@ local StateMachineIter = {}; -- the table representing the class, which will dou
 --- @class StateMachineNamedStateTruncated
 --- @field [1] StateMachineFunction State function
 
-
---GameObject.__index = GameObject; -- failed table lookups on the instances should fallback to the class table, to get methods
-StateMachineIter.__index = function(table, key)
-    --local retVal = rawget(table, key);
-    --if retVal ~= nil then return retVal; end
-    --if rawget(table, "addonData") ~= nil and rawget(rawget(table, "addonData"), key) ~= nil then return rawget(rawget(table, "addonData"), key); end
-    --return rawget(StateMachineIter, key); -- if you fail to get it from the subdata, move on to base (looking for functions)
-    
+--- @param table table
+--- @param key any
+--- @return any? value
+function StateMachineIter.__index(table, key)
     -- local table takes priority
     local retVal = rawget(table, key);
     if retVal ~= nil then
@@ -195,6 +191,10 @@ StateMachineIter.__index = function(table, key)
 
     return nil;
 end
+
+--- @param table table
+--- @param key any
+--- @param value any
 StateMachineIter.__newindex = function(table, key, value)
     if key ~= "template" and key ~= "state_key" and key ~= "target_call" and key ~= "target_time" and key ~= "set_wait_time" and key ~= "addonData" then
         local addonData = rawget(table, "addonData");
@@ -207,6 +207,7 @@ StateMachineIter.__newindex = function(table, key, value)
         rawset(table, key, value);
     end
 end
+
 StateMachineIter.__type = "StateMachineIter";
 
 --- Create StateMachineIter
@@ -248,8 +249,6 @@ function StateMachineIter.run(self, ...)
     if machine == nil then return false; end
 
     local statesCalled = nil;
-
-
 
     local runNext = true;
     while self.state_key and runNext do
@@ -331,20 +330,6 @@ end
 --- This only works if the StateMachineIter is ordered.
 --- @param self StateMachineIter StateMachineIter instance
 function StateMachineIter.next(self)
-    --local flags = _statemachine.MachineFlags[ self.template ];
-    --if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
-    --local index = flags.name_to_index[ self.state_key ];
-    --if index == nil then
-    --    self.state_key = nil;
-    --    return;
-    --end
-    --index = index + 1;
-    --if index > #flags.index_to_name then
-    --    self.state_key = nil;
-    --    return;
-    --end
-    --self.state_key = flags.index_to_name[ index ];
-
     local old_key = self.state_key
     self.state_key = nextState(self);
 

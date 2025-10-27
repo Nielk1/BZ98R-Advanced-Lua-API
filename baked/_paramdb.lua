@@ -402,7 +402,7 @@ hook.Add("Update", "_paramdb_Update", function(dtime, ttime)
     end
 end, config.lock().hook_priority.Update.ParamDB);
 
-hook.AddSaveLoad("_paramdb", function() end, function()
+hook.AddSaveLoad("_paramdb", nil, function()
     game_time = GetTime();
     time_next_purge = game_time + PURGE_PARAMDB_CHECK_INTERVAL;
     OpenOdfs = {};

@@ -73,6 +73,9 @@ function M.Implements(obj, name)
 end
 
 --- Extract the custom savable type if implemented
+--- For example, if you're using something that might be a child of
+--- a GameObject, and you need the GameObject to use as a memory key,
+--- use this function to extract it.
 --- @param obj CustomSavableType
 --- @param name string
 --- @return any?

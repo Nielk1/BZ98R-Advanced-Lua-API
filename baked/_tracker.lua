@@ -315,7 +315,7 @@ local HaveStarted = false;
 
 --- @section Tracker - Core
 
-hook.Add("Start", "_tracker_Start", function(object, isMapObject)
+hook.Add("Start", "_tracker:Start", function(object, isMapObject)
     if not HaveStarted then
         CheckUpdated();
         HaveStarted = true;
@@ -323,7 +323,7 @@ hook.Add("Start", "_tracker_Start", function(object, isMapObject)
 end, config.lock().hook_priority.Start.Tracker);
 
 
-hook.Add("MapObject", "_tracker_MapObject", function(object)
+hook.Add("MapObject", "_tracker:MapObject", function(object)
 
     -- we're getting map objects, this means Start event hasn't fired yet but we're already looking at things to filter, bake the filters now
     if not HaveStarted then
@@ -334,18 +334,18 @@ hook.Add("MapObject", "_tracker_MapObject", function(object)
     AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
 end, config.lock().hook_priority.CreateObject.Tracker);
 
-hook.Add("CreateObject", "_tracker_CreateObject", function(object)
+hook.Add("CreateObject", "_tracker:CreateObject", function(object)
     AddTrackedObject(object, object:GetOdf(), object:GetClassSig(), object:GetTeamNum());
 end, config.lock().hook_priority.CreateObject.Tracker);
 
-hook.Add("DeleteObject", "_tracker_DeleteObject", function(object)
+hook.Add("DeleteObject", "_tracker:DeleteObject", function(object)
     if object.tracker == nil then return end -- object was not created by us, ignore it
     DeleteTrackedObject(object, object.tracker.odf, object.tracker.sig, object.tracker.team);
     -- consder holding on to dead objects or something? but their data is gone by now unless we start holding it too
     -- if we have stuff hang around though the counts will be wrong
 end, config.lock().hook_priority.DeleteObject.Tracker);
 
-hook.Add("Update", "_tracker_Update", function(dtime, ttime)
+hook.Add("Update", "_tracker:Update", function(dtime, ttime)
     CheckUpdated();
 end, config.lock().hook_priority.Update.Tracker);
 

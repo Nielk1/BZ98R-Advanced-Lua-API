@@ -94,39 +94,40 @@ M = setmetatable(M, M_MT);
 --- Priority of hooks
 ---
 --- ```
---- DeleteObject                   .GameObject    = -9999
---- DeleteObject                   .Producer      =  4999
---- DeleteObject                   .NavManager    =  4999
---- DeleteObject                   .Tracker       =  4999
---- DeleteObject                   .Patrol        =  4999
+--- DeleteObject                .GameObject       = -9999
+--- DeleteObject                .Producer         =  4999
+--- DeleteObject                .NavManager       =  4999
+--- DeleteObject                .Tracker          =  4999
+--- DeleteObject                .Patrol           =  4999
 --- -----------------------------------------------------
---- CreateObject                   .FixPowerupAi2 =  3999
---- CreateObject                   .Producer      =  4999
---- CreateObject                   .NavManager    =  4999
---- CreateObject                   .Tracker       =  4999
+--- CreateObject                .FixPowerupAi2    =  3999
+--- CreateObject                .Producer         =  4999
+--- CreateObject                .NavManager       =  4999
+--- CreateObject                .Tracker          =  4999
 --- -----------------------------------------------------
---- Start                          .Tracker       =  4999
---- Start                          .Producer      =  4999
---- Start                          .GameObject    =  9999
+--- Start                       .Tracker          =  4999
+--- Start                       .Producer         =  4999
+--- Start                       .GameObject       =  9999
 --- -----------------------------------------------------
---- Update                         .FixPowerupAi2 =  3999
---- Update                         .Producer      =  4999
---- Update                         .Patrol        =  4999
---- Update                         .Tracker       =  4999
---- Update                         .NavManager    =  5999
---- Update                         .Camera        =  8989
---- Update                         .StateMachine  =  8998
---- Update                         .WaveSpawner   =  8999
---- Update                         .ParamDB       =  9900
---- Update                         .Network       =  9999
+--- Update                      .FixPowerupAi2    =  3999
+--- Update                      .Producer         =  4999
+--- Update                      .Patrol           =  4999
+--- Update                      .Tracker          =  4999
+--- Update                      .NavManager       =  5999
+--- Update                      .Camera           =  8989
+--- Update                      .StateMachine     =  8998
+--- Update                      .WaveSpawner      =  8999
+--- Update                      .ParamDB          =  9900
+--- Update                      .NetworkObjectives = 9998
+--- Update                      .Network          =  9999
 --- -----------------------------------------------------
---- CreatePlayer                   .Network       =  9999
+--- CreatePlayer                .Network          =  9999
 --- -----------------------------------------------------
---- AddPlayer                      .Network       =  9999
+--- AddPlayer                   .Network          =  9999
 --- -----------------------------------------------------
---- RemovePlayer                   .Network       =  9999
+--- RemovePlayer                .Network          =  9999
 --- -----------------------------------------------------
---- Receive                        .GameObject    =  9999
+--- Receive                     .GameObject       =  9999
 --- ```
 --- @type table<string, table<string, number>>
 data.hook_priority = {
@@ -160,6 +161,7 @@ data.hook_priority = {
         WaveSpawner = 8999,
         ParamDB = 9900,
         --GameObject = 9998,
+        NetworkObjectives = 9998,
         Network = 9999,
     },
     Receive = {

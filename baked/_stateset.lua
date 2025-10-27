@@ -18,7 +18,7 @@
 ---         print("test " .. runner.test2 .. " " .. tostring(a) .. " " .. tostring(b));
 ---     end, true);
 --
--- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
+-- hook.Add("InitialSetup", "Custom:InitialSetup", function(turn)
 --     MissionData.TestSet = statemachine.Start("TestSet",{test1='d',test2="e");
 --     MissionData.TestSet:on("state_a"); -- state true
 --     MissionData.TestSet:on("state_b"); -- state 1
@@ -26,7 +26,7 @@
 --     MissionData.TestSet:off("state_b"); -- state 1, still on as this is a permit based state
 -- end);
 -- 
--- hook.Add("Update", "Custom_Update", function(turn)
+-- hook.Add("Update", "Custom:Update", function(turn)
 --     MissionData.TestSMI:run(1, 2);
 -- end);
 --- ```
@@ -79,7 +79,7 @@ end
 local function CreateStateMachineCreateFunction(name, state_key, init)
     return function(existing)
         if existing ~= nil then
-            if statemachine.isstatemachineiter(existing) then
+            if statemachine.IsStateMachineIter(existing) then
                 -- if the existing is a StateMachineIter, return it as is
                 return existing;
             end
@@ -116,7 +116,7 @@ local function ConvertStateMachineCreatorToState(machine_creator)
         state.machines[name] = machine_creator(state.machines[name]);
 
         local machine_return = state.machines[name]:run(state, name, ...);
-        if statemachine.isstatemachineiterwrappedresult(machine_return) then
+        if statemachine.IsStateMachineIterWrappedResult(machine_return) then
             --- @cast machine_return StateMachineIterWrappedResult
             if machine_return.Abort then
                 logger.print(logger.LogLevel.DEBUG, nil, "StateSetRunner state '"..state.template.."' StateMachineIter aborted, disabling StateSetRunner state.");
@@ -138,7 +138,7 @@ end
 --- Is this object an instance of StateSetRunner?
 --- @param object any Object in question
 --- @return boolean
-function M.isstatesetrunner(object)
+function M.IsStateSetRunner(object)
   return (type(object) == "table" and object.__type == "StateSetRunner");
 end
 
@@ -215,7 +215,7 @@ end
 --- @vararg any Arguments to pass to the state function
 --- @return boolean True if at least one state was found and executed and returned true
 function StateSetRunner.run(self, ...)
-    if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
+    if not M.IsStateSetRunner(self) then error("Parameter self must be StateSetRunner instance."); end
 
     local foundState = false;
     local sets = M.Sets[ self.template ];
@@ -237,7 +237,7 @@ end
 --- @param name string Name of the state
 --- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.on(self, name)
-    if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
+    if not M.IsStateSetRunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.IsString(name) then error("Parameter name must be string."); end
     logger.print(logger.LogLevel.DEBUG, nil, 'StateSetRunner:on("'..name..'")');
     local sets = M.Sets[self.template ];
@@ -263,7 +263,7 @@ end
 --- @param force boolean? If true, the state is set off regardless of the current permits
 --- @return StateSetRunner StateSetRunner For function chaining
 function StateSetRunner.off(self, name, force)
-    if not M.isstatesetrunner(self) then error("Parameter self must be StateSetRunner instance."); end
+    if not M.IsStateSetRunner(self) then error("Parameter self must be StateSetRunner instance."); end
     if not utility.IsString(name) then error("Parameter name must be string."); end
     logger.print(logger.LogLevel.DEBUG, nil, 'StateSetRunner:off("'..name..'")');
     local sets = M.Sets[ self.template ];

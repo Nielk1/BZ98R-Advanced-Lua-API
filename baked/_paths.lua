@@ -13,7 +13,7 @@ local M = {};
 --- Is this object a table?
 --- @param object any Object in question
 --- @return boolean
-function M.isPathWithString(object)
+function M.IsPathWithString(object)
     return type(object) == 'table' and object[1] and type(object[1]) == 'string' and object[2] and type(object[2]) == 'number';
 end
 

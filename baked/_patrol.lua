@@ -141,7 +141,7 @@ end
 --- @param self PatrolEngine
 --- @param object GameObject
 function PatrolEngine.AddGameObject(self, object)
-    if gameobject.isgameobject(object) == false then
+    if gameobject.IsGameObject(object) == false then
         error("PatrolEngine.AddGameObject: object is not a GameObject");
     end
     --- @cast object GameObject
@@ -194,7 +194,7 @@ end
 --- @param self PatrolEngine
 --- @param object GameObject
 function PatrolEngine.RemoveGameObject(self, object)
-    if gameobject.isgameobject(object) == false then
+    if gameobject.IsGameObject(object) == false then
         error("PatrolEngine.RemoveGameObject: object is not a GameObject");
     end
     --- @cast object GameObject
@@ -257,7 +257,7 @@ local function update(self, dtime)
     end
 end
 
-hook.Add("Update", "_patrol_Update", function(dtime, ttime)
+hook.Add("Update", "_patrol:Update", function(dtime, ttime)
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
             update(manager, dtime);
@@ -265,7 +265,7 @@ hook.Add("Update", "_patrol_Update", function(dtime, ttime)
     end
 end, config.lock().hook_priority.Update.Patrol);
 
-hook.Add("DeleteObject", "_patrol_DeleteObject", function(object)
+hook.Add("DeleteObject", "_patrol:DeleteObject", function(object)
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
             PatrolEngine.RemoveGameObject(manager, object);

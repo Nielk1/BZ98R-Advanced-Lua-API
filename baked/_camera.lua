@@ -284,7 +284,7 @@ end
 --- @param target GameObject|Handle
 --- @return boolean
 function M.FollowPathAimObject(path, height, speed, target)
-    if gameobject.isgameobject(target) then
+    if gameobject.IsGameObject(target) then
         --- @cast target GameObject
         target = target:GetHandle();
     end
@@ -396,7 +396,7 @@ function M.FollowObjectAimObject(...)
     --- @type number
     local forward;
 
-    if gameobject.isgameobject(base) then
+    if gameobject.IsGameObject(base) then
         --- @cast base GameObject
         base = base:GetHandle();
     elseif not utility.IsHandle(base) then
@@ -419,12 +419,12 @@ function M.FollowObjectAimObject(...)
         error("Invalid number of arguments. Expected 3 or 5.");
     end
 
-    if gameobject.isgameobject(base) then
+    if gameobject.IsGameObject(base) then
         --- @cast base GameObject
         base = base:GetHandle();
     end
 
-    if gameobject.isgameobject(target) then
+    if gameobject.IsGameObject(target) then
         --- @cast target GameObject
         target = target:GetHandle();
     elseif not utility.IsHandle(target) then

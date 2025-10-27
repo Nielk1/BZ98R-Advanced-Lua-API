@@ -88,7 +88,7 @@ local network_emulation = {};
 if M.IsNetGame() then
     local gameobject = require("_gameobject");
 
-    hook.Add("CreatePlayer", "_network_CreatePlayer", function(id, name, team)
+    hook.Add("CreatePlayer", "_network:CreatePlayer", function(id, name, team)
         M.NetToTeam[id] = team;
         M.TeamToNet[team] = id;
 
@@ -98,11 +98,11 @@ if M.IsNetGame() then
             M.NetID = id;
         end
     end, config.lock().hook_priority.CreatePlayer.Network);
-    hook.Add("AddPlayer", "_network_AddPlayer", function(id, name, team)
+    hook.Add("AddPlayer", "_network:AddPlayer", function(id, name, team)
         M.NetToTeam[id] = team;
         M.TeamToNet[team] = id;
     end, config.lock().hook_priority.AddPlayer.Network);
-    hook.Add("RemovePlayer", "_network_RemovePlayer", function(id, name, team)
+    hook.Add("RemovePlayer", "_network:RemovePlayer", function(id, name, team)
         M.NetToTeam[id] = nil;
         M.TeamToNet[team] = nil;
     end, config.lock().hook_priority.RemovePlayer.Network);
@@ -132,7 +132,7 @@ else
     end
 
     -- Remove old objectives after some delay
-    hook.Add("Update", "_network_Update_objectives", function(dtime, ttime)
+    hook.Add("Update", "_network:Update:Objectives", function(dtime, ttime)
         local now = GetTime();
         local remove = {};
         for index, expire_time in pairs(objectives_shown) do
@@ -147,7 +147,7 @@ else
         if next(objectives_shown) == nil then
             objective_index = 1;
         end
-    end, config.lock().hook_priority.Update.Network - 0.1);
+    end, config.lock().hook_priority.Update.NetworkObjectives);
 
     -- [[END_IGNORE]]
 end
@@ -160,7 +160,7 @@ function M.Defer(fun)
     routines[fun] = true;
 end
 
-hook.Add("Update", "_network_Update", function(dtime, ttime)
+hook.Add("Update", "_network:Update", function(dtime, ttime)
     local dead = {};
 
     for routine, _ in pairs(routines) do

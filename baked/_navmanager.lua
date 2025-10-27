@@ -268,15 +268,15 @@ local function CreateObject(object)
     end
 end
 
-hook.Add("MapObject", "_navmanager_MapObject", CreateObject, config.lock().hook_priority.CreateObject.NavManager);
-hook.Add("CreateObject", "_navmanager_CreateObject", CreateObject, config.lock().hook_priority.CreateObject.NavManager);
-hook.Add("DeleteObject", "_navmanager_DeleteObject", function(object)
+hook.Add("MapObject", "_navmanager:MapObject", CreateObject, config.lock().hook_priority.CreateObject.NavManager);
+hook.Add("CreateObject", "_navmanager:CreateObject", CreateObject, config.lock().hook_priority.CreateObject.NavManager);
+hook.Add("DeleteObject", "_navmanager:DeleteObject", function(object)
     -- we can't get the signiture by this point so we have to use saved data
     if object.NavManager ~= nil then
         PendingDirty = true;
     end
 end, config.lock().hook_priority.DeleteObject.NavManager);
-hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
+hook.Add("Update", "_navmanager:Update", function(dtime, ttime)
     if PendingDirty then
         DisableAutomaticNavAdding = true;
         --- @todo this isn't supposed to be global, broke the code somewhere

@@ -7,11 +7,11 @@
 --- ```lua
 --- local hook = require("_hook");
 --- 
---- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
+--- hook.Add("InitialSetup", "Custom:InitialSetup", function(turn)
 ---     
 --- end);
 --- 
---- hook.Add("Update", "Custom_Update", function(turn)
+--- hook.Add("Update", "Custom:Update", function(turn)
 ---     
 --- end);
 --
@@ -137,7 +137,7 @@ end
 --- Is this object an instance of HookResult?
 --- @param object any Object in question
 --- @return boolean
-function M.isresult(object)
+function M.IsResult(object)
     return (type(object) == "table" and object.__type == "HookResult");
 end
 
@@ -175,7 +175,7 @@ function M.WrapResult(...)
     end
     if cvar == 1 then
         local var1 = vargs[1];
-        if M.isresult(var1) then
+        if M.IsResult(var1) then
             return var1;
         end
     end
@@ -360,7 +360,7 @@ function M.CallAllNoReturn( event, ... )
         for i, v in ipairs(HookTable) do
 			local lastreturn = { v.func( ... ) };
 			-- ignore the result value and just check Abort flag
-			if select('#', lastreturn) == 1 and M.isresult(lastreturn[1]) and lastreturn[1].Abort then
+			if select('#', lastreturn) == 1 and M.IsResult(lastreturn[1]) and lastreturn[1].Abort then
 				return true;
 			end
         end
@@ -398,7 +398,7 @@ function M.CallAllPassReturn( event, ... )
         for i, v in ipairs(HookTable) do
 			lastreturn = { v.func(appendvargs(M.WrapResult(lastreturn), ... )) };
 			-- preserve the Abort flag, then unwrap the result
-			if select('#', lastreturn) == 1 and M.isresult(lastreturn[1]) then
+			if select('#', lastreturn) == 1 and M.IsResult(lastreturn[1]) then
 				local abort = lastreturn[1].Abort;
 				lastreturn = lastreturn[1].Return;
 				if abort then

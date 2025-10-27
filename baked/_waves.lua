@@ -146,7 +146,7 @@ function M.SpawnInFormation(formation, location, dir, units, team, seperation)
             local pos2 = GetPosition(location, 1);
             dir = pos2 - locationVector;
         end
-    elseif paths.isPathWithString(location) then
+    elseif paths.IsPathWithString(location) then
         --- @cast location PathWithIndex
         local pathSize = GetPathPointCount(location[1]);
         if pathSize <= location[2] then

@@ -215,7 +215,7 @@ local function ProcessQueues()
                             --- @type GameObject?
                             local producerObject = producerTypes[producerOdf];
                             if producerObject then
-                                producerObject = gameobject.extractgameobject(producerObject);
+                                producerObject = gameobject.ExtractGameObject(producerObject);
                             end
                             if producerObject and not ProducerOrders[producerObject] then
                                 --logger.print(logger.LogLevel.DEBUG, nil, table.show(queue:contents(), "queue["..tostring(team).."]"));
@@ -512,7 +512,7 @@ end
 
 --- @section Producer - Core
 
-hook.Add("MapObject", "_producer_MapObject", function(object)
+hook.Add("MapObject", "_producer:MapObject", function(object)
     --- @cast object GameObject
     local sig = object:GetClassSig();
     if sig == utility.ClassSig.recycler
@@ -523,7 +523,7 @@ hook.Add("MapObject", "_producer_MapObject", function(object)
     end
 end, config.lock().hook_priority.CreateObject.Producer);
 
-hook.Add("CreateObject", "_producer_CreateObject", function(object)
+hook.Add("CreateObject", "_producer:CreateObject", function(object)
     --- @cast object GameObject
     local sig = object:GetClassSig();
     if sig == utility.ClassSig.recycler
@@ -536,11 +536,11 @@ hook.Add("CreateObject", "_producer_CreateObject", function(object)
     ProcessCreated(object);
 end, config.lock().hook_priority.CreateObject.Producer);
 
-hook.Add("DeleteObject", "_producer_DeleteObject", function(object)
+hook.Add("DeleteObject", "_producer:DeleteObject", function(object)
 
 end, config.lock().hook_priority.DeleteObject.Producer);
 
-hook.Add("Update", "_producer_Update", function(dtime, ttime)
+hook.Add("Update", "_producer:Update", function(dtime, ttime)
     PostBuildCheck();
 
     for i = 0, 15 do
@@ -552,7 +552,7 @@ hook.Add("Update", "_producer_Update", function(dtime, ttime)
     ProcessQueues();
 end, config.lock().hook_priority.Update.Producer);
 
-hook.Add("Start", "_producer_Start", function()
+hook.Add("Start", "_producer:Start", function()
     for i = 0, 15 do
         ScanProducers(i);
     end

@@ -60,12 +60,12 @@
 ---     end
 --- });
 ---
---- hook.Add("InitialSetup", "Custom_InitialSetup", function(turn)
+--- hook.Add("InitialSetup", "Custom:InitialSetup", function(turn)
 ---     MissionData.TestSMI1 = statemachine.Start("TestMachine","state_a",{test1='d',test2="e",test3="f"});
 ---     MissionData.TestSMI2 = statemachine.Start("OrderedTestMachine","state_a",{test1='d',test2="e",test3="f"});
 --- end);
---- 
---- hook.Add("Update", "Custom_Update", function(turn)
+---
+--- hook.Add("Update", "Custom:Update", function(turn)
 ---     MissionData.TestSMI1:run();
 ---     MissionData.TestSMI2:run();
 --- end);
@@ -126,14 +126,14 @@ function M.FastResult(...)
     }, ReadOnly_MT);
 end
 
-function M.isstatemachineiterwrappedresult(object)
+function M.IsStateMachineIterWrappedResult(object)
     return (type(object) == "table" and object.__type == "StateMachineIterWrappedResult");
 end
 
 --- Is this object an instance of StateMachineIter?
 --- @param object any Object in question
 --- @return boolean
-function M.isstatemachineiter(object)
+function M.IsStateMachineIter(object)
     --return (type(object) == "table" and object.__type == "StateMachineIter");
     return customsavetype.Implements(object, "StateMachineIter");
 end
@@ -246,7 +246,7 @@ end
 --- @return boolean|StateMachineIterWrappedResult status True if the state function was called, false if the state function was not found, a wrapper instance if the state function was called and returned a wrapper
 --- @return any ... The return value of the state function, if it was called. If the result was wrapped it's unwraped and returned here
 function StateMachineIter.run(self, ...)
-    if not M.isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
+    if not M.IsStateMachineIter(self) then error("Parameter self must be StateMachineIter instance."); end
 
     --logger.print(logger.LogLevel.DEBUG, nil, "Running StateMachineIter Template '"..self.template.."' with state '"..self.state_key.."'");
     local machine = Machines[self.template];
@@ -262,7 +262,7 @@ function StateMachineIter.run(self, ...)
         local retValBuffer1, retValBuffer2 = false, {};
         if utility.IsFunction(machine[currentState]) then
             local retVal = {machine[currentState](self, ...)};
-            if #retVal > 0 and M.isstatemachineiterwrappedresult(retVal[1]) then
+            if #retVal > 0 and M.IsStateMachineIterWrappedResult(retVal[1]) then
                 -- unbox the return value and remove it from the wrapper, send the wrapper along
                 if retVal[1].Abort then
                     -- ensure the state won't do anything, though we help the caller reacts to the abort and kills the StateMachineIter instead.
@@ -746,7 +746,7 @@ function StateMachineIter.TypeLoad()
     game_time = GetTime();
 end
 
-hook.Add("Update", "_statemachine_Update", function(dtime, ttime)
+hook.Add("Update", "_statemachine:Update", function(dtime, ttime)
     game_time = ttime;
 end, config.lock().hook_priority.Update.StateMachine);
 

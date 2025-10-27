@@ -384,7 +384,7 @@ function M.GetValueIntegerEnum(odf, section, key, default, boolVal, enumTable)
     return value, success;
 end
 
-hook.Add("Update", "_paramdb_Update", function(dtime, ttime)
+hook.Add("Update", "_paramdb:Update", function(dtime, ttime)
     game_time = ttime;
 
     if game_time >= time_next_purge then

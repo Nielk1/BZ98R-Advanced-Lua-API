@@ -94,14 +94,18 @@ end
 --- @field Fast boolean If true the machine will attempt to run the next state immediately
 
 --- @class _statemachine
---- @field game_time number Game time in seconds, used for state machine timing
---- @field Machines table<string, StateMachineIter> Table of StateMachineIter instances, key is the template name and value is the StateMachineIter instance
---- @field MachineFlags table<string, { is_ordered:boolean, index_to_name:table, name_to_index:table }> Table of flags for each StateMachineIter template, key is the template name and value is the flags table
 local M = {};
-M.game_time = 0;
 
-M.Machines = {};
-M.MachineFlags = {};
+--- Game time in seconds, used for state machine timing
+local game_time = 0;
+
+--- Table of StateMachineIter instances, key is the template name and value is the StateMachineIter instance
+--- @type table<string, StateMachineIter>
+local Machines = {};
+
+--- Table of flags for each StateMachineIter template, key is the template name and value is the flags table
+--- @type table<string, { is_ordered:boolean, index_to_name:table, name_to_index:table }>
+local MachineFlags = {};
 
 --- Create an Abort HookResult
 --- @vararg any Return values passed from hook function
@@ -245,7 +249,7 @@ function StateMachineIter.run(self, ...)
     if not M.isstatemachineiter(self) then error("Parameter self must be StateMachineIter instance."); end
 
     --logger.print(logger.LogLevel.DEBUG, nil, "Running StateMachineIter Template '"..self.template.."' with state '"..self.state_key.."'");
-    local machine = M.Machines[self.template];
+    local machine = Machines[self.template];
     if machine == nil then return false; end
 
     local statesCalled = nil;
@@ -302,7 +306,7 @@ end
 --- @param state StateMachineIter FuncArrayIter instance
 --- @return string|integer|nil key The next state key, either a string name or an integer index if the StateMachineIter is ordered
 local function nextState(state)
-    local flags = M.MachineFlags[ state.template ];
+    local flags = MachineFlags[ state.template ];
     if flags == nil or not flags.is_ordered then error("StateMachine is not ordered."); end
 
     local index = state.state_key;
@@ -341,7 +345,7 @@ end
 --- @param key string|integer|nil State to switch to (will also accept state index if the StateMachineIter is ordered)
 function StateMachineIter.switch(self, key)
     if utility.IsInteger(key) then
-        local flags = M.MachineFlags[ self.template ];
+        local flags = MachineFlags[ self.template ];
         if flags ~= nil and flags.is_ordered and flags.index_to_name ~= nil then
             -- we are an ordered state machine AND don't use numeric indexes
             key = self.index_to_name[key];
@@ -543,8 +547,8 @@ function M.Create( name, ... )
             end
         end
     end
-    M.Machines[ name ] = new_states;
-    M.MachineFlags[ name ] = {
+    Machines[ name ] = new_states;
+    MachineFlags[ name ] = {
         is_ordered = is_ordered,
         index_to_name = state_order,
         name_to_index = state_indexes
@@ -567,10 +571,10 @@ end
 function M.Start( name, state_key, init )
     if not utility.IsString(name) then error("Parameter name must be a string."); end
     if init ~= nil and not utility.IsTable(init) then error("Parameter init must be table or nil."); end
-    if (M.Machines[ name ] == nil) then error('StateMachineIter Template "' .. name .. '" not found.'); end
+    if (Machines[ name ] == nil) then error('StateMachineIter Template "' .. name .. '" not found.'); end
 
     if state_key == nil then
-        local flags = M.MachineFlags[ name ];
+        local flags = MachineFlags[ name ];
         if flags ~= nil and flags.is_ordered then
             if flags.index_to_name ~= nil then
                 -- we are an ordered state machine AND don't use numeric keys
@@ -648,15 +652,15 @@ function StateMachineIter.SecondsHavePassed(self, seconds, lap, first)
     end
 
     if self.target_time == nil then
-        self.target_time = M.game_time + seconds;
+        self.target_time = game_time + seconds;
         self.set_wait_time = seconds;
         --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Set Wait Time "..tostring(seconds));
         --if lap and first and true or false then
         --    logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "TRIGGER");
         --end
         return lap and first and true or false; -- start sleeping
-    elseif self.target_time <= M.game_time  then
-        --logger.print(logger.LogLevel.DEBUG, nil, M.game_time.." > "..self.target_time.." = "..tostring(M.game_time > self.target_time));
+    elseif self.target_time <= game_time  then
+        --logger.print(logger.LogLevel.DEBUG, nil, game_time.." > "..self.target_time.." = "..tostring(game_time > self.target_time));
         if lap then
             self.target_time = self.target_time + seconds; -- reset the timer to the next lap
             --logger.print(logger.LogLevel.DEBUG, "<StateMachineIter>", "Lap Cycle");
@@ -739,11 +743,11 @@ end
 --
 -- {INTERNAL USE}
 function StateMachineIter.TypeLoad()
-    M.game_time = GetTime();
+    game_time = GetTime();
 end
 
 hook.Add("Update", "_statemachine_Update", function(dtime, ttime)
-    M.game_time = ttime;
+    game_time = ttime;
 end, config.get("hook_priority.Update.StateMachine"));
 
 customsavetype.Register(StateMachineIter);

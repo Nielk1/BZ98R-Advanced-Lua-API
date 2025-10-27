@@ -179,22 +179,21 @@ function M.BuildImportantNav(odf, team, location, point)
 end
 
 --- What to do when empty slots exist and excess navs exist
---- @table _navmanager.CompactionStrategy
+--- @enum CompactionStrategy
 M.CompactionStrategy = {
     DoNothing = 1, -- Do nothing, leave excess navs in overflow
     ChronologicalToGap = 2, -- Excess navs inserted into gaps in order of creation
     ImportantFirstToGap = 3, -- Excess navs inserted into gaps in order of importance, then creation
 
-    [1] = "DoNothing", -- DoNothing
-    [2] = "ChronologicalToGap", -- ChronologicalToGap
-    [3] = "ImportantFirstChronologicalToGap", -- ImportantFirstChronologicalToGap
+    [1] = "DoNothing",
+    [2] = "ChronologicalToGap",
+    [3] = "ImportantFirstChronologicalToGap",
 }
 
 local CompactMode = M.CompactionStrategy.DoNothing; -- default to chronological
 
 --- Set the compaction strategy for navs.
---- @param strategy string|integer The strategy to use. See @{_navmanager.CompactionStrategy} for options.
---- @function _navmanager.SetCompactionStrategy
+--- @param strategy string|integer The strategy to use. See `_navmanager.CompactionStrategy` for options.
 function M.SetCompactionStrategy(strategy)
     local strat = strategy;
     if utility.IsString(strategy) then
@@ -206,7 +205,7 @@ function M.SetCompactionStrategy(strategy)
 end
 
 --- Get the current compaction strategy for navs.
---- @return integer The current compaction strategy. See @{_navmanager.CompactionStrategy} for options.
+--- @return integer The current compaction strategy. See `_navmanager.CompactionStrategy` for options.
 function M.GetCompactionStrategy()
     return CompactMode;
 end

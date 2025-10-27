@@ -71,8 +71,6 @@ function StateSet.Add(self, name, state, permitBased)
     return self;
 end
 
-
-
 --- Starts an StateMachineIter based on the StateMachineIter Template with the given indentifier.
 --- @param name string Name of the StateMachineIter Template
 --- @param state_key string|integer|nil Initial state, if nil the first state will be used if the StateMachineIter is ordered, can be an integer is the StateMachineIter is ordered
@@ -192,7 +190,6 @@ StateSetRunner.__type = "StateSetRunner";
 
 --- @class StateSetRunnerWithMachines : StateSetRunner
 --- @field machines table<string, StateMachineIter>? Optional table of StateMachineIter instances used by this StateSetRunner
-
 
 --- Create StateSetRunner
 --- @param name string StateSetRunner template

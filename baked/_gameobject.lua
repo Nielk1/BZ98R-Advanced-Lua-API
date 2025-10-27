@@ -282,7 +282,7 @@ end
 
 if network.IsNetGame() then
     -- [[START_IGNORE]]
-    local packet_id = config.get("network_packet_id.api");
+    local packet_id = config.lock().network_packet_id.api;
 
     GameObject.RemoveObject = function(self)
         if not M.isgameobject(self) then error("Parameter self must be GameObject instance."); end
@@ -313,7 +313,7 @@ if network.IsNetGame() then
                 network.Defer(co);
             end
         end
-    end, config.get("hook_priority.Receive.GameObject"))
+    end, config.lock().hook_priority.Receive.GameObject)
     -- [[END_IGNORE]]
 end
 
@@ -2396,13 +2396,13 @@ hook.Add("DeleteObject", "GameObject_DeleteObject", function(object)
     -- BZ2 needs this because handles can be re-used in an upgrade, so we need to know if this has happened for an UpgradeObject event, but BZ1 doesn't have this.
     --logger.print(logger.LogLevel.DEBUG, nil, 'Decaying object ' .. tostring(objectId));
     --GameObjectDead[objectId] = object; -- store dead object for full cleanup next update (in BZ2 handle might be re-used)
-end, config.get("hook_priority.DeleteObject.GameObject"));
+end, config.lock().hook_priority.DeleteObject.GameObject);
 
 hook.Add("Start", "GameObject_Start", function()
     --- @todo skip this if we have access to SeqNo functions
     --- @diagnostic disable-next-line: empty-block
     for _ in M.AllObjects() do end -- make every GameObject construct for side-effects (SeqNo memo)
-end, config.get("hook_priority.Start.GameObject"));
+end, config.lock().hook_priority.Start.GameObject);
 
 --hook.Add("Update", "GameObject_Update", function(dtime)
 --    for k,v in pairs(GameObjectDead) do
@@ -2410,7 +2410,7 @@ end, config.get("hook_priority.Start.GameObject"));
 --        GameObjectAltered[k] = nil; -- remove any strong reference for being altered
 --        GameObjectDead[k] = nil; -- remove any strong reference for being dead
 --    end
---end, config.get("hook_priority.Update.GameObject"));
+--end, config.lock().hook_priority.Update.GameObject);
 
 customsavetype.Register(GameObject);
 

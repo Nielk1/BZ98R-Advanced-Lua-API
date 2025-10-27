@@ -400,7 +400,7 @@ hook.Add("Update", "_paramdb_Update", function(dtime, ttime)
         end
         time_next_purge = game_time + PURGE_PARAMDB_CHECK_INTERVAL;
     end
-end, config.get("hook_priority.Update.ParamDB"));
+end, config.lock().hook_priority.Update.ParamDB);
 
 hook.AddSaveLoad("_paramdb", function()
     return game_time, time_next_purge

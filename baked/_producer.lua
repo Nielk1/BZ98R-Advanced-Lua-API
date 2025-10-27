@@ -521,7 +521,7 @@ hook.Add("MapObject", "_producer_MapObject", function(object)
     or sig == utility.ClassSig.armory then
         ProducersDirty[object:GetTeamNum()] = true; -- mark the team as dirty so we can scan it next update
     end
-end, config.get("hook_priority.CreateObject.Producer"));
+end, config.lock().hook_priority.CreateObject.Producer);
 
 hook.Add("CreateObject", "_producer_CreateObject", function(object)
     --- @cast object GameObject
@@ -534,11 +534,11 @@ hook.Add("CreateObject", "_producer_CreateObject", function(object)
     end
 
     ProcessCreated(object);
-end, config.get("hook_priority.CreateObject.Producer"));
+end, config.lock().hook_priority.CreateObject.Producer);
 
 hook.Add("DeleteObject", "_producer_DeleteObject", function(object)
 
-end, config.get("hook_priority.DeleteObject.Producer"));
+end, config.lock().hook_priority.DeleteObject.Producer);
 
 hook.Add("Update", "_producer_Update", function(dtime, ttime)
     PostBuildCheck();
@@ -550,13 +550,13 @@ hook.Add("Update", "_producer_Update", function(dtime, ttime)
     end
 
     ProcessQueues();
-end, config.get("hook_priority.Update.Producer"));
+end, config.lock().hook_priority.Update.Producer);
 
 hook.Add("Start", "_producer_Start", function()
     for i = 0, 15 do
         ScanProducers(i);
     end
-end, config.get("hook_priority.Start.Producer"));
+end, config.lock().hook_priority.Start.Producer);
 
 hook.AddSaveLoad("_producer", function()
     local ProducerOrdersRemapped = {};

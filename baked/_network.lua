@@ -97,15 +97,15 @@ if M.IsNetGame() then
         if player and player:GetTeamNum() == team then
             M.NetID = id;
         end
-    end, config.get("hook_priority.CreatePlayer.Network"));
+    end, config.lock().hook_priority.CreatePlayer.Network);
     hook.Add("AddPlayer", "_network_AddPlayer", function(id, name, team)
         M.NetToTeam[id] = team;
         M.TeamToNet[team] = id;
-    end, config.get("hook_priority.AddPlayer.Network"));
+    end, config.lock().hook_priority.AddPlayer.Network);
     hook.Add("RemovePlayer", "_network_RemovePlayer", function(id, name, team)
         M.NetToTeam[id] = nil;
         M.TeamToNet[team] = nil;
-    end, config.get("hook_priority.RemovePlayer.Network"));
+    end, config.lock().hook_priority.RemovePlayer.Network);
 else
     -- [[START_IGNORE]]
 
@@ -147,7 +147,7 @@ else
         if next(objectives_shown) == nil then
             objective_index = 1;
         end
-    end, config.get("hook_priority.Update.Network") - 0.1);
+    end, config.lock().hook_priority.Update.Network - 0.1);
 
     -- [[END_IGNORE]]
 end
@@ -195,7 +195,7 @@ hook.Add("Update", "_network_Update", function(dtime, ttime)
         end
         network_emulation = {};
     end
-end, config.get("hook_priority.Update.Network"));
+end, config.lock().hook_priority.Update.Network);
 
 logger.print(logger.LogLevel.DEBUG, nil, "_network Loaded");
 

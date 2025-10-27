@@ -372,7 +372,7 @@ hook.Add("Update", "_waves:Update", function(dtime, ttime)
             manager:run();
         end
     end
-end, config.get("hook_priority.Update.WaveSpawner"));
+end, config.lock().hook_priority.Update.WaveSpawner);
 
 hook.AddSaveLoad("_waves",
     function()

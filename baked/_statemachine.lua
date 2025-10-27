@@ -748,7 +748,7 @@ end
 
 hook.Add("Update", "_statemachine_Update", function(dtime, ttime)
     game_time = ttime;
-end, config.get("hook_priority.Update.StateMachine"));
+end, config.lock().hook_priority.Update.StateMachine);
 
 customsavetype.Register(StateMachineIter);
 

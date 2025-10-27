@@ -473,7 +473,7 @@ hook.Add("Update", "_camera:Update", function(dtime, ttime)
             end
         end
     end
-end, config.get("hook_priority.Update.Camera"));
+end, config.lock().hook_priority.Update.Camera);
 
 hook.AddSaveLoad("_camera", function()
     return CameraTargetDummy;

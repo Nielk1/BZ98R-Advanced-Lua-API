@@ -190,7 +190,7 @@ if pre_patch then
                 end
             end
         end
-    end, config.get("hook_priority.Update.FixPowerupAi2"));
+    end, config.lock().hook_priority.Update.FixPowerupAi2);
 
     hook.Add("CreateObject", "Fix:PowerupAi2:CreateObject", function(object)
         -- we can safely assume we have a GameObject here, no need to test or extract
@@ -228,7 +228,7 @@ if pre_patch then
         else
             object:SetTeamNum(0);
         end
-    end, config.get("hook_priority.CreateObject.FixPowerupAi2"));
+    end, config.lock().hook_priority.CreateObject.FixPowerupAi2);
 
     hook.AddSaveLoad(
         "Fix:PowerupAi2",

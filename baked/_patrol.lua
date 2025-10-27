@@ -263,7 +263,7 @@ hook.Add("Update", "_patrol_Update", function(dtime, ttime)
             update(manager, dtime);
         end
     end
-end, config.get("hook_priority.Update.Patrol"));
+end, config.lock().hook_priority.Update.Patrol);
 
 hook.Add("DeleteObject", "_patrol_DeleteObject", function(object)
     for manager, _ in pairs(PatrolManagerWeakList) do
@@ -271,7 +271,7 @@ hook.Add("DeleteObject", "_patrol_DeleteObject", function(object)
             PatrolEngine.RemoveGameObject(manager, object);
         end
     end
-end, config.get("hook_priority.DeleteObject.Patrol"));
+end, config.lock().hook_priority.DeleteObject.Patrol);
 
 
 -- --- Initializes the patrol controller.

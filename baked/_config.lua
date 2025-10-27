@@ -17,7 +17,7 @@
 --- config.hook_priority.DeleteObject.GameObject = -99999
 --- 
 --- -- read a value for configuration use, auto-locks all values
---- local priority = config.get("hook_priority.DeleteObject.GameObject")
+--- local priority = config.lock().hook_priority.DeleteObject.GameObject
 ---
 --- if not config.locked then
 ---     -- this code doesn't run
@@ -34,81 +34,58 @@ require("_table_show")
 
 logger.print(logger.LogLevel.DEBUG, nil, "_config Loading");
 
-local function resolve_path(tbl, path)
-    -- Resolve a period or colon delimited path into a nested table value
-    local current = tbl
-    for segment in path:gmatch("[^.:]+") do
-        if type(current) ~= "table" then
-            error("Invalid path: '" .. path .. "' (non-table value encountered at '" .. segment .. "')")
-        end
-        current = current[segment]
-        if current == nil then
-            error("Invalid path: '" .. path .. "' (key '" .. segment .. "' not found)")
-        end
-    end
-    return current
-end
-
-local M_MT = {};
 local locked = false;
+
+--- @class Config
 local data = {};
 
---- @class _config
+--- @class _config : Config
+--- @field locked boolean
 local M = {};
 
 local readonly_mt = {
-    __newindex = function(t, k, v)
-        error("Attempt to modify read-only config table", 2)
-    end,
-    __metatable = false -- Prevent further changes to the metatable
+    __index = function(t, k) return rawget(t, k); end,
+    __newindex = function() error("Config is locked"); end,
+    __metatable = false;
 }
 
 local function make_readonly(tbl)
-    if type(tbl) ~= "table" or getmetatable(tbl) == readonly_mt then return end
-    setmetatable(tbl, readonly_mt)
+    if type(tbl) ~= "table" or getmetatable(tbl) == readonly_mt then return; end
+    setmetatable(tbl, readonly_mt);
     for _, v in pairs(tbl) do
         if type(v) == "table" then
-            make_readonly(v)
+            make_readonly(v);
         end
     end
 end
 
-M_MT.__index = function(dtable, key)
-    if key == "locked" then
+local M_MT = {}
+M_MT.__index = function(_, k)
+    if k == "lock" then
+        return M_MT.lock;
+    end
+    if k == "locked" then
         return locked;
     end
-    if key == "get" then
-        --return M_MT.get;
-        return rawget(dtable, key);
-    end
-    --if locked then
-    --    error("Config table is locked. No further changes allowed.");
-    --end
-    return rawget(data, key);
-  end
-M_MT.__newindex = function(dtable, key, value)
+    return data[k];
+end
+M_MT.__newindex = function(_, k, v)
     if locked then
-        error("Cannot set key '"..key.."' after config table is locked.");
+        error("Config is locked");
     end
-    if key == "locked" then
-        error("Cannot set 'locked' key directly.");
-    end
-    rawset(data, key, value);
+    data[k] = v;
 end
 
---- Get a value from the config table using a period or colon delimited path.
---- @param path string The path to the value, e.g. "hook_priority.Update.StateMachine"
---- @return any value The value at the specified path
-function M.get(path)
-    -- Access a value using a period or colon delimited path
-    local value = resolve_path(data, path)
-    if value ~= nil and not locked then
+--- Lock the config
+--- @return Config
+function M.lock(self)
+    if not locked then
         locked = true;
         make_readonly(data);
         logger.print(logger.LogLevel.DEBUG, nil, "Config table is now locked.")
         logger.print(logger.LogLevel.DEBUG, nil, table.show(data, "config"))
     end
-    return value
+    return data;
 end
 
 -- set metatable after building functions
@@ -151,7 +128,8 @@ M = setmetatable(M, M_MT);
 --- -----------------------------------------------------
 --- Receive                        .GameObject    =  9999
 --- ```
-M.hook_priority = {
+--- @type table<string, table<string, number>>
+data.hook_priority = {
     DeleteObject = {
         GameObject = -9999,
         Producer = 4999,
@@ -186,6 +164,7 @@ M.hook_priority = {
     },
     Receive = {
         GameObject = 9999,
+        Network = 9999,
     },
     CreatePlayer = {
         Network = 9999,
@@ -199,13 +178,11 @@ M.hook_priority = {
 }
 
 --- Network Packet IDs
---- 
---- ```
---- api = "_"
---- ```
-M.network_packet_id = {
+--- @type table<string, string>
+data.network_packet_id = {
     api = "_",
 }
+
 
 logger.print(logger.LogLevel.DEBUG, nil, "_config Loaded");
 

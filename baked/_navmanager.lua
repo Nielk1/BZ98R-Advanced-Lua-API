@@ -268,14 +268,14 @@ local function CreateObject(object)
     end
 end
 
-hook.Add("MapObject", "_navmanager_MapObject", CreateObject, config.get("hook_priority.CreateObject.NavManager"));
-hook.Add("CreateObject", "_navmanager_CreateObject", CreateObject, config.get("hook_priority.CreateObject.NavManager"));
+hook.Add("MapObject", "_navmanager_MapObject", CreateObject, config.lock().hook_priority.CreateObject.NavManager);
+hook.Add("CreateObject", "_navmanager_CreateObject", CreateObject, config.lock().hook_priority.CreateObject.NavManager);
 hook.Add("DeleteObject", "_navmanager_DeleteObject", function(object)
     -- we can't get the signiture by this point so we have to use saved data
     if object.NavManager ~= nil then
         PendingDirty = true;
     end
-end, config.get("hook_priority.DeleteObject.NavManager"));
+end, config.lock().hook_priority.DeleteObject.NavManager);
 hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
     if PendingDirty then
         DisableAutomaticNavAdding = true;
@@ -464,7 +464,7 @@ hook.Add("Update", "_navmanager_Update", function(dtime, ttime)
         PendingDirty = false;
         DisableAutomaticNavAdding = false;
     end
-end, config.get("hook_priority.Update.NavManager"));
+end, config.lock().hook_priority.Update.NavManager);
 
 hook.AddSaveLoad("_navmanager", function()
     return PendingNavs, PendingNavsMemo, PendingDirty, OverflowNavs;

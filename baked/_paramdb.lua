@@ -32,7 +32,7 @@ local OpenOdfs = {};
 local DataCache = {};
 
 local game_time = 0;
-local time_next_purge = 60;
+local time_next_purge = PURGE_PARAMDB_CHECK_INTERVAL;
 
 --- Open an ODF and return the ParameterDB handle.
 --- Caches the ODF handle for reuse, purging old entries periodically.
@@ -402,11 +402,9 @@ hook.Add("Update", "_paramdb_Update", function(dtime, ttime)
     end
 end, config.lock().hook_priority.Update.ParamDB);
 
-hook.AddSaveLoad("_paramdb", function()
-    return game_time, time_next_purge
-end, function(saved_game_time, saved_time_next_purge)
-    game_time = saved_game_time or 0;
-    time_next_purge = saved_time_next_purge or PURGE_PARAMDB_CHECK_INTERVAL;
+hook.AddSaveLoad("_paramdb", function() end, function()
+    game_time = GetTime();
+    time_next_purge = game_time + PURGE_PARAMDB_CHECK_INTERVAL;
     OpenOdfs = {};
 end);
 

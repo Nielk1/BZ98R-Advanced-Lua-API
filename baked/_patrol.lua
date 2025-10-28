@@ -81,7 +81,7 @@ end
 --- @param locations string[]
 function PatrolEngine:RegisterLocations(locations)
     for _, location in pairs(locations) do
-        PatrolEngine:RegisterLocation(location)
+        self:RegisterLocation(location)
     end
 end
 
@@ -124,11 +124,11 @@ end
 --- @param self PatrolEngine
 --- @param object GameObject_patrol
 function PatrolEngine:GiveRoute(object)
-    local route = PatrolEngine:GetRandomRoute(object._patrol.location)
+    local route = self:GetRandomRoute(object._patrol.location)
     local attempts = 0
 
     while route and route.location == object._patrol.oldLocation and #self.path_map[object._patrol.location] > 1 do
-        route = PatrolEngine:GetRandomRoute(object._patrol.location)
+        route = self:GetRandomRoute(object._patrol.location)
         attempts = attempts + 1
         if attempts > 10 then
             break
@@ -180,7 +180,7 @@ function PatrolEngine:AddGameObject(object)
         busy = false
     };
     self.patrol_units[object] = true;
-    PatrolEngine:GiveRoute(object)
+    self:GiveRoute(object)
 end
 
 --- Gets a list of keys from a table.
@@ -262,7 +262,7 @@ local function update(self, dtime)
             end
 
             if not unit._patrol.busy and currentCommand == AiCommand.NONE then
-                PatrolEngine:GiveRoute(unit)
+                self:GiveRoute(unit)
             elseif unit._patrol.busy and currentCommand == AiCommand.NONE then
                 unit._patrol.busy = false
                 unit:Goto(unit._patrol.path)
@@ -282,7 +282,7 @@ end, config.lock().hook_priority.Update.Patrol);
 hook.Add("DeleteObject", "_patrol:DeleteObject", function(object)
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
-            PatrolEngine.RemoveGameObject(manager, object);
+            manager:RemoveGameObject(object);
         end
     end
 end, config.lock().hook_priority.DeleteObject.Patrol);

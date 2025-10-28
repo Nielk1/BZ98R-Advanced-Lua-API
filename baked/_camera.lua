@@ -159,6 +159,11 @@ function M.End()
     --- @diagnostic disable-next-line: deprecated
     CameraFinish();
     CameraWasCancelled = nil;
+
+    if CameraTargetDummy then
+        --- @diagnostic disable-next-line: deprecated
+        RemoveObject(CameraTargetDummy);
+    end
 end
 
 --- Camera is currently active
@@ -203,7 +208,7 @@ function M.GetPosition()
         return SetVector(), SetVector();
     end
 
-    if CameraType == "CameraPath" then
+    if CameraType == "FollowPathAimObject" then
         if not CameraParams or #CameraParams < 4 then
             error("CameraPath requires 4 parameters: path, height, speed, target");
         end
@@ -215,7 +220,7 @@ function M.GetPosition()
         local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
-    elseif CameraType == "CameraPathDir" then
+    elseif CameraType == "FollowPathAimForward" then
         if not CameraParams or #CameraParams < 3 then
             error("CameraPathDir requires 3 parameters: path, height, speed");
         end
@@ -225,7 +230,7 @@ function M.GetPosition()
         local pos, dir = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, dir;
-    elseif CameraType == "CameraPathPath" then
+    elseif CameraType == "FollowPathAimPath" then
         if not CameraParams or #CameraParams < 4 then
             error("CameraPathPath requires 4 parameters: path, height, speed, target");
         end
@@ -237,7 +242,7 @@ function M.GetPosition()
         local target_pos = GetPosition(target, 0);
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
-    elseif CameraType == "CameraPathPathFollow" then
+    elseif CameraType == "FollowPathAimFollowPath" then
         if not CameraParams or #CameraParams < 6 then
             error("CameraPathPathFollow requires 6 parameters: path, height, speed, target, target_speed");
         end
@@ -252,7 +257,7 @@ function M.GetPosition()
         target_pos.y = GetTerrainHeightAndNormal (target_pos) + target_height;
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
-    elseif CameraType == "CameraObject" then
+    elseif CameraType == "FollowObjectAimObject" then
         if not CameraParams or #CameraParams < 5 then
             error("CameraObject requires 5 parameters: base, right, up, forward, target");
         end
@@ -292,7 +297,7 @@ function M.FollowPathAimObject(path, height, speed, target)
     height = math.floor(height * 100); -- convert to centimeters
     speed = math.floor(speed * 100); -- convert to centimeters per second
     --- @cast target Handle
-    CheckCameraType("CameraPath", {path, height, speed, target});
+    CheckCameraType("FollowPathAimObject", {path, height, speed, target});
     --- @diagnostic disable-next-line: deprecated
     return CameraPath(path, height, speed, target);
 end
@@ -314,7 +319,7 @@ function M.FollowPathAimFollowPath(path, height, speed, target, target_height, t
     height = math.floor(height * 100); -- convert to centimeters
     target_height = math.floor(target_height * 100); -- convert to centimeters
     target_speed = math.floor(target_speed * 100); -- convert to centimeters per second
-    CheckCameraType("CameraPathPathFollow", {path, height, speed, target, target_height, target_speed});
+    CheckCameraType("FollowPathAimFollowPath", {path, height, speed, target, target_height, target_speed});
     local target_pos = GetPosition(target);
     if not target_pos then
         error("Target position is nil for target: " .. tostring(target));
@@ -344,7 +349,7 @@ function M.FollowPathAimForward(path, height, speed)
     -- we use floor instead of truncating so going negative can't cause a strange size step
     height = math.floor(height * 100); -- convert to centimeters
     speed = math.floor(speed * 100); -- convert to centimeters per second
-    CheckCameraType("CameraPathDir", {path, height, speed});
+    CheckCameraType("FollowPathAimForward", {path, height, speed});
     --- @diagnostic disable-next-line: deprecated
     return CameraPathDir(path, height, speed);
 end
@@ -360,7 +365,7 @@ function M.FollowPathAimPath(path, height, speed, target)
     -- we use floor instead of truncating so going negative can't cause a strange size step
     height = math.floor(height * 100); -- convert to centimeters
     speed = math.floor(speed * 100); -- convert to centimeters per second
-    CheckCameraType("CameraPathPath", {path, height, speed, target});
+    CheckCameraType("FollowPathAimPath", {path, height, speed, target});
     --- @diagnostic disable-next-line: deprecated
     return CameraPathPath(path, height, speed, target);
 end
@@ -419,11 +424,6 @@ function M.FollowObjectAimObject(...)
         error("Invalid number of arguments. Expected 3 or 5.");
     end
 
-    if gameobject.IsGameObject(base) then
-        --- @cast base GameObject
-        base = base:GetHandle();
-    end
-
     if gameobject.IsGameObject(target) then
         --- @cast target GameObject
         target = target:GetHandle();
@@ -442,7 +442,7 @@ function M.FollowObjectAimObject(...)
         error("Parameters right, up, and forward must be numbers.");
     end
 
-    CheckCameraType("CameraObject", {base, right, up, forward, target});
+    CheckCameraType("FollowObjectAimObject", {base, right, up, forward, target});
     --- @diagnostic disable-next-line: deprecated
     return CameraObject(base, right, up, forward, target);
 end
@@ -450,7 +450,7 @@ end
 hook.Add("Update", "_camera:Update", function(dtime, ttime)
     WorldTime = ttime;
     if InCamera then
-        if CameraType == "CameraPathPathFollow" then
+        if CameraType == "FollowPathAimFollowPath" then
             if CameraTargetDummy then
                 if not CameraParams or #CameraParams < 6 then
                     error("CameraPathPathFollow requires 6 parameters: path, height, speed, target, target_speed");

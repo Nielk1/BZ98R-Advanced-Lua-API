@@ -19,20 +19,23 @@ local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 
-
-
-
 --- @class _patrol
 local M = {}
-
 
 local PatrolManagerWeakList_MT = {};
 PatrolManagerWeakList_MT.__mode = "k";
 local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
 
+--- @class PathDescription
+--- @field path string path to location
+--- @field location string location at end of path
 
-local PatrolEngine;
-
+--- @class PatrolEngine : CustomSavableType
+--- @field path_map table<string, PathDescription[]> Link origin locations to paths and destination locations
+--- @field patrol_units table<GameObject_patrol, boolean> Set of units managed by the PatrolEngine
+--- @field locations string[] List of location names @todo consider making a map
+--- @field forcedAlert boolean Do units latch onto and attack enemies encountered?
+local PatrolEngine = { __type = "PatrolEngine" };
 
 --- Called when an object is added.
 --- @param path_map table<string, table>
@@ -57,31 +60,24 @@ function M.new()
     return Construct({}, {}, {}, false)
 end
 
---- @class PathDescription
---- @field path string path to location
---- @field location string location at end of path
-
---- @class PatrolEngine : CustomSavableType
---- @field path_map table<string, PathDescription[]>
---- @field patrol_units table<GameObject_patrol, boolean>
---- @field locations string[]
---- @field forcedAlert boolean
-PatrolEngine = { __type = "PatrolEngine" };
-
---- Registers a location.
+--- Register location or locations.
 --- @param self PatrolEngine
---- @param locationName string
-function PatrolEngine:RegisterLocation(locationName)
-    self.path_map[locationName] = {}
-    table.insert(self.locations, locationName)
-end
-
---- Registers multiple locations.
---- @param self PatrolEngine
---- @param locations string[]
-function PatrolEngine:RegisterLocations(locations)
-    for _, location in pairs(locations) do
-        self:RegisterLocation(location)
+--- @param location string|string[]
+function PatrolEngine:RegisterLocation(location)
+    if type(location) == "string" then
+        if not self.path_map[location] then
+            self.path_map[location] = {}
+            table.insert(self.locations, location)
+        end
+    elseif type(location) == "table" then
+        for _, loc in pairs(location) do
+            if not self.path_map[loc] then
+                self.path_map[loc] = {}
+                table.insert(self.locations, loc)
+            end
+        end
+    else
+        error("Invalid location type")
     end
 end
 
@@ -127,7 +123,7 @@ function PatrolEngine:GiveRoute(object)
     local route = self:GetRandomRoute(object._patrol.location)
     local attempts = 0
 
-    while route and route.location == object._patrol.oldLocation and #self.path_map[object._patrol.location] > 1 do
+    while route and route.location == object._patrol.prior_location and #self.path_map[object._patrol.location] > 1 do
         route = self:GetRandomRoute(object._patrol.location)
         attempts = attempts + 1
         if attempts > 10 then
@@ -136,7 +132,7 @@ function PatrolEngine:GiveRoute(object)
     end
 
     if route then
-        object._patrol.oldLocation = object._patrol.location
+        object._patrol.prior_location = object._patrol.location
         object._patrol.location = route.location
         object._patrol.timeout = math.random() * 5 + 1
         object._patrol.path = route.path
@@ -174,7 +170,7 @@ function PatrolEngine:AddGameObject(object)
     object._patrol = {
         --handle = handle,
         location = location,
-        oldLocation = nil,
+        prior_location = nil,
         timeout = 1,
         path = nil,
         busy = false
@@ -286,19 +282,6 @@ hook.Add("DeleteObject", "_patrol:DeleteObject", function(object)
         end
     end
 end, config.lock().hook_priority.DeleteObject.Patrol);
-
-
--- --- Initializes the patrol controller.
--- --- @param self PatrolController
--- --- @param handles table
--- --- @param forcedAlert boolean
--- function M.onInit(self, handles, forcedAlert)
---     for _, handle in pairs(handles or {}) do
---         M.AddGameObject(self, handle)
---     end
---     self.forcedAlert = not not forcedAlert
--- end
-
 
 customsavetype.Register(PatrolEngine);
 

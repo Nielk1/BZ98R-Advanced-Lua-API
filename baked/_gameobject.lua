@@ -23,6 +23,9 @@ local M = {};
 --- @return boolean
 function M.IsGameObject(object)
     --return (type(object) == "table" and object.__type == "GameObject");
+    if not customsavetype.IsCustomSavableType(object) then
+        return false;
+    end
     return customsavetype.Implements(object, "GameObject");
 end
 

@@ -79,13 +79,13 @@ end
 function M.Implements(obj, name, check_children)
     if not M.IsCustomSavableType(obj) then error("Invalid CustomSavableType"); end
 
-    if obj.__cache == nil then
+    if not obj.__cache then
         obj.__cache = M.NoSave();
     end
-    if obj.__cache.__implements == nil then
+    if not obj.__cache.__implements then
         obj.__cache.__implements = {};
     end
-    local cache_key = (check_children and "1" or "0") .. name
+    local cache_key = (check_children and "1" or "0") .. "?" .. name
     local cached_result = obj.__cache.__implements[cache_key]
     if cached_result ~= nil then
         return cached_result;
@@ -138,16 +138,16 @@ end
 function M.Cast(obj, name, check_children)
     if not M.IsCustomSavableType(obj) then error("Invalid CustomSavableType"); end
 
-    if obj.__cache == nil then
+    if not obj.__cache then
         obj.__cache = M.NoSave();
     end
-    if obj.__cache.__implements == nil then
+    if not obj.__cache.__implements then
         obj.__cache.__implements = {};
     end
-    if obj.__cache.__cast == nil then
+    if not obj.__cache.__cast then
         obj.__cache.__cast = {};
     end
-    local cache_key = (check_children and "1" or "0") .. name
+    local cache_key = (check_children and "1" or "0") .. "?" .. name
     local cached_result = obj.__cache.__cast[cache_key]
     if cached_result ~= nil then
         return cached_result;
@@ -200,7 +200,7 @@ end
 function M.Ancestors(obj)
     if not M.IsCustomSavableType(obj) then error("Invalid CustomSavableType"); end
 
-    if obj.__cache == nil then
+    if not obj.__cache then
         obj.__cache = M.NoSave();
     end
     if obj.__cache.__ancestors_set and obj.__cache.__ancestors_map then
@@ -236,7 +236,7 @@ function M.Ancestors(obj)
     end
 
     collect(obj);
-    if obj.__cache == nil then
+    if not obj.__cache then
         obj.__cache = M.NoSave();
     end
     obj.__cache.__ancestors_set = name_set
@@ -259,7 +259,7 @@ function M.Extend(obj, base)
     obj.__base = base;
 
     -- add to parent's children
-    if base.__children == nil then
+    if not base.__children then
         base.__children = {};
     end
     if not base.__children[obj.__type] then

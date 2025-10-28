@@ -30,7 +30,7 @@ end
 --- @param object any Object in question
 --- @return GameObject?
 function M.ExtractGameObject(object)
-    return customsavetype.Extract(object, "GameObject");
+    return customsavetype.Cast(object, "GameObject");
 end
 
 local GameObjectWeakList_MT = {};
@@ -47,7 +47,8 @@ local GameObjectSeqNoDeadMemo = setmetatable({}, GameObjectWeakList_MT); -- maps
 --- An object containing all functions and data related to a game object.
 --- {(!!)(!!) Sub-typing a GameObject is illadvised as any system using the GameObject as a key must Extract the parent GameObject instance
 --- and any occurence of that GameObject will thus not be your custom derivative class. If you do subclass GameObject, be sure to store the
---- subclass instance inside the original GameObject. The circular reference resolver will fix any serialization issues for you.}
+--- subclass instance inside of the `__children` field as outlined by the CustomSavableType contract. The circular reference resolver will
+--- fix any serialization issues for you.}
 --- @class GameObject : CustomSavableType
 --- @field id Handle Handle used by BZ98R
 --- @field addonData table Extended data saved into the object

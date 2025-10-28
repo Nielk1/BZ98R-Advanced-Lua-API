@@ -145,7 +145,7 @@ function PatrolEngine.AddGameObject(self, object)
         error("PatrolEngine.AddGameObject: object is not a GameObject");
     end
     --- @cast object GameObject
-    object = customsavetype.Extract(object, "GameObject");
+    object = customsavetype.Cast(object, "GameObject");
     if object == nil then
         error("PatrolEngine.AddGameObject: object is not a GameObject");
     end
@@ -198,7 +198,7 @@ function PatrolEngine.RemoveGameObject(self, object)
         error("PatrolEngine.RemoveGameObject: object is not a GameObject");
     end
     --- @cast object GameObject
-    object = customsavetype.Extract(object, "GameObject");
+    object = customsavetype.Cast(object, "GameObject");
     if object == nil then
         error("PatrolEngine.RemoveGameObject: object is not a GameObject");
     end

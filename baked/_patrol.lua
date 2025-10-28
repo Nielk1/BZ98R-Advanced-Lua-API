@@ -57,17 +57,21 @@ function M.new()
     return Construct({}, {}, {}, false)
 end
 
+--- @class PathDescription
+--- @field path string path to location
+--- @field location string location at end of path
+
 --- @class PatrolEngine : CustomSavableType
---- @field path_map table<string, table>
+--- @field path_map table<string, PathDescription[]>
 --- @field patrol_units table<GameObject_patrol, boolean>
---- @field locations table<string>
+--- @field locations string[]
 --- @field forcedAlert boolean
 PatrolEngine = { __type = "PatrolEngine" };
 
 --- Registers a location.
 --- @param self PatrolEngine
 --- @param locationName string
-function PatrolEngine.RegisterLocation(self, locationName)
+function PatrolEngine:RegisterLocation(locationName)
     self.path_map[locationName] = {}
     table.insert(self.locations, locationName)
 end
@@ -75,9 +79,9 @@ end
 --- Registers multiple locations.
 --- @param self PatrolEngine
 --- @param locations string[]
-function PatrolEngine.RegisterLocations(self, locations)
+function PatrolEngine:RegisterLocations(locations)
     for _, location in pairs(locations) do
-        PatrolEngine.RegisterLocation(self, location)
+        PatrolEngine:RegisterLocation(location)
     end
 end
 
@@ -94,7 +98,7 @@ end
 --- @param self PatrolEngine
 --- @param location string
 --- @param routes table<string, string>
-function PatrolEngine.DefineRoutes(self, location, routes)
+function PatrolEngine:DefineRoutes(location, routes)
     for path, endpoint in pairs(routes) do
         _connectPaths(self, location, path, endpoint)
     end
@@ -103,24 +107,28 @@ end
 --- Gets a random route for a location.
 --- @param self PatrolEngine
 --- @param location string
---- @return table
-function PatrolEngine.GetRandomRoute(self, location)
-    if #self.path_map[location] < 2 then
-        return self.path_map[location][1]
+--- @return PathDescription?
+function PatrolEngine:GetRandomRoute(location)
+    local routes = self.path_map[location]
+    if not routes or #routes == 0 then
+        return nil
     end
-    local randomIndex = math.random(1, #self.path_map[location])
-    return self.path_map[location][randomIndex]
+    if #routes < 2 then
+        return routes[1]
+    end
+    local randomIndex = math.random(1, #routes)
+    return routes[randomIndex]
 end
 
 --- Assigns a route to a patrol unit.
 --- @param self PatrolEngine
---- @param handle GameObject_patrol
-function PatrolEngine.GiveRoute(self, handle)
-    local route = PatrolEngine.GetRandomRoute(self,handle._patrol.location)
+--- @param object GameObject_patrol
+function PatrolEngine:GiveRoute(object)
+    local route = PatrolEngine:GetRandomRoute(object._patrol.location)
     local attempts = 0
 
-    while route and route.location == handle._patrol.oldLocation and #self.path_map[handle._patrol.location] > 1 do
-        route = PatrolEngine.GetRandomRoute(self,handle._patrol.location)
+    while route and route.location == object._patrol.oldLocation and #self.path_map[object._patrol.location] > 1 do
+        route = PatrolEngine:GetRandomRoute(object._patrol.location)
         attempts = attempts + 1
         if attempts > 10 then
             break
@@ -128,19 +136,19 @@ function PatrolEngine.GiveRoute(self, handle)
     end
 
     if route then
-        handle._patrol.oldLocation = handle._patrol.location
-        handle._patrol.location = route.location
-        handle._patrol.timeout = math.random() * 5 + 1
-        handle._patrol.path = route.path
-        handle._patrol.busy = false
-        handle:Goto(route.path)
+        object._patrol.oldLocation = object._patrol.location
+        object._patrol.location = route.location
+        object._patrol.timeout = math.random() * 5 + 1
+        object._patrol.path = route.path
+        object._patrol.busy = false
+        object:Goto(route.path)
     end
 end
 
 --- Adds a handle to the patrol units.
 --- @param self PatrolEngine
 --- @param object GameObject
-function PatrolEngine.AddGameObject(self, object)
+function PatrolEngine:AddGameObject(object)
     if gameobject.IsGameObject(object) == false then
         error("PatrolEngine.AddGameObject: object is not a GameObject");
     end
@@ -172,12 +180,15 @@ function PatrolEngine.AddGameObject(self, object)
         busy = false
     };
     self.patrol_units[object] = true;
-    PatrolEngine.GiveRoute(self,object)
+    PatrolEngine:GiveRoute(object)
 end
 
+--- Gets a list of keys from a table.
+--- @param t table
+--- @return any[]
 local function keylist(t)
     local r = {};
-    for k in pairs(t) do
+    for k,_ in pairs(t) do
         table.insert(r, k);
     end
     return r;
@@ -186,14 +197,14 @@ end
 --- Gets all patrol unit handles.
 --- @param self PatrolEngine
 --- @return table
-function PatrolEngine.GetGameObjects(self)
+function PatrolEngine:GetGameObjects()
     return keylist(self.patrol_units);
 end
 
 --- Removes a handle from the patrol units.
 --- @param self PatrolEngine
 --- @param object GameObject
-function PatrolEngine.RemoveGameObject(self, object)
+function PatrolEngine:RemoveGameObject(object)
     if gameobject.IsGameObject(object) == false then
         error("PatrolEngine.RemoveGameObject: object is not a GameObject");
     end
@@ -209,17 +220,20 @@ end
 
 --- {INTERNAL USE}
 --- @param self PatrolEngine instance
---- @return ...
-function PatrolEngine.Save(self)
+--- @return table<string, table> path_map
+--- @return string[] patrol_units
+--- @return string[] locations
+--- @return boolean forcedAlert
+function PatrolEngine:Save()
     return self.path_map, keylist(self.patrol_units), self.locations, self.forcedAlert
 end
 
 --- Load event function.
 ---
 --- {INTERNAL USE}
---- @param path_map table
---- @param patrol_units table
---- @param locations table
+--- @param path_map table<string, table>
+--- @param patrol_units string[]
+--- @param locations string[]
 --- @param forcedAlert boolean
 --- @return PatrolEngine
 function PatrolEngine.Load(path_map, patrol_units, locations, forcedAlert)
@@ -241,15 +255,15 @@ local function update(self, dtime)
             local currentCommand = unit:GetCurrentCommand()
 
             if self.forcedAlert then
-                if currentCommand ~= AiCommand["ATTACK"] and nearestEnemy and nearestEnemy:IsAlive() and unit:IsWithin(nearestEnemy, 125) then
+                if currentCommand ~= AiCommand.ATTACK and nearestEnemy and nearestEnemy:IsAlive() and unit:IsWithin(nearestEnemy, 125) then
                     unit:Attack(nearestEnemy)
                     unit._patrol.busy = true
                 end
             end
 
-            if not unit._patrol.busy and currentCommand == AiCommand["NONE"] then
-                PatrolEngine.GiveRoute(self, unit)
-            elseif unit._patrol.busy and currentCommand == AiCommand["NONE"] then
+            if not unit._patrol.busy and currentCommand == AiCommand.NONE then
+                PatrolEngine:GiveRoute(unit)
+            elseif unit._patrol.busy and currentCommand == AiCommand.NONE then
                 unit._patrol.busy = false
                 unit:Goto(unit._patrol.path)
             end

@@ -154,9 +154,9 @@ function M.Cast(obj, name, check_children)
     end
     -- if we have an ancestors map and we know we implement it, check there
     if obj.__cache.__ancestors_map and obj.__cache.__implements[cache_key] then
-        cached_result = obj.__cache.__ancestors_map[name]
-        if cached_result ~= nil then
-            return cached_result;
+        local cached_result2 = obj.__cache.__ancestors_map[name]
+        if cached_result2 ~= nil then
+            return cached_result2;
         end
     end
 

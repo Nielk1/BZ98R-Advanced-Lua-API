@@ -161,7 +161,7 @@ end
 --- Save event function.
 --- {INTERNAL USE}
 --- @param self GameObject GameObject instance
---- @return any ...
+--- @return Handle id
 function GameObject:Save()
     return self.id;
 end

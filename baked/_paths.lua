@@ -48,4 +48,5 @@ logger.print(logger.LogLevel.DEBUG, nil, "_paths Loaded");
 
 return M;
 
---- @alias PathWithIndex { [1]: string, [2]: integer }
+--- @alias PathName string
+--- @alias PathWithIndex { [1]: PathName, [2]: integer }

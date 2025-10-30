@@ -15,7 +15,8 @@
             background-color: #101112;
         }
 
-        #log {
+        #log,
+        #processed {
             white-space: pre;
             font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', 'Courier New', monospace;
         }
@@ -170,6 +171,111 @@
             }
         }
 
+        function extractSource(src) {
+            // Match filename.lua#123
+            const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
+            if (match) {
+                return match[1];
+            } else {
+                return src;
+            }
+        }
+
+        function parseLuaValue(luaStr) {
+            // Replace Lua booleans
+            luaStr = luaStr.replace(/\btrue\b/g, 'true').replace(/\bfalse\b/g, 'false');
+            // Replace Lua nil
+            luaStr = luaStr.replace(/\bnil\b/g, 'null');
+            // Replace single quotes with double quotes for strings
+            luaStr = luaStr.replace(/'/g, '"');
+            // Replace Lua table keys (a=1) with JSON keys ("a":1)
+            luaStr = luaStr.replace(/([a-zA-Z_][a-zA-Z0-9_]*)\s*=/g, '"$1":');
+            // Replace Lua arrays {1,2,3} with JSON arrays [1,2,3]
+            // If keys are all numbers and sequential, treat as array
+            // Otherwise, treat as object
+            // For simplicity, convert all curly braces to brackets
+            // This works for flat arrays/tables, not nested
+            let isArray = /^\s*\{(\s*\d+\s*,?)*\s*\}\s*$/.test(luaStr);
+            if (isArray) {
+                luaStr = luaStr.replace(/^\s*\{/, '[').replace(/\}\s*$/, ']');
+            } else {
+                luaStr = luaStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
+            }
+            // Now parse as JSON
+            try {
+                return JSON.parse(luaStr);
+            } catch (e) {
+                console.error("Failed to parse Lua:", luaStr, e);
+                return null;
+            }
+        }
+        
+        let data = {};
+        let permits = {};
+
+        let _patrol_data = {};
+
+        function procPossibleData(source, data)
+        {
+            switch (source) {
+                case '_patrol.lua':
+                    {
+                        const [type] = data.split('|', 1);
+                        switch (type) {
+                            case 'AddRoute':
+                                {
+                                    const [id, origin, destination, path, weight, enabled] = data.split('|').slice(1);
+                                    if (!_patrol_data[id]) {
+                                        _patrol_data[id] = {};
+                                    }
+                                    if (!_patrol_data[id].routes) {
+                                        _patrol_data[id].routes = {};
+                                    }
+                                    let route_id = origin + "\t" + destination;
+                                    _patrol_data[id].routes[route_id] = {
+                                        origin: origin,
+                                        destination: destination,
+                                        weight: weight,
+                                        enabled: enabled
+                                    };
+                                    document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+                                }
+                                break;
+                            case 'Location':
+                                {
+                                    const [id, location, position] = data.split('|').slice(1);
+                                    let location_parsed = parseLuaValue(position);
+                                    location_parsed.radius = location_parsed.y;
+                                    delete location_parsed.y;
+                                    if (!_patrol_data[id]) {
+                                        _patrol_data[id] = {};
+                                    }
+                                    if (!_patrol_data[id].locations) {
+                                        _patrol_data[id].locations = {};
+                                    }
+                                    _patrol_data[id].locations[location] = location_parsed;
+
+                                    document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+                                }
+                                break;
+                            case 'PatrolEngines':
+                                {
+                                    const allowed = data.split('|').slice(1);
+                                    for (const key in _patrol_data) {
+                                        if (!allowed.includes(key)) {
+                                            delete _patrol_data[key];
+                                        }
+                                    }
+
+                                    document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+            }
+        }
+
         window.onload = function () {
             const logDiv = document.getElementById('log');
             const logScrollParent = logDiv.parentElement; // .card-body
@@ -194,6 +300,8 @@
                     if (isAtBottom) {
                         logScrollParent.scrollTop = logScrollParent.scrollHeight;
                     }
+
+                    procPossibleData(extractSource(source), msg);
                 }
             };
             evtSource.onerror = function () {

@@ -11,8 +11,11 @@
         body {
         }
 
-        #log {
+        .card-body {
             background-color: #101112;
+        }
+
+        #log {
             white-space: pre;
             font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', 'Courier New', monospace;
         }
@@ -21,23 +24,35 @@
                 padding-right: 0.5em;
             }
 
-            #log > div:nth-child(even) {
-                background-color: #181a1b;
-            }
+                #log > div:nth-child(even) {
+                    background-color: #232425;
+                }
 
-            #log > div:nth-child(odd) {
-                background-color: #232425;
-            }
+                #log > div:nth-child(odd) {
+                    background-color: #181a1b;
+                }
 
-            #log > div:hover {
-                background-color: #000000;
-            }
+                #log > div:hover {
+                    background-color: #000000;
+                }
+
+        .source-filename {
+            color: #8ecae6; /* Adjust as needed */
+        }
+
+        .source-line {
+            color: #ffb703; /* Adjust as needed */
+        }
+
+        .source-other {
+            color: #fb8500; /* Adjust as needed */
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="grid-stack">
-            <div class="grid-stack-item" id="window-raw_log" gs-x="0" gs-y="0" gs-w="6" gs-h="8">
+            <div class="grid-stack-item" id="window-raw_log" gs-x="0" gs-y="0" gs-w="12" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
                         <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
@@ -47,7 +62,7 @@
                                 <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
                             </div>
                         </div>
-                        <div class="card-body p-0" style="overflow:auto; background-color:#101112;">
+                        <div class="card-body p-0" style="overflow:scroll;">
                             <div id="log"></div>
                         </div>
                     </div>
@@ -63,7 +78,7 @@
                                 <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
                             </div>
                         </div>
-                        <div class="card-body p-2" style="overflow:scroll; background-color:#101112;">
+                        <div class="card-body p-2" style="overflow:scroll;">
                             <div id="processed"></div>
                         </div>
                     </div>
@@ -145,6 +160,16 @@
                    `${secs.toFixed(3).padStart(6, '0')}`;
         }
 
+        function formatSource(src) {
+            // Match filename.lua#123
+            const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
+            if (match) {
+                return `<span class="source-filename">${match[1]}</span><span class="source-line">#${match[2]}</span>${match[3]}`;
+            } else {
+                return `<span class="source-other">${src}</span>${match[3]}`;
+            }
+        }
+
         window.onload = function () {
             const logDiv = document.getElementById('log');
             const logScrollParent = logDiv.parentElement; // .card-body
@@ -160,7 +185,8 @@
                     const formattedTime = formatTimestamp(time);
                     line.innerHTML =
                         //`<span class="text-secondary" style="font-family:monospace; margin-right:0.5em;">${rawTime}</span>` +
-                        `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span>` +
+                        `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span> ` +
+                        formatSource(source) +
                         ansiToHtml(msg);
                     line.className = parent_type === 'error' ? 'text-danger' : 'text-light';
                     const isAtBottom = Math.abs(logScrollParent.scrollTop + logScrollParent.clientHeight - logScrollParent.scrollHeight) < 2;

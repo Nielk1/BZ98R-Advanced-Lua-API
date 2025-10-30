@@ -130,7 +130,7 @@ local function PrintQueue(team)
     end
     local queue = ProducerQueue[team];
     if queue then
-        if logger.settings.structure == logger.LogStructure.DATA then
+        if logger.IsDataMode() then
             local producerOutput = {};
             --for producer, job in pairs(ProducerOrders) do
             --    producerOutput[producer:GetHandle()] = job;

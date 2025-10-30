@@ -257,15 +257,17 @@ function M.print(level, context, ...)
     if level > settings.level then
         return;
     end
-    local contextWrap = context;
-    if not contextWrap then
+
+    if not context then
         local info = debug.getinfo(2, "Sl")
         local filename = info.short_src or "unknown"
         filename = filename:gsub('%[string "(.-)"%]', '%1')
         filename = filename:match("[^/\\]+$") or filename -- strip path
         local lineinfo = info.currentline and ("#" .. info.currentline) or ""
-        contextWrap = filename .. lineinfo;
+        context = filename .. lineinfo;
     end
+
+    local contextWrap = context;
     if level ~= M.LogLevel.ERROR then
         -- supressed logging by context, except for errors
         for _, pattern in ipairs(settings.suppress) do
@@ -342,7 +344,7 @@ local function encode_data(obj)
                 -- already handled in array portion
             else
                 local r = encode_data(v)
-                if type(k) == "string" and string.match(k, "^[A-Za-z][A-Za-z0-9]*$") then
+                if type(k) == "string" and string.match(k, "^[A-Za-z_][A-Za-z0-9_]*$") then
                     table.insert(items, string.format("%s=%s", k, r))
                 else
                     table.insert(items, string.format("[%q]=%s", tostring(k), r))
@@ -382,6 +384,16 @@ end
 --- @param name string
 --- @param data any
 function M.data(level, context, name, data)
+
+    if not context then
+        local info = debug.getinfo(2, "Sl")
+        local filename = info.short_src or "unknown"
+        filename = filename:gsub('%[string "(.-)"%]', '%1')
+        filename = filename:match("[^/\\]+$") or filename -- strip path
+        local lineinfo = info.currentline and ("#" .. info.currentline) or ""
+        context = filename .. lineinfo;
+    end
+
     local seen = {}
     local tables = {}
     local order = {}
@@ -477,15 +489,22 @@ function M.data(level, context, name, data)
     serialize(data)
 
     -- Output lines
-    M.print(level, context, "START|" .. name)
-    -- Iterate in arbitrary order since table addresses are not sequential
-    for i = #order, 1, -1 do
-        local id = order[i]
-        local t = tables[id]
-        local json_str, type = encode_data(t)
-        M.print(level, context, type .. "|" .. id .. "|" .. json_str)
-    end
-    M.print(level, context, "END|" .. name)
+    --if #order == 1 then
+    --    local id = order[1]
+    --    local t = tables[id]
+    --    local encoded_str, type = encode_data(t)
+    --    M.print(level, context, "ONE|" .. name .. "|" .. type .. "|" .. encoded_str)
+    --else
+        M.print(level, context, "START|" .. name)
+        -- Iterate in arbitrary order since table addresses are not sequential
+        for i = #order, 1, -1 do
+            local id = order[i]
+            local t = tables[id]
+            local encoded_str, type = encode_data(t)
+            M.print(level, context, type .. "|" .. id .. "|" .. encoded_str)
+        end
+        M.print(level, context, "END|" .. name)
+    --end
 end
 
 -- [[START_IGNORE]]
@@ -514,6 +533,10 @@ elseif settings.intercept_print == M.InterceptPrint.LOGGER then
 end
 
 -- [[END_IGNORE]]
+
+function M.IsDataMode()
+    return M.settings.structure == M.LogStructure.DATA;
+end
 
 --logger.print(logger.LogLevel.DEBUG, nil, "_logger Loaded");
 

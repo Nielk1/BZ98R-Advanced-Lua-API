@@ -19,6 +19,13 @@ local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 
+--- @param tbl table
+--- @return string
+local function getTableId(tbl)
+    -- Use the table's memory address as its unique ID
+    return tostring(tbl):sub(-8);
+end
+
 --- @class _patrol
 local M = {}
 
@@ -26,21 +33,22 @@ local PatrolManagerWeakList_MT = {};
 PatrolManagerWeakList_MT.__mode = "k";
 local PatrolManagerWeakList = setmetatable({}, PatrolManagerWeakList_MT);
 
+--- Debug print timer
+local next_dump = math.huge;
+
 --- @class PathDescription
 --- @field weight number
 --- @field enabled boolean
-
---- @class PatrolEngineCacheData
---- @field startpoints table<string, table<string, boolean>>
---- @field destination table<string, table<string, boolean>>
---- @field locations table<string, Vector> approximate vector positions of locations
---- @field location_sizes table<string, number> approximate size of locations for possible future use
 
 --- @class PatrolEngine : CustomSavableType
 --- @field patrol_units table<GameObject_patrol, boolean> Set of units managed by the PatrolEngine
 --- @field forcedAlert boolean Do units latch onto and attack enemies encountered?
 --- @field graph table<string, table<string, table<PathName, PathDescription>>>
---- @field cache PatrolEngineCacheData
+--- @field cache_startpoints table<string, table<string, boolean>>
+--- @field cache_destination table<string, table<string, boolean>>
+--- @field cache_locations table<string, Vector> approximate vector positions of locations
+--- @field cache_location_sizes table<string, number> approximate size of locations for possible future use
+--- @field cache_path_map table<PathName, table<string, { [1]: string, [2]: string }>>
 local PatrolEngine = { __type = "PatrolEngine" };
 
 --- Called when an object is added.
@@ -54,11 +62,11 @@ local function Construct(graph, patrol_units, forcedAlert)
     self.forcedAlert = forcedAlert
     self.graph = {}
 
-    self.cache = customsavetype.NoSave();
-    self.cache.startpoints = {};
-    self.cache.destination = {};
-    self.cache.locations = {};
-    self.cache.location_sizes = {};
+    self.cache_startpoints = {};
+    self.cache_destination = {};
+    self.cache_locations = {};
+    self.cache_location_sizes = {};
+    self.cache_path_map = {};
 
     for _, unit in ipairs(patrol_units) do
         self.patrol_units[unit] = true;
@@ -109,22 +117,22 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
         enabled = (enabled == nil) and true or enabled,
     };
 
-    if not self.cache.startpoints[startpoint] then
-        self.cache.startpoints[startpoint] = {};
+    if not self.cache_startpoints[startpoint] then
+        self.cache_startpoints[startpoint] = {};
     end
-    self.cache.startpoints[startpoint][path] = true;
+    self.cache_startpoints[startpoint][path] = true;
 
-    if not self.cache.destination[endpoint] then
-        self.cache.destination[endpoint] = {};
+    if not self.cache_destination[endpoint] then
+        self.cache_destination[endpoint] = {};
     end
-    self.cache.destination[endpoint][path] = true;
-    
+    self.cache_destination[endpoint][path] = true;
+
     -- Recalculate approximate location vectors
     local start_pos = SetVector(0, 0, 0);
     local start_corner_min = nil;
     local start_corner_max = nil;
     local start_count = 0;
-    for path_name, _ in pairs(self.cache.startpoints[startpoint]) do
+    for path_name, _ in pairs(self.cache_startpoints[startpoint]) do
         local pos = GetPosition(path_name, 0);
         if pos then
             start_pos = start_pos + pos;
@@ -144,8 +152,8 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
             );
         end
     end
-    if self.cache.destination[startpoint] then
-        for path_name, _ in pairs(self.cache.destination[startpoint]) do
+    if self.cache_destination[startpoint] then
+        for path_name, _ in pairs(self.cache_destination[startpoint]) do
             local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
             if pos then
                 start_pos = start_pos + pos;
@@ -166,9 +174,9 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
             end
         end
     end
-    self.cache.locations[startpoint] = start_count > 0 and (start_pos / start_count) or SetVector(0, 0, 0);
+    self.cache_locations[startpoint] = start_count > 0 and (start_pos / start_count) or SetVector(0, 0, 0);
     if start_corner_min and start_corner_max then
-        self.cache.location_sizes[startpoint] = Length(start_corner_max - start_corner_min);
+        self.cache_location_sizes[startpoint] = Length(start_corner_max - start_corner_min) / 2;
     end
 
     -- Recalculate approximate location vectors
@@ -176,8 +184,8 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
     local end_corner_min = nil;
     local end_corner_max = nil;
     local end_count = 0;
-    if self.cache.startpoints[endpoint] then
-        for path_name, _ in pairs(self.cache.startpoints[endpoint]) do
+    if self.cache_startpoints[endpoint] then
+        for path_name, _ in pairs(self.cache_startpoints[endpoint]) do
             local pos = GetPosition(path_name, 0);
             if pos then
                 end_pos = end_pos + pos;
@@ -198,7 +206,7 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
             end
         end
     end
-    for path_name, _ in pairs(self.cache.destination[endpoint]) do
+    for path_name, _ in pairs(self.cache_destination[endpoint]) do
         local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
         if pos then
             end_pos = end_pos + pos;
@@ -218,12 +226,30 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
             );
         end
     end
-    self.cache.locations[endpoint] = end_count > 0 and (end_pos / end_count) or SetVector(0, 0, 0);
+    self.cache_locations[endpoint] = end_count > 0 and (end_pos / end_count) or SetVector(0, 0, 0);
     if end_corner_min and end_corner_max then
-        self.cache.location_sizes[endpoint] = Length(end_corner_max - end_corner_min);
+        self.cache_location_sizes[endpoint] = Length(end_corner_max - end_corner_min) / 2;
     end
 
-    logger.print(logger.LogLevel.DEBUG, nil, "AddRoute " .. tostring(self) .. " '" .. startpoint .. "' -> '" .. path .. "' -> '" .. endpoint .. "'");
+    if not self.cache_path_map[path] then
+        self.cache_path_map[path] = {};
+    end
+    self.cache_path_map[path][startpoint .. "\t" .. endpoint] = { startpoint, endpoint };
+
+    if logger.IsDataMode() then
+        local path_data = self.graph[startpoint][endpoint][path];
+        -- use this message to know what PatrolEngine routes exist
+        logger.print(logger.LogLevel.DEBUG, nil,
+            string.format("AddRoute|%s|%q|%f|%q|%f|%q|%f|%d",
+            getTableId(self),
+            startpoint, self.cache_location_sizes[startpoint] or 0,
+            endpoint, self.cache_location_sizes[endpoint] or 0,
+            path, path_data.weight or 0, path_data.enabled and 1 or 0));
+    else
+        logger.print(logger.LogLevel.DEBUG, nil, "AddRoute " .. tostring(self) .. " '" .. startpoint .. "' -> '" .. path .. "' -> '" .. endpoint .. "'");
+    end
+
+    next_dump = 0;
 
     return self;
 end
@@ -238,10 +264,11 @@ end
 --- Gets a random route for a location.
 --- @param self PatrolEngine
 --- @param location string
---- @param avoid_locations string[]?
+--- @param avoid_locations string[]? locations to avoid
+--- @param strict_avoid boolean? never allow an avoided location
 --- @return string? destination
 --- @return PathName? path_data
-function PatrolEngine:GetRandomRouteFrom(location, avoid_locations)
+function PatrolEngine:GetRandomRouteFrom(location, avoid_locations, strict_avoid)
     local destinations = self.graph[location]
     if not destinations or not next(destinations) then
         return nil
@@ -262,12 +289,14 @@ function PatrolEngine:GetRandomRouteFrom(location, avoid_locations)
     local totalWeightWithAvoids = 0;
     for destination, paths in pairs(destinations) do
         if avoids[destination] then
-            for path_name, path_data in pairs(paths) do
-                local p = { location = destination, path_name = path_name, totalWeight = totalWeight, path = path_data};
-                totalWeight = totalWeight + (path_data.weight or 1);
-                table.insert(path_options, p);
-                totalWeightWithAvoids = totalWeightWithAvoids + (path_data.weight or 1);
-                table.insert(path_options_with_avoids, p);
+            if not strict_avoid then
+                for path_name, path_data in pairs(paths) do
+                    local p = { location = destination, path_name = path_name, totalWeight = totalWeight, path = path_data};
+                    totalWeight = totalWeight + (path_data.weight or 1);
+                    table.insert(path_options, p);
+                    totalWeightWithAvoids = totalWeightWithAvoids + (path_data.weight or 1);
+                    table.insert(path_options_with_avoids, p);
+                end
             end
         else
             for path_name, path_data in pairs(paths) do
@@ -300,15 +329,15 @@ end
 --- @param self PatrolEngine
 --- @param object GameObject_patrol
 function PatrolEngine:GiveRoute(object)
-    local destination, path = self:GetRandomRouteFrom(object._patrol.location, object._patrol.prior_location and {object._patrol.prior_location} or nil)
+    local destination, path = self:GetRandomRouteFrom(object._patrol.location, object._patrol.origin_location and {object._patrol.origin_location} or nil, true);
 
     if destination and path then
-        object._patrol.prior_location = object._patrol.location
-        object._patrol.location = destination
-        object._patrol.timeout = math.random() * 5 + 1
-        object._patrol.path = path
-        object._patrol.busy = false
-        object:Goto(path)
+        object._patrol.origin_location = object._patrol.location;
+        object._patrol.location = destination;
+        object._patrol.timeout = math.random() * 5 + 1;
+        object._patrol.path = path;
+        object._patrol.distracted = nil;
+        object:Goto(path);
     end
 end
 
@@ -347,10 +376,10 @@ function PatrolEngine:AddGameObject(object)
     object._patrol = {
         --handle = handle,
         location = location,
-        prior_location = nil,
+        origin_location = nil,
         timeout = 1,
         path = nil,
-        busy = false
+        distracted = false
     };
     self.patrol_units[object] = true;
     self:GiveRoute(object)
@@ -416,7 +445,7 @@ end
 --- Updates the patrol controller.
 --- @param self PatrolEngine
 --- @param dtime number
-local function update(self, dtime)
+local function update(self, dtime, ttime)
     for unit, _ in pairs(self.patrol_units) do
         unit._patrol.timeout = unit._patrol.timeout - dtime;
         if unit._patrol.timeout <= 0 then
@@ -426,24 +455,45 @@ local function update(self, dtime)
             if self.forcedAlert then
                 if currentCommand ~= AiCommand.ATTACK and nearestEnemy and nearestEnemy:IsAlive() and unit:IsWithin(nearestEnemy, 125) then
                     unit:Attack(nearestEnemy);
-                    unit._patrol.busy = true;
+                    unit._patrol.distracted = true;
                 end
             end
 
-            if not unit._patrol.busy and currentCommand == AiCommand.NONE then
-                self:GiveRoute(unit);
-            elseif unit._patrol.busy and currentCommand == AiCommand.NONE then
-                unit._patrol.busy = false;
-                unit:Goto(unit._patrol.path);
+            -- not currently busy
+            if currentCommand == AiCommand.NONE then
+                if unit._patrol.distracted then
+                    -- was distracted, return to old path
+                    unit._patrol.distracted = nil;
+                    unit:Goto(unit._patrol.path); -- join the closest path point
+                else
+                    -- not distracted, give a reasonable route
+                    self:GiveRoute(unit);
+                end
             end
         end
     end
 end
 
 hook.Add("Update", "_patrol:Update", function(dtime, ttime)
+    if logger.IsDataMode() then
+        if ttime > next_dump then
+            next_dump = ttime + 60;
+
+            local activeManager = {};
+            for manager, _ in pairs(PatrolManagerWeakList) do
+                if manager then
+                    table.insert(activeManager, getTableId(manager));
+                end
+            end
+
+            -- use this message to know what PatrolEngines are gone
+            logger.print(logger.LogLevel.DEBUG, nil, "PatrolEngines|" ..  table.concat(activeManager, ","));
+        end
+    end
+
     for manager, _ in pairs(PatrolManagerWeakList) do
         if manager then
-            update(manager, dtime);
+            update(manager, dtime, ttime);
         end
     end
 end, config.lock().hook_priority.Update.Patrol);
@@ -463,11 +513,11 @@ logger.print(logger.LogLevel.DEBUG, nil, "_patrol Loaded");
 return M;
 
 --- @class PatrolData
---- @field busy boolean
+--- @field distracted boolean? Unit was distracted and should return to old path when no longer distracted
 --- @field timeout number
---- @field path string?
+--- @field path string? Current path the unit is on
 --- @field location string?
---- @field prior_location string?
+--- @field origin_location string?
 
 --- @class GameObject_patrol : GameObject
 --- @field _patrol PatrolData

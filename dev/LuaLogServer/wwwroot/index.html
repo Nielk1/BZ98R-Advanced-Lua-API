@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lua Web Log Server</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        body {
+        }
+
+        #log {
+            background-color: #101112;
+            white-space: pre;
+            font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', 'Courier New', monospace;
+        }
+            #log > div {
+                padding-left: 0.5em;
+                padding-right: 0.5em;
+            }
+
+            #log > div:nth-child(even) {
+                background-color: #181a1b;
+            }
+
+            #log > div:nth-child(odd) {
+                background-color: #232425;
+            }
+
+            #log > div:hover {
+                background-color: #000000;
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="grid-stack">
+            <div class="grid-stack-item" id="window-raw_log" gs-x="0" gs-y="0" gs-w="6" gs-h="8">
+                <div class="grid-stack-item-content p-0">
+                    <div class="card bg-dark text-light h-100 shadow border-secondary">
+                        <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
+                            <span>Raw Log</span>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
+                                <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0" style="overflow:auto; background-color:#101112;">
+                            <div id="log"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-stack-item" id="window-test" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
+                <div class="grid-stack-item-content p-0">
+                    <div class="card bg-dark text-light h-100 shadow border-secondary">
+                        <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
+                            <span>Test</span>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
+                                <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body p-2" style="overflow:scroll; background-color:#101112;">
+                            <div id="processed"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load GridStack before using it -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const grid = GridStack.init({
+                cellHeight: 70,
+                handle: '.card-header' // Only the header is draggable
+            });
+
+            // Minimize: collapse card-body and shrink grid item
+            document.querySelectorAll('.btn[title="Minimize"]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const gridItem = btn.closest('.grid-stack-item');
+                    const card = gridItem.querySelector('.card');
+                    const body = card.querySelector('.card-body');
+                    const isMinimized = body.classList.toggle('d-none');
+                    if (isMinimized) {
+                        grid.update(gridItem, { h: 1 });
+                    } else {
+                        grid.update(gridItem, { h: 4 });
+                    }
+                });
+            });
+
+            // Maximize: expand to full grid width and restore card body
+            document.querySelectorAll('.btn[title="Maximize"]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const gridItem = btn.closest('.grid-stack-item');
+                    const card = gridItem.querySelector('.card');
+                    const body = card.querySelector('.card-body');
+                    body.classList.remove('d-none');
+                    grid.update(gridItem, {
+                        x: 0,
+                        y: 0,
+                        w: grid.getColumn(),
+                        h: 8 // or any large value you prefer
+                    });
+                });
+            });
+        });
+    </script>
+
+    <script>
+        function ansiToHtml(text) {
+            const ansi_up = new AnsiUp();
+            return ansi_up.ansi_to_html(text);
+        }
+        function stripAnsi(text) {
+            return text.replace(/\x1b\[[0-9;]*m/g, '');
+        }
+    </script>
+
+    <script>
+        function splitKeepRemainder(str, delimiter, count) {
+            const parts = str.split(delimiter);
+            if (parts.length <= count) return parts;
+            const result = parts.slice(0, count - 1);
+            result.push(parts.slice(count - 1).join(delimiter));
+            return result;
+        }
+
+        function formatTimestamp(tsStr) {
+            // Remove leading spaces and parse as float
+            const seconds = parseFloat(tsStr.trim());
+            if (isNaN(seconds)) return tsStr;
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            // Format as hh:mm:ss.sss
+            return `${hours.toString().padStart(2, '0')}:` +
+                   `${minutes.toString().padStart(2, '0')}:` +
+                   `${secs.toFixed(3).padStart(6, '0')}`;
+        }
+
+        window.onload = function () {
+            const logDiv = document.getElementById('log');
+            const logScrollParent = logDiv.parentElement; // .card-body
+
+            const evtSource = new EventSource('/tail');
+            evtSource.onmessage = function (event) {
+                const [parent_type, time, source, type, msg] = splitKeepRemainder(event.data, '|', 5);
+                if (parent_type == 'reset') {
+                    logDiv.innerHTML = '';
+                } else {
+                    const line = document.createElement('div');
+                    const rawTime = time; // as received
+                    const formattedTime = formatTimestamp(time);
+                    line.innerHTML =
+                        //`<span class="text-secondary" style="font-family:monospace; margin-right:0.5em;">${rawTime}</span>` +
+                        `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span>` +
+                        ansiToHtml(msg);
+                    line.className = parent_type === 'error' ? 'text-danger' : 'text-light';
+                    const isAtBottom = Math.abs(logScrollParent.scrollTop + logScrollParent.clientHeight - logScrollParent.scrollHeight) < 2;
+                    logDiv.appendChild(line);
+                    if (isAtBottom) {
+                        logScrollParent.scrollTop = logScrollParent.scrollHeight;
+                    }
+                }
+            };
+            evtSource.onerror = function () {
+                const line = document.createElement('div');
+                line.textContent = 'Connection lost.';
+                line.className = 'text-warning';
+                logDiv.appendChild(line);
+            };
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack-all.min.js"></script>
+</body>
+</html>

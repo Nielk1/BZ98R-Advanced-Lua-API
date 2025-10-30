@@ -125,7 +125,7 @@ local function ToStringJobFragment(job)
 end
 
 local function PrintQueue(team)
-    if logger.settings.level < logger.LogLevel.DEBUG then
+    if not logger.DoLogLevel(logger.LogLevel.DEBUG) then
         return; -- don't waste cycles building a string we can't see
     end
     local queue = ProducerQueue[team];

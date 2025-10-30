@@ -47,7 +47,6 @@ local next_dump = math.huge;
 --- @field cache_startpoints table<string, table<string, boolean>>
 --- @field cache_destination table<string, table<string, boolean>>
 --- @field cache_locations table<string, Vector> approximate vector positions of locations
---- @field cache_location_sizes table<string, number> approximate size of locations for possible future use
 --- @field cache_path_map table<PathName, table<string, { [1]: string, [2]: string }>>
 local PatrolEngine = { __type = "PatrolEngine" };
 
@@ -92,6 +91,28 @@ function M.new()
     return Construct({}, {}, false)
 end
 
+--- Gets the bounding circle of a set of points.
+--- @param points Vector[]
+--- @return Vector? center Y component is radius
+local function bounding_circle(points)
+    local sum_x, sum_z = 0, 0
+    local count = 0
+    for _, p in ipairs(points) do
+        sum_x = sum_x + p.x
+        sum_z = sum_z + p.z
+        count = count + 1
+    end
+    if count == 0 then return nil end
+    local cx, cz = sum_x / count, sum_z / count
+    local max_dist = 0
+    for _, p in ipairs(points) do
+        local dx, dz = p.x - cx, p.z - cz
+        local dist = math.sqrt(dx*dx + dz*dz)
+        if dist > max_dist then max_dist = dist end
+    end
+    return SetVector(cx, max_dist, cz)
+end
+
 --- Add path between two locations to graph.
 --- @param self PatrolEngine
 --- @param startpoint string
@@ -101,10 +122,6 @@ end
 --- @param enabled boolean?
 --- @return PatrolEngine self
 function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
-    if startpoint == enabled then
-        return self;
-    end
-
     if not self.graph[startpoint] then
         self.graph[startpoint] = {};
     end
@@ -122,113 +139,50 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
     end
     self.cache_startpoints[startpoint][path] = true;
 
-    if not self.cache_destination[endpoint] then
-        self.cache_destination[endpoint] = {};
+    if startpoint ~= endpoint then
+        if not self.cache_destination[endpoint] then
+            self.cache_destination[endpoint] = {};
+        end
+        self.cache_destination[endpoint][path] = true;
     end
-    self.cache_destination[endpoint][path] = true;
 
     -- Recalculate approximate location vectors
-    local start_pos = SetVector(0, 0, 0);
-    local start_corner_min = nil;
-    local start_corner_max = nil;
-    local start_count = 0;
+    local start_positions = {};
     for path_name, _ in pairs(self.cache_startpoints[startpoint]) do
         local pos = GetPosition(path_name, 0);
         if pos then
-            start_pos = start_pos + pos;
-            start_count = start_count + 1;
-
-            start_corner_min = start_corner_min or pos;
-            start_corner_max = start_corner_max or pos;
-            start_corner_min = SetVector(
-                math.min(start_corner_min.x, pos.x),
-                math.min(start_corner_min.y, pos.y),
-                math.min(start_corner_min.z, pos.z)
-            );
-            start_corner_max = SetVector(
-                math.max(start_corner_max.x, pos.x),
-                math.max(start_corner_max.y, pos.y),
-                math.max(start_corner_max.z, pos.z)
-            );
+            table.insert(start_positions, pos);
         end
     end
     if self.cache_destination[startpoint] then
         for path_name, _ in pairs(self.cache_destination[startpoint]) do
             local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
             if pos then
-                start_pos = start_pos + pos;
-                start_count = start_count + 1;
-
-                start_corner_min = start_corner_min or pos;
-                start_corner_max = start_corner_max or pos;
-                start_corner_min = SetVector(
-                    math.min(start_corner_min.x, pos.x),
-                    math.min(start_corner_min.y, pos.y),
-                    math.min(start_corner_min.z, pos.z)
-                );
-                start_corner_max = SetVector(
-                    math.max(start_corner_max.x, pos.x),
-                    math.max(start_corner_max.y, pos.y),
-                    math.max(start_corner_max.z, pos.z)
-                );
+                table.insert(start_positions, pos);
             end
         end
     end
-    self.cache_locations[startpoint] = start_count > 0 and (start_pos / start_count) or SetVector(0, 0, 0);
-    if start_corner_min and start_corner_max then
-        self.cache_location_sizes[startpoint] = Length(start_corner_max - start_corner_min) / 2;
-    end
+    self.cache_locations[startpoint] = bounding_circle(start_positions);
 
     -- Recalculate approximate location vectors
-    local end_pos = SetVector(0, 0, 0);
-    local end_corner_min = nil;
-    local end_corner_max = nil;
-    local end_count = 0;
-    if self.cache_startpoints[endpoint] then
-        for path_name, _ in pairs(self.cache_startpoints[endpoint]) do
-            local pos = GetPosition(path_name, 0);
-            if pos then
-                end_pos = end_pos + pos;
-                end_count = end_count + 1;
-
-                end_corner_min = end_corner_min or pos;
-                end_corner_max = end_corner_max or pos;
-                end_corner_min = SetVector(
-                    math.min(end_corner_min.x, pos.x),
-                    math.min(end_corner_min.y, pos.y),
-                    math.min(end_corner_min.z, pos.z)
-                );
-                end_corner_max = SetVector(
-                    math.max(end_corner_max.x, pos.x),
-                    math.max(end_corner_max.y, pos.y),
-                    math.max(end_corner_max.z, pos.z)
-                );
+    
+    if startpoint ~= endpoint then
+        local end_positions = {};
+        if self.cache_startpoints[endpoint] then
+            for path_name, _ in pairs(self.cache_startpoints[endpoint]) do
+                local pos = GetPosition(path_name, 0);
+                if pos then
+                    table.insert(end_positions, pos);
+                end
             end
         end
-    end
-    for path_name, _ in pairs(self.cache_destination[endpoint]) do
-        local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
-        if pos then
-            end_pos = end_pos + pos;
-            end_count = end_count + 1;
-
-            end_corner_min = end_corner_min or pos;
-            end_corner_max = end_corner_max or pos;
-            end_corner_min = SetVector(
-                math.min(end_corner_min.x, pos.x),
-                math.min(end_corner_min.y, pos.y),
-                math.min(end_corner_min.z, pos.z)
-            );
-            end_corner_max = SetVector(
-                math.max(end_corner_max.x, pos.x),
-                math.max(end_corner_max.y, pos.y),
-                math.max(end_corner_max.z, pos.z)
-            );
+        for path_name, _ in pairs(self.cache_destination[endpoint]) do
+            local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
+            if pos then
+                table.insert(end_positions, pos);
+            end
         end
-    end
-    self.cache_locations[endpoint] = end_count > 0 and (end_pos / end_count) or SetVector(0, 0, 0);
-    if end_corner_min and end_corner_max then
-        self.cache_location_sizes[endpoint] = Length(end_corner_max - end_corner_min) / 2;
+        self.cache_locations[endpoint] = bounding_circle(end_positions);
     end
 
     if not self.cache_path_map[path] then
@@ -239,12 +193,24 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
     if logger.IsDataMode() then
         local path_data = self.graph[startpoint][endpoint][path];
         -- use this message to know what PatrolEngine routes exist
+
         logger.print(logger.LogLevel.DEBUG, nil,
-            string.format("AddRoute|%s|%q|%f|%q|%f|%q|%f|%d",
-            getTableId(self),
-            startpoint, self.cache_location_sizes[startpoint] or 0,
-            endpoint, self.cache_location_sizes[endpoint] or 0,
-            path, path_data.weight or 0, path_data.enabled and 1 or 0));
+            string.format("AddRoute|%s|%s|%s|%s|%f|%d",
+                getTableId(self),
+                startpoint, endpoint,
+                path, path_data.weight or 0, path_data.enabled and 1 or 0));
+
+        logger.print(logger.LogLevel.DEBUG, nil,
+            string.format("Location|%s|%s|%s",
+                getTableId(self),
+                startpoint, tostring(self.cache_locations[startpoint])));
+
+        if startpoint ~= endpoint then
+            logger.print(logger.LogLevel.DEBUG, nil,
+                string.format("Location|%s|%s|%s",
+                    getTableId(self),
+                    endpoint, tostring(self.cache_locations[endpoint])));
+        end
     else
         logger.print(logger.LogLevel.DEBUG, nil, "AddRoute " .. tostring(self) .. " '" .. startpoint .. "' -> '" .. path .. "' -> '" .. endpoint .. "'");
     end
@@ -334,7 +300,7 @@ function PatrolEngine:GiveRoute(object)
     if destination and path then
         object._patrol.origin_location = object._patrol.location;
         object._patrol.location = destination;
-        object._patrol.timeout = math.random() * 5 + 1;
+        object._patrol.route_fixed_until = GetTime() + (math.random() * 5 + 1);
         object._patrol.path = path;
         object._patrol.distracted = nil;
         object:Goto(path);
@@ -377,7 +343,7 @@ function PatrolEngine:AddGameObject(object)
         --handle = handle,
         location = location,
         origin_location = nil,
-        timeout = 1,
+        route_fixed_until = 0,
         path = nil,
         distracted = false
     };
@@ -447,8 +413,9 @@ end
 --- @param dtime number
 local function update(self, dtime, ttime)
     for unit, _ in pairs(self.patrol_units) do
-        unit._patrol.timeout = unit._patrol.timeout - dtime;
-        if unit._patrol.timeout <= 0 then
+        if unit._patrol.route_fixed_until < ttime then
+            -- note: because next_update is only set by GiveRoute it will check every update until a route is successfully set
+
             local nearestEnemy = unit:GetNearestEnemy();
             local currentCommand = unit:GetCurrentCommand();
 
@@ -475,17 +442,17 @@ local function update(self, dtime, ttime)
 end
 
 hook.Add("Update", "_patrol:Update", function(dtime, ttime)
-    if logger.IsDataMode() then
+
+    -- data logging
+    if logger.IsDataMode() and logger.DoLogLevel(logger.LogLevel.DEBUG) then
         if ttime > next_dump then
             next_dump = ttime + 60;
-
             local activeManager = {};
             for manager, _ in pairs(PatrolManagerWeakList) do
                 if manager then
                     table.insert(activeManager, getTableId(manager));
                 end
             end
-
             -- use this message to know what PatrolEngines are gone
             logger.print(logger.LogLevel.DEBUG, nil, "PatrolEngines|" ..  table.concat(activeManager, ","));
         end
@@ -514,7 +481,7 @@ return M;
 
 --- @class PatrolData
 --- @field distracted boolean? Unit was distracted and should return to old path when no longer distracted
---- @field timeout number
+--- @field route_fixed_until number Game time after which the route can be altered or distracted from
 --- @field path string? Current path the unit is on
 --- @field location string?
 --- @field origin_location string?

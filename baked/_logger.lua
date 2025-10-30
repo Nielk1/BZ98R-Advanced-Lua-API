@@ -44,6 +44,7 @@ Get-Content -Path "BZLogger.txt" -Wait -Tail 0 -Encoding UTF8 | ForEach-Object {
 --]]
 
 local CONTEXT_PAD = 32; -- Padding for context in log messages
+local TIME_FORMAT = "%12.3f"; -- Padding for time in log messages
 
 --- @class _logger
 local M = {};
@@ -279,6 +280,10 @@ function M.print(level, context, ...)
     if #contextWrap < CONTEXT_PAD then
         contextWrap = contextWrap .. string.rep(" ", CONTEXT_PAD - #contextWrap)
     end
+
+    local ttime = GetTime();
+    local timeWrap = string.format(TIME_FORMAT, ttime);
+
     if settings.format == M.LogFormat.RAW then
         local args = {};
         for i, v in ipairs({...}) do
@@ -288,7 +293,7 @@ function M.print(level, context, ...)
             end
         end
         for s in table.concat(args, "\t"):gmatch("[^\r\n]+") do
-            oldPrint(contextWrap.."|"..LogLevelName[level].."|"..s);
+            oldPrint(timeWrap.."|"..contextWrap.."|"..LogLevelName[level].."|"..s);
         end
     elseif settings.format == M.LogFormat.WRAPPED then
         local args = {};
@@ -305,13 +310,13 @@ function M.print(level, context, ...)
                 local traceback = debug.traceback("", (level or 2))
 
                 for s in table.concat(args, "\t"):gmatch("[^\r\n]+") do
-                    oldPrint("|LUA|ERROR|"..contextWrap.."|"..LogLevelName[level].."|"..s.."|ERROR|LUA|");
+                    oldPrint("|LUA|ERROR|"..timeWrap.."|"..contextWrap.."|"..LogLevelName[level].."|"..s.."|ERROR|LUA|");
                 end
                 for s in ("Traceback:\n" .. traceback):gmatch("[^\r\n]+") do
-                    oldPrint("|LUA|ERROR|"..contextWrap.."|"..LogLevelName[level].."|"..s.."|ERROR|LUA|");
+                    oldPrint("|LUA|ERROR|"..timeWrap.."|"..contextWrap.."|"..LogLevelName[level].."|"..s.."|ERROR|LUA|");
                 end
             else
-                wrapPrint(contextWrap.."|"..LogLevelName[level].."|"..s);
+                wrapPrint(timeWrap.."|"..contextWrap.."|"..LogLevelName[level].."|"..s);
             end
         end
     end
@@ -534,8 +539,17 @@ end
 
 -- [[END_IGNORE]]
 
+--- Check if the logger is in data mode.
+--- @return boolean
 function M.IsDataMode()
     return M.settings.structure == M.LogStructure.DATA;
+end
+
+--- Check if the logger should log a message at the given level.
+--- @param level any
+--- @return boolean
+function M.DoLogLevel(level)
+    return level <= M.settings.level;
 end
 
 --logger.print(logger.LogLevel.DEBUG, nil, "_logger Loaded");

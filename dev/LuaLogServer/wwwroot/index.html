@@ -231,10 +231,11 @@
                                     if (!_patrol_data[id].routes) {
                                         _patrol_data[id].routes = {};
                                     }
-                                    let route_id = origin + "\t" + destination;
+                                    let route_id = origin + "\t" + destination + "\t" + path;
                                     _patrol_data[id].routes[route_id] = {
                                         origin: origin,
                                         destination: destination,
+                                        path: path,
                                         weight: weight,
                                         enabled: enabled
                                     };

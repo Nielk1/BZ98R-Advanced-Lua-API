@@ -18,6 +18,7 @@ local _api = require("_api");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
+local paths = require("_paths");
 
 --- @param tbl table
 --- @return string
@@ -194,11 +195,14 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
         local path_data = self.graph[startpoint][endpoint][path];
         -- use this message to know what PatrolEngine routes exist
 
+        local path_points = {}
+        for _, point in paths.IteratePath(path) do
+            table.insert(path_points, string.format("%f,%f", point.x, point.z));
+        end
         logger.print(logger.LogLevel.DEBUG, nil,
-            string.format("AddRoute|%s|%s|%s|%s|%f|%d",
-                getTableId(self),
-                startpoint, endpoint,
-                path, path_data.weight or 0, path_data.enabled and 1 or 0));
+            string.format("Path|%s|%s",
+                path,
+                table.concat(path_points, "|")));
 
         logger.print(logger.LogLevel.DEBUG, nil,
             string.format("Location|%s|%s|%s",
@@ -211,6 +215,12 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
                     getTableId(self),
                     endpoint, tostring(self.cache_locations[endpoint])));
         end
+
+        logger.print(logger.LogLevel.DEBUG, nil,
+            string.format("AddRoute|%s|%s|%s|%s|%f|%d",
+                getTableId(self),
+                startpoint, endpoint,
+                path, path_data.weight or 0, path_data.enabled and 1 or 0));
     else
         logger.print(logger.LogLevel.DEBUG, nil, "AddRoute " .. tostring(self) .. " '" .. startpoint .. "' -> '" .. path .. "' -> '" .. endpoint .. "'");
     end

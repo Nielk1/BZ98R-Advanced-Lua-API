@@ -69,6 +69,22 @@
                     </div>
                 </div>
             </div>
+            <div class="grid-stack-item" id="window-cy" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
+                <div class="grid-stack-item-content p-0">
+                    <div class="card bg-dark text-light h-100 shadow border-secondary">
+                        <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
+                            <span>Test</span>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
+                                <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body p-2" style="overflow:scroll;">
+                            <div id="cy" class="h-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="grid-stack-item" id="window-test" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
@@ -88,8 +104,95 @@
         </div>
     </div>
 
-    <!-- Load GridStack before using it -->
     <script>
+        const cyDarkStyle = [
+            {
+                selector: 'node',
+                style: {
+                    'label': 'data(id)',
+                    'background-color': '#fb8500',      // orange node
+                    'color': '#fff',                    // node label text
+                    'text-outline-width': 2,
+                    'text-outline-color': '#232425',    // dark outline for contrast
+                    'font-size': 16,
+                    'border-width': 2,
+                    'border-color': '#ffb703',
+                    'width': 'data(radius)',
+                    'height': 'data(radius)',
+                    //'width': 3,
+                    //'height': 3,
+                }
+            },
+            {
+                selector: 'node[isLocation]',
+                style: {
+                    'background-opacity': 0, // or 0 for fully transparent
+                    //'border-opacity': 0.2,
+                    'border-color': '#fff',
+                    'border-style': 'dashed',
+                }
+            },
+            {
+                selector: 'node[isWaypoint]',
+                style: {
+                    'label': '',
+                    //'display': 'none'
+                    'width': 3,
+                    'height': 3,
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'label': '',
+                    'color': '#8ecae6',                 // edge label text
+                    'font-size': 12,
+                    //'text-background-color': '#232425', // dark background for edge label
+                    //'text-background-opacity': 1,
+                    //'text-background-padding': 2,
+                    'color': '#ffffff',
+                    'text-outline-width': 2,
+                    'text-outline-color': '#232425',
+                    'line-color': '#8ecae6',            // cyan edge
+                    'width': 3,
+                    'target-arrow-shape': 'triangle',
+                    'target-arrow-color': '#8ecae6',
+                    'curve-style': 'bezier'
+                }
+            },
+            {
+                selector: 'edge[isTerminus]',
+                style: {
+                    //'target-arrow-shape': 'none'
+                    'display': 'none'
+                }
+            },
+            {
+                selector: 'node:selected',
+                style: {
+                    'background-color': '#219ebc',      // blue highlight
+                    'border-color': '#fff',
+                    'border-width': 3
+                }
+            },
+            {
+                selector: 'edge.hover, edge:selected',
+                style: {
+                    'label': 'data(label)',
+                    'line-color': '#ffb703',           // highlight color
+                    'target-arrow-color': '#ffb703',
+                    'z-index': 999,                    // bring to front
+                    'color': '#fff',
+                    'text-outline-width': 2,
+                    //'text-outline-color': '#ffb703',
+                    'text-outline-color': '#232425',
+                    //'text-background-color': '#232425',
+                    //'text-background-opacity': 1,
+                    //'text-background-padding': 6
+                }
+            }
+        ];
+
         document.addEventListener('DOMContentLoaded', function () {
             const grid = GridStack.init({
                 cellHeight: 70,
@@ -209,11 +312,41 @@
                 return null;
             }
         }
+
+        function assignEdgeLabelOffsets(cy, marginStep = 12) {
+            // Group edges by unordered node pair
+            const edgeGroups = {};
+            cy.edges().forEach(edge => {
+                const src = edge.data('source');
+                const tgt = edge.data('target');
+                // Create an unordered key
+                const key = [src, tgt].sort().join('|');
+                if (!edgeGroups[key]) edgeGroups[key] = [];
+                edgeGroups[key].push(edge);
+            });
+
+            // Add event listeners for hover
+            cy.on('mouseover', 'edge', function(evt){
+                evt.target.addClass('hover');
+            });
+            cy.on('mouseout', 'edge', function(evt){
+                evt.target.removeClass('hover');
+            });
+
+            // Optionally, highlight on select as well
+            cy.on('select', 'edge', function(evt){
+                evt.target.addClass('hover');
+            });
+            cy.on('unselect', 'edge', function(evt){
+                evt.target.removeClass('hover');
+            });
+        }
         
         let data = {};
         let permits = {};
 
         let _patrol_data = {};
+        let path_cache = {};
 
         function procPossibleData(source, data)
         {
@@ -239,7 +372,6 @@
                                         weight: weight,
                                         enabled: enabled
                                     };
-                                    document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
                                 }
                                 break;
                             case 'Location':
@@ -255,8 +387,6 @@
                                         _patrol_data[id].locations = {};
                                     }
                                     _patrol_data[id].locations[location] = location_parsed;
-
-                                    document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
                                 }
                                 break;
                             case 'PatrolEngines':
@@ -267,11 +397,102 @@
                                             delete _patrol_data[key];
                                         }
                                     }
-
-                                    document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+                                }
+                                break;
+                            case 'Path':
+                                {
+                                    const [name] = data.split('|').slice(1);
+                                    function parsePathNodes(pathStr) {
+                                        // Example: "Path|p_north_center|3027.090088,98541.703125|3058.080078,98451.398438|..."
+                                        const parts = pathStr.split('|');
+                                        // parts[0] = "Path", parts[1] = path name, parts[2...] = coordinates
+                                        const coords = parts.slice(2);
+                                        return coords.map(coord => {
+                                            const [x, y] = coord.split(',').map(Number);
+                                            return { x, y };
+                                        });
+                                    }
+                                    path_cache[name] = parsePathNodes(data);
                                 }
                                 break;
                         }
+                        document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+
+                        let elements = [];
+                        for (const [PatrolId, data] of Object.entries(_patrol_data)) {
+                            for (const [loc_id, loc_data] of Object.entries(data.locations || {})) {
+                                elements.push({
+                                    data: {
+                                        id: loc_id,
+                                        radius: Math.max(loc_data.radius * 2 + 5, 5),
+                                        isLocation: true
+                                    },
+                                    position: {
+                                        x: loc_data.x,
+                                        y: -loc_data.z
+                                    }
+                                });
+                            }
+                            for (const [route_id, route_data] of Object.entries(data.routes || {})) {
+                                let pth = path_cache[route_data.path];
+                                if (pth) {
+                                    let prev = route_data.origin;
+                                    for (let i = 0; i < pth.length; i++) {
+                                        elements.push({
+                                            data: {
+                                                id: route_data.path + "[" + i + "]",
+                                                isWaypoint: true
+                                            },
+                                            position: {
+                                                x: pth[i].x,
+                                                y: -pth[i].y
+                                            }
+                                        });
+                                        let newNode = {
+                                            data: {
+                                                id: route_id + '\t' + route_data.path + "[" + i + "]",
+                                                source: prev,
+                                                target: route_data.path + "[" + i + "]",
+                                                label: route_data.path
+                                            }
+                                        }
+                                        if (i == 0) {
+                                            newNode.data.isTerminus = true;
+                                        }
+                                        elements.push(newNode);
+                                        prev = route_data.path + "[" + i + "]";
+                                    }
+                                    elements.push({
+                                        data: {
+                                            id: route_id + '\t' + route_data.path + "[" + route_data.path.length + "]",
+                                            source: prev,
+                                            target: route_data.destination,
+                                            label: route_data.path,
+                                            isTerminus: true
+                                        }
+                                    });
+                                } else {
+                                    elements.push({
+                                        data: {
+                                            id: route_id,
+                                            source: route_data.origin,
+                                            target: route_data.destination,
+                                            label: route_data.path
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        var cy = cytoscape({
+                            container: document.getElementById('cy'),
+                            elements: elements,
+                            style: cyDarkStyle,
+                            autoungrabify: true,
+                            layout: { name: 'preset' }
+                        });
+                        assignEdgeLabelOffsets(cy);
+                        //cy.add({ group: 'nodes', data: { id: 'marker1' }, position: { x: 300, y: 200 }, style: { 'background-color': '#219ebc' } });
                     }
                     break;
             }
@@ -286,6 +507,12 @@
                 const [parent_type, time, source, type, msg] = splitKeepRemainder(event.data, '|', 5);
                 if (parent_type == 'reset') {
                     logDiv.innerHTML = '';
+
+                    data = {};
+                    permits = {};
+
+                    _patrol_data = {};
+                    path_cache = {};
                 } else {
                     const line = document.createElement('div');
                     const rawTime = time; // as received
@@ -317,5 +544,6 @@
     <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack-all.min.js"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 </body>
 </html>

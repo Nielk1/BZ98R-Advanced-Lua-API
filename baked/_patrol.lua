@@ -470,6 +470,8 @@ local function update(self, dtime, ttime)
                 if currentCommand ~= AiCommand.ATTACK and nearestEnemy and nearestEnemy:IsAlive() and unit:IsWithin(nearestEnemy, 125) then
                     unit:Attack(nearestEnemy);
                     unit._patrol.distracted = true;
+
+                    log_objects(self, unit);
                 end
             end
 

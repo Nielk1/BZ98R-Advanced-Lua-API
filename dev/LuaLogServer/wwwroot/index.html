@@ -358,8 +358,7 @@
             });
         }
         
-        let data = {};
-        let permits = {};
+        let main_data = {};
         let gameobjects = {};
 
         let _patrol_data = {};
@@ -369,7 +368,7 @@
             // Temporary storage for parsed tables
             const tables = {};
 
-            let last = null;
+            let lastId = null;
 
             // Parse tables
             for (const line of lines) {
@@ -378,6 +377,7 @@
                     let obj = parseLuaValue(luaStr);
                     tables[tableId] = obj;
                     last = obj;
+                    lastId = tableId;
                 }
             }
 
@@ -405,63 +405,66 @@
             for (const [tableId, obj] of Object.entries(tables)) {
                 // If $partial, update only existing or add new keys, remove keys set to null
                 if (obj["$partial"]) {
-                    if (!data[tableId]) data[tableId] = {};
+                    if (!main_data[tableId]) main_data[tableId] = {};
                     for (const k in obj) {
                         if (k === "$partial") continue;
                         if (obj[k] === null) {
-                            delete data[tableId][k];
+                            delete main_data[tableId][k];
                         } else {
-                            data[tableId][k] = obj[k];
+                            main_data[tableId][k] = obj[k];
                         }
                     }
                 } else {
-                    data[tableId] = obj;
+                    main_data[tableId] = obj;
                 }
             }
 
-            // Count permits (example: count GameObjects with a path)
-            for (const [tableId, obj] of Object.entries(data)) {
-                if (obj.path) {
-                    permits[tableId] = (permits[tableId] || 0) + 1;
-                }
-            }
-
-            return last;
+            return lastId;
         }
 
         let inDataBlock = null;
         let linesDataBlock = [];
         function procPossibleData(source, data)
         {
-            let LastDataItem = null;
+            let lastDataItemId = null;
+            let lastDataItemBlock = null;
             if (inDataBlock != null) {
                 const [block_type, block_name] = data.split('|', 2);
                 if (block_type == "END") {
                     if (block_name != inDataBlock) {
                         console.error("Mismatched END block:", block_name, "expected", inDataBlock);
                     }
+                    lastDataItemBlock = inDataBlock;
                     inDataBlock = null;
                     linesDataBlock.push(data);
-                    
-                    LastDataItem = processPatrolObjectBlock(linesDataBlock.slice(1, -1));
+
+                    lastDataItemId = processPatrolObjectBlock(linesDataBlock.slice(1, -1));
                     linesDataBlock = [];
                     // continue down
                 } else {
                     linesDataBlock.push(data);
-                    return;
+                    return true;
                 }
             } else {
                 const [block_type, block_name] = data.split('|', 2);
                 if (block_type == "START") {
                     inDataBlock = block_name;
                     linesDataBlock.push(data);
-                    return;
+                    return true;
                 }
             }
 
-            if (LastDataItem != null) {
-                console.log(LastDataItem);
+            if (lastDataItemId != null) {
+                console.log("main_data", main_data);
+                console.log("gameobjects", gameobjects);
+                console.log("------------------");
+                console.log(main_data[lastDataItemId]);
+                console.log(lastDataItemId);
+                console.log(lastDataItemBlock);
+                console.log("==================");
+                return true;
             } else {
+                let used = false;
                 switch (source) {
                     case '_patrol.lua':
                         {
@@ -484,6 +487,7 @@
                                             weight: weight,
                                             enabled: enabled
                                         };
+                                        used = true;
                                     }
                                     break;
                                 case 'Location':
@@ -499,6 +503,7 @@
                                             _patrol_data[id].locations = {};
                                         }
                                         _patrol_data[id].locations[location] = location_parsed;
+                                        used = true;
                                     }
                                     break;
                                 case 'PatrolEngines':
@@ -509,6 +514,7 @@
                                                 delete _patrol_data[key];
                                             }
                                         }
+                                        used = true;
                                     }
                                     break;
                                 case 'Path':
@@ -525,90 +531,98 @@
                                             });
                                         }
                                         path_cache[name] = parsePathNodes(data);
+                                        used = true;
                                     }
                                     break;
                             }
-                            document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
 
-                            let elements = [];
-                            for (const [PatrolId, data] of Object.entries(_patrol_data)) {
-                                for (const [loc_id, loc_data] of Object.entries(data.locations || {})) {
-                                    elements.push({
-                                        data: {
-                                            id: loc_id,
-                                            radius: Math.max(loc_data.radius * 2 + 5, 5),
-                                            isLocation: true
-                                        },
-                                        position: {
-                                            x: loc_data.x,
-                                            y: -loc_data.z
-                                        }
-                                    });
-                                }
-                                for (const [route_id, route_data] of Object.entries(data.routes || {})) {
-                                    let pth = path_cache[route_data.path];
-                                    if (pth) {
-                                        let prev = route_data.origin;
-                                        for (let i = 0; i < pth.length; i++) {
-                                            elements.push({
-                                                data: {
-                                                    id: route_data.path + "[" + i + "]",
-                                                    isWaypoint: true
-                                                },
-                                                position: {
-                                                    x: pth[i].x,
-                                                    y: -pth[i].y
-                                                }
-                                            });
-                                            let newNode = {
-                                                data: {
-                                                    id: route_id + '\t' + route_data.path + "[" + i + "]",
-                                                    source: prev,
-                                                    target: route_data.path + "[" + i + "]",
-                                                    label: route_data.path
-                                                }
-                                            }
-                                            if (i == 0) {
-                                                newNode.data.isTerminus = true;
-                                            }
-                                            elements.push(newNode);
-                                            prev = route_data.path + "[" + i + "]";
-                                        }
+                            if (used) {
+                                document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+
+                                let elements = [];
+                                for (const [PatrolId, data] of Object.entries(_patrol_data)) {
+                                    for (const [loc_id, loc_data] of Object.entries(data.locations || {})) {
                                         elements.push({
                                             data: {
-                                                id: route_id + '\t' + route_data.path + "[" + route_data.path.length + "]",
-                                                source: prev,
-                                                target: route_data.destination,
-                                                label: route_data.path,
-                                                isTerminus: true
-                                            }
-                                        });
-                                    } else {
-                                        elements.push({
-                                            data: {
-                                                id: route_id,
-                                                source: route_data.origin,
-                                                target: route_data.destination,
-                                                label: route_data.path
+                                                id: loc_id,
+                                                radius: Math.max(loc_data.radius * 2 + 5, 5),
+                                                isLocation: true
+                                            },
+                                            position: {
+                                                x: loc_data.x,
+                                                y: -loc_data.z
                                             }
                                         });
                                     }
+                                    for (const [route_id, route_data] of Object.entries(data.routes || {})) {
+                                        let pth = path_cache[route_data.path];
+                                        if (pth) {
+                                            let prev = route_data.origin;
+                                            for (let i = 0; i < pth.length; i++) {
+                                                elements.push({
+                                                    data: {
+                                                        id: route_data.path + "[" + i + "]",
+                                                        isWaypoint: true
+                                                    },
+                                                    position: {
+                                                        x: pth[i].x,
+                                                        y: -pth[i].y
+                                                    }
+                                                });
+                                                let newNode = {
+                                                    data: {
+                                                        id: route_id + '\t' + route_data.path + "[" + i + "]",
+                                                        source: prev,
+                                                        target: route_data.path + "[" + i + "]",
+                                                        label: route_data.path
+                                                    }
+                                                }
+                                                if (i == 0) {
+                                                    newNode.data.isTerminus = true;
+                                                }
+                                                elements.push(newNode);
+                                                prev = route_data.path + "[" + i + "]";
+                                            }
+                                            elements.push({
+                                                data: {
+                                                    id: route_id + '\t' + route_data.path + "[" + route_data.path.length + "]",
+                                                    source: prev,
+                                                    target: route_data.destination,
+                                                    label: route_data.path,
+                                                    isTerminus: true
+                                                }
+                                            });
+                                        } else {
+                                            elements.push({
+                                                data: {
+                                                    id: route_id,
+                                                    source: route_data.origin,
+                                                    target: route_data.destination,
+                                                    label: route_data.path
+                                                }
+                                            });
+                                        }
+                                    }
                                 }
-                            }
 
-                            var cy = cytoscape({
-                                container: document.getElementById('cy'),
-                                elements: elements,
-                                style: cyDarkStyle,
-                                autoungrabify: true,
-                                layout: { name: 'preset' }
-                            });
-                            assignEdgeLabelOffsets(cy);
-                            //cy.add({ group: 'nodes', data: { id: 'marker1' }, position: { x: 300, y: 200 }, style: { 'background-color': '#219ebc' } });
+                                var cy = cytoscape({
+                                    container: document.getElementById('cy'),
+                                    elements: elements,
+                                    style: cyDarkStyle,
+                                    autoungrabify: true,
+                                    layout: { name: 'preset' }
+                                });
+                                assignEdgeLabelOffsets(cy);
+                                //cy.add({ group: 'nodes', data: { id: 'marker1' }, position: { x: 300, y: 200 }, style: { 'background-color': '#219ebc' } });
+                            }
                         }
                         break;
                 }
+
+                return used;
             }
+
+            return false;
         }
 
         window.onload = function () {
@@ -621,31 +635,31 @@
                 if (parent_type == 'reset') {
                     logDiv.innerHTML = '';
 
-                    data = {};
-                    permits = {};
+                    main_data = {};
                     gameobjects = {};
 
                     _patrol_data = {};
                     path_cache = {};
                 } else {
-                    const line = document.createElement('div');
                     const rawTime = time; // as received
                     const formattedTime = formatTimestamp(time);
                     document.getElementById('raw-log-timestamp').textContent = formattedTime;
                     document.getElementById('raw-log-timestamp2').textContent = rawTime;
-                    line.innerHTML =
-                        //`<span class="text-secondary" style="font-family:monospace; margin-right:0.5em;">${rawTime}</span>` +
-                        `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span> ` +
-                        formatSource(source) +
-                        ansiToHtml(msg);
-                    line.className = parent_type === 'error' ? 'text-danger log-row' : 'text-light log-row';
-                    const isAtBottom = Math.abs(logScrollParent.scrollTop + logScrollParent.clientHeight - logScrollParent.scrollHeight) < 2;
-                    logDiv.appendChild(line);
-                    if (isAtBottom) {
-                        logScrollParent.scrollTop = logScrollParent.scrollHeight;
-                    }
 
-                    procPossibleData(extractSource(source), msg);
+                    if (!procPossibleData(extractSource(source), msg)) {
+                        const line = document.createElement('div');
+                        line.innerHTML =
+                            //`<span class="text-secondary" style="font-family:monospace; margin-right:0.5em;">${rawTime}</span>` +
+                            `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span> ` +
+                            formatSource(source) +
+                            ansiToHtml(msg);
+                        line.className = parent_type === 'error' ? 'text-danger log-row' : 'text-light log-row';
+                        const isAtBottom = Math.abs(logScrollParent.scrollTop + logScrollParent.clientHeight - logScrollParent.scrollHeight) < 2;
+                        logDiv.appendChild(line);
+                        if (isAtBottom) {
+                            logScrollParent.scrollTop = logScrollParent.scrollHeight;
+                        }
+                    }
                 }
             };
             evtSource.onerror = function () {

@@ -55,7 +55,7 @@
 <body>
     <div class="container-fluid">
         <div class="grid-stack">
-            <div class="grid-stack-item" id="window-raw_log" gs-x="0" gs-y="0" gs-w="12" gs-h="8">
+            <div class="grid-stack-item" id="window-raw_log" gs-x="0" gs-y="0" gs-w="12" gs-h="6">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
                         <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
@@ -71,6 +71,22 @@
                         </div>
                         <div class="card-body p-0" style="overflow:scroll;">
                             <div id="log"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-stack-item" id="window-map" gs-x="0" gs-y="6" gs-w="6" gs-h="8">
+                <div class="grid-stack-item-content p-0">
+                    <div class="card bg-dark text-light h-100 shadow border-secondary">
+                        <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
+                            <span>Map</span>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
+                                <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body p-2" style="overflow:scroll;">
+                            <div id="map" class="h-100"></div>
                         </div>
                     </div>
                 </div>

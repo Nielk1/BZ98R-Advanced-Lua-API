@@ -92,6 +92,38 @@ function M.new()
     return Construct({}, {}, false)
 end
 
+--- Logs the current patrol objects.
+--- @param manager PatrolEngine
+--- @param object GameObject_patrol?
+local function log_objects(manager, object)
+    if not logger.IsDataMode() or not logger.DoLogLevel(logger.LogLevel.DEBUG) then
+        return;
+    end
+    
+    if object then
+        if object._patrol then
+            --local d = utility.shallowCopy(object._patrol);
+            --d.engine = getTableId(object._patrol.engine);
+            --d.id = object:GetSeqNo();
+            --logger.data(logger.LogLevel.DEBUG, nil, "PatrolObject", d);
+
+            local whitelist = { {"id"}, {"__type"} };
+            for k, _ in pairs(object._patrol) do
+                if k ~= "engine" then
+                    table.insert(whitelist, { "addonData", "_patrol", k });
+                end
+            end
+            logger.data(logger.LogLevel.DEBUG, nil, "PatrolObject", object, whitelist);
+        end
+    end
+
+    local handles = {};
+    for unit, _ in pairs(manager.patrol_units) do
+        table.insert(handles, unit:GetSeqNo());
+    end
+    logger.print(logger.LogLevel.DEBUG, nil, "PatrolObjects|" .. getTableId(manager) .. "|" .. table.concat(handles, ","));
+end
+
 --- Gets the bounding circle of a set of points.
 --- @param points Vector[]
 --- @return Vector? center Y component is radius
@@ -305,7 +337,7 @@ end
 --- @param self PatrolEngine
 --- @param object GameObject_patrol
 function PatrolEngine:GiveRoute(object)
-    local destination, path = self:GetRandomRouteFrom(object._patrol.location, object._patrol.origin_location and {object._patrol.origin_location} or nil, true);
+    local destination, path = self:GetRandomRouteFrom(object._patrol.location, object._patrol.origin_location and {object._patrol.origin_location} or nil, false);
 
     if destination and path then
         object._patrol.origin_location = object._patrol.location;
@@ -315,6 +347,8 @@ function PatrolEngine:GiveRoute(object)
         object._patrol.distracted = nil;
         object:Goto(path);
     end
+
+    log_objects(self, object);
 end
 
 --- Adds a handle to the patrol units.
@@ -355,7 +389,8 @@ function PatrolEngine:AddGameObject(object)
         origin_location = nil,
         route_fixed_until = 0,
         path = nil,
-        distracted = false
+        distracted = false,
+        engine = self,
     };
     self.patrol_units[object] = true;
     self:GiveRoute(object)
@@ -383,9 +418,6 @@ end
 --- @param self PatrolEngine
 --- @param object GameObject
 function PatrolEngine:RemoveGameObject(object)
-    if gameobject.IsGameObject(object) == false then
-        error("PatrolEngine.RemoveGameObject: object is not a GameObject");
-    end
     --- @cast object GameObject
     object = customsavetype.Cast(object, "GameObject");
     if object == nil then
@@ -394,6 +426,7 @@ function PatrolEngine:RemoveGameObject(object)
     --- @cast object GameObject_patrol
     object._patrol = nil
     self.patrol_units[object] = nil
+    log_objects(self);
 end
 
 --- {INTERNAL USE}
@@ -476,8 +509,12 @@ hook.Add("Update", "_patrol:Update", function(dtime, ttime)
 end, config.lock().hook_priority.Update.Patrol);
 
 hook.Add("DeleteObject", "_patrol:DeleteObject", function(object)
+    --- @cast object GameObject_patrol
+    if not object._patrol then
+        return;
+    end
     for manager, _ in pairs(PatrolManagerWeakList) do
-        if manager then
+        if manager and object._patrol.engine == manager then
             manager:RemoveGameObject(object);
         end
     end
@@ -495,6 +532,7 @@ return M;
 --- @field path string? Current path the unit is on
 --- @field location string?
 --- @field origin_location string?
+--- @field engine PatrolEngine
 
 --- @class GameObject_patrol : GameObject
 --- @field _patrol PatrolData

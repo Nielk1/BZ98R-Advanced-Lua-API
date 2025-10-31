@@ -363,7 +363,8 @@ local function encode_data(obj)
         local mt = getmetatable(obj)
         if mt then
             if mt.__type == "BZHandle" then
-                return string.format("0x%s", tostring(obj):sub(-8)), mt.__type
+                --return string.format("0x%s", tostring(obj):sub(-8)), mt.__type
+                return string.format("H%d", tonumber(tostring(obj):sub(-5), 16)), mt.__type
             elseif mt.__type == "VECTOR_3D" then
                 return string.format("{x=%d,y=%d,z=%d}", obj.x, obj.y, obj.z), mt.__type
             elseif mt.__type == "MAT_3D" then
@@ -388,7 +389,8 @@ end
 --- @param context string?
 --- @param name string
 --- @param data any
-function M.data(level, context, name, data)
+--- @param whitelist (string|integer)[]? -- List of allowed key paths (each path is a table of keys)
+function M.data(level, context, name, data, whitelist)
 
     if not context then
         local info = debug.getinfo(2, "Sl")
@@ -435,7 +437,34 @@ function M.data(level, context, name, data)
         return false
     end
 
-    local function serialize(tbl)
+    local function path_allowed(path, allow_more)
+        if not whitelist then return true end
+        for idx, allowed in ipairs(whitelist) do
+            local match = true
+            --for i = 1, #path do
+            --    if allowed[i] ~= path[i] then
+            --        match = false
+            --        break
+            --    end
+            --end
+            for i = 1, math.min(#path, #allowed) do
+                if allowed[i] ~= path[i] then
+                    match = false
+                    break
+                end
+            end
+            if match and #path == #allowed then
+                return true
+            end
+            if match and idx == #allowed and allow_more then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function serialize(tbl, path)
+        path = path or {}
         local id = get_id(tbl)
         if tables[id] then
             return {["$ref"] = id}
@@ -449,12 +478,19 @@ function M.data(level, context, name, data)
             table.insert(order, id)
             for i = 1, #tbl do
                 local v = tbl[i]
-                if type(v) == "table" then
-                    local val_ref_id = get_id(v)
-                    out[i] = {["$ref"] = val_ref_id}
-                    serialize(v)
+                local new_path = {table.unpack(path)}
+                table.insert(new_path, i)
+                local allow = path_allowed(new_path, type(v) == "table")
+                if allow then
+                    if type(v) == "table" then
+                        local val_ref_id = get_id(v)
+                        out[i] = {["$ref"] = val_ref_id}
+                        serialize(v, new_path)
+                    else
+                        out[i] = v
+                    end
                 else
-                    out[i] = v
+                    out["$partial"] = true
                 end
             end
         elseif has_non_string_key(tbl) then
@@ -465,11 +501,19 @@ function M.data(level, context, name, data)
             out["__type"] = __type
             out["$entries"] = {}
             for k, v in pairs(tbl) do
-                local key_serialized = type(k) == "table" and {["$ref"] = get_id(k)} or k
-                if type(k) == "table" then serialize(k) end
-                local value_serialized = type(v) == "table" and {["$ref"] = get_id(v)} or v
-                if type(v) == "table" then serialize(v) end
-                table.insert(out["$entries"], {key = key_serialized, value = value_serialized})
+                local new_path = {table.unpack(path)}
+                table.insert(new_path, k)
+                local allow = path_allowed(new_path, type(v) == "table")
+                if allow then
+                    local key_serialized = type(k) == "table" and {["$ref"] = get_id(k)} or k
+                    if type(k) == "table" then serialize(k, new_path) end
+                    local value_serialized = type(v) == "table" and {["$ref"] = get_id(v)} or v
+                    if type(v) == "table" then serialize(v, new_path) end
+                    local tmpTable = {key = key_serialized, value = value_serialized}
+                    table.insert(out["$entries"], tmpTable)
+                else
+                    out["$partial"] = true
+                end
             end
         else
             -- Only string keys: encode as JSON object
@@ -478,12 +522,24 @@ function M.data(level, context, name, data)
             table.insert(order, id)
             out["__type"] = __type
             for k, v in pairs(tbl) do
+                local new_path = {table.unpack(path)}
+                table.insert(new_path, k)
                 if type(v) == "table" then
-                    local val_ref_id = get_id(v)
-                    out[k] = {["$ref"] = val_ref_id}
-                    serialize(v)
+                    local allow = path_allowed(new_path, type(v) == "table")
+                    if allow then
+                        local val_ref_id = get_id(v)
+                        out[k] = {["$ref"] = val_ref_id}
+                        serialize(v, new_path)
+                    else
+                        out["$partial"] = true
+                    end
                 else
-                    out[k] = v
+                    local allow = path_allowed(new_path, type(v) == "table")
+                    if allow then
+                        out[k] = v
+                    else
+                        out["$partial"] = true
+                    end
                 end
             end
         end
@@ -491,7 +547,7 @@ function M.data(level, context, name, data)
     end
 
     -- Start serialization
-    serialize(data)
+    serialize(data, {})
 
     -- Output lines
     --if #order == 1 then

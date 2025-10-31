@@ -4,57 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lua Web Log Server</title>
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        /*body {
-        }*/
-
-        .card-body {
-            background-color: #101112;
-        }
-
-        #log,
-        #processed {
+        body { background-color: #101112; }
+        .card-body { background-color: #101112; }
+        #log, #processed {
             white-space: pre;
             font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', 'Courier New', monospace;
             display: inline-block;
             min-width: 100%;
         }
-            #log > div {
-                padding-left: 0.5em;
-                padding-right: 0.5em;
-            }
-
-                #log > div:nth-child(even) {
-                    background-color: #232425;
-                }
-
-                #log > div:nth-child(odd) {
-                    background-color: #181a1b;
-                }
-
-                #log > div:hover {
-                    background-color: #000000;
-                }
-
-        .source-filename {
-            color: #8ecae6; /* Adjust as needed */
+        #log > div {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
         }
-
-        .source-line {
-            color: #ffb703; /* Adjust as needed */
-        }
-
-        .source-other {
-            color: #fb8500; /* Adjust as needed */
-        }
+        #log > div:nth-child(even) { background-color: #232425; }
+        #log > div:nth-child(odd) { background-color: #181a1b; }
+        #log > div:hover { background-color: #000000; }
+        .source-filename { color: #8ecae6; }
+        .source-line { color: #ffb703; }
+        .source-other { color: #fb8500; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="grid-stack">
+            <!-- Raw Log Window -->
             <div class="grid-stack-item" id="window-raw_log" gs-x="0" gs-y="0" gs-w="12" gs-h="6">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
@@ -75,6 +53,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Map Window (Konva will be added here) -->
             <div class="grid-stack-item" id="window-map" gs-x="0" gs-y="6" gs-w="6" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
@@ -91,6 +70,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Cytoscape Test Window (to be removed after Konva migration) -->
             <div class="grid-stack-item" id="window-cy" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
@@ -107,6 +87,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Processed Data/Test Window -->
             <div class="grid-stack-item" id="window-test" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
@@ -126,7 +107,16 @@
         </div>
     </div>
 
-    <script>
+    <!-- Utility Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack-all.min.js"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <!-- Konva.js will be added here for the map canvas -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script> -->
+
+    <!-- To be removed -->
+        <script>
         const cyDarkStyle = [
             {
                 selector: 'node',
@@ -214,47 +204,11 @@
                 }
             }
         ];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const grid = GridStack.init({
-                cellHeight: 70,
-                handle: '.card-header' // Only the header is draggable
-            });
-
-            // Minimize: collapse card-body and shrink grid item
-            document.querySelectorAll('.btn[title="Minimize"]').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const gridItem = btn.closest('.grid-stack-item');
-                    const card = gridItem.querySelector('.card');
-                    const body = card.querySelector('.card-body');
-                    const isMinimized = body.classList.toggle('d-none');
-                    if (isMinimized) {
-                        grid.update(gridItem, { h: 1 });
-                    } else {
-                        grid.update(gridItem, { h: 4 });
-                    }
-                });
-            });
-
-            // Maximize: expand to full grid width and restore card body
-            document.querySelectorAll('.btn[title="Maximize"]').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const gridItem = btn.closest('.grid-stack-item');
-                    const card = gridItem.querySelector('.card');
-                    const body = card.querySelector('.card-body');
-                    body.classList.remove('d-none');
-                    grid.update(gridItem, {
-                        x: 0,
-                        y: 0,
-                        w: grid.getColumn(),
-                        h: 8 // or any large value you prefer
-                    });
-                });
-            });
-        });
     </script>
 
+    <!-- App Scripts -->
     <script>
+        // Utility functions (ansiToHtml, stripAnsi, splitKeepRemainder, formatTimestamp, formatSource, extractSource, parseLuaValue)
         function ansiToHtml(text) {
             const ansi_up = new AnsiUp();
             return ansi_up.ansi_to_html(text);
@@ -262,9 +216,6 @@
         function stripAnsi(text) {
             return text.replace(/\x1b\[[0-9;]*m/g, '');
         }
-    </script>
-
-    <script>
         function splitKeepRemainder(str, delimiter, count) {
             const parts = str.split(delimiter);
             if (parts.length <= count) return parts;
@@ -641,6 +592,41 @@
             return false;
         }
 
+        // GridStack logic for window management
+        document.addEventListener('DOMContentLoaded', function () {
+            const grid = GridStack.init({
+                cellHeight: 70,
+                handle: '.card-header'
+            });
+
+            // Minimize/maximize logic
+            document.querySelectorAll('.btn[title="Minimize"]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const gridItem = btn.closest('.grid-stack-item');
+                    const card = gridItem.querySelector('.card');
+                    const body = card.querySelector('.card-body');
+                    const isMinimized = body.classList.toggle('d-none');
+                    grid.update(gridItem, { h: isMinimized ? 1 : 4 });
+                });
+            });
+
+            document.querySelectorAll('.btn[title="Maximize"]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const gridItem = btn.closest('.grid-stack-item');
+                    const card = gridItem.querySelector('.card');
+                    const body = card.querySelector('.card-body');
+                    body.classList.remove('d-none');
+                    grid.update(gridItem, {
+                        x: 0,
+                        y: 0,
+                        w: grid.getColumn(),
+                        h: 8
+                    });
+                });
+            });
+        });
+
+        // EventSource logic for log streaming
         window.onload = function () {
             const logDiv = document.getElementById('log');
             const logScrollParent = logDiv.parentElement; // .card-body
@@ -686,10 +672,5 @@
             };
         };
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack-all.min.js"></script>
-    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 </body>
 </html>

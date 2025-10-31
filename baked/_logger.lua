@@ -334,30 +334,34 @@ local function encode_data(obj)
     elseif t == "string" then
         return string.format("%q", obj), t
     elseif t == "table" then
-        local array_portion = 0;
-        local items = {}
-        for i, v in ipairs(obj) do
-            if v == nil then
-                array_portion = i
-                break
-            end
-            local r = encode_data(v)
-            table.insert(items, r)
-        end
-        for k, v in pairs(obj) do
-            if type(k) == "number" and k > 0 and k <= array_portion then
-                -- already handled in array portion
-            else
+        if obj.__type == "nil" then
+            return "nil", "nil"
+        else
+            local array_portion = 0;
+            local items = {}
+            for i, v in ipairs(obj) do
+                if v == nil then
+                    array_portion = i
+                    break
+                end
                 local r = encode_data(v)
-                if type(k) == "string" and string.match(k, "^[A-Za-z_][A-Za-z0-9_]*$") then
-                    table.insert(items, string.format("%s=%s", k, r))
+                table.insert(items, r)
+            end
+            for k, v in pairs(obj) do
+                if type(k) == "number" and k > 0 and k <= array_portion then
+                    -- already handled in array portion
                 else
-                    table.insert(items, string.format("[%q]=%s", tostring(k), r))
+                    local r = encode_data(v)
+                    if type(k) == "string" and string.match(k, "^[A-Za-z_][A-Za-z0-9_]*$") then
+                        table.insert(items, string.format("%s=%s", k, r))
+                    else
+                        table.insert(items, string.format("[%q]=%s", tostring(k), r))
+                    end
                 end
             end
+            return "{" .. table.concat(items, ",") .. "}", t
         end
-        return "{" .. table.concat(items, ",") .. "}", t
-    elseif t == "nil" then
+    elseif t == "nil" then -- probably can't happen
         return "nil", t
     elseif t == "userdata" then
         local mt = getmetatable(obj)
@@ -524,8 +528,8 @@ function M.data(level, context, name, data, whitelist)
             for k, v in pairs(tbl) do
                 local new_path = {table.unpack(path)}
                 table.insert(new_path, k)
+                local allow = path_allowed(new_path, type(v) == "table")
                 if type(v) == "table" then
-                    local allow = path_allowed(new_path, type(v) == "table")
                     if allow then
                         local val_ref_id = get_id(v)
                         out[k] = {["$ref"] = val_ref_id}
@@ -534,11 +538,29 @@ function M.data(level, context, name, data, whitelist)
                         out["$partial"] = true
                     end
                 else
-                    local allow = path_allowed(new_path, type(v) == "table")
                     if allow then
                         out[k] = v
                     else
                         out["$partial"] = true
+                    end
+                end
+            end
+
+            -- After normal serialization, ensure nils for whitelisted paths
+            if whitelist then
+                for _, allowed in ipairs(whitelist) do
+                    if #allowed == #path + 1 then
+                        local key = allowed[#allowed]
+                        local match = true
+                        for i = 1, #path do
+                            if allowed[i] ~= path[i] then
+                                match = false
+                                break
+                            end
+                        end
+                        if match and out[key] == nil then
+                            out[key] = { __type = "nil" }
+                        end
                     end
                 end
             end

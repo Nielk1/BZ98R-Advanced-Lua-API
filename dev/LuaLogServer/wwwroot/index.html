@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        body {
-        }
+        /*body {
+        }*/
 
         .card-body {
             background-color: #101112;
@@ -19,6 +19,8 @@
         #processed {
             white-space: pre;
             font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', 'Courier New', monospace;
+            display: inline-block;
+            min-width: 100%;
         }
             #log > div {
                 padding-left: 0.5em;
@@ -57,7 +59,11 @@
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
                         <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
-                            <span>Raw Log</span>
+                            <span>
+                                <span id="raw-log-timestamp2" class="text-light" style="font-family:monospace;white-space:pre;">      0.000</span>
+                                <span id="raw-log-timestamp" class="text-info" style="font-family:monospace;">00:00:00.000</span>
+                                Raw Log
+                            </span>
                             <div>
                                 <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
                                 <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
@@ -517,12 +523,14 @@
                     const line = document.createElement('div');
                     const rawTime = time; // as received
                     const formattedTime = formatTimestamp(time);
+                    document.getElementById('raw-log-timestamp').textContent = formattedTime;
+                    document.getElementById('raw-log-timestamp2').textContent = rawTime;
                     line.innerHTML =
                         //`<span class="text-secondary" style="font-family:monospace; margin-right:0.5em;">${rawTime}</span>` +
                         `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span> ` +
                         formatSource(source) +
                         ansiToHtml(msg);
-                    line.className = parent_type === 'error' ? 'text-danger' : 'text-light';
+                    line.className = parent_type === 'error' ? 'text-danger log-row' : 'text-light log-row';
                     const isAtBottom = Math.abs(logScrollParent.scrollTop + logScrollParent.clientHeight - logScrollParent.scrollHeight) < 2;
                     logDiv.appendChild(line);
                     if (isAtBottom) {

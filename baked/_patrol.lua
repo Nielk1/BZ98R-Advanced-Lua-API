@@ -107,12 +107,16 @@ local function log_objects(manager, object)
             --d.id = object:GetSeqNo();
             --logger.data(logger.LogLevel.DEBUG, nil, "PatrolObject", d);
 
-            local whitelist = { {"id"}, {"__type"} };
-            for k, _ in pairs(object._patrol) do
-                if k ~= "engine" then
-                    table.insert(whitelist, { "addonData", "_patrol", k });
-                end
-            end
+            local whitelist = {
+                {"id"},
+                {"__type"},
+                { "addonData", "_patrol", "distracted" },
+                { "addonData", "_patrol", "route_fixed_until" },
+                { "addonData", "_patrol", "path" },
+                { "addonData", "_patrol", "location" },
+                { "addonData", "_patrol", "origin_location" },
+                --{ "addonData", "_patrol", "engine" },
+            };
             logger.data(logger.LogLevel.DEBUG, nil, "PatrolObject", object, whitelist);
         end
     end

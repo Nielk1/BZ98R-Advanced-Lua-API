@@ -27,6 +27,13 @@
         .source-filename { color: #8ecae6; }
         .source-line { color: #ffb703; }
         .source-other { color: #fb8500; }
+
+        
+        #map-container, #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -64,8 +71,18 @@
                                 <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
                             </div>
                         </div>
-                        <div class="card-body p-2" style="overflow:scroll;">
-                            <div id="map" class="h-100"></div>
+                        <div class="card-body p-0" style="overflow:hidden;">
+                            <div id="map-container" style="position:relative; width:100%; height:100%;">
+                                <div id="map" style="width:100%; height:100%;"></div>
+                                <div id="map-key" style="position:absolute; top:10px; right:10px; background:#232425cc; color:#fff; padding:8px; border-radius:6px; z-index:10;">
+                                    <strong>Map Key</strong>
+                                    <div>
+                                        <label><input type="checkbox" id="toggle-locations" checked> Locations</label><br>
+                                        <label><input type="checkbox" id="toggle-routes" checked> Routes</label><br>
+                                        <label><input type="checkbox" id="toggle-waypoints" checked> Waypoints</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,6 +131,175 @@
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script>
 
+    <script>
+        // Konva setup for pan and zoom
+        const mapDiv = document.getElementById('map');
+        let stage = null;
+
+        // If you use GridStack's API to resize/move panels, call createOrResizeKonvaStage after those changes.
+        const layerLocations = new Konva.Layer({ id: 'locations' });
+        const layerRoutes = new Konva.Layer({ id: 'routes' });
+        const layerWaypoints = new Konva.Layer({ id: 'waypoints' });
+        const layerTooltip = new Konva.Layer({ id: 'tooltip' });
+
+        function createOrResizeKonvaStage() {
+            const width = mapDiv.offsetWidth;
+            const height = mapDiv.offsetHeight;
+
+            if (!stage) {
+                stage = new Konva.Stage({
+                    container: 'map',
+                    width: width,
+                    height: height,
+                    draggable: true
+                });
+
+                // Add layers as before
+                stage.add(layerRoutes);
+                stage.add(layerWaypoints);
+                stage.add(layerLocations);
+                stage.add(layerTooltip);
+
+                // Attach mouse wheel zoom handler
+                attachKonvaWheelZoom(stage);
+            } else {
+                stage.width(width);
+                stage.height(height);
+                stage.batchDraw();
+            }
+        }
+
+        // Mouse wheel zoom handler
+        function attachKonvaWheelZoom(stage) {
+            let scaleBy = 1.1;
+            stage.on('wheel', (e) => {
+                e.evt.preventDefault();
+                const oldScale = stage.scaleX();
+                const pointer = stage.getPointerPosition();
+                const mousePointTo = {
+                    x: (pointer.x - stage.x()) / oldScale,
+                    y: (pointer.y - stage.y()) / oldScale,
+                };
+
+                let direction = e.evt.deltaY > 0 ? -1 : 1;
+                let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+                stage.scale({ x: newScale, y: newScale });
+
+                // Keep mouse position stable
+                const newPos = {
+                    x: pointer.x - mousePointTo.x * newScale,
+                    y: pointer.y - mousePointTo.y * newScale,
+                };
+                stage.position(newPos);
+                stage.batchDraw();
+            });
+        }
+
+
+        // Resize on window resize
+        window.addEventListener('resize', createOrResizeKonvaStage);
+
+        // Optionally, listen for GridStack events if your layout changes dynamically
+        document.addEventListener('gridstack-change', createOrResizeKonvaStage);
+
+        // Example: draw a few circles and lines
+        function drawDemoMap() {
+            layerLocations.destroyChildren();
+            layerRoutes.destroyChildren();
+            layerWaypoints.destroyChildren();
+
+            // Locations
+            const locA = new Konva.Circle({ x: 100, y: 100, radius: 30, fill: '#fb8500', stroke: '#ffb703', strokeWidth: 3, id: 'locA' });
+            const locB = new Konva.Circle({ x: 400, y: 200, radius: 30, fill: '#fb8500', stroke: '#ffb703', strokeWidth: 3, id: 'locB' });
+            layerLocations.add(locA);
+            layerLocations.add(locB);
+
+            // Routes
+            const route = new Konva.Line({
+                points: [100, 100, 400, 200],
+                stroke: '#8ecae6',
+                strokeWidth: 4,
+                lineCap: 'round',
+                id: 'routeAB'
+            });
+            layerRoutes.add(route);
+
+            // Waypoints
+            const waypoint = new Konva.Circle({ x: 250, y: 150, radius: 10, fill: '#219ebc', id: 'wp1' });
+            layerWaypoints.add(waypoint);
+
+            stage.draw();
+        }
+
+        // Layer/group toggling via key panel
+        document.getElementById('toggle-locations').addEventListener('change', function() {
+            layerLocations.visible(this.checked);
+            stage.batchDraw();
+        });
+        document.getElementById('toggle-routes').addEventListener('change', function() {
+            layerRoutes.visible(this.checked);
+            stage.batchDraw();
+        });
+        document.getElementById('toggle-waypoints').addEventListener('change', function() {
+            layerWaypoints.visible(this.checked);
+            stage.batchDraw();
+        });
+
+        // Mouseover logic to show names
+        [layerLocations, layerRoutes, layerWaypoints].forEach(layer => {
+            let currentTooltip = null;
+            let currentShapeId = null;
+
+            layer.on('mouseover', function(evt) {
+                const shape = evt.target;
+                if (shape && shape.id()) {
+                    stage.container().style.cursor = 'pointer';
+
+                    currentShapeId = shape.id();
+                    
+                    // Remove previous tooltip
+                    layerTooltip.destroyChildren();
+
+                    // Get mouse position relative to the stage
+                    const pointer = stage.getPointerPosition();
+
+                    // Create new tooltip
+                    const tooltip = new Konva.Label({
+                        x: pointer.x + 16,
+                        y: pointer.y - 24,
+                        opacity: 0.85
+                    });
+                    tooltip.add(new Konva.Tag({ fill: '#232425' }));
+                    tooltip.add(new Konva.Text({
+                        text: shape.id(),
+                        fontSize: 16,
+                        padding: 6,
+                        fill: '#fff'
+                    }));
+                    layerTooltip.add(tooltip);
+                    layerTooltip.batchDraw();
+                    stage.batchDraw();
+                }
+            });
+
+            layer.on('mousemove', function(evt) {
+                if (currentTooltip) {
+                    const pointer = stage.getPointerPosition();
+                    currentTooltip.x(pointer.x + 16);
+                    currentTooltip.y(pointer.y - 24);
+                    layerTooltip.batchDraw();
+                }
+            });
+
+            layer.on('mouseout', function(evt) {
+                stage.container().style.cursor = '';
+                layerTooltip.destroyChildren();
+                layerTooltip.batchDraw();
+                currentTooltip = null;
+                currentShapeId = null;
+            });
+        });
+    </script>
     <!-- To be removed -->
     <script>
         const cyDarkStyle = [
@@ -743,6 +929,20 @@
             const grid = GridStack.init({
                 cellHeight: 70,
                 handle: '.card-header'
+            });
+
+            // Initial sizing
+            createOrResizeKonvaStage();
+
+            // draw demo map
+            drawDemoMap();
+
+            // Listen for GridStack item resize/move events
+            grid.on('change', function(event, items) {
+                // Check if the map window was affected
+                if (items.some(item => item.el && item.el.id === 'window-map')) {
+                    createOrResizeKonvaStage();
+                }
             });
 
             // Minimize/maximize logic

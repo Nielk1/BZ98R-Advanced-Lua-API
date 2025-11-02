@@ -37,8 +37,25 @@ function M.IteratePath(path)
     return iterator;
 end
 
---- @section Paths - Other
+--- @section Paths - Logging
 
+--- Log the path points to the data store
+--- @param path string Path name
+--- @param level LogLevel? Log level
+function M.LogPathToData(path, level)
+    if logger.IsDataMode() then
+        local path_points = {}
+        for _, point in M.IteratePath(path) do
+            table.insert(path_points, string.format("%f,%f", point.x, point.z));
+        end
+        logger.print(level or logger.LogLevel.DEBUG, nil,
+            string.format("Path|%s|%s",
+                path,
+                table.concat(path_points, "|")));
+    end
+end
+
+--- @section Paths - Other
 
 --- @section Paths - Core
 

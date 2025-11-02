@@ -2205,6 +2205,7 @@ function GameObject:SetLocal()
 end
 
 --- Returns true if the game is local to the machine the script is running on. Returns false otherwise.
+--- {(!)(!) Does not work in `CreateObject`.}
 --- @param self GameObject GameObject instance
 --- @return boolean
 function GameObject:IsLocal()
@@ -2214,6 +2215,7 @@ function GameObject:IsLocal()
 end
 
 --- Returns true if the game object is remote to the machine the script is running on. Returns false otherwise.
+--- {(!)(!) Does not work in `CreateObject`.}
 --- @param self GameObject GameObject instance
 --- @return boolean
 function GameObject:IsRemote()

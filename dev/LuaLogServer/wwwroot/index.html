@@ -112,8 +112,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gridstack@12.3.3/dist/gridstack-all.min.js"></script>
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-    <!-- Konva.js will be added here for the map canvas -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script>
 
     <!-- To be removed -->
     <script>
@@ -584,25 +583,34 @@
             }
 
             if (lastDataItem != null) {
-                //console.log("main_data", main_data);
-                //console.log("gameobjects", gameobjects);
-                //console.log("------------------");
-                //console.log(main_data[lastDataItemId]);
-                //console.log(lastDataItemId);
-                //console.log(lastDataItemBlock);
-                //console.log("==================");
-
-                //console.log(main_data_store);
-                //console.log(ttl_data_store);
-                //console.log("==================");
-
-                console.log(lastDataItem);
-                console.log("==================");
-
                 return true;
             } else {
                 let used = false;
                 switch (source) {
+                    case '_paths.lua':
+                        {
+                            const [type] = data.split('|', 1);
+                            switch (type) {
+                                case 'Path':
+                                    {
+                                        const [name] = data.split('|').slice(1);
+                                        function parsePathNodes(pathStr) {
+                                            // Example: "Path|p_north_center|3027.090088,98541.703125|3058.080078,98451.398438|..."
+                                            const parts = pathStr.split('|');
+                                            // parts[0] = "Path", parts[1] = path name, parts[2...] = coordinates
+                                            const coords = parts.slice(2);
+                                            return coords.map(coord => {
+                                                const [x, y] = coord.split(',').map(Number);
+                                                return { x, y };
+                                            });
+                                        }
+                                        path_cache[name] = parsePathNodes(data);
+                                        used = true;
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
                     case '_patrol.lua':
                         {
                             const [type] = data.split('|', 1);
@@ -636,23 +644,6 @@
                                     {
                                         const [engine, seqnos] = data.split('|').slice(1);
                                         _patrol.PatrolObjects(engine, seqnos);
-                                        used = true;
-                                    }
-                                    break;
-                                case 'Path':
-                                    {
-                                        const [name] = data.split('|').slice(1);
-                                        function parsePathNodes(pathStr) {
-                                            // Example: "Path|p_north_center|3027.090088,98541.703125|3058.080078,98451.398438|..."
-                                            const parts = pathStr.split('|');
-                                            // parts[0] = "Path", parts[1] = path name, parts[2...] = coordinates
-                                            const coords = parts.slice(2);
-                                            return coords.map(coord => {
-                                                const [x, y] = coord.split(',').map(Number);
-                                                return { x, y };
-                                            });
-                                        }
-                                        path_cache[name] = parsePathNodes(data);
                                         used = true;
                                     }
                                     break;

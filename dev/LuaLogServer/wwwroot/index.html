@@ -415,10 +415,17 @@
         // ------------------- Konva Map Setup -------------------
         const mapDiv = document.getElementById('map');
         let stage = null;
-        const layerLocations = new Konva.Layer({ id: 'locations' });
-        const layerRoutes = new Konva.Layer({ id: 'routes' });
-        const layerWaypoints = new Konva.Layer({ id: 'waypoints' });
-        const layerTooltip = new Konva.Layer({ id: 'tooltip' });
+        const mapLayers = {
+            locations: new Konva.Layer({ id: 'locations' }),
+            routes: new Konva.Layer({ id: 'routes' }),
+            waypoints: new Konva.Layer({ id: 'waypoints' }),
+            tooltip: new Konva.Layer({ id: 'tooltip' })
+        };
+        const layerControls = [
+            { id: 'toggle-locations', layer: 'locations' },
+            { id: 'toggle-routes', layer: 'routes' },
+            { id: 'toggle-waypoints', layer: 'waypoints' }
+        ];
 
         function createOrResizeKonvaStage() {
             const width = mapDiv.offsetWidth;
@@ -432,10 +439,11 @@
                     draggable: true
                 });
 
-                stage.add(layerRoutes);
-                stage.add(layerWaypoints);
-                stage.add(layerLocations);
-                stage.add(layerTooltip);
+                // Add all layers except tooltip, then add tooltip last
+                Object.entries(mapLayers).forEach(([name, layer]) => {
+                    if (name !== 'tooltip') stage.add(layer);
+                });
+                stage.add(mapLayers.tooltip);
 
                 attachKonvaWheelZoom(stage);
                 stage.on('dragmove', function(evt) {
@@ -483,7 +491,7 @@
         // ------------------- Konva Map Drawing -------------------
         function ResetMapWindow() {
             if (!map_interacted) {
-                fitStageToLayerContent(stage, [layerLocations, layerRoutes, layerWaypoints]);
+                fitStageToLayerContent(stage, Object.values(mapLayers).filter(l => l !== mapLayers.tooltip));
             }
         }
 
@@ -525,8 +533,8 @@
     
         function updateRouteAndWaypointsFromPath(name, pathNodes) {
             // Clear previous route and waypoints for this path
-            layerRoutes.find(`#route_${name}`).forEach(node => node.destroy());
-            layerWaypoints.find(`#wp_${name}_`).forEach(node => node.destroy());
+            mapLayers.routes.find(`#route_${name}`).forEach(node => node.destroy());
+            mapLayers.waypoints.find(`#wp_${name}_`).forEach(node => node.destroy());
 
             // Draw route as a line
             if (pathNodes.length > 1) {
@@ -541,7 +549,7 @@
                     lineCap: 'round',
                     id: `route_${name}`
                 });
-                layerRoutes.add(routeLine);
+                mapLayers.routes.add(routeLine);
             }
 
             // Draw waypoints as small circles
@@ -553,31 +561,27 @@
                     fill: '#219ebc',
                     id: `wp_${name}_${idx}`
                 });
-                layerWaypoints.add(waypoint);
+                mapLayers.waypoints.add(waypoint);
             });
 
-            layerRoutes.batchDraw();
-            layerWaypoints.batchDraw();
+            mapLayers.routes.batchDraw();
+            mapLayers.waypoints.batchDraw();
 
             ResetMapWindow();
         }
 
         // ------------------- Konva Layer Controls -------------------
-        document.getElementById('toggle-locations').addEventListener('change', function() {
-            layerLocations.visible(this.checked);
-            stage.batchDraw();
-        });
-        document.getElementById('toggle-routes').addEventListener('change', function() {
-            layerRoutes.visible(this.checked);
-            stage.batchDraw();
-        });
-        document.getElementById('toggle-waypoints').addEventListener('change', function() {
-            layerWaypoints.visible(this.checked);
-            stage.batchDraw();
+        layerControls.forEach(ctrl => {
+            document.getElementById(ctrl.id).addEventListener('change', function() {
+                mapLayers[ctrl.layer].visible(this.checked);
+                stage.batchDraw();
+            });
         });
 
         // ------------------- Konva Tooltip Logic -------------------
-        [layerLocations, layerRoutes, layerWaypoints].forEach(layer => {
+        Object.entries(mapLayers).forEach(([name, layer]) => {
+            if (name === 'tooltip') return;
+
             let currentTooltip = null;
             let currentShapeId = null;
 
@@ -587,7 +591,7 @@
                     stage.container().style.cursor = 'pointer';
                     currentShapeId = shape.id();
 
-                    layerTooltip.destroyChildren();
+                    mapLayers.tooltip.destroyChildren();
 
                     const pointer = stage.getPointerPosition();
                     const scale = stage.scaleX(); // assuming uniform scaling
@@ -609,8 +613,8 @@
                         padding: 6,
                         fill: '#fff'
                     }));
-                    layerTooltip.add(currentTooltip);
-                    layerTooltip.batchDraw();
+                    mapLayers.tooltip.add(currentTooltip);
+                    mapLayers.tooltip.batchDraw();
                     stage.batchDraw();
                 }
             });
@@ -624,14 +628,14 @@
                     const canvasY = (pointer.y - stagePos.y) / scale;
                     currentTooltip.x(canvasX + 16);
                     currentTooltip.y(canvasY - 24);
-                    layerTooltip.batchDraw();
+                    mapLayers.tooltip.batchDraw();
                 }
             });
 
             layer.on('mouseout', function(evt) {
                 stage.container().style.cursor = '';
-                layerTooltip.destroyChildren();
-                layerTooltip.batchDraw();
+                mapLayers.tooltip.destroyChildren();
+                mapLayers.tooltip.batchDraw();
                 currentTooltip = null;
                 currentShapeId = null;
             });

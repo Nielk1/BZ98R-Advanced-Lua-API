@@ -32,6 +32,10 @@
             height: 100%;
             position: relative;
         }
+        #map-key {
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -72,13 +76,9 @@
                         <div class="card-body p-0" style="overflow:hidden;">
                             <div id="map-container" style="position:relative; width:100%; height:100%;">
                                 <div id="map" style="width:100%; height:100%;"></div>
-                                <div id="map-key" style="position:absolute; top:10px; right:10px; background:#232425cc; color:#fff; padding:8px; border-radius:6px; z-index:10;">
+                                <div id="map-key" style="position:absolute; top:10px; right:10px; background:#232425cc; color:#fff; padding:8px; border-radius:6px; z-index:10; max-height:200px; overflow-y:auto;">
                                     <strong>Map Key</strong>
-                                    <div>
-                                        <label><input type="checkbox" id="toggle-locations" checked> Locations</label><br>
-                                        <label><input type="checkbox" id="toggle-routes" checked> Routes</label><br>
-                                        <label><input type="checkbox" id="toggle-waypoints" checked> Waypoints</label>
-                                    </div>
+                                    <div id="map-key-list"></div>
                                 </div>
                             </div>
                         </div>
@@ -415,17 +415,13 @@
         // ------------------- Konva Map Setup -------------------
         const mapDiv = document.getElementById('map');
         let stage = null;
+        // Central registry for layers
         const mapLayers = {
-            locations: new Konva.Layer({ id: 'locations' }),
-            routes: new Konva.Layer({ id: 'routes' }),
-            waypoints: new Konva.Layer({ id: 'waypoints' }),
-            tooltip: new Konva.Layer({ id: 'tooltip' })
+            locations: { name: 'locations', layer: new Konva.Layer({ id: 'locations' }), order:  1, key: { id: 'toggle-locations', label: 'Locations', defaultChecked: true } },
+            routes:    { name: 'routes'   , layer: new Konva.Layer({ id: 'routes'    }), order:  2, key: { id: 'toggle-routes'   , label: 'Routes'   , defaultChecked: true } },
+            waypoints: { name: 'waypoints', layer: new Konva.Layer({ id: 'waypoints' }), order:  3, key: { id: 'toggle-waypoints', label: 'Waypoints', defaultChecked: true } },
+            tooltip:   { name: 'tooltip'  , layer: new Konva.Layer({ id: 'tooltip'   }), order: 99, key: null                                                                 },
         };
-        const layerControls = [
-            { id: 'toggle-locations', layer: 'locations' },
-            { id: 'toggle-routes', layer: 'routes' },
-            { id: 'toggle-waypoints', layer: 'waypoints' }
-        ];
 
         function createOrResizeKonvaStage() {
             const width = mapDiv.offsetWidth;
@@ -439,11 +435,9 @@
                     draggable: true
                 });
 
-                // Add all layers except tooltip, then add tooltip last
-                Object.entries(mapLayers).forEach(([name, layer]) => {
-                    if (name !== 'tooltip') stage.add(layer);
-                });
-                stage.add(mapLayers.tooltip);
+                Object.values(mapLayers)
+                    .sort((a, b) => a.order - b.order)
+                    .forEach(obj => stage.add(obj.layer));
 
                 attachKonvaWheelZoom(stage);
                 stage.on('dragmove', function(evt) {
@@ -491,7 +485,13 @@
         // ------------------- Konva Map Drawing -------------------
         function ResetMapWindow() {
             if (!map_interacted) {
-                fitStageToLayerContent(stage, Object.values(mapLayers).filter(l => l !== mapLayers.tooltip));
+                fitStageToLayerContent(
+                    stage,
+                    Object.entries(mapLayers)
+                        .filter(([name]) => name !== 'tooltip')
+                        .sort((a, b) => a[1].order - b[1].order)
+                        .map(([name, obj]) => obj.layer)
+                );
             }
         }
 
@@ -533,8 +533,8 @@
     
         function updateRouteAndWaypointsFromPath(name, pathNodes) {
             // Clear previous route and waypoints for this path
-            mapLayers.routes.find(`#route_${name}`).forEach(node => node.destroy());
-            mapLayers.waypoints.find(`#wp_${name}_`).forEach(node => node.destroy());
+            mapLayers.routes.layer.find(`#route_${name}`).forEach(node => node.destroy());
+            mapLayers.waypoints.layer.find(`#wp_${name}_`).forEach(node => node.destroy());
 
             // Draw route as a line
             if (pathNodes.length > 1) {
@@ -549,7 +549,7 @@
                     lineCap: 'round',
                     id: `route_${name}`
                 });
-                mapLayers.routes.add(routeLine);
+                mapLayers.routes.layer.add(routeLine);
             }
 
             // Draw waypoints as small circles
@@ -561,37 +561,48 @@
                     fill: '#219ebc',
                     id: `wp_${name}_${idx}`
                 });
-                mapLayers.waypoints.add(waypoint);
+                mapLayers.waypoints.layer.add(waypoint);
             });
 
-            mapLayers.routes.batchDraw();
-            mapLayers.waypoints.batchDraw();
+            mapLayers.routes.layer.batchDraw();
+            mapLayers.waypoints.layer.batchDraw();
 
             ResetMapWindow();
         }
 
         // ------------------- Konva Layer Controls -------------------
-        layerControls.forEach(ctrl => {
-            document.getElementById(ctrl.id).addEventListener('change', function() {
-                mapLayers[ctrl.layer].visible(this.checked);
-                stage.batchDraw();
-            });
+        const mapKeyList = document.getElementById('map-key-list');
+        Object.entries(mapLayers).forEach(([name, obj]) => {
+            if (obj.key) {
+                const label = document.createElement('label');
+                label.style.display = 'block';
+                label.innerHTML = `<input type="checkbox" id="${obj.key.id}" ${obj.key.defaultChecked ? 'checked' : ''}> ${obj.key.label}`;
+                mapKeyList.appendChild(label);
+            }
+        });
+        Object.entries(mapLayers).forEach(([name, obj]) => {
+            if (obj.key) {
+                document.getElementById(obj.key.id).addEventListener('change', function() {
+                    obj.layer.visible(this.checked);
+                    stage.batchDraw();
+                });
+            }
         });
 
         // ------------------- Konva Tooltip Logic -------------------
-        Object.entries(mapLayers).forEach(([name, layer]) => {
+        Object.entries(mapLayers).forEach(([name, obj]) => {
             if (name === 'tooltip') return;
 
             let currentTooltip = null;
             let currentShapeId = null;
 
-            layer.on('mouseover', function(evt) {
+            obj.layer.on('mouseover', function(evt) {
                 const shape = evt.target;
                 if (shape && shape.id()) {
                     stage.container().style.cursor = 'pointer';
                     currentShapeId = shape.id();
 
-                    mapLayers.tooltip.destroyChildren();
+                    mapLayers.tooltip.layer.destroyChildren();
 
                     const pointer = stage.getPointerPosition();
                     const scale = stage.scaleX(); // assuming uniform scaling
@@ -613,13 +624,13 @@
                         padding: 6,
                         fill: '#fff'
                     }));
-                    mapLayers.tooltip.add(currentTooltip);
-                    mapLayers.tooltip.batchDraw();
+                    mapLayers.tooltip.layer.add(currentTooltip);
+                    mapLayers.tooltip.layer.batchDraw();
                     stage.batchDraw();
                 }
             });
 
-            layer.on('mousemove', function(evt) {
+            obj.layer.on('mousemove', function(evt) {
                 if (currentTooltip) {
                     const pointer = stage.getPointerPosition();
                     const scale = stage.scaleX();
@@ -628,14 +639,14 @@
                     const canvasY = (pointer.y - stagePos.y) / scale;
                     currentTooltip.x(canvasX + 16);
                     currentTooltip.y(canvasY - 24);
-                    mapLayers.tooltip.batchDraw();
+                    mapLayers.tooltip.layer.batchDraw();
                 }
             });
 
-            layer.on('mouseout', function(evt) {
+            obj.layer.on('mouseout', function(evt) {
                 stage.container().style.cursor = '';
-                mapLayers.tooltip.destroyChildren();
-                mapLayers.tooltip.batchDraw();
+                mapLayers.tooltip.layer.destroyChildren();
+                mapLayers.tooltip.layer.batchDraw();
                 currentTooltip = null;
                 currentShapeId = null;
             });

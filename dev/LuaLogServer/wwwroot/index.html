@@ -116,7 +116,7 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script> -->
 
     <!-- To be removed -->
-        <script>
+    <script>
         const cyDarkStyle = [
             {
                 selector: 'node',
@@ -208,6 +208,81 @@
 
     <!-- App Scripts -->
     <script>
+        // automatic data management
+        let main_data_store = new Map(); // map of string keys to weakrefs of objects
+        let ttl_data_store = new Map(); // map of string keys to TTL (time-to-live) values and a strong reference
+        let handle_to_gameobject = new Map(); // map handles to gameobject IDs just because they're useful for manual systems
+
+        // manual data management
+        let _patrol = {
+            AddRoute: function(id, origin, destination, path, weight, enabled)
+            {
+                if (!this.Engines[id]) {
+                    this.Engines[id] = {};
+                }
+                if (!this.Engines[id].routes) {
+                    this.Engines[id].routes = {};
+                }
+                let route_id = origin + "\t" + destination + "\t" + path;
+                this.Engines[id].routes[route_id] = {
+                    origin: origin,
+                    destination: destination,
+                    path: path,
+                    weight: weight,
+                    enabled: enabled
+                };
+            },
+            Location: function(id, location, location_data) {
+                if (!this.Engines[id]) {
+                    this.Engines[id] = {};
+                }
+                if (!this.Engines[id].locations) {
+                    this.Engines[id].locations = {};
+                }
+                this.Engines[id].locations[location] = location_data;
+            },
+            PatrolEngines: function(ids) {
+                // Remove patrol engines that are not in the existing list
+                for (const key in this.Engines) {
+                    if (!ids.includes(key)) {
+                        delete this.Engines[key];
+                    }
+                }
+            },
+            PatrolObjects: function(engine, seqnos) {
+                if (!this.Engines[engine]) {
+                    this.Engines[engine] = {};
+                }
+                //let OldSet = this.Engines[engine].patrol_objects;
+                this.Engines[engine].patrol_objects = new Set();
+                for (const seqno of seqnos.split(',')) {
+                    let seqNoInt = parseInt(seqno);
+                    let GO_ID = handle_to_gameobject.get(seqNoInt);
+                    if (GO_ID) {
+                        let GOweak = main_data_store.get(GO_ID);
+                        if (GOweak) {
+                            let GO = GOweak.deref();
+                            if (GO) {
+                                this.Engines[engine].patrol_objects.add(GO);
+                            }
+                        }
+                    }
+                }
+            },
+            Engines: {},
+        }
+        let path_cache = {};
+
+        function ClearAllData()
+        {
+            main_data_store.clear();
+            ttl_data_store.clear();
+            handle_to_gameobject.clear();
+
+            _patrol.Engines = {};
+            path_cache = {};
+        }
+
         // Utility functions (ansiToHtml, stripAnsi, splitKeepRemainder, formatTimestamp, formatSource, extractSource, parseLuaValue)
         function ansiToHtml(text) {
             const ansi_up = new AnsiUp();
@@ -223,7 +298,6 @@
             result.push(parts.slice(count - 1).join(delimiter));
             return result;
         }
-
         function formatTimestamp(tsStr) {
             // Remove leading spaces and parse as float
             const seconds = parseFloat(tsStr.trim());
@@ -236,7 +310,6 @@
                    `${minutes.toString().padStart(2, '0')}:` +
                    `${secs.toFixed(3).padStart(6, '0')}`;
         }
-
         function formatSource(src) {
             // Match filename.lua#123
             const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
@@ -246,7 +319,6 @@
                 return `<span class="source-other">${src}</span>${match[3]}`;
             }
         }
-
         function extractSource(src) {
             // Match filename.lua#123
             const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
@@ -256,7 +328,6 @@
                 return src;
             }
         }
-
         function parseLuaValue(luaStr) {
             // Replace Lua booleans
             luaStr = luaStr.replace(/\btrue\b/g, 'true').replace(/\bfalse\b/g, 'false');
@@ -295,7 +366,6 @@
                 return null;
             }
         }
-
         function assignEdgeLabelOffsets(cy, marginStep = 12) {
             // Group edges by unordered node pair
             const edgeGroups = {};
@@ -324,17 +394,138 @@
                 evt.target.removeClass('hover');
             });
         }
-        
-        let main_data = {};
-        let gameobjects = {};
 
-        let _patrol_data = {};
-        let path_cache = {};
+        function MergeObjectIntoGlobalStore(id, obj) {
+            const TTL_MS = 60000;
+            const now = Date.now();
+
+            // Ensure $id is set
+            obj.$id = id;
+
+            // Resolve $ref properties in obj
+            for (const key in obj) {
+                const val = obj[key];
+                if (
+                    val &&
+                    typeof val === "object" &&
+                    Object.keys(val).length === 1 &&
+                    "$ref" in val &&
+                    typeof val.$ref === "string"
+                ) {
+                    const refId = val.$ref;
+                    let refObj = undefined;
+                    if (main_data_store.has(refId)) {
+                        const weakref = main_data_store.get(refId);
+                        refObj = weakref.deref();
+                    }
+                    if (!refObj) {
+                        // Create a placeholder object with $id
+                        refObj = { $id: refId };
+                        main_data_store.set(refId, new WeakRef(refObj));
+                    }
+                    obj[key] = refObj;
+                }
+            }
+
+            // Merge logic as before
+            if (ttl_data_store.has(id)) {
+                const [target, _] = ttl_data_store.get(id);
+                if (obj.$partial) {
+                    for (const key in obj) {
+                        if (key === '$partial') continue;
+                        if (obj[key] === null) {
+                            delete target[key];
+                        } else {
+                            target[key] = obj[key];
+                        }
+                    }
+                } else {
+                    for (const key in target) {
+                        if (!(key in obj)) {
+                            delete target[key];
+                        }
+                    }
+                    for (const key in obj) {
+                        if (key !== '$partial') {
+                            target[key] = obj[key];
+                        }
+                    }
+                }
+                ttl_data_store.set(id, [target, now + TTL_MS]);
+            } else if (main_data_store.has(id)) {
+                const weakref = main_data_store.get(id);
+                const target = weakref.deref();
+                if (target) {
+                    if (obj.$partial) {
+                        for (const key in obj) {
+                            if (key === '$partial') continue;
+                            if (obj[key] === null) {
+                                delete target[key];
+                            } else {
+                                target[key] = obj[key];
+                            }
+                        }
+                    } else {
+                        for (const key in target) {
+                            if (!(key in obj)) {
+                                delete target[key];
+                            }
+                        }
+                        for (const key in obj) {
+                            if (key !== '$partial') {
+                                target[key] = obj[key];
+                            }
+                        }
+                    }
+                    ttl_data_store.set(id, [target, now + TTL_MS]);
+                }
+            } else {
+                const target = {};
+                if (obj.$partial) {
+                    for (const key in obj) {
+                        if (key === '$partial') continue;
+                        if (obj[key] === null) {
+                            delete target[key];
+                        } else {
+                            target[key] = obj[key];
+                        }
+                    }
+                } else {
+                    for (const key in obj) {
+                        if (key !== '$partial') {
+                            target[key] = obj[key];
+                        }
+                    }
+                }
+                ttl_data_store.set(id, [target, now + TTL_MS]);
+                main_data_store.set(id, new WeakRef(target));
+            }
+        }
+
+        // Periodic cleanup for ttl_data_store
+        setInterval(() => {
+            const now = Date.now();
+            for (const [id, [obj, ttl]] of ttl_data_store.entries()) {
+                if (ttl < now) {
+                    ttl_data_store.delete(id);
+                }
+            }
+            console.log("TTL Cleanup done. Current TTL store size:", ttl_data_store.size);
+
+            // Cleanup old entries in main_data_store
+            for (const [id, weakref] of main_data_store.entries()) {
+                if (weakref.deref() === undefined) {
+                    main_data_store.delete(id);
+                }
+            }
+            console.log("Main store cleanup done. Current main store size:", main_data_store.size);
+        }, 10000);
 
         function processPatrolObjectBlock(lines) {
             // Temporary storage for parsed tables
             const tables = {};
 
+            let last = null;
             let lastId = null;
 
             // Parse tables
@@ -342,58 +533,29 @@
                 if (line.startsWith('table|')) {
                     const [, tableId, luaStr] = line.match(/^table\|([A-F0-9]+)\|(.+)$/);
                     let obj = parseLuaValue(luaStr);
+
+                    MergeObjectIntoGlobalStore(tableId, obj);
+
                     tables[tableId] = obj;
                     last = obj;
                     lastId = tableId;
                 }
             }
 
-            // Resolve $ref recursively
-            function resolveRefs(obj, tables) {
-                if (obj && typeof obj === 'object') {
-                    if (obj["$ref"]) {
-                        return tables[obj["$ref"]];
-                    }
-                    for (const k in obj) {
-                        obj[k] = resolveRefs(obj[k], tables);
-                    }
-                }
-                return obj;
-            }
-
-            // Map handles to table IDs
             for (const [tableId, obj] of Object.entries(tables)) {
                 if (obj.__type === "GameObject" && typeof obj.id === "string" && obj.id.startsWith("H")) {
-                    gameobjects[parseInt(obj.id.split(':', 2)[1])] = tableId; // Map handle to tableId
+                    handle_to_gameobject.set(parseInt(obj.id.split(':', 2)[1]), tableId); // Map handle to tableId
                 }
             }
 
-            // Merge tables into main data store
-            for (const [tableId, obj] of Object.entries(tables)) {
-                // If $partial, update only existing or add new keys, remove keys set to null
-                if (obj["$partial"]) {
-                    if (!main_data[tableId]) main_data[tableId] = {};
-                    for (const k in obj) {
-                        if (k === "$partial") continue;
-                        if (obj[k] === null) {
-                            delete main_data[tableId][k];
-                        } else {
-                            main_data[tableId][k] = obj[k];
-                        }
-                    }
-                } else {
-                    main_data[tableId] = obj;
-                }
-            }
-
-            return lastId;
+            return last;
         }
 
         let inDataBlock = null;
         let linesDataBlock = [];
         function procPossibleData(source, data)
         {
-            let lastDataItemId = null;
+            let lastDataItem = null;
             let lastDataItemBlock = null;
             if (inDataBlock != null) {
                 const [block_type, block_name] = data.split('|', 2);
@@ -405,7 +567,7 @@
                     inDataBlock = null;
                     linesDataBlock.push(data);
 
-                    lastDataItemId = processPatrolObjectBlock(linesDataBlock.slice(1, -1));
+                    lastDataItem = processPatrolObjectBlock(linesDataBlock.slice(1, -1));
                     linesDataBlock = [];
                     // continue down
                 } else {
@@ -421,14 +583,22 @@
                 }
             }
 
-            if (lastDataItemId != null) {
-                console.log("main_data", main_data);
-                console.log("gameobjects", gameobjects);
-                console.log("------------------");
-                console.log(main_data[lastDataItemId]);
-                console.log(lastDataItemId);
-                console.log(lastDataItemBlock);
+            if (lastDataItem != null) {
+                //console.log("main_data", main_data);
+                //console.log("gameobjects", gameobjects);
+                //console.log("------------------");
+                //console.log(main_data[lastDataItemId]);
+                //console.log(lastDataItemId);
+                //console.log(lastDataItemBlock);
+                //console.log("==================");
+
+                //console.log(main_data_store);
+                //console.log(ttl_data_store);
+                //console.log("==================");
+
+                console.log(lastDataItem);
                 console.log("==================");
+
                 return true;
             } else {
                 let used = false;
@@ -440,47 +610,32 @@
                                 case 'AddRoute':
                                     {
                                         const [id, origin, destination, path, weight, enabled] = data.split('|').slice(1);
-                                        if (!_patrol_data[id]) {
-                                            _patrol_data[id] = {};
-                                        }
-                                        if (!_patrol_data[id].routes) {
-                                            _patrol_data[id].routes = {};
-                                        }
-                                        let route_id = origin + "\t" + destination + "\t" + path;
-                                        _patrol_data[id].routes[route_id] = {
-                                            origin: origin,
-                                            destination: destination,
-                                            path: path,
-                                            weight: weight,
-                                            enabled: enabled
-                                        };
+                                        _patrol.AddRoute(id, origin, destination, path, weight, enabled);
                                         used = true;
                                     }
                                     break;
                                 case 'Location':
                                     {
                                         const [id, location, position] = data.split('|').slice(1);
-                                        let location_parsed = parseLuaValue(position);
-                                        location_parsed.radius = location_parsed.y;
-                                        delete location_parsed.y;
-                                        if (!_patrol_data[id]) {
-                                            _patrol_data[id] = {};
-                                        }
-                                        if (!_patrol_data[id].locations) {
-                                            _patrol_data[id].locations = {};
-                                        }
-                                        _patrol_data[id].locations[location] = location_parsed;
+                                        let location_data = parseLuaValue(position);
+                                        location_data.radius = location_data.y;
+                                        delete location_data.y;
+
+                                        _patrol.Location(id, location, location_data);
                                         used = true;
                                     }
                                     break;
                                 case 'PatrolEngines':
                                     {
-                                        const allowed = data.split('|').slice(1);
-                                        for (const key in _patrol_data) {
-                                            if (!allowed.includes(key)) {
-                                                delete _patrol_data[key];
-                                            }
-                                        }
+                                        const existing_engines = data.split('|').slice(1);
+                                        _patrol.PatrolEngines(existing_engines);
+                                        used = true;
+                                    }
+                                    break;
+                                case 'PatrolObjects':
+                                    {
+                                        const [engine, seqnos] = data.split('|').slice(1);
+                                        _patrol.PatrolObjects(engine, seqnos);
                                         used = true;
                                     }
                                     break;
@@ -504,10 +659,10 @@
                             }
 
                             if (used) {
-                                document.getElementById('processed').innerText = JSON.stringify(_patrol_data, null, 2);
+                                document.getElementById('processed').innerText = JSON.stringify(_patrol, null, 2);
 
                                 let elements = [];
-                                for (const [PatrolId, data] of Object.entries(_patrol_data)) {
+                                for (const [PatrolId, data] of Object.entries(_patrol.Engines)) {
                                     for (const [loc_id, loc_data] of Object.entries(data.locations || {})) {
                                         elements.push({
                                             data: {
@@ -637,11 +792,7 @@
                 if (parent_type == 'reset') {
                     logDiv.innerHTML = '';
 
-                    main_data = {};
-                    gameobjects = {};
-
-                    _patrol_data = {};
-                    path_cache = {};
+                    ClearAllData();
                 } else {
                     const rawTime = time; // as received
                     const formattedTime = formatTimestamp(time);

@@ -49,8 +49,9 @@ function M.LogPathToData(path, level)
             table.insert(path_points, string.format("%f,%f", point.x, point.z));
         end
         logger.print(level or logger.LogLevel.DEBUG, nil,
-            string.format("Path|%s|%s",
+            string.format("Path|%s|%d|%s",
                 path,
+                GetPathType(path),
                 table.concat(path_points, "|")));
     end
 end

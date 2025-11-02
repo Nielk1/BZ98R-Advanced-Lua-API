@@ -27,8 +27,6 @@
         .source-filename { color: #8ecae6; }
         .source-line { color: #ffb703; }
         .source-other { color: #fb8500; }
-
-        
         #map-container, #map {
             width: 100%;
             height: 100%;
@@ -132,11 +130,171 @@
     <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script>
 
     <script>
-        // Konva setup for pan and zoom
+        // ------------------- Utility Functions -------------------
+        function ansiToHtml(text) {
+            const ansi_up = new AnsiUp();
+            return ansi_up.ansi_to_html(text);
+        }
+        function stripAnsi(text) {
+            return text.replace(/\x1b\[[0-9;]*m/g, '');
+        }
+        function splitKeepRemainder(str, delimiter, count) {
+            const parts = str.split(delimiter);
+            if (parts.length <= count) return parts;
+            const result = parts.slice(0, count - 1);
+            result.push(parts.slice(count - 1).join(delimiter));
+            return result;
+        }
+        function formatTimestamp(tsStr) {
+            // Remove leading spaces and parse as float
+            const seconds = parseFloat(tsStr.trim());
+            if (isNaN(seconds)) return tsStr;
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            // Format as hh:mm:ss.sss
+            return `${hours.toString().padStart(2, '0')}:` +
+                   `${minutes.toString().padStart(2, '0')}:` +
+                   `${secs.toFixed(3).padStart(6, '0')}`;
+        }
+        function formatSource(src) {
+            // Match filename.lua#123
+            const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
+            if (match) {
+                return `<span class="source-filename">${match[1]}</span><span class="source-line">#${match[2]}</span>${match[3]}`;
+            } else {
+                return `<span class="source-other">${src}</span>${match[3]}`;
+            }
+        }
+        function extractSource(src) {
+            // Match filename.lua#123
+            const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
+            if (match) {
+                return match[1];
+            } else {
+                return src;
+            }
+        }
+        function parseLuaValue(luaStr) {
+            // Replace Lua booleans
+            luaStr = luaStr.replace(/\btrue\b/g, 'true').replace(/\bfalse\b/g, 'false');
+
+            // Replace Lua nil
+            luaStr = luaStr.replace(/\bnil\b/g, 'null');
+
+            // Replace single quotes with double quotes for strings
+            luaStr = luaStr.replace(/'/g, '"');
+
+            // Replace Lua ["string"] keys with JSON keys
+            luaStr = luaStr.replace(/\[\s*"([^"]+)"\s*\]\s*=/g, '"$1":');
+    
+            // Replace Lua table keys (a=1) with JSON keys ("a":1)
+            luaStr = luaStr.replace(/([a-zA-Z_][a-zA-Z0-9_]*)\s*=/g, '"$1":');
+
+            // Replace invalid numbers (e.g., N123, H361) with quoted strings
+            luaStr = luaStr.replace(/([:=]\s*)H(\d+)/g, '$1"HANDLE:$2"');
+
+            // Replace Lua arrays {1,2,3} with JSON arrays [1,2,3]
+            // If keys are all numbers and sequential, treat as array
+            // Otherwise, treat as object
+            // For simplicity, convert all curly braces to brackets
+            // This works for flat arrays/tables, not nested
+            let isArray = /^\s*\{(\s*\d+\s*,?)*\s*\}\s*$/.test(luaStr);
+            if (isArray) {
+                luaStr = luaStr.replace(/^\s*\{/, '[').replace(/\}\s*$/, ']');
+            } else {
+                luaStr = luaStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
+            }
+            // Now parse as JSON
+            try {
+                return JSON.parse(luaStr);
+            } catch (e) {
+                console.error("Failed to parse Lua:", luaStr, e);
+                return null;
+            }
+        }
+
+        // ------------------- Data Stores -------------------
+        let map_interacted = false;
+        // automatic data management
+        let main_data_store = new Map(); // map of string keys to weakrefs of objects
+        let ttl_data_store = new Map(); // map of string keys to TTL (time-to-live) values and a strong reference
+        let handle_to_gameobject = new Map(); // map handles to gameobject IDs just because they're useful for manual systems
+        // manual data management
+        let path_cache = {};
+        let _patrol = {
+            AddRoute: function(id, origin, destination, path, weight, enabled)
+            {
+                if (!this.Engines[id]) {
+                    this.Engines[id] = {};
+                }
+                if (!this.Engines[id].routes) {
+                    this.Engines[id].routes = {};
+                }
+                let route_id = origin + "\t" + destination + "\t" + path;
+                this.Engines[id].routes[route_id] = {
+                    origin: origin,
+                    destination: destination,
+                    path: path,
+                    weight: weight,
+                    enabled: enabled
+                };
+            },
+            Location: function(id, location, location_data) {
+                if (!this.Engines[id]) {
+                    this.Engines[id] = {};
+                }
+                if (!this.Engines[id].locations) {
+                    this.Engines[id].locations = {};
+                }
+                this.Engines[id].locations[location] = location_data;
+            },
+            PatrolEngines: function(ids) {
+                // Remove patrol engines that are not in the existing list
+                for (const key in this.Engines) {
+                    if (!ids.includes(key)) {
+                        delete this.Engines[key];
+                    }
+                }
+            },
+            PatrolObjects: function(engine, seqnos) {
+                if (!this.Engines[engine]) {
+                    this.Engines[engine] = {};
+                }
+                //let OldSet = this.Engines[engine].patrol_objects;
+                this.Engines[engine].patrol_objects = new Set();
+                for (const seqno of seqnos.split(',')) {
+                    let seqNoInt = parseInt(seqno);
+                    let GO_ID = handle_to_gameobject.get(seqNoInt);
+                    if (GO_ID) {
+                        let GOweak = main_data_store.get(GO_ID);
+                        if (GOweak) {
+                            let GO = GOweak.deref();
+                            if (GO) {
+                                this.Engines[engine].patrol_objects.add(GO);
+                            }
+                        }
+                    }
+                }
+            },
+            Engines: {},
+        }
+
+        function ClearAllData()
+        {
+            main_data_store.clear();
+            ttl_data_store.clear();
+            handle_to_gameobject.clear();
+
+            _patrol.Engines = {};
+            path_cache = {};
+
+            map_interacted = false;
+        }
+
+        // ------------------- Konva Map Setup -------------------
         const mapDiv = document.getElementById('map');
         let stage = null;
-
-        // If you use GridStack's API to resize/move panels, call createOrResizeKonvaStage after those changes.
         const layerLocations = new Konva.Layer({ id: 'locations' });
         const layerRoutes = new Konva.Layer({ id: 'routes' });
         const layerWaypoints = new Konva.Layer({ id: 'waypoints' });
@@ -154,16 +312,12 @@
                     draggable: true
                 });
 
-                // Add layers as before
                 stage.add(layerRoutes);
                 stage.add(layerWaypoints);
                 stage.add(layerLocations);
                 stage.add(layerTooltip);
 
-                // Attach mouse wheel zoom handler
                 attachKonvaWheelZoom(stage);
-
-                // Attach pan event handler here
                 stage.on('dragmove', function(evt) {
                     map_interacted = true;
                 });
@@ -202,111 +356,17 @@
             });
         }
 
-
-        // Resize on window resize
+        // Resize on window or grid resize
         window.addEventListener('resize', createOrResizeKonvaStage);
-
-        // Optionally, listen for GridStack events if your layout changes dynamically
         document.addEventListener('gridstack-change', createOrResizeKonvaStage);
 
-        // Example: draw a few circles and lines
-        function drawDemoMap() {
-            layerLocations.destroyChildren();
-            layerRoutes.destroyChildren();
-            layerWaypoints.destroyChildren();
 
-            // Locations
-            const locA = new Konva.Circle({ x: 100, y: 100, radius: 30, fill: '#fb8500', stroke: '#ffb703', strokeWidth: 3, id: 'locA' });
-            const locB = new Konva.Circle({ x: 400, y: 200, radius: 30, fill: '#fb8500', stroke: '#ffb703', strokeWidth: 3, id: 'locB' });
-            layerLocations.add(locA);
-            layerLocations.add(locB);
 
-            // Routes
-            const route = new Konva.Line({
-                points: [100, 100, 400, 200],
-                stroke: '#8ecae6',
-                strokeWidth: 4,
-                lineCap: 'round',
-                id: 'routeAB'
-            });
-            layerRoutes.add(route);
 
-            // Waypoints
-            const waypoint = new Konva.Circle({ x: 250, y: 150, radius: 10, fill: '#219ebc', id: 'wp1' });
-            layerWaypoints.add(waypoint);
 
-            stage.draw();
-        }
 
-        // Layer/group toggling via key panel
-        document.getElementById('toggle-locations').addEventListener('change', function() {
-            layerLocations.visible(this.checked);
-            stage.batchDraw();
-        });
-        document.getElementById('toggle-routes').addEventListener('change', function() {
-            layerRoutes.visible(this.checked);
-            stage.batchDraw();
-        });
-        document.getElementById('toggle-waypoints').addEventListener('change', function() {
-            layerWaypoints.visible(this.checked);
-            stage.batchDraw();
-        });
 
-        // Mouseover logic to show names
-        [layerLocations, layerRoutes, layerWaypoints].forEach(layer => {
-            let currentTooltip = null;
-            let currentShapeId = null;
-
-            layer.on('mouseover', function(evt) {
-                const shape = evt.target;
-                if (shape && shape.id()) {
-                    stage.container().style.cursor = 'pointer';
-
-                    currentShapeId = shape.id();
-                    
-                    // Remove previous tooltip
-                    layerTooltip.destroyChildren();
-
-                    // Get mouse position relative to the stage
-                    const pointer = stage.getPointerPosition();
-
-                    // Create new tooltip
-                    const tooltip = new Konva.Label({
-                        x: pointer.x + 16,
-                        y: pointer.y - 24,
-                        opacity: 0.85
-                    });
-                    tooltip.add(new Konva.Tag({ fill: '#232425' }));
-                    tooltip.add(new Konva.Text({
-                        text: shape.id(),
-                        fontSize: 16,
-                        padding: 6,
-                        fill: '#fff'
-                    }));
-                    layerTooltip.add(tooltip);
-                    layerTooltip.batchDraw();
-                    stage.batchDraw();
-                }
-            });
-
-            layer.on('mousemove', function(evt) {
-                if (currentTooltip) {
-                    const pointer = stage.getPointerPosition();
-                    currentTooltip.x(pointer.x + 16);
-                    currentTooltip.y(pointer.y - 24);
-                    layerTooltip.batchDraw();
-                }
-            });
-
-            layer.on('mouseout', function(evt) {
-                stage.container().style.cursor = '';
-                layerTooltip.destroyChildren();
-                layerTooltip.batchDraw();
-                currentTooltip = null;
-                currentShapeId = null;
-            });
-        });
-    </script>
+</script>
     <!-- To be removed -->
     <script>
         const cyDarkStyle = [
@@ -400,168 +460,12 @@
 
     <!-- App Scripts -->
     <script>
-        let map_interacted = false;
 
-        // automatic data management
-        let main_data_store = new Map(); // map of string keys to weakrefs of objects
-        let ttl_data_store = new Map(); // map of string keys to TTL (time-to-live) values and a strong reference
-        let handle_to_gameobject = new Map(); // map handles to gameobject IDs just because they're useful for manual systems
 
-        // manual data management
-        let _patrol = {
-            AddRoute: function(id, origin, destination, path, weight, enabled)
-            {
-                if (!this.Engines[id]) {
-                    this.Engines[id] = {};
-                }
-                if (!this.Engines[id].routes) {
-                    this.Engines[id].routes = {};
-                }
-                let route_id = origin + "\t" + destination + "\t" + path;
-                this.Engines[id].routes[route_id] = {
-                    origin: origin,
-                    destination: destination,
-                    path: path,
-                    weight: weight,
-                    enabled: enabled
-                };
-            },
-            Location: function(id, location, location_data) {
-                if (!this.Engines[id]) {
-                    this.Engines[id] = {};
-                }
-                if (!this.Engines[id].locations) {
-                    this.Engines[id].locations = {};
-                }
-                this.Engines[id].locations[location] = location_data;
-            },
-            PatrolEngines: function(ids) {
-                // Remove patrol engines that are not in the existing list
-                for (const key in this.Engines) {
-                    if (!ids.includes(key)) {
-                        delete this.Engines[key];
-                    }
-                }
-            },
-            PatrolObjects: function(engine, seqnos) {
-                if (!this.Engines[engine]) {
-                    this.Engines[engine] = {};
-                }
-                //let OldSet = this.Engines[engine].patrol_objects;
-                this.Engines[engine].patrol_objects = new Set();
-                for (const seqno of seqnos.split(',')) {
-                    let seqNoInt = parseInt(seqno);
-                    let GO_ID = handle_to_gameobject.get(seqNoInt);
-                    if (GO_ID) {
-                        let GOweak = main_data_store.get(GO_ID);
-                        if (GOweak) {
-                            let GO = GOweak.deref();
-                            if (GO) {
-                                this.Engines[engine].patrol_objects.add(GO);
-                            }
-                        }
-                    }
-                }
-            },
-            Engines: {},
-        }
-        let path_cache = {};
 
-        function ClearAllData()
-        {
-            main_data_store.clear();
-            ttl_data_store.clear();
-            handle_to_gameobject.clear();
 
-            _patrol.Engines = {};
-            path_cache = {};
 
-            map_interacted = false;
-        }
 
-        // Utility functions (ansiToHtml, stripAnsi, splitKeepRemainder, formatTimestamp, formatSource, extractSource, parseLuaValue)
-        function ansiToHtml(text) {
-            const ansi_up = new AnsiUp();
-            return ansi_up.ansi_to_html(text);
-        }
-        function stripAnsi(text) {
-            return text.replace(/\x1b\[[0-9;]*m/g, '');
-        }
-        function splitKeepRemainder(str, delimiter, count) {
-            const parts = str.split(delimiter);
-            if (parts.length <= count) return parts;
-            const result = parts.slice(0, count - 1);
-            result.push(parts.slice(count - 1).join(delimiter));
-            return result;
-        }
-        function formatTimestamp(tsStr) {
-            // Remove leading spaces and parse as float
-            const seconds = parseFloat(tsStr.trim());
-            if (isNaN(seconds)) return tsStr;
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
-            // Format as hh:mm:ss.sss
-            return `${hours.toString().padStart(2, '0')}:` +
-                   `${minutes.toString().padStart(2, '0')}:` +
-                   `${secs.toFixed(3).padStart(6, '0')}`;
-        }
-        function formatSource(src) {
-            // Match filename.lua#123
-            const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
-            if (match) {
-                return `<span class="source-filename">${match[1]}</span><span class="source-line">#${match[2]}</span>${match[3]}`;
-            } else {
-                return `<span class="source-other">${src}</span>${match[3]}`;
-            }
-        }
-        function extractSource(src) {
-            // Match filename.lua#123
-            const match = src.match(/^(.+\.lua)#(\d+)( *)$/);
-            if (match) {
-                return match[1];
-            } else {
-                return src;
-            }
-        }
-        function parseLuaValue(luaStr) {
-            // Replace Lua booleans
-            luaStr = luaStr.replace(/\btrue\b/g, 'true').replace(/\bfalse\b/g, 'false');
-
-            // Replace Lua nil
-            luaStr = luaStr.replace(/\bnil\b/g, 'null');
-
-            // Replace single quotes with double quotes for strings
-            luaStr = luaStr.replace(/'/g, '"');
-
-            // Replace Lua ["string"] keys with JSON keys
-            luaStr = luaStr.replace(/\[\s*"([^"]+)"\s*\]\s*=/g, '"$1":');
-    
-            // Replace Lua table keys (a=1) with JSON keys ("a":1)
-            luaStr = luaStr.replace(/([a-zA-Z_][a-zA-Z0-9_]*)\s*=/g, '"$1":');
-
-            // Replace invalid numbers (e.g., N123, H361) with quoted strings
-            luaStr = luaStr.replace(/([:=]\s*)H(\d+)/g, '$1"HANDLE:$2"');
-
-            // Replace Lua arrays {1,2,3} with JSON arrays [1,2,3]
-            // If keys are all numbers and sequential, treat as array
-            // Otherwise, treat as object
-            // For simplicity, convert all curly braces to brackets
-            // This works for flat arrays/tables, not nested
-            let isArray = /^\s*\{(\s*\d+\s*,?)*\s*\}\s*$/.test(luaStr);
-            if (isArray) {
-                luaStr = luaStr.replace(/^\s*\{/, '[').replace(/\}\s*$/, ']');
-            } else {
-                luaStr = luaStr.replace(/^\s*\{/, '{').replace(/\}\s*$/, '}');
-            }
-            // Now parse as JSON
-            try {
-                return JSON.parse(luaStr);
-            } catch (e) {
-                console.error("Failed to parse Lua:", luaStr, e);
-                return null;
-            }
-        }
         function assignEdgeLabelOffsets(cy, marginStep = 12) {
             // Group edges by unordered node pair
             const edgeGroups = {};
@@ -591,6 +495,158 @@
             });
         }
 
+        // ------------------- Konva Map Drawing -------------------
+        function ResetMapWindow() {
+            if (!map_interacted) {
+                fitStageToLayerContent(stage, [layerLocations, layerRoutes, layerWaypoints]);
+            }
+        }
+
+        function fitStageToLayerContent(stage, layers, padding = 40) {
+            // Find bounding box of all visible shapes in the given layers
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            layers.forEach(layer => {
+                layer.getChildren().forEach(shape => {
+                    if (!shape.visible()) return;
+                    const box = shape.getClientRect({ relativeTo: stage });
+                    minX = Math.min(minX, box.x);
+                    minY = Math.min(minY, box.y);
+                    maxX = Math.max(maxX, box.x + box.width);
+                    maxY = Math.max(maxY, box.y + box.height);
+                });
+            });
+
+            if (minX === Infinity) return; // No shapes
+
+            // Calculate scale and position
+            const contentWidth = maxX - minX;
+            const contentHeight = maxY - minY;
+            const stageWidth = stage.width();
+            const stageHeight = stage.height();
+
+            const scaleX = (stageWidth - padding * 2) / contentWidth;
+            const scaleY = (stageHeight - padding * 2) / contentHeight;
+            const scale = Math.min(scaleX, scaleY, 1); // Don't zoom in past 1x
+
+            stage.scale({ x: scale, y: scale });
+
+            // Center the content
+            const newX = padding - minX * scale;
+            const newY = padding - minY * scale;
+            stage.position({ x: newX, y: newY });
+
+            stage.batchDraw();
+        }
+    
+        function updateRouteAndWaypointsFromPath(name, pathNodes) {
+            // Clear previous route and waypoints for this path
+            layerRoutes.find(`#route_${name}`).forEach(node => node.destroy());
+            layerWaypoints.find(`#wp_${name}_`).forEach(node => node.destroy());
+
+            // Draw route as a line
+            if (pathNodes.length > 1) {
+                const points = [];
+                for (const pt of pathNodes) {
+                    points.push(pt.x, -pt.y);
+                }
+                const routeLine = new Konva.Line({
+                    points: points,
+                    stroke: '#8ecae6',
+                    strokeWidth: 4,
+                    lineCap: 'round',
+                    id: `route_${name}`
+                });
+                layerRoutes.add(routeLine);
+            }
+
+            // Draw waypoints as small circles
+            pathNodes.forEach((pt, idx) => {
+                const waypoint = new Konva.Circle({
+                    x: pt.x,
+                    y: -pt.y,
+                    radius: 10,
+                    fill: '#219ebc',
+                    id: `wp_${name}_${idx}`
+                });
+                layerWaypoints.add(waypoint);
+            });
+
+            layerRoutes.batchDraw();
+            layerWaypoints.batchDraw();
+
+            ResetMapWindow();
+        }
+
+        // ------------------- Konva Layer Controls -------------------
+        document.getElementById('toggle-locations').addEventListener('change', function() {
+            layerLocations.visible(this.checked);
+            stage.batchDraw();
+        });
+        document.getElementById('toggle-routes').addEventListener('change', function() {
+            layerRoutes.visible(this.checked);
+            stage.batchDraw();
+        });
+        document.getElementById('toggle-waypoints').addEventListener('change', function() {
+            layerWaypoints.visible(this.checked);
+            stage.batchDraw();
+        });
+
+        // ------------------- Konva Tooltip Logic -------------------
+        [layerLocations, layerRoutes, layerWaypoints].forEach(layer => {
+            let currentTooltip = null;
+            let currentShapeId = null;
+
+            layer.on('mouseover', function(evt) {
+                const shape = evt.target;
+                if (shape && shape.id()) {
+                    stage.container().style.cursor = 'pointer';
+
+                    currentShapeId = shape.id();
+                    
+                    // Remove previous tooltip
+                    layerTooltip.destroyChildren();
+
+                    // Get mouse position relative to the stage
+                    const pointer = stage.getPointerPosition();
+
+                    // Create new tooltip
+                    const tooltip = new Konva.Label({
+                        x: pointer.x + 16,
+                        y: pointer.y - 24,
+                        opacity: 0.85
+                    });
+                    tooltip.add(new Konva.Tag({ fill: '#232425' }));
+                    tooltip.add(new Konva.Text({
+                        text: shape.id(),
+                        fontSize: 16,
+                        padding: 6,
+                        fill: '#fff'
+                    }));
+                    layerTooltip.add(tooltip);
+                    layerTooltip.batchDraw();
+                    stage.batchDraw();
+                }
+            });
+
+            layer.on('mousemove', function(evt) {
+                if (currentTooltip) {
+                    const pointer = stage.getPointerPosition();
+                    currentTooltip.x(pointer.x + 16);
+                    currentTooltip.y(pointer.y - 24);
+                    layerTooltip.batchDraw();
+                }
+            });
+
+            layer.on('mouseout', function(evt) {
+                stage.container().style.cursor = '';
+                layerTooltip.destroyChildren();
+                layerTooltip.batchDraw();
+                currentTooltip = null;
+                currentShapeId = null;
+            });
+        });
+
+        // ------------------- Data Management & Processing -------------------
         function MergeObjectIntoGlobalStore(id, obj) {
             const TTL_MS = 60000;
             const now = Date.now();
@@ -698,7 +754,6 @@
             }
         }
 
-        // Periodic cleanup for ttl_data_store
         setInterval(() => {
             const now = Date.now();
             for (const [id, [obj, ttl]] of ttl_data_store.entries()) {
@@ -716,93 +771,6 @@
             }
             console.log("Main store cleanup done. Current main store size:", main_data_store.size);
         }, 10000);
-
-
-
-
-        function ResetMapWindow() {
-            if (!map_interacted) {
-                fitStageToLayerContent(stage, [layerLocations, layerRoutes, layerWaypoints]);
-            }
-        }
-
-        function fitStageToLayerContent(stage, layers, padding = 40) {
-            // Find bounding box of all visible shapes in the given layers
-            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            layers.forEach(layer => {
-                layer.getChildren().forEach(shape => {
-                    if (!shape.visible()) return;
-                    const box = shape.getClientRect({ relativeTo: stage });
-                    minX = Math.min(minX, box.x);
-                    minY = Math.min(minY, box.y);
-                    maxX = Math.max(maxX, box.x + box.width);
-                    maxY = Math.max(maxY, box.y + box.height);
-                });
-            });
-
-            if (minX === Infinity) return; // No shapes
-
-            // Calculate scale and position
-            const contentWidth = maxX - minX;
-            const contentHeight = maxY - minY;
-            const stageWidth = stage.width();
-            const stageHeight = stage.height();
-
-            const scaleX = (stageWidth - padding * 2) / contentWidth;
-            const scaleY = (stageHeight - padding * 2) / contentHeight;
-            const scale = Math.min(scaleX, scaleY, 1); // Don't zoom in past 1x
-
-            stage.scale({ x: scale, y: scale });
-
-            // Center the content
-            const newX = padding - minX * scale;
-            const newY = padding - minY * scale;
-            stage.position({ x: newX, y: newY });
-
-            stage.batchDraw();
-        }
-    
-        function updateRouteAndWaypointsFromPath(name, pathNodes) {
-            // Clear previous route and waypoints for this path
-            layerRoutes.find(`#route_${name}`).forEach(node => node.destroy());
-            layerWaypoints.find(`#wp_${name}_`).forEach(node => node.destroy());
-
-            // Draw route as a line
-            if (pathNodes.length > 1) {
-                const points = [];
-                for (const pt of pathNodes) {
-                    points.push(pt.x, -pt.y);
-                }
-                const routeLine = new Konva.Line({
-                    points: points,
-                    stroke: '#8ecae6',
-                    strokeWidth: 4,
-                    lineCap: 'round',
-                    id: `route_${name}`
-                });
-                layerRoutes.add(routeLine);
-            }
-
-            // Draw waypoints as small circles
-            pathNodes.forEach((pt, idx) => {
-                const waypoint = new Konva.Circle({
-                    x: pt.x,
-                    y: -pt.y,
-                    radius: 10,
-                    fill: '#219ebc',
-                    id: `wp_${name}_${idx}`
-                });
-                layerWaypoints.add(waypoint);
-            });
-
-            layerRoutes.batchDraw();
-            layerWaypoints.batchDraw();
-
-            ResetMapWindow();
-        }
-
-
-
 
         function processPatrolObjectBlock(lines) {
             // Temporary storage for parsed tables
@@ -1026,7 +994,7 @@
             return false;
         }
 
-        // GridStack logic for window management
+        // ------------------- GridStack & UI Logic -------------------
         document.addEventListener('DOMContentLoaded', function () {
             const grid = GridStack.init({
                 cellHeight: 70,
@@ -1074,7 +1042,7 @@
             });
         });
 
-        // EventSource logic for log streaming
+        // ------------------- Log Streaming & UI Update -------------------
         window.onload = function () {
             const logDiv = document.getElementById('log');
             const logScrollParent = logDiv.parentElement; // .card-body

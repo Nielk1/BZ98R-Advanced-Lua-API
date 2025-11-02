@@ -129,6 +129,126 @@
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/konva@9.2.0/konva.min.js"></script>
 
+
+    <script>
+        const cyDarkStyle = [
+            {
+                selector: 'node',
+                style: {
+                    'label': 'data(id)',
+                    'background-color': '#fb8500',      // orange node
+                    'color': '#fff',                    // node label text
+                    'text-outline-width': 2,
+                    'text-outline-color': '#232425',    // dark outline for contrast
+                    'font-size': 16,
+                    'border-width': 2,
+                    'border-color': '#ffb703',
+                    'width': 'data(radius)',
+                    'height': 'data(radius)',
+                    //'width': 3,
+                    //'height': 3,
+                }
+            },
+            {
+                selector: 'node[isLocation]',
+                style: {
+                    'background-opacity': 0, // or 0 for fully transparent
+                    //'border-opacity': 0.2,
+                    'border-color': '#fff',
+                    'border-style': 'dashed',
+                }
+            },
+            {
+                selector: 'node[isWaypoint]',
+                style: {
+                    'label': '',
+                    //'display': 'none'
+                    'width': 3,
+                    'height': 3,
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'label': '',
+                    'color': '#8ecae6',                 // edge label text
+                    'font-size': 12,
+                    //'text-background-color': '#232425', // dark background for edge label
+                    //'text-background-opacity': 1,
+                    //'text-background-padding': 2,
+                    'color': '#ffffff',
+                    'text-outline-width': 2,
+                    'text-outline-color': '#232425',
+                    'line-color': '#8ecae6',            // cyan edge
+                    'width': 3,
+                    'target-arrow-shape': 'triangle',
+                    'target-arrow-color': '#8ecae6',
+                    'curve-style': 'bezier'
+                }
+            },
+            {
+                selector: 'edge[isTerminus]',
+                style: {
+                    //'target-arrow-shape': 'none'
+                    'display': 'none'
+                }
+            },
+            {
+                selector: 'node:selected',
+                style: {
+                    'background-color': '#219ebc',      // blue highlight
+                    'border-color': '#fff',
+                    'border-width': 3
+                }
+            },
+            {
+                selector: 'edge.hover, edge:selected',
+                style: {
+                    'label': 'data(label)',
+                    'line-color': '#ffb703',           // highlight color
+                    'target-arrow-color': '#ffb703',
+                    'z-index': 999,                    // bring to front
+                    'color': '#fff',
+                    'text-outline-width': 2,
+                    //'text-outline-color': '#ffb703',
+                    'text-outline-color': '#232425',
+                    //'text-background-color': '#232425',
+                    //'text-background-opacity': 1,
+                    //'text-background-padding': 6
+                }
+            }
+        ];
+
+        function assignEdgeLabelOffsets(cy, marginStep = 12) {
+            // Group edges by unordered node pair
+            const edgeGroups = {};
+            cy.edges().forEach(edge => {
+                const src = edge.data('source');
+                const tgt = edge.data('target');
+                // Create an unordered key
+                const key = [src, tgt].sort().join('|');
+                if (!edgeGroups[key]) edgeGroups[key] = [];
+                edgeGroups[key].push(edge);
+            });
+
+            // Add event listeners for hover
+            cy.on('mouseover', 'edge', function(evt){
+                evt.target.addClass('hover');
+            });
+            cy.on('mouseout', 'edge', function(evt){
+                evt.target.removeClass('hover');
+            });
+
+            // Optionally, highlight on select as well
+            cy.on('select', 'edge', function(evt){
+                evt.target.addClass('hover');
+            });
+            cy.on('unselect', 'edge', function(evt){
+                evt.target.removeClass('hover');
+            });
+        }
+    </script>
+
     <script>
         // ------------------- Utility Functions -------------------
         function ansiToHtml(text) {
@@ -360,141 +480,6 @@
         window.addEventListener('resize', createOrResizeKonvaStage);
         document.addEventListener('gridstack-change', createOrResizeKonvaStage);
 
-
-
-
-
-
-
-</script>
-    <!-- To be removed -->
-    <script>
-        const cyDarkStyle = [
-            {
-                selector: 'node',
-                style: {
-                    'label': 'data(id)',
-                    'background-color': '#fb8500',      // orange node
-                    'color': '#fff',                    // node label text
-                    'text-outline-width': 2,
-                    'text-outline-color': '#232425',    // dark outline for contrast
-                    'font-size': 16,
-                    'border-width': 2,
-                    'border-color': '#ffb703',
-                    'width': 'data(radius)',
-                    'height': 'data(radius)',
-                    //'width': 3,
-                    //'height': 3,
-                }
-            },
-            {
-                selector: 'node[isLocation]',
-                style: {
-                    'background-opacity': 0, // or 0 for fully transparent
-                    //'border-opacity': 0.2,
-                    'border-color': '#fff',
-                    'border-style': 'dashed',
-                }
-            },
-            {
-                selector: 'node[isWaypoint]',
-                style: {
-                    'label': '',
-                    //'display': 'none'
-                    'width': 3,
-                    'height': 3,
-                }
-            },
-            {
-                selector: 'edge',
-                style: {
-                    'label': '',
-                    'color': '#8ecae6',                 // edge label text
-                    'font-size': 12,
-                    //'text-background-color': '#232425', // dark background for edge label
-                    //'text-background-opacity': 1,
-                    //'text-background-padding': 2,
-                    'color': '#ffffff',
-                    'text-outline-width': 2,
-                    'text-outline-color': '#232425',
-                    'line-color': '#8ecae6',            // cyan edge
-                    'width': 3,
-                    'target-arrow-shape': 'triangle',
-                    'target-arrow-color': '#8ecae6',
-                    'curve-style': 'bezier'
-                }
-            },
-            {
-                selector: 'edge[isTerminus]',
-                style: {
-                    //'target-arrow-shape': 'none'
-                    'display': 'none'
-                }
-            },
-            {
-                selector: 'node:selected',
-                style: {
-                    'background-color': '#219ebc',      // blue highlight
-                    'border-color': '#fff',
-                    'border-width': 3
-                }
-            },
-            {
-                selector: 'edge.hover, edge:selected',
-                style: {
-                    'label': 'data(label)',
-                    'line-color': '#ffb703',           // highlight color
-                    'target-arrow-color': '#ffb703',
-                    'z-index': 999,                    // bring to front
-                    'color': '#fff',
-                    'text-outline-width': 2,
-                    //'text-outline-color': '#ffb703',
-                    'text-outline-color': '#232425',
-                    //'text-background-color': '#232425',
-                    //'text-background-opacity': 1,
-                    //'text-background-padding': 6
-                }
-            }
-        ];
-    </script>
-
-    <!-- App Scripts -->
-    <script>
-
-
-
-
-
-
-        function assignEdgeLabelOffsets(cy, marginStep = 12) {
-            // Group edges by unordered node pair
-            const edgeGroups = {};
-            cy.edges().forEach(edge => {
-                const src = edge.data('source');
-                const tgt = edge.data('target');
-                // Create an unordered key
-                const key = [src, tgt].sort().join('|');
-                if (!edgeGroups[key]) edgeGroups[key] = [];
-                edgeGroups[key].push(edge);
-            });
-
-            // Add event listeners for hover
-            cy.on('mouseover', 'edge', function(evt){
-                evt.target.addClass('hover');
-            });
-            cy.on('mouseout', 'edge', function(evt){
-                evt.target.removeClass('hover');
-            });
-
-            // Optionally, highlight on select as well
-            cy.on('select', 'edge', function(evt){
-                evt.target.addClass('hover');
-            });
-            cy.on('unselect', 'edge', function(evt){
-                evt.target.removeClass('hover');
-            });
-        }
-
         // ------------------- Konva Map Drawing -------------------
         function ResetMapWindow() {
             if (!map_interacted) {
@@ -600,29 +585,31 @@
                 const shape = evt.target;
                 if (shape && shape.id()) {
                     stage.container().style.cursor = 'pointer';
-
                     currentShapeId = shape.id();
-                    
-                    // Remove previous tooltip
+
                     layerTooltip.destroyChildren();
 
-                    // Get mouse position relative to the stage
                     const pointer = stage.getPointerPosition();
+                    const scale = stage.scaleX(); // assuming uniform scaling
+                    const stagePos = stage.position();
+
+                    const canvasX = (pointer.x - stagePos.x) / scale;
+                    const canvasY = (pointer.y - stagePos.y) / scale;
 
                     // Create new tooltip
-                    const tooltip = new Konva.Label({
-                        x: pointer.x + 16,
-                        y: pointer.y - 24,
+                    currentTooltip = new Konva.Label({
+                        x: canvasX + 16,
+                        y: canvasY - 24,
                         opacity: 0.85
                     });
-                    tooltip.add(new Konva.Tag({ fill: '#232425' }));
-                    tooltip.add(new Konva.Text({
+                    currentTooltip.add(new Konva.Tag({ fill: '#232425' }));
+                    currentTooltip.add(new Konva.Text({
                         text: shape.id(),
                         fontSize: 16,
                         padding: 6,
                         fill: '#fff'
                     }));
-                    layerTooltip.add(tooltip);
+                    layerTooltip.add(currentTooltip);
                     layerTooltip.batchDraw();
                     stage.batchDraw();
                 }
@@ -631,8 +618,12 @@
             layer.on('mousemove', function(evt) {
                 if (currentTooltip) {
                     const pointer = stage.getPointerPosition();
-                    currentTooltip.x(pointer.x + 16);
-                    currentTooltip.y(pointer.y - 24);
+                    const scale = stage.scaleX();
+                    const stagePos = stage.position();
+                    const canvasX = (pointer.x - stagePos.x) / scale;
+                    const canvasY = (pointer.y - stagePos.y) / scale;
+                    currentTooltip.x(canvasX + 16);
+                    currentTooltip.y(canvasY - 24);
                     layerTooltip.batchDraw();
                 }
             });

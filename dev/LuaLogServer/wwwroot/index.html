@@ -162,6 +162,11 @@
 
                 // Attach mouse wheel zoom handler
                 attachKonvaWheelZoom(stage);
+
+                // Attach pan event handler here
+                stage.on('dragmove', function(evt) {
+                    map_interacted = true;
+                });
             } else {
                 stage.width(width);
                 stage.height(height);
@@ -192,6 +197,8 @@
                 };
                 stage.position(newPos);
                 stage.batchDraw();
+
+                map_interacted = true;
             });
         }
 
@@ -393,6 +400,8 @@
 
     <!-- App Scripts -->
     <script>
+        let map_interacted = false;
+
         // automatic data management
         let main_data_store = new Map(); // map of string keys to weakrefs of objects
         let ttl_data_store = new Map(); // map of string keys to TTL (time-to-live) values and a strong reference
@@ -466,6 +475,8 @@
 
             _patrol.Engines = {};
             path_cache = {};
+
+            map_interacted = false;
         }
 
         // Utility functions (ansiToHtml, stripAnsi, splitKeepRemainder, formatTimestamp, formatSource, extractSource, parseLuaValue)
@@ -706,6 +717,93 @@
             console.log("Main store cleanup done. Current main store size:", main_data_store.size);
         }, 10000);
 
+
+
+
+        function ResetMapWindow() {
+            if (!map_interacted) {
+                fitStageToLayerContent(stage, [layerLocations, layerRoutes, layerWaypoints]);
+            }
+        }
+
+        function fitStageToLayerContent(stage, layers, padding = 40) {
+            // Find bounding box of all visible shapes in the given layers
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            layers.forEach(layer => {
+                layer.getChildren().forEach(shape => {
+                    if (!shape.visible()) return;
+                    const box = shape.getClientRect({ relativeTo: stage });
+                    minX = Math.min(minX, box.x);
+                    minY = Math.min(minY, box.y);
+                    maxX = Math.max(maxX, box.x + box.width);
+                    maxY = Math.max(maxY, box.y + box.height);
+                });
+            });
+
+            if (minX === Infinity) return; // No shapes
+
+            // Calculate scale and position
+            const contentWidth = maxX - minX;
+            const contentHeight = maxY - minY;
+            const stageWidth = stage.width();
+            const stageHeight = stage.height();
+
+            const scaleX = (stageWidth - padding * 2) / contentWidth;
+            const scaleY = (stageHeight - padding * 2) / contentHeight;
+            const scale = Math.min(scaleX, scaleY, 1); // Don't zoom in past 1x
+
+            stage.scale({ x: scale, y: scale });
+
+            // Center the content
+            const newX = padding - minX * scale;
+            const newY = padding - minY * scale;
+            stage.position({ x: newX, y: newY });
+
+            stage.batchDraw();
+        }
+    
+        function updateRouteAndWaypointsFromPath(name, pathNodes) {
+            // Clear previous route and waypoints for this path
+            layerRoutes.find(`#route_${name}`).forEach(node => node.destroy());
+            layerWaypoints.find(`#wp_${name}_`).forEach(node => node.destroy());
+
+            // Draw route as a line
+            if (pathNodes.length > 1) {
+                const points = [];
+                for (const pt of pathNodes) {
+                    points.push(pt.x, -pt.y);
+                }
+                const routeLine = new Konva.Line({
+                    points: points,
+                    stroke: '#8ecae6',
+                    strokeWidth: 4,
+                    lineCap: 'round',
+                    id: `route_${name}`
+                });
+                layerRoutes.add(routeLine);
+            }
+
+            // Draw waypoints as small circles
+            pathNodes.forEach((pt, idx) => {
+                const waypoint = new Konva.Circle({
+                    x: pt.x,
+                    y: -pt.y,
+                    radius: 10,
+                    fill: '#219ebc',
+                    id: `wp_${name}_${idx}`
+                });
+                layerWaypoints.add(waypoint);
+            });
+
+            layerRoutes.batchDraw();
+            layerWaypoints.batchDraw();
+
+            ResetMapWindow();
+        }
+
+
+
+
         function processPatrolObjectBlock(lines) {
             // Temporary storage for parsed tables
             const tables = {};
@@ -791,6 +889,10 @@
                                             });
                                         }
                                         path_cache[name] = parsePathNodes(data);
+
+                                        // Draw on Konva map
+                                        updateRouteAndWaypointsFromPath(name, path_cache[name]);
+
                                         used = true;
                                     }
                                     break;
@@ -935,7 +1037,7 @@
             createOrResizeKonvaStage();
 
             // draw demo map
-            drawDemoMap();
+            //drawDemoMap();
 
             // Listen for GridStack item resize/move events
             grid.on('change', function(event, items) {

@@ -59,7 +59,29 @@ local BinaryFieldType = {
 --- @class _paths
 local M = {};
 
+local function parseFloatLE(str, offset)
+    offset = (offset or 0) + 1
+    local b1, b2, b3, b4 = str:byte(offset, offset + 3)
+    local sign = bit.rshift(b4, 7) & 0x1
+    local exponent = bit.lshift(bit.band(b4, 0x7F), 1) | bit.rshift(b3, 7)
+    local mantissa = bit.lshift(bit.band(b3, 0x7F), 16) | bit.lshift(bit.band(b2, 0xFF), 8) | bit.band(b1, 0xFF)
 
+    if exponent == 0 then
+        if mantissa == 0 then
+            return sign == 1 and -0.0 or 0.0
+        else
+            return ((-1)^sign) * (mantissa / 2^23) * 2^-126
+        end
+    elseif exponent == 255 then
+        if mantissa == 0 then
+            return sign == 1 and -math.huge or math.huge
+        else
+            return 0/0 -- NaN
+        end
+    else
+        return ((-1)^sign) * (1 + mantissa / 2^23) * 2^(exponent - 127)
+    end
+end
 
 -- BZNTokenBinary
 local BZNTokenBinary = {}
@@ -213,20 +235,26 @@ function BZNTokenString:GetUInt32(index)
     if index > #self.values then error("Index out of range") end
     local v = self.values[index]
     if v:sub(1, 1) == '-' then
-        -- Negative value: convert to signed int, then cast to unsigned (wrap around)
         local signed = tonumber(v)
         if not signed then error("Invalid integer value: " .. tostring(v)) end
-        if signed < 0 then
-            return signed + 4294967296 -- wrap negative to unsigned 32-bit
-        end
-        return signed
+        return signed + 4294967296
     end
-    return tonumber(self.values[index])
+    local num = tonumber(v)
+    if not num then error("Invalid UInt32 value: " .. tostring(v)) end
+    return num
 end
 function BZNTokenString:GetUInt32H(index)
     index = (index or 0) + 1
     if index > #self.values then error("Index out of range") end
-    return tonumber(self.values[index], 16);
+    local v = self.values[index]
+    if v:sub(1, 1) == '-' then
+        local signed = tonumber(v, 16)
+        if not signed then error("Invalid hex integer value: " .. tostring(v)) end
+        return signed + 4294967296
+    end
+    local num = tonumber(v, 16)
+    if not num then error("Invalid UInt32H value: " .. tostring(v)) end
+    return num
 end
 function BZNTokenString:GetUInt32Raw(index)
     index = (index or 0) + 1
@@ -241,7 +269,30 @@ function BZNTokenString:GetInt16(index)
     return tonumber(self.values[index])
 end
 function BZNTokenString:GetUInt16(index)
-    return self:GetInt16(index)
+    index = (index or 0) + 1
+    if index > #self.values then error("Index out of range") end
+    local v = self.values[index]
+    if v:sub(1, 1) == '-' then
+        local signed = tonumber(v)
+        if not signed then error("Invalid integer value: " .. tostring(v)) end
+        return (signed + 65536) % 65536
+    end
+    local num = tonumber(v)
+    if not num then error("Invalid UInt16 value: " .. tostring(v)) end
+    return num
+end
+function BZNTokenString:GetUInt16H(index)
+    index = (index or 0) + 1
+    if index > #self.values then error("Index out of range") end
+    local v = self.values[index]
+    if v:sub(1, 1) == '-' then
+        local signed = tonumber(v, 16)
+        if not signed then error("Invalid hex integer value: " .. tostring(v)) end
+        return (signed + 65536) % 65536
+    end
+    local num = tonumber(v, 16)
+    if not num then error("Invalid UInt16H value: " .. tostring(v)) end
+    return num
 end
 function BZNTokenString:GetInt8(index)
     index = (index or 0) + 1
@@ -249,7 +300,17 @@ function BZNTokenString:GetInt8(index)
     return tonumber(self.values[index])
 end
 function BZNTokenString:GetUInt8(index)
-    return self:GetInt8(index)
+    index = (index or 0) + 1
+    if index > #self.values then error("Index out of range") end
+    local v = self.values[index]
+    if v:sub(1, 1) == '-' then
+        local signed = tonumber(v)
+        if not signed then error("Invalid integer value: " .. tostring(v)) end
+        return (signed + 256) % 256
+    end
+    local num = tonumber(v)
+    if not num then error("Invalid UInt8 value: " .. tostring(v)) end
+    return num
 end
 function BZNTokenString:GetSingle(index)
     index = (index or 0) + 1

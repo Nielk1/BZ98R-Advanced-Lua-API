@@ -30,7 +30,7 @@ local BinaryFieldType = {
     DATA_MAT3D = 12,
     DATA_STRING = 13,
     DATA_QUAT = 14,
-    DATA_UNKNOWN = 255
+    --DATA_UNKNOWN = 255
 }
 
 --- @class BZNToken
@@ -59,12 +59,22 @@ local BinaryFieldType = {
 --- @class _paths
 local M = {};
 
+--- Parses a little-endian float from a string.
+--- @param str string
+--- @param offset integer ZERO BASED index
+--- @return number
 local function parseFloatLE(str, offset)
     offset = (offset or 0) + 1
+    local strlen = #str
+    --print("parseFloatLE input:", str:gsub(".", function(c) return string.format("%02X ", string.byte(c)) end), "offset:", offset, "str length:", strlen)
+    --print("parseFloatLE substring:", str:sub(offset, offset + 3):gsub(".", function(c) return string.format("%02X ", string.byte(c)) end))
+    if offset + 3 > strlen then
+        error(string.format("parseFloatLE: not enough bytes (offset=%d, strlen=%d)", offset, strlen))
+    end
     local b1, b2, b3, b4 = str:byte(offset, offset + 3)
-    local sign = bit.rshift(b4, 7) & 0x1
-    local exponent = bit.lshift(bit.band(b4, 0x7F), 1) | bit.rshift(b3, 7)
-    local mantissa = bit.lshift(bit.band(b3, 0x7F), 16) | bit.lshift(bit.band(b2, 0xFF), 8) | bit.band(b1, 0xFF)
+    local sign = bit.band(bit.rshift(b4, 7), 0x1)
+    local exponent = bit.bor(bit.lshift(bit.band(b4, 0x7F), 1), bit.rshift(b3, 7))
+    local mantissa = bit.bor(bit.lshift(bit.band(b3, 0x7F), 16), bit.lshift(bit.band(b2, 0xFF), 8), bit.band(b1, 0xFF))
 
     if exponent == 0 then
         if mantissa == 0 then
@@ -86,11 +96,10 @@ end
 -- BZNTokenBinary
 local BZNTokenBinary = {}
 BZNTokenBinary.__index = BZNTokenBinary
-function BZNTokenBinary.new(fieldType, data, isBigEndian)
+function BZNTokenBinary.new(fieldType, data)
     return setmetatable({
         type = fieldType,
         data = data,
-        isBigEndian = isBigEndian or false
     }, BZNTokenBinary)
 end
 function BZNTokenBinary:IsBinary() return true end
@@ -109,19 +118,15 @@ function BZNTokenBinary:GetCount()
 end
 function BZNTokenBinary:GetBoolean(index)
     index = (index or 0) + 1
-    assert(index <= #self.data, "Index out of range")
+    if index > #self.data then error("Index out of range") end
     return self.data:byte(index) ~= 0
 end
 function BZNTokenBinary:GetInt32(index)
     index = (index or 0)
     local offset = index * 4 + 1
-    assert(offset + 3 <= #self.data, "Index out of range")
+    if offset + 3 > #self.data then error("Index out of range") end
     local b1, b2, b3, b4 = self.data:byte(offset, offset+3)
-    if self.isBigEndian then
-        return b1*0x1000000 + b2*0x10000 + b3*0x100 + b4
-    else
-        return b4*0x1000000 + b3*0x10000 + b2*0x100 + b1
-    end
+    return b4*0x1000000 + b3*0x10000 + b2*0x100 + b1
 end
 function BZNTokenBinary:GetUInt32(index)
     return self:GetInt32(index) -- Lua numbers are doubles, so this is fine
@@ -138,63 +143,118 @@ end
 function BZNTokenBinary:GetInt16(index)
     index = (index or 0)
     local offset = index * 2 + 1
-    assert(offset + 1 <= #self.data, "Index out of range")
+    if offset + 1 > #self.data then error("Index out of range") end
     local b1, b2 = self.data:byte(offset, offset+1)
-    if self.isBigEndian then
-        return b1*0x100 + b2
-    else
-        return b2*0x100 + b1
-    end
+    return b2*0x100 + b1
 end
 function BZNTokenBinary:GetUInt16(index)
     return self:GetInt16(index)
 end
 function BZNTokenBinary:GetInt8(index)
     index = (index or 0) + 1
-    assert(index <= #self.data, "Index out of range")
+    if index > #self.data then error("Index out of range") end
     local b = self.data:byte(index)
     return b > 127 and b - 256 or b
 end
 function BZNTokenBinary:GetUInt8(index)
     index = (index or 0) + 1
-    assert(index <= #self.data, "Index out of range")
+    if index > #self.data then error("Index out of range") end
     return self.data:byte(index)
-end
-function BZNTokenBinary:GetSingle(index)
-    -- Lua doesn't have built-in float parsing, so use LuaJIT FFI or a helper if needed
-    error("NotImplemented: GetSingle (float parsing)")
 end
 
 function BZNTokenBinary:GetString(index)
-    index = (index or 0)
-    if index > 0 then error("Out of range") end
-    local str = self.data
-    local nul = str:find("\0")
+    index = (index or 0) + 1
+    if index > 1 then error("Index out of range") end
+    local nul = string.find(self.data, "\0", 1, true)
     if nul then
-        return str:sub(1, nul-1)
-    else
-        return str
+        return self.data:sub(1, nul - 1)
     end
+    return self.data
 end
 
-function BZNTokenBinary:GetVector3D(index)     error("NotImplemented: GetVector3D") end
-function BZNTokenBinary:GetVector2D(index)     error("NotImplemented: GetVector2D") end
-function BZNTokenBinary:GetMatrixOld(index)     error("NotImplemented: GetMatrixOld") end
-function BZNTokenBinary:GetMatrix(index)     error("NotImplemented: GetMatrix") end
-function BZNTokenBinary:GetEuler(index)     error("NotImplemented: GetEuler") end
-function BZNTokenBinary:GetBytes(index, length)
+function BZNTokenBinary:GetSingle(index)
     index = (index or 0)
-    length = length or (#self.data - index)
-    assert(index + length <= #self.data, "Index out of range")
-    return self.data:sub(index+1, index+length)
+    local offset = index * 4
+    if offset > #self.data then error("Index out of range") end
+    return parseFloatLE(self.data, offset)
 end
-function BZNTokenBinary:GetRaw(index, length)
-    return self:GetBytes(index, length)
+
+--- Get a 3D vector from the binary data
+--- @param index integer
+--- @return Vector
+function BZNTokenBinary:GetVector3D(index)
+    index = (index or 0)
+    local base = index * 3
+    if base * 4 > #self.data then error("Index out of range") end
+    return SetVector(
+        self:GetSingle(base + 0),
+        self:GetSingle(base + 1),
+        self:GetSingle(base + 2)
+    )
 end
-function BZNTokenBinary:IsValidationOnly() return false end
+
+--- Get a 2D vector from the binary data
+--- @param index integer
+--- @return Vector
+function BZNTokenBinary:GetVector2D(index)
+    index = (index or 0)
+    local base = index * 2
+    if base * 4 > #self.data then error("Index out of range") end
+    return SetVector(
+        self:GetSingle(base + 0),
+        0,
+        self:GetSingle(base + 1)
+    )
+end
+
+--- Get a 2D vector from the binary data
+--- @param index integer
+--- @return Matrix
+function BZNTokenBinary:GetMatrixOld(index)
+    index = (index or 0)
+    local base = index * 4
+    local right  = self:GetVector3D(base + 0)
+    local up     = self:GetVector3D(base + 1)
+    local front  = self:GetVector3D(base + 2)
+    local posit  = self:GetVector3D(base + 3)
+    return SetMatrix(
+        right.x, right.y, right.z,
+           up.x,    up.y,    up.z,
+        front.x, front.y, front.z,
+        posit.x, posit.y, posit.z
+    )
+end
+
+--- Get a 4x4 matrix from the binary data
+--- @param index integer
+--- @return Matrix
+function BZNTokenBinary:GetMatrix(index)
+    local rightx = self:GetSingle(index * 16 +  0)
+    local righty = self:GetSingle(index * 16 +  1)
+    local rightz = self:GetSingle(index * 16 +  2)
+    local rightw = self:GetSingle(index * 16 +  3)
+    local    upx = self:GetSingle(index * 16 +  4)
+    local    upy = self:GetSingle(index * 16 +  5)
+    local    upz = self:GetSingle(index * 16 +  6)
+    local    upw = self:GetSingle(index * 16 +  7)
+    local frontx = self:GetSingle(index * 16 +  8)
+    local fronty = self:GetSingle(index * 16 +  9)
+    local frontz = self:GetSingle(index * 16 + 10)
+    local frontw = self:GetSingle(index * 16 + 11)
+    local positx = self:GetSingle(index * 16 + 12)
+    local posity = self:GetSingle(index * 16 + 13)
+    local positz = self:GetSingle(index * 16 + 14)
+    local positw = self:GetSingle(index * 16 + 15)
+    return SetMatrix(
+        rightx, righty, rightz,
+           upx,    upy,    upz,
+        frontx, fronty, frontz,
+        positx, posity, positz
+    )
+end
+
 function BZNTokenBinary:Validate(name, type)
-    type = type or BinaryFieldType.DATA_UNKNOWN
-    if self.type == BinaryFieldType.DATA_UNKNOWN then return true end
+    if not self.type then return true end
     return self.type == type
 end
 
@@ -257,8 +317,7 @@ function BZNTokenString:GetUInt32H(index)
     return num
 end
 function BZNTokenString:GetUInt32Raw(index)
-    index = (index or 0) + 1
-    if (index * 4) > #self.values then error("Index out of range") end
+    index = (index or 0)
     local raw = self:GetRaw(index * 4, 4)
     local b1, b2, b3, b4 = raw:byte(1, 4)
     return b1 + b2 * 256 + b3 * 65536 + b4 * 16777216
@@ -325,11 +384,14 @@ function BZNTokenString:GetString(index)
     if index > #self.values then error("Index out of range") end
     return self.values[index]
 end
+--- comment Get raw bytes from the string token
+--- @param index integer? ZERO BASED index
+--- @param length integer? Number of bytes to read or nil
 function BZNTokenString:GetRaw(index, length)
     index = (index or 0) + 1
-    if index > #self.values then error("Index out of range") end
-    if (length == -1) then length = 4 end
-    return self.values[1]:sub(index * 4 + 1, index * 4 + length):byte(1, 4)
+    if #self.values > 1 then error("Invalid raw data") end
+    if not length then return self.values[1] end
+    return self.values[1]:sub(index, index + length - 1)
 end
 function BZNTokenString:IsValidationOnly() return false end
 function BZNTokenString:Validate(name, type)
@@ -350,7 +412,7 @@ function BZNTokenNestedString:IsBinary() return false end
 function BZNTokenNestedString:GetCount() error("InvalidOperation: Nested tokens have no count") end
 function BZNTokenNestedString:GetBoolean(index) error("InvalidOperation") end
 function BZNTokenNestedString:GetInt32(index) error("InvalidOperation") end
-function BZNTokenNestedString:GetUInt32H(index)
+function BZNTokenNestedString:GetInt32H(index)
     return self:GetInt32(index)
 end
 function BZNTokenNestedString:GetUInt32(index) error("InvalidOperation") end
@@ -366,26 +428,108 @@ function BZNTokenNestedString:GetInt8(index) error("InvalidOperation") end
 function BZNTokenNestedString:GetUInt8(index) error("InvalidOperation") end
 function BZNTokenNestedString:GetSingle(index) error("InvalidOperation") end
 function BZNTokenNestedString:GetString(index) error("InvalidOperation") end
+
 function BZNTokenNestedString:GetVector3D(index)
     index = (index or 0) + 1
     if index > #self.values then error("Index out of range") end
     local subToks = self.values[index]
-    assert(subToks[1]:Validate("x"), "Failed to parse x")
-    assert(subToks[2]:Validate("y"), "Failed to parse y")
-    assert(subToks[3]:Validate("z"), "Failed to parse z")
-    return SetVector(subToks[1]:GetSingle(), subToks[2]:GetSingle(), subToks[3]:GetSingle())
+    if not subToks[1]:Validate("x") then error("Failed to parse x") end
+    if not subToks[2]:Validate("y") then error("Failed to parse y") end
+    if not subToks[3]:Validate("z") then error("Failed to parse z") end
+    return SetVector(
+        subToks[1]:GetSingle(),
+        subToks[2]:GetSingle(),
+        subToks[3]:GetSingle()
+    )
 end
+
 function BZNTokenNestedString:GetVector2D(index)
     index = (index or 0) + 1
     if index > #self.values then error("Index out of range") end
     local subToks = self.values[index]
-    assert(subToks[1]:Validate("x"), "Failed to parse x")
-    assert(subToks[2]:Validate("z"), "Failed to parse z")
-    return SetVector(subToks[1]:GetSingle(), 0, subToks[2]:GetSingle())
+    if not subToks[1]:Validate("x") then error("Failed to parse x") end
+    if not subToks[2]:Validate("z") then error("Failed to parse z") end
+    return SetVector(
+        subToks[1]:GetSingle(),
+        0,
+        subToks[2]:GetSingle()
+    )
 end
-function BZNTokenNestedString:GetMatrixOld(index) error("NotImplemented: GetMatrixOld") end
-function BZNTokenNestedString:GetMatrix(index) error("NotImplemented: GetMatrix") end
-function BZNTokenNestedString:GetEuler(index) error("NotImplemented: GetEuler") end
+
+function BZNTokenNestedString:GetMatrixOld(index)
+    index = (index or 0) + 1
+    if index > #self.values then error("Index out of range") end
+    local subToks = self.values[index]
+    if not subToks[1]:Validate("right_x") then error("Failed to parse right_x") end
+    if not subToks[2]:Validate("right_y") then error("Failed to parse right_y") end
+    if not subToks[3]:Validate("right_z") then error("Failed to parse right_z") end
+    if not subToks[4]:Validate("up_x") then error("Failed to parse up_x") end
+    if not subToks[5]:Validate("up_y") then error("Failed to parse up_y") end
+    if not subToks[6]:Validate("up_z") then error("Failed to parse up_z") end
+    if not subToks[7]:Validate("front_x") then error("Failed to parse front_x") end
+    if not subToks[8]:Validate("front_y") then error("Failed to parse front_y") end
+    if not subToks[9]:Validate("front_z") then error("Failed to parse front_z") end
+    if not subToks[10]:Validate("posit_x") then error("Failed to parse posit_x") end
+    if not subToks[11]:Validate("posit_y") then error("Failed to parse posit_y") end
+    if not subToks[12]:Validate("posit_z") then error("Failed to parse posit_z") end
+    return SetMatrix(
+        subToks[1]:GetSingle(),  subToks[2]:GetSingle(),  subToks[3]:GetSingle(),
+        subToks[4]:GetSingle(),  subToks[5]:GetSingle(),  subToks[6]:GetSingle(),
+        subToks[7]:GetSingle(),  subToks[8]:GetSingle(),  subToks[9]:GetSingle(),
+        subToks[10]:GetSingle(), subToks[11]:GetSingle(), subToks[12]:GetSingle()
+    )
+end
+
+function BZNTokenNestedString:GetMatrix(index)
+    index = (index or 0) + 1
+    if index > #self.values then error("Index out of range") end
+    local subToks = self.values[index]
+    if not subToks[1]:Validate("right.x") then error("Failed to parse right.x") end
+    if not subToks[2]:Validate("right.y") then error("Failed to parse right.y") end
+    if not subToks[3]:Validate("right.z") then error("Failed to parse right.z") end
+    if not subToks[4]:Validate("up.x") then error("Failed to parse up.x") end
+    if not subToks[5]:Validate("up.y") then error("Failed to parse up.y") end
+    if not subToks[6]:Validate("up.z") then error("Failed to parse up.z") end
+    if not subToks[7]:Validate("front.x") then error("Failed to parse front.x") end
+    if not subToks[8]:Validate("front.y") then error("Failed to parse front.y") end
+    if not subToks[9]:Validate("front.z") then error("Failed to parse front.z") end
+    if not subToks[10]:Validate("posit.x") then error("Failed to parse posit.x") end
+    if not subToks[11]:Validate("posit.y") then error("Failed to parse posit.y") end
+    if not subToks[12]:Validate("posit.z") then error("Failed to parse posit.z") end
+    return SetMatrix(
+        subToks[1]:GetSingle(),  subToks[2]:GetSingle(),  subToks[3]:GetSingle(),
+        subToks[4]:GetSingle(),  subToks[5]:GetSingle(),  subToks[6]:GetSingle(),
+        subToks[7]:GetSingle(),  subToks[8]:GetSingle(),  subToks[9]:GetSingle(),
+        subToks[10]:GetSingle(), subToks[11]:GetSingle(), subToks[12]:GetSingle()
+    )
+end
+
+function BZNTokenNestedString:GetEuler(index)
+    index = (index or 0) + 1
+    if index > #self.values then error("Index out of range") end
+    local subToks = self.values[index]
+    if not subToks[1]:Validate("mass") then error("Failed to parse mass") end
+    if not subToks[2]:Validate("mass_inv") then error("Failed to parse mass_inv") end
+    if not subToks[3]:Validate("v_mag") then error("Failed to parse v_mag") end
+    if not subToks[4]:Validate("v_mag_inv") then error("Failed to parse v_mag_inv") end
+    if not subToks[5]:Validate("I") then error("Failed to parse I") end
+    if not subToks[6]:Validate("k_i") then error("Failed to parse k_i") end
+    if not subToks[7]:Validate("v") then error("Failed to parse v") end
+    if not subToks[8]:Validate("omega") then error("Failed to parse omega") end
+    if not subToks[9]:Validate("Accel") then error("Failed to parse Accel") end
+    return {
+        mass      = subToks[1]:GetSingle(),
+        mass_inv  = subToks[2]:GetSingle(),
+        v_mag     = subToks[3]:GetSingle(),
+        v_mag_inv = subToks[4]:GetSingle(),
+        I         = subToks[5]:GetSingle(),
+        I_inv     = subToks[6]:GetSingle(),
+        v         = subToks[7]:GetVector3D(),
+        omega     = subToks[8]:GetVector3D(),
+        Accel     = subToks[9]:GetVector3D()
+    }
+end
+
 function BZNTokenNestedString:IsValidationOnly() return false end
 function BZNTokenNestedString:Validate(name, type) return self.name == name end
 
@@ -690,14 +834,30 @@ end
 function Tokenizer:ReadBinaryToken()
     if self:atEnd() then return nil end
     local start = self.pos
+
+    -- read the first byte of the type, which is all that's used
+    -- by BZ1 even though it wastes 2 whole bytes to save it
     local type = string.byte(self.data, self.pos)
+
+    -- advance by the type size
     self.pos = self.pos + self.type_size
+
+    -- read the size, which is more bytes
     local size = string.byte(self.data, self.pos)
+    for i = 1, self.size_size - 1 do
+        size = bit.bor(size, bit.lshift(string.byte(self.data, self.pos + i), 8 * i))
+    end
+
+    -- advance by the size size
     self.pos = self.pos + self.size_size
+
+    -- read the value as string (byte array)
     local value = self.data:sub(self.pos, self.pos + size - 1)
+
+    -- advanced by the size
     self.pos = self.pos + size
-    -- TODO: Add alignment/padding logic if needed
-    return BZNTokenBinary.new(type, value, false)
+
+    return BZNTokenBinary.new(type, value)
 end
 
 --- @param name string
@@ -705,7 +865,7 @@ end
 function Tokenizer:ReadBZ1_PtrDepricated(name)
     local tok
 
-    if self.inBinary then
+    if self:inBinary() then
         -- untested
         tok = self:ReadToken();
         if not tok or not tok:Validate(name, BinaryFieldType.DATA_VOID) then
@@ -736,22 +896,18 @@ function Tokenizer:ReadBZ1_Ptr(name)
 end
 
 function Tokenizer:GetAiCmdInfo()
-    local priority
-    local what
-    local who
-    local where
-    local param
+    local retVal = {}
 
     local tok = self:ReadToken()
     if not tok or not tok:Validate("priority", BinaryFieldType.DATA_LONG) then error("Failed to parse priority/LONG") end
-    priority = tok:GetUInt32()
+    retVal.priority = tok:GetUInt32()
 
     tok = self:ReadToken()
     if not tok or not tok:Validate("what", BinaryFieldType.DATA_VOID) then error("Failed to parse what/VOID") end
 
     tok = self:ReadToken()
     if not tok or not tok:Validate("who", BinaryFieldType.DATA_LONG) then error("Failed to parse who/LONG") end
-    who = tok:GetInt32()
+    retVal.who = tok:GetInt32()
 
     tok = self:ReadToken()
     if self.version == 1001 or self.version == 1011 or self.version == 1012 then
@@ -759,22 +915,36 @@ function Tokenizer:GetAiCmdInfo()
     else
         if not tok or not tok:Validate("where", BinaryFieldType.DATA_PTR) then error("Failed to parse where/PTR") end
     end
-    where = tok:GetUInt32H()
+    retVal.where = tok:GetUInt32H()
 
+    -- param parsing can be rather broken, it's handled in the C# parser but here it's a bit crude at least for now until we learn more
     tok = self:ReadToken()
     if self.version >= 2012 then
         if not tok or not tok:Validate("param", BinaryFieldType.DATA_ID) then error("Failed to parse param/ID") end
         local tmp = tok:GetString()
         if tmp == "" then
-            param = 0
+            retVal.param = 0
         else
             --param = tok.GetUInt32();
-            param = tok:GetRaw(0, 1)[0]
+
+            --local raw = tok:GetRaw(0, 8)
+            local raw = tok:GetRaw(0, nil)
+            -- this value is just completely fucked up if it's longer than 6 bytes
+            if #raw > 6 then
+                retVal.param = raw -- just store the string, I hate my life
+            else
+                retVal.param = 0
+                for i = 1, #raw do
+                    retVal.param = retVal.param + raw:byte(i) * 2^((i - 1) * 8)
+                end
+            end
         end
     else
         if not tok or not tok:Validate("param", BinaryFieldType.DATA_LONG) then error("Failed to parse param/LONG") end
-        param = tok:GetUInt32()
+        retVal.param = tok:GetUInt32()
     end
+
+    return retVal
 end
 
 function Tokenizer:GetEuler()
@@ -922,11 +1092,11 @@ local ClassReaders = {};
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.ammopack = function(reader, extend)
-    local obj = {}
+ClassReaders.ammopack = function(go, reader, extend)
+    local obj = extend or {}
     local tok
 
-    ClassReaders.powerup(reader, obj)
+    ClassReaders.powerup(go, reader, obj)
 
     return obj
 end
@@ -934,8 +1104,8 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.apc = function(reader, extend)
-    local obj = extend or {};
+ClassReaders.apc = function(go, reader, extend)
+    local obj = extend or {}
     local tok;
 
     tok = reader:ReadToken();
@@ -950,7 +1120,7 @@ ClassReaders.apc = function(reader, extend)
     end
     obj.state = tok:GetUInt32() -- state --- @todo (VEHICLE_STATE)
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -958,10 +1128,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.armory = function(reader, extend)
+ClassReaders.armory = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.producer(reader, obj)
+    ClassReaders.producer(go, reader, obj)
 
     return obj
 end
@@ -969,10 +1139,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.barracks = function(reader, extend)
+ClassReaders.barracks = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -980,27 +1150,28 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.i76building = function(reader, extend)
+ClassReaders.i76building = function(go, reader, extend)
     local obj = extend or {};
     local tok;
 
     obj.tempBuilding = false;
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
 ClassReaders.i76building2 = ClassReaders.i76building;
 ClassReaders.i76sign = ClassReaders.i76building;
+ClassReaders.repairdepot = ClassReaders.i76building;
 ClassReaders.artifact = ClassReaders.i76building;
 
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.camerapod = function(reader, extend)
+ClassReaders.camerapod = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.powerup(reader, obj)
+    ClassReaders.powerup(go, reader, obj)
 
     return obj
 end
@@ -1008,10 +1179,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.commtower = function(reader, extend)
+ClassReaders.commtower = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1019,7 +1190,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.constructionrig = function(reader, extend)
+ClassReaders.constructionrig = function(go, reader, extend)
     local obj = extend or {};
     local tok;
 
@@ -1042,7 +1213,7 @@ ClassReaders.constructionrig = function(reader, extend)
         obj.dropMat = obj.transform
     end
 
-    ClassReaders.producer(reader, obj)
+    ClassReaders.producer(go, reader, obj)
 
     return obj
 end
@@ -1050,7 +1221,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.craft = function(reader, extend)
+ClassReaders.craft = function(go, reader, extend)
     local obj = extend or {};
     local tok;
 
@@ -1108,7 +1279,7 @@ ClassReaders.craft = function(reader, extend)
         local cloakTransEndTime = tok:GetSingle()
     end
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
@@ -1116,10 +1287,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.daywrecker = function(reader, extend)
+ClassReaders.daywrecker = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.powerup(reader, obj)
+    ClassReaders.powerup(go, reader, obj)
 
     return obj
 end
@@ -1127,10 +1298,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.factory = function(reader, extend)
+ClassReaders.factory = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.producer(reader, obj)
+    ClassReaders.producer(go, reader, obj)
 
     return obj
 end
@@ -1138,10 +1309,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.flare = function(reader, extend)
+ClassReaders.flare = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.mine(reader, obj)
+    ClassReaders.mine(go, reader, obj)
 
     return obj
 end
@@ -1149,7 +1320,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table?
-ClassReaders.gameobject = function(reader, extend)
+ClassReaders.gameobject = function(go, reader, extend)
     local obj = extend or {}
     local tok;
 
@@ -1191,16 +1362,16 @@ ClassReaders.gameobject = function(reader, extend)
 
     if reader.version == 1001 or reader.version == 1011 or reader.version == 1012 or reader.version == 1017 then
         tok = reader:ReadToken()
-        if not tok or not tok:Validate("liveColor", BinaryFieldType.DATA_UNKNOWN) then error("Failed to parse liveColor/UNKNOWN") end
+        if not tok or not tok:Validate("liveColor") then error("Failed to parse liveColor/UNKNOWN") end
 
         tok = reader:ReadToken()
-        if not tok or not tok:Validate("deadColor", BinaryFieldType.DATA_UNKNOWN) then error("Failed to parse deadColor/UNKNOWN") end
+        if not tok or not tok:Validate("deadColor") then error("Failed to parse deadColor/UNKNOWN") end
 
         tok = reader:ReadToken()
-        if not tok or not tok:Validate("teamNumber", BinaryFieldType.DATA_UNKNOWN) then error("Failed to parse teamNumber/UNKNOWN") end
+        if not tok or not tok:Validate("teamNumber") then error("Failed to parse teamNumber/UNKNOWN") end
 
         tok = reader:ReadToken()
-        if not tok or not tok:Validate("teamSlot", BinaryFieldType.DATA_UNKNOWN) then error("Failed to parse teamSlot/UNKNOWN") end
+        if not tok or not tok:Validate("teamSlot") then error("Failed to parse teamSlot/UNKNOWN") end
     end
 
     tok = reader:ReadToken()
@@ -1306,11 +1477,9 @@ ClassReaders.gameobject = function(reader, extend)
 
     -- start read of AiCmdInfo
     if reader.version == 1001 or reader.version == 1011 or reader.version == 1012 then
-        -- curCmd
-        reader:GetAiCmdInfo();
+        obj.curCmd = reader:GetAiCmdInfo();
     end
-    -- nextCmd
-    reader:GetAiCmdInfo();
+    obj.nextCmd = reader:GetAiCmdInfo();
     -- end read of AiCmdInfo
 
     -- aiProcess?
@@ -1341,7 +1510,7 @@ ClassReaders.gameobject = function(reader, extend)
             tok = reader:ReadToken()
             if not tok or not tok:Validate("hasPilot", BinaryFieldType.DATA_BOOL) then error("Failed to parse hasPilot/BOOL") end
             local hasPilot = tok:GetBoolean()
-            if obj ~= nil then obj.curPilot = hasPilot and (obj.isUser and (obj.PrjID[0] .. "suser") or (obj.PrjID[0] .. "spilo")) or "" end
+            if obj ~= nil then obj.curPilot = hasPilot and (obj.isUser and (go.PrjID:sub(1, 1) .. "suser") or (go.PrjID:sub(1, 1) .. "spilo")) or "" end
         else
             tok = reader:ReadToken()
             if not tok or not tok:Validate("curPilot", BinaryFieldType.DATA_ID) then error("Failed to parse curPilot/ID") end
@@ -1363,10 +1532,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.geyser = function(reader, extend)
+ClassReaders.geyser = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1374,10 +1543,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.repairkit = function (reader, extend)
+ClassReaders.repairkit = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.powerup(reader, obj)
+    ClassReaders.powerup(go, reader, obj)
 
     return obj
 end
@@ -1385,7 +1554,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.hover = function(reader, extend)
+ClassReaders.hover = function(go, reader, extend)
     local obj = extend or {}
 
     if reader.version > 1001 and reader.version < 1026 then
@@ -1412,7 +1581,7 @@ ClassReaders.hover = function(reader, extend)
         reader:ReadToken(); -- airBorne
     end
 
-    ClassReaders.craft(reader, obj)
+    ClassReaders.craft(go, reader, obj)
     
     return obj
 end
@@ -1420,25 +1589,25 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.howitzer = function(reader, extend)
+ClassReaders.howitzer = function(go, reader, extend)
     local obj = extend or {};
 
     if reader.version < 1020 then
-        ClassReaders.hover(reader, obj)
+        ClassReaders.hover(go, reader, obj)
         return obj
     end
 
-    ClassReaders.turrettank(reader, obj)
+    ClassReaders.turrettank(go, reader, obj)
     return obj
 end
 
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.magnet = function(reader, extend)
+ClassReaders.magnet = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.mine(reader, obj)
+    ClassReaders.mine(go, reader, obj)
 
     return obj
 end
@@ -1446,10 +1615,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.mine = function(reader, extend)
+ClassReaders.mine = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1457,10 +1626,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.minelayer = function(reader, extend)
+ClassReaders.minelayer = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -1468,7 +1637,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.person = function(reader, extend)
+ClassReaders.person = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1478,7 +1647,7 @@ ClassReaders.person = function(reader, extend)
     end
     if obj then obj.nextScream = tok:GetSingle() end
 
-    ClassReaders.craft(reader, obj)
+    ClassReaders.craft(go, reader, obj)
 
     return obj
 end
@@ -1486,7 +1655,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.portal = function(reader, extend)
+ClassReaders.portal = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1516,7 +1685,7 @@ ClassReaders.portal = function(reader, extend)
         local isIn = tok:GetBoolean()
     end
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
@@ -1524,10 +1693,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.powerplant = function(reader, extend)
+ClassReaders.powerplant = function(go, reader, extend)
     local obj = extend or {};
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1535,11 +1704,11 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.powerup = function(reader, extend)
+ClassReaders.powerup = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
@@ -1547,7 +1716,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.producer = function(reader, extend)
+ClassReaders.producer = function(go, reader, extend)
     local obj = extend or {}
     local tok;
 
@@ -1625,21 +1794,21 @@ ClassReaders.producer = function(reader, extend)
     end
 
     if reader.version <= 1010 then
-        ClassReaders.craft(reader, obj)
+        ClassReaders.craft(go, reader, obj)
         return obj
     end
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
     return obj
 end
 
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.proximity = function(reader, extend)
+ClassReaders.proximity = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
-    ClassReaders.mine(reader, obj)
+    ClassReaders.mine(go, reader, obj)
 
     return obj
 end
@@ -1647,7 +1816,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.recycler = function(reader, extend)
+ClassReaders.recycler = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1657,7 +1826,7 @@ ClassReaders.recycler = function(reader, extend)
     end
     obj.undefptr = tok:GetUInt32H() --- @todo what is this?
 
-    ClassReaders.producer(reader, obj)
+    ClassReaders.producer(go, reader, obj)
 
     return obj
 end
@@ -1665,11 +1834,11 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.sav = function(reader, extend)
+ClassReaders.sav = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -1677,7 +1846,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.scavenger = function(reader, extend)
+ClassReaders.scavenger = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1689,7 +1858,7 @@ ClassReaders.scavenger = function(reader, extend)
         if obj then obj.scrapHeld = tok:GetUInt32() end
     end
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -1697,10 +1866,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.scrap = function(reader, extend)
+ClassReaders.scrap = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
@@ -1708,10 +1877,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.scrapfield = function(reader, extend)
+ClassReaders.scrapfield = function(go, reader, extend)
     local obj = extend or {}
     local tok
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1719,7 +1888,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.scrapsilo = function(reader, extend)
+ClassReaders.scrapsilo = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1731,7 +1900,7 @@ ClassReaders.scrapsilo = function(reader, extend)
         if obj then obj.undefptr = tok:GetUInt32H() end
     end
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
@@ -1739,10 +1908,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.shieldtower = function(reader, extend)
+ClassReaders.shieldtower = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1750,10 +1919,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.spawnpnt = function(reader, extend)
+ClassReaders.spawnpnt = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.gameobject(reader, obj)
+    ClassReaders.gameobject(go, reader, obj)
 
     return obj
 end
@@ -1761,10 +1930,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.spraybomb = function(reader, extend)
+ClassReaders.spraybomb = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1772,10 +1941,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.supplydepot = function(reader, extend)
+ClassReaders.supplydepot = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.i76building(reader, obj)
+    ClassReaders.i76building(go, reader, obj)
 
     return obj
 end
@@ -1783,7 +1952,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.torpedo = function(reader, extend)
+ClassReaders.torpedo = function(go, reader, extend)
     local obj = extend or {}
 
     if reader.version < 1031 then
@@ -1808,18 +1977,18 @@ ClassReaders.torpedo = function(reader, extend)
     end
 
     if reader.version < 1031 then
-        ClassReaders.gameobject(reader, obj)
+        ClassReaders.gameobject(go, reader, obj)
         return obj;
     end
 
-    ClassReaders.powerup(reader, obj)
+    ClassReaders.powerup(go, reader, obj)
     return obj
 end
 
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.tug = function(reader, extend)
+ClassReaders.tug = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1838,7 +2007,7 @@ ClassReaders.tug = function(reader, extend)
     end
     obj.undefptr = tok:GetUInt32H(); -- cargo
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -1846,10 +2015,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.turret = function(reader, extend)
+ClassReaders.turret = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.craft(reader, obj)
+    ClassReaders.craft(go, reader, obj)
 
     return obj
 end
@@ -1857,7 +2026,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.turrettank = function(reader, extend)
+ClassReaders.turrettank = function(go, reader, extend)
     local obj = extend or {}
     local tok
 
@@ -1899,7 +2068,7 @@ ClassReaders.turrettank = function(reader, extend)
         end
     end
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -1907,7 +2076,7 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.walker = function(reader, extend)
+ClassReaders.walker = function(go, reader, extend)
     local obj = extend or {}
     
     if reader.version > 1001 and reader.version < 1026 then
@@ -1935,7 +2104,7 @@ ClassReaders.walker = function(reader, extend)
         reader:ReadToken();
     end
 
-    ClassReaders.craft(reader, obj)
+    ClassReaders.craft(go, reader, obj)
 
     return obj
 end
@@ -1943,10 +2112,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.weaponmine = function(reader, extend)
+ClassReaders.weaponmine = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.mine(reader, obj)
+    ClassReaders.mine(go, reader, obj)
 
     return obj
 end
@@ -1954,10 +2123,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.wpnpower = function(reader, extend)
+ClassReaders.wpnpower = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.powerup(reader, obj)
+    ClassReaders.powerup(go, reader, obj)
 
     return obj
 end
@@ -1965,10 +2134,10 @@ end
 --- @param reader Tokenizer
 --- @param extend table?
 --- @return table
-ClassReaders.wingman = function(reader, extend)
+ClassReaders.wingman = function(go, reader, extend)
     local obj = extend or {}
 
-    ClassReaders.hover(reader, obj)
+    ClassReaders.hover(go, reader, obj)
 
     return obj
 end
@@ -2008,6 +2177,7 @@ local function HydrateGameObject(reader)
         error("Failed to parse [seqno]")
     end
     obj.seqNo = tok:GetUInt16()
+    --print(tostring(obj.seqNo) .. ": " .. obj.PrjID .. " (" .. classlabel .. ")")
 
     tok = reader:ReadToken();
     if not tok or not tok:Validate("pos", BinaryFieldType.DATA_VEC3D) then
@@ -2053,6 +2223,8 @@ local function HydrateGameObject(reader)
         error(string.format("No builder found for classlabel [%s]", classlabel))
     end
 
+    --print("Hydrating " .. tostring(obj.seqNo) .. " " .. obj.PrjID .. " as " .. classlabel)
+
     obj.gameObject = HydrateClass(obj, reader)
 
     return obj
@@ -2076,17 +2248,298 @@ local function Hydrate(bzn, reader)
     -- malformations, depending on what kind, might also let us rank mulitple options when the class is unclear
     local GameObjects = {}
     for gameObjectCounter = 1, CountItems do
+        --print(string.format("Hydrating GameObject %d of %d", gameObjectCounter, CountItems))
         GameObjects[gameObjectCounter] = HydrateGameObject(reader)
     end
 
     bzn.entities = GameObjects;
 
-    --TailParse(reader);
+    tok = reader:ReadToken();
+    if not tok or not tok:Validate("name", BinaryFieldType.DATA_CHAR) then
+        error("Failed to parse name/CHAR");
+    end
+    --print(string.format("Mission: %s", tok.GetString()));
+    bzn.Mission = tok:GetString();
+
+    -- read the old sObject ptr, not sure what can be done with it
+    if reader.version < 1002 then
+        local sObject = reader:ReadBZ1_PtrDepricated("sObject");
+    else
+        local sObject = reader:ReadBZ1_Ptr("sObject");
+    end
+
+    -- BZ1 sometimes has a bool here?
+    -- looks like it's based on what mission is used
+    -- but it looks like AIMission starts with the header, so no idea what this extra bool is for
+    if reader.version == 1044 then
+        local rem_pos = reader.pos
+        tok = reader:ReadToken()
+        if not tok or not tok:Validate("undefbool", BinaryFieldType.DATA_BOOL) then
+            -- unknown what this is or why it happens
+            reader.pos = rem_pos
+        end
+    end
+
+    if not reader:inBinary() then
+        tok = reader:ReadToken();
+        if not tok or not tok:IsValidationOnly() or not tok:Validate("AiMission") then
+            error("Failed to parse [AiMission]");
+        end
+    end
+
+    if reader.version == 1001 or reader.version == 1011 or reader.version == 1012 then
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("size", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse size/LONG");
+        end
+        local UnknownSize = tok:GetInt32();
+    end
+
+    if reader.version == 1011 or reader.version == 1012 then
+        -- this might also be due to the above count being 1 instead of 0, unknown, for now we're using the version
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("name", BinaryFieldType.DATA_CHAR) then
+            error("Failed to parse name/CHAR");
+        end
+        --tok.GetBytes(); // "AiMission"
+
+        -- read the old sObject ptr, not sure what can be done with it
+        if reader.version < 1002 then
+            local sObject = reader:ReadBZ1_PtrDepricated("sObject");
+        else
+            local sObject = reader:ReadBZ1_Ptr("sObject");
+        end
+
+        if not reader:inBinary() then
+            tok = reader:ReadToken();
+            if not tok or not tok:IsValidationOnly() or not tok:Validate("UserProcess") then
+                error("Failed to parse [UserProcess]");
+            end
+        end
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("undefptr", BinaryFieldType.DATA_PTR) then
+            error("Failed to parse undefptr/PTR");
+        end
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("cycle") then
+            error("Failed to parse cycle/UNKNOWN");
+        end
+        --tok.GetUInt32H();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("cycleMax") then
+            error("Failed to parse cycleMax/UNKNOWN");
+        end
+        --tok.GetUInt32H();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("selectList") then
+            error("Failed to parse selectList/UNKNOWN");
+        end
+        --tok.GetUInt32H();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("undefptr", BinaryFieldType.DATA_PTR) then
+            error("Failed to parse undefptr/PTR");
+        end
+        --tok.GetUInt32H();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("undefptr", BinaryFieldType.DATA_PTR) then
+            error("Failed to parse undefptr/PTR");
+        end
+        --tok.GetUInt32H();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("exited") then
+            error("Failed to parse exited/UNKNOWN");
+        end
+        --tok.GetUInt32H();
+    end
+
+    -- if reader.SaveType != 0
+
+    if not reader:inBinary() then
+        tok = reader:ReadToken();
+        if not tok or not tok:IsValidationOnly() or not tok:Validate("AOIs") then
+            error("Failed to parse [AOIs]");
+        end
+    end
+
+    tok = reader:ReadToken();
+    if not tok or not tok:Validate("size", BinaryFieldType.DATA_LONG) then
+        error("Failed to parse size/LONG");
+    end
+    local CountAOIs = tok:GetInt32();
+
+    for i = 1, CountAOIs do
+        if not reader:inBinary() then
+            tok = reader:ReadToken();
+            if not tok or not tok:IsValidationOnly() or not tok:Validate("AOI") then
+                error("Failed to parse [AOI]");
+            end
+        end
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("undefptr", BinaryFieldType.DATA_PTR) then
+            error("Failed to parse undefptr/PTR");
+        end
+        --tok.GetUInt32H();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("team", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse team/LONG");
+        end
+        --tok.GetUInt32();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("interesting", BinaryFieldType.DATA_BOOL) then
+            error("Failed to parse interesting/BOOL");
+        end
+        --tok.GetBool();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("inside", BinaryFieldType.DATA_BOOL) then
+            error("Failed to parse inside/BOOL");
+        end
+        --tok.GetBool();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("value", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse value/LONG");
+        end
+        --tok.GetUInt32();
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("force", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse force/LONG");
+        end
+        --tok.GetUInt32();
+    end
+
+    if not reader:inBinary() then
+        tok = reader:ReadToken();
+        if not tok or not tok:IsValidationOnly() or not tok:Validate("AiPaths") then
+            error("Failed to parse [AiPaths]");
+        end
+    end
+
+    tok = reader:ReadToken();
+    if not tok or not tok:Validate("count", BinaryFieldType.DATA_LONG) then
+        error("Failed to parse count/LONG");
+    end
+    local CountPaths = tok:GetInt32();
+
+    for i = 1, CountPaths do
+        --print("AiPath " .. tostring(i))
+        if not reader:inBinary() then
+            tok = reader:ReadToken()
+            if not tok or not tok:IsValidationOnly() or not tok:Validate("AiPath") then
+                error("Failed to parse [AiPath]");
+            end
+        end
+
+        if reader.version >= 2016 then
+            -- 2016
+            tok = reader:ReadToken();
+            if not tok or not tok:Validate("old_ptr", BinaryFieldType.DATA_PTR) then
+                error("Failed to parse old_ptr/PTR");
+            end
+        else
+            -- 1030 1032 1034 1035 1037 1038 1039 1040 1043 1044 1045 1049 2003 2004 2010 2011
+            tok = reader:ReadToken();
+            if not tok or not tok:Validate("old_ptr", BinaryFieldType.DATA_VOID) then
+                error("Failed to parse old_ptr/VOID");
+            end
+        end
+
+        local label = nil
+        tok = reader:ReadToken()
+        if not tok or not tok:Validate("size", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse size/LONG")
+        end
+        local labelSize = tok:GetInt32()
+        --print("labelSize: " .. tostring(labelSize))
+
+        if labelSize > 0 then
+            tok = reader:ReadToken()
+            if not tok or not tok:Validate("label", BinaryFieldType.DATA_CHAR) then
+                error("Failed to parse label/CHAR")
+            end
+            label = tok:GetString()
+            if #label > labelSize then
+                label = label:sub(1, labelSize)
+            end
+            --print("label: " .. tostring(label))
+        end
+        --Console.WriteLine($"AiPath[{i.ToString().PadLeft(CountPaths.ToString().Length)}]: {(label ?? string.Empty)}");
+
+        tok = reader:ReadToken()
+        if not tok or not tok:Validate("pointCount", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse pointCount/LONG")
+        end
+        local pointCount = tok:GetInt32();
+        --print("pointCount: " .. tostring(pointCount))
+
+        tok = reader:ReadToken();
+        if not tok or not tok:Validate("points", BinaryFieldType.DATA_VEC2D) then
+            error("Failed to parse point/VEC2D")
+        end
+        for j = 0, pointCount - 1 do
+            --print("  Point " .. tostring(j))
+            local point = tok:GetVector2D(j)
+            --Console.WriteLine($"{new string(' ', CountPaths.ToString().Length + 9)} [{j.ToString().PadLeft(pointCount.ToString().Length)}] {point.x}, {point.z}")
+        end
+
+        tok = reader:ReadToken()
+        if not tok or not tok:Validate("pathType", BinaryFieldType.DATA_VOID) then
+            error("Failed to parse pathType/VOID")
+        end
+        --Int32 pathType = tok.GetUInt32H();
+    end
+
+    if reader.version == 1001 or reader.version == 1011 or reader.version == 1012 then
+        if not reader:inBinary() then
+            tok = reader:ReadToken()
+            if not tok or not tok:IsValidationOnly() or not tok:Validate("AiTasks") then
+                error("Failed to parse [AiTasks]")
+            end
+        end
+
+        tok = reader:ReadToken()
+        if not tok or not tok:Validate("count", BinaryFieldType.DATA_LONG) then
+            error("Failed to parse count/LONG")
+        end
+        local CountAiTasks = tok:GetInt32()
+
+        for i = 1, CountAiTasks do
+
+        end
+    end
+
+    if reader.version == 1001 then
+        if not reader:inBinary() then
+            tok = reader:ReadToken()
+            if not tok or not tok:IsValidationOnly() or not tok:Validate("Terrain") then
+                error("Failed to parse [Terrain]")
+            end
+        end
+
+        tok = reader:ReadToken()
+        if not tok or not tok:Validate("Name") then
+            error("Failed to parse Name/UNKNOWN")
+        end
+        --Console.WriteLine($"TerrainName: {TerrainName}");
+    end
+
+    return bzn
 end
 
-local function ReadBZN()
-    local filedata = UseItem(GetMissionFilename())
-    --local filedata = UseItem("play01.bzn")
+local function ReadBZN(name)
+    local filedata = UseItem(name)
     local reader = Tokenizer.new(filedata)
 
     local bzn = {}
@@ -2168,12 +2621,12 @@ local function ReadBZN()
 
     Hydrate(bzn, reader)
 
-    print(table.show(bzn, "BZN Data"))
+    return bzn
 end
 
+print(table.show(ReadBZN(GetMissionFilename())))
 
--- temporary invoker
-ReadBZN();
+
 
 logger.print(logger.LogLevel.DEBUG, nil, "_bzn Loaded");
 

@@ -18,7 +18,7 @@ app.UseStaticFiles();
 // Chunked log tail endpoint
 app.MapGet("/tail", async (HttpContext context) =>
 {
-    context.Response.Headers.Add("Content-Type", "text/event-stream");
+    context.Response.Headers.Append("Content-Type", "text/event-stream");
     using var fs = new FileStream(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
     using var reader = new StreamReader(fs);
 

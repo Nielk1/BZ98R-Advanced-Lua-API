@@ -1,4 +1,4 @@
---- BZ98R LUA Extended API Paths.
+--- BZ98R LUA Extended API BZN Parser.
 ---
 --- BZN reading logic.
 --- Based on https://github.com/Nielk1/bz2-bzn_binary-format-tools
@@ -7,6 +7,7 @@
 --- @module '_bzn'
 --- @author John "Nielk1" Klein
 
+local customsavetype = require("_customsavetype");
 local logger = require("_logger");
 local paramdb = require("_paramdb");
 
@@ -58,6 +59,15 @@ local BinaryFieldType = {
 
 --- @class _paths
 local M = {};
+
+--- @enum VEHICLE_STATE
+M.VEHICLE_STATE = {
+    UNDEPLOYED = 0,
+    DEPLOYING = 1,
+    DEPLOYED = 2,
+    UNDEPLOYING = 3
+};
+
 
 --- Parses a little-endian float from a string.
 --- @param str string
@@ -1049,8 +1059,6 @@ end
 --- @field v_mag number
 --- @field v_mag_inv number
 
-
-
 --- @class GameObjectClass
 --- @field illumination number
 --- @field pos Vector
@@ -1079,13 +1087,6 @@ end
 --- @field perceivedTeam integer
 
 
---- @enum VEHICLE_STATE
-local VEHICLE_STATE = {
-    UNDEPLOYED = 0,
-    DEPLOYING = 1,
-    DEPLOYED = 2,
-    UNDEPLOYING = 3
-};
 
 local ClassReaders = {};
 
@@ -2375,7 +2376,14 @@ local function Hydrate(bzn, reader)
     end
     local CountAOIs = tok:GetInt32();
 
+    if CountAOIs > 0 then
+        bzn.AOIs = {}
+    end
+
     for i = 1, CountAOIs do
+        local newAOI = {}
+        bzn.AOIs[i] = newAOI
+
         if not reader:inBinary() then
             tok = reader:ReadToken();
             if not tok or not tok:IsValidationOnly() or not tok:Validate("AOI") then
@@ -2387,37 +2395,37 @@ local function Hydrate(bzn, reader)
         if not tok or not tok:Validate("undefptr", BinaryFieldType.DATA_PTR) then
             error("Failed to parse undefptr/PTR");
         end
-        --tok.GetUInt32H();
+        newAOI.undefptr = tok:GetUInt32H();
 
         tok = reader:ReadToken();
         if not tok or not tok:Validate("team", BinaryFieldType.DATA_LONG) then
             error("Failed to parse team/LONG");
         end
-        --tok.GetUInt32();
+        newAOI.team = tok:GetUInt32();
 
         tok = reader:ReadToken();
         if not tok or not tok:Validate("interesting", BinaryFieldType.DATA_BOOL) then
             error("Failed to parse interesting/BOOL");
         end
-        --tok.GetBool();
+        newAOI.interesting = tok:GetBoolean();
 
         tok = reader:ReadToken();
         if not tok or not tok:Validate("inside", BinaryFieldType.DATA_BOOL) then
             error("Failed to parse inside/BOOL");
         end
-        --tok.GetBool();
+        newAOI.inside = tok:GetBoolean();
 
         tok = reader:ReadToken();
         if not tok or not tok:Validate("value", BinaryFieldType.DATA_LONG) then
             error("Failed to parse value/LONG");
         end
-        --tok.GetUInt32();
+        newAOI.value = tok:GetUInt32();
 
         tok = reader:ReadToken();
         if not tok or not tok:Validate("force", BinaryFieldType.DATA_LONG) then
             error("Failed to parse force/LONG");
         end
-        --tok.GetUInt32();
+        newAOI.force = tok:GetUInt32();
     end
 
     if not reader:inBinary() then
@@ -2433,7 +2441,13 @@ local function Hydrate(bzn, reader)
     end
     local CountPaths = tok:GetInt32();
 
+    if CountPaths > 0 then
+        bzn.AiPaths = {}
+    end
     for i = 1, CountPaths do
+        local newPath = {}
+        bzn.AiPaths[i] = newPath
+        
         --print("AiPath " .. tostring(i))
         if not reader:inBinary() then
             tok = reader:ReadToken()
@@ -2474,6 +2488,7 @@ local function Hydrate(bzn, reader)
                 label = label:sub(1, labelSize)
             end
             --print("label: " .. tostring(label))
+            newPath.label = label
         end
         --Console.WriteLine($"AiPath[{i.ToString().PadLeft(CountPaths.ToString().Length)}]: {(label ?? string.Empty)}");
 
@@ -2484,6 +2499,10 @@ local function Hydrate(bzn, reader)
         local pointCount = tok:GetInt32();
         --print("pointCount: " .. tostring(pointCount))
 
+        if pointCount > 0 then
+            newPath.points = {}
+        end
+
         tok = reader:ReadToken();
         if not tok or not tok:Validate("points", BinaryFieldType.DATA_VEC2D) then
             error("Failed to parse point/VEC2D")
@@ -2492,6 +2511,8 @@ local function Hydrate(bzn, reader)
             --print("  Point " .. tostring(j))
             local point = tok:GetVector2D(j)
             --Console.WriteLine($"{new string(' ', CountPaths.ToString().Length + 9)} [{j.ToString().PadLeft(pointCount.ToString().Length)}] {point.x}, {point.z}")
+
+            newPath.points[j + 1] = point
         end
 
         tok = reader:ReadToken()
@@ -2499,6 +2520,7 @@ local function Hydrate(bzn, reader)
             error("Failed to parse pathType/VOID")
         end
         --Int32 pathType = tok.GetUInt32H();
+        newPath.pathType = tok:GetUInt32H();
     end
 
     if reader.version == 1001 or reader.version == 1011 or reader.version == 1012 then
@@ -2538,11 +2560,51 @@ local function Hydrate(bzn, reader)
     return bzn
 end
 
-local function ReadBZN(name)
+--- @class BZN_Path
+--- @field label string?
+--- @field points Vector[]
+--- @field pathType integer
+
+--- @class FileReferenceBZN : CustomSavableType
+--- @field filename string
+--- @field version integer
+--- @field AiPaths BZN_Path[]?
+local FileReferenceBZN = {}
+FileReferenceBZN.__index = FileReferenceBZN
+FileReferenceBZN.__type = "FileReferenceBZN";
+
+--- Save a BZN file
+---
+--- {INTERNAL USE}
+--- @param self FileReferenceBZN
+--- @return string filename with extension
+function FileReferenceBZN:Save()
+    return self.filename;
+end
+
+--- Load a BZN file
+---
+--- {INTERNAL USE}
+--- @param filename string filename with extension
+--- @return FileReferenceBZN?
+function FileReferenceBZN.Load(filename)
+    return M.Open(filename);
+end
+
+--- Open a BZN file
+--- @param name string filename with extension
+--- @return FileReferenceBZN?
+function M.Open(name)
     local filedata = UseItem(name)
+    if not filedata then
+        return nil
+    end
+
     local reader = Tokenizer.new(filedata)
 
     local bzn = {}
+    bzn.filename = name
+    bzn = setmetatable(bzn, FileReferenceBZN)
 
     -- BZN version
     local tok = reader:ReadToken()
@@ -2622,11 +2684,10 @@ local function ReadBZN(name)
     Hydrate(bzn, reader)
 
     return bzn
+
 end
 
-print(table.show(ReadBZN(GetMissionFilename())))
-
-
+customsavetype.Register(FileReferenceBZN);
 
 logger.print(logger.LogLevel.DEBUG, nil, "_bzn Loaded");
 

@@ -460,7 +460,7 @@
             const lineStroke = 4; // stroke width (also needed to back off arrow)
 
             // Draw route as a line
-            if (path_data.nodes.length > 1) {
+            if (path_data.render_paths && path_data.nodes.length > 1) {
                 const points = [];
                 for (const pt of path_data.nodes) {
                     points.push(pt.x, -pt.y);
@@ -816,8 +816,9 @@
                                             const parts = pathStr.split('|');
                                             // parts[0] = "Path", parts[1] = path name, parts[2] = path type, parts[3...] = coordinates
                                             const type = parseInt(parts[2]);
-                                            const coords = parts.slice(3);
-                                            return { type: type, nodes: coords.map(coord => {
+                                            const cloud = parseInt(parts[3]);
+                                            const coords = parts.slice(4);
+                                            return { type: type, render_paths: coords.length > 0 && cloud != 1, nodes: coords.filter(coord => coord.includes(',')).map(coord => {
                                                 const [x, y] = coord.split(',').map(Number);
                                                 return { x, y };
                                             }) };

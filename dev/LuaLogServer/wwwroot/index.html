@@ -271,6 +271,13 @@
             _patrol.Engines = {};
             path_cache = {};
 
+            Object.values(mapLayers).forEach(obj => {
+                //if (obj.name !== 'tooltip') {
+                    obj.layer.destroyChildren();
+                    obj.layer.batchDraw();
+                //}
+            });
+
             map_interacted = false;
         }
 

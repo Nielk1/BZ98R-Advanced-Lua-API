@@ -212,7 +212,7 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
             end
         end
     end
-    self.cache_locations[startpoint] = bounding_circle(start_positions);
+    self.cache_locations[startpoint] = bounding_circle(start_positions, paths.GetPosition(startpoint));
 
     -- Recalculate approximate location vectors
     
@@ -232,7 +232,7 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
                 table.insert(end_positions, pos);
             end
         end
-        self.cache_locations[endpoint] = bounding_circle(end_positions);
+        self.cache_locations[endpoint] = bounding_circle(end_positions, paths.GetPosition(endpoint));
     end
 
     if not self.cache_path_map[path] then

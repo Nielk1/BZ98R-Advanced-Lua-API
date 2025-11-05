@@ -315,20 +315,23 @@ end
 --- @section StateSetRunner - Core
 
 --- Save event function.
---
--- {INTERNAL USE}
--- @param self StateSetRunner instance
--- @return ...
-function StateSetRunner.Save(self)
+---
+--- {INTERNAL USE}
+--- @param self StateSetRunner instance
+--- @return string template
+--- @return table active_states
+--- @return table? addonData
+function StateSetRunner:Save()
     return self.template, self.active_states, self.addonData;
 end
 
 --- Load event function.
---
--- {INTERNAL USE}
--- @param template
--- @param active_states
--- @param addonData
+---
+--- {INTERNAL USE}
+--- @param template string
+--- @param active_states table
+--- @param addonData table?
+--- @return StateSetRunner instance
 function StateSetRunner.Load(template, active_states, addonData)
     local stateRunner = CreateStateSetRunner(template, addonData);
     --for k, v in pairs(active_states) do

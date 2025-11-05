@@ -8,7 +8,7 @@
 local api = require("_api");
 local logger = require("_logger");
 local hook = require("_hook");
-local bzn = require("_bzn");
+local mission = require("_mission");
 local paramdb = require("_paramdb");
 
 local LOG_LEVEL_PRINT_ALL_PATHS = logger.LogLevel.DEBUG;
@@ -39,16 +39,6 @@ M.SpecialPathType = {
     Cloud = 3, -- just a collection of points
 }
 
-local bznFile = nil;
-local bznFileAttempted = false;
-local function TryLoadBZNFile()
-    if not bznFileAttempted then
-        bznFileAttempted = true;
-        bznFile = bzn.Open(GetMissionFilename());
-    end
-    return bznFile;
-end
-
 --- Paths that shouldn't be considered linear but instead as point clouds.
 --- These are paths that are never followed but instead of just locations.
 --- @type table<string, integer>
@@ -68,7 +58,7 @@ local paths_pending_log = {};
 
 --- Try to load data from BZN file into memory cache, will only try once
 local function LoadDataFromBzn()
-    local bznFile = TryLoadBZNFile();
+    local bznFile = mission.Bzn;
     if bznFile then
         if bznFile.AiPaths then
             for _, path in ipairs(bznFile.AiPaths) do
@@ -264,9 +254,9 @@ function M.IsSpawnPath(path)
         return false;
     end
 
-    local bznFile = TryLoadBZNFile();
-    if bznFile then
-        if bznFile.Mission == "LuaMission" then
+    local missionClass = mission.MissionClass;
+    if missionClass then
+        if missionClass == "LuaMission" then
             -- LuaMission is the only Lua running mission that doesn't use spawn paths
             return false;
         end

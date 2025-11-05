@@ -713,28 +713,28 @@ end
 --- @section StateMachineIter - Core
 
 --- Save event function.
---
--- {INTERNAL USE}
--- @param self StateMachineIter instance
--- @return template string StateMachineIter template name
--- @return target_call integer? Timer's value, nil for not set
--- @return target_time number? TargetTurn's value, nil for not set
--- @return set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
--- @return state_key string|integer|nil Current state, string name or integer index if state machine is ordered
--- @return addonData table Addon data, if any
-function StateMachineIter.Save(self)
+---
+--- {INTERNAL USE}
+--- @param self StateMachineIter instance
+--- @return string template StateMachineIter template name
+--- @return integer? target_call Timer's value, nil for not set
+--- @return number? target_time TargetTurn's value, nil for not set
+--- @return number? set_wait_time Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
+--- @return string|integer|nil state_key Current state, string name or integer index if state machine is ordered
+--- @return table? addonData Addon data, if any
+function StateMachineIter:Save()
     return self.template, self.target_call, self.target_time, self.set_wait_time, self.state_key, self.addonData;
 end
 
 --- Load event function.
---
--- {INTERNAL USE}
--- @param template string StateMachineIter template name
--- @param target_call integer? Timer's value, nil for not set
--- @param target_time number? TargetTurn's value, nil for not set
--- @param set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
--- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
--- @param addonData table Addon data, if any
+---
+--- {INTERNAL USE}
+--- @param template string StateMachineIter template name
+--- @param target_call integer? Timer's value, nil for not set
+--- @param target_time number? TargetTurn's value, nil for not set
+--- @param set_wait_time number? Time to wait before running next state, kept to allow altering target_time if set_wait_time changes
+--- @param state_key string|integer|nil Current state, string name or integer index if state machine is ordered
+--- @param addonData table? Addon data, if any
 function StateMachineIter.Load(template, target_call, target_time, set_wait_time, state_key, addonData)
     return CreateStateMachineIter(template, target_call, target_time, set_wait_time, state_key, addonData);
 end

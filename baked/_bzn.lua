@@ -2342,6 +2342,8 @@ local function Hydrate(bzn, reader)
     end
 
     for i = 1, CountAOIs do
+        --- @type BZN_AOI
+        --- @diagnostic disable-next-line: missing-fields
         local newAOI = {}
         bzn.AOIs[i] = newAOI
 
@@ -2406,6 +2408,8 @@ local function Hydrate(bzn, reader)
         bzn.AiPaths = {}
     end
     for i = 1, CountPaths do
+        --- @type BZN_Path
+        --- @diagnostic disable-next-line: missing-fields
         local newPath = {}
         bzn.AiPaths[i] = newPath
         
@@ -2521,12 +2525,21 @@ local function Hydrate(bzn, reader)
     return bzn
 end
 
+--- As Lua only runs for a small subset of Mission Classes, we alias them here
 --- @alias MissionClass "Inst03Mission"|"Inst04Mission"|"MultDMMission"|"MultSTMission"|"LuaMission"
 
 --- @class BZN_Path
 --- @field label string?
 --- @field points Vector[]
 --- @field pathType integer
+
+--- @class BZN_AOI
+--- @field undefptr integer
+--- @field team integer
+--- @field interesting boolean
+--- @field inside boolean
+--- @field value integer
+--- @field force integer
 
 --- @class FileReferenceBZN : CustomSavableType
 --- @field filename string
@@ -2537,8 +2550,9 @@ end
 --- @field missionSave boolean?
 --- @field TerrainName string?
 --- @field entities table<number, table>
---- @field AiPaths BZN_Path[]?
 --- @field Mission MissionClass
+--- @field AiPaths BZN_Path[]?
+--- @field AOIs BZN_AOI[]? not yet worked out, is this vestigial?
 local FileReferenceBZN = {}
 FileReferenceBZN.__index = FileReferenceBZN
 FileReferenceBZN.__type = "FileReferenceBZN";

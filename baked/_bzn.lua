@@ -57,7 +57,7 @@ local BinaryFieldType = {
 --- @field IsValidationOnly fun(self: BZNToken): boolean
 --- @field Validate fun(self: BZNToken, name: string?, type: BinaryFieldType?): boolean
 
---- @class _paths
+--- @class _bzn
 local M = {};
 
 --- @enum VEHICLE_STATE

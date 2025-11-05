@@ -1,5 +1,7 @@
 --- BZ98R LUA Extended API Paths.
 ---
+--- Test
+---
 --- @module '_paths'
 --- @author John "Nielk1" Klein
 
@@ -7,12 +9,19 @@ local api = require("_api");
 local logger = require("_logger");
 local hook = require("_hook");
 local bzn = require("_bzn");
+local paramdb = require("_paramdb");
 
 local LOG_LEVEL_PRINT_ALL_PATHS = logger.LogLevel.DEBUG;
 logger.print(logger.LogLevel.DEBUG, nil, "_paths Loading");
 
+--- @alias PathName string
+
+--- @alias PathWithIndex { [1]: PathName, [2]: integer }
+
 --- @class _paths
 local M = {};
+
+--- @section Enums
 
 --- @enum PathType
 M.PathType = {
@@ -90,6 +99,8 @@ local function GetPathNames()
 
     return keys;
 end
+
+--- @section PathType Operations
 
 --- Changes the named path to the given path type.
 --- {VERSION 2.0+}
@@ -215,6 +226,59 @@ function M.SetPathCloud(path)
     M.SetSpecialPathType(path, M.SpecialPathType.Cloud);
 end
 
+--- Extracts the name and number from a string.
+--- @param str string
+--- @return string
+--- @return integer?
+local function extract_name_and_number(str)
+    local name, after = str:match("^([A-Za-z0-9 !#$%%&'()%+,;=@%[%]^`{}~%.%-]{1,9})(.*)")
+    local num = nil
+    if after and after:sub(1,1) == "_" then
+        local digits = after:match("^_(%d+)")
+        if digits then
+            num = tonumber(digits)
+        else
+            num = 0
+        end
+    end
+    return name:lower(), num
+end
+
+--- Is the path a PathSpawn path?
+--- For all mission types that Lua can be used in paths
+--- with a specific name structure can be used for spawns.
+--- Objects spawned this way use the path name as their label.
+--- You can bind the `MapObject` and `AddObject` events to
+--- search for spawned objects.
+--- @param path PathName
+--- @return boolean
+--- @return string? odf ODF filename without extension
+--- @return number? seconds respawn time
+function M.IsSpawnPath(path)
+    if path == "edge_path" then
+        return false;
+    end
+
+    if string.sub(path, 1, 5) == "path_" then
+        return false;
+    end
+
+    local name, num = extract_name_and_number(path);
+    local classlabel, success = paramdb.GetClassLabel(name .. ".odf")
+    if not success or #classlabel == 0 then
+        return true;
+    end
+
+    if num ~= nil then
+        -- had time so fix the time
+        if num == 0 then
+            num = 10;
+        end
+    end
+
+    return false, name, num;
+end
+
 --- Returns the number of points in the named path, or 0 if the path does not exist.
 --- @param path PathName
 --- @return integer
@@ -259,14 +323,14 @@ function M.GetPosition(path, point)
     return nil;
 end
 
---- Is this object a table?
+--- Is this object a [PathName, index] array?
 --- @param object any Object in question
 --- @return boolean
 function M.IsPathWithString(object)
     return type(object) == 'table' and object[1] and type(object[1]) == 'string' and object[2] and type(object[2]) == 'number';
 end
 
---- @section Paths - Iterator Operations
+--- @section Iterator Operations
 
 --- Iterate the vectors along the path.
 --- Return LUA style 1 based indexes for the path points.
@@ -317,7 +381,7 @@ if not _G.GetPathPointCount then
     -- [[END_IGNORE]]
 end
 
---- @section Paths - Logging
+--- @section Logging
 
 --- Log the path points to the data store
 --- @param path string Path name
@@ -362,11 +426,11 @@ function M.LogPathToData(path, level)
     end
 end
 
---- @section Paths - Other
+--- @section Other
 
---- @section Paths - Core
+--- @section Core
 
---- @section Paths - Hooks
+--- @section Hooks
 
 local function AutoLogAllPaths()
     if logger.IsDataMode() and logger.DoLogLevel(LOG_LEVEL_PRINT_ALL_PATHS) then
@@ -395,8 +459,3 @@ end);
 logger.print(logger.LogLevel.DEBUG, nil, "_paths Loaded");
 
 return M;
-
---- @section Paths - Types
-
---- @alias PathName string
---- @alias PathWithIndex { [1]: PathName, [2]: integer }

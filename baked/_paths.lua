@@ -35,6 +35,7 @@ M.SpecialPathType = {
     None = 0,
     Bounds = 1, -- used for area bounds like edge_path
     Area = 2, -- used in Point-in-Polygon tests
+    --Spawn = 3, -- used by the game
     Cloud = 3, -- just a collection of points
 }
 
@@ -261,6 +262,16 @@ function M.IsSpawnPath(path)
 
     if string.sub(path, 1, 5) == "path_" then
         return false;
+    end
+
+    local bznFile = TryLoadBZNFile();
+    if bznFile then
+        if bznFile.Mission == "LuaMission" then
+            -- LuaMission is the only Lua running mission that doesn't use spawn paths
+            return false;
+        end
+    else
+        -- low accuracy mode would be here, just assume it's not LuaMission for now
     end
 
     local name, num = extract_name_and_number(path);

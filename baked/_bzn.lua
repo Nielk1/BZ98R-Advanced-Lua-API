@@ -2193,7 +2193,7 @@ local function HydrateGameObject(reader)
 end
 
 --- Hydrate a BZN file
---- @param bzn table
+--- @param bzn FileReferenceBZN
 --- @param reader Tokenizer
 local function Hydrate(bzn, reader)
     local tok;
@@ -2521,6 +2521,8 @@ local function Hydrate(bzn, reader)
     return bzn
 end
 
+--- @alias MissionClass "Inst03Mission"|"Inst04Mission"|"MultDMMission"|"MultSTMission"|"LuaMission"
+
 --- @class BZN_Path
 --- @field label string?
 --- @field points Vector[]
@@ -2536,6 +2538,7 @@ end
 --- @field TerrainName string?
 --- @field entities table<number, table>
 --- @field AiPaths BZN_Path[]?
+--- @field Mission MissionClass
 local FileReferenceBZN = {}
 FileReferenceBZN.__index = FileReferenceBZN
 FileReferenceBZN.__type = "FileReferenceBZN";

@@ -286,10 +286,10 @@
         let stage = null;
         // Central registry for layers
         const mapLayers = {
-            path_points: { name: 'path_points', layer: new Konva.Layer({ id: 'path_points' }), order:  3, key_order: 2, key: { id: 'toggle-path_points', label: 'Path Points', defaultChecked: true } },
-            path_lines:  { name: 'path_lines' , layer: new Konva.Layer({ id: 'path_lines'  }), order:  2, key_order: 3, key: { id: 'toggle-path_lines' , label: 'Paths'      , defaultChecked: true } },
-            locations:   { name: 'locations'  , layer: new Konva.Layer({ id: 'locations'   }), order:  1, key_order: 1, key: { id: 'toggle-locations'  , label: 'Locations'  , defaultChecked: true } },
-            tooltip:     { name: 'tooltip'    , layer: new Konva.Layer({ id: 'tooltip'     }), order: 99,               key: null                                                                     },
+            patrol_engines: { name: 'patrol_engines',                                                           key_order: 1, key: { id: 'toggle-patrol_engines', label: 'Patrol Engines', defaultChecked: true } },
+            locations:      { name: 'locations'     , layer: new Konva.Layer({ id: 'locations' }), order:  1, key_order: 2, key: { id: 'toggle-locations'     , label: 'Locations'     , defaultChecked: true } },
+            paths:          { name: 'paths'         , layer: new Konva.Layer({ id: 'paths'     }), order:  2, key_order: 4, key: { id: 'toggle-paths'    , label: 'Paths'         , defaultChecked: true } },
+            tooltip:        { name: 'tooltip'       , layer: new Konva.Layer({ id: 'tooltip'   }), order: 99,                                                                                                   },
         };
 
         function createOrResizeKonvaStage() {
@@ -305,6 +305,7 @@
                 });
 
                 Object.values(mapLayers)
+                    .filter(obj => obj.layer)
                     .sort((a, b) => a.order - b.order)
                     .forEach(obj => stage.add(obj.layer));
 
@@ -357,7 +358,7 @@
                 fitStageToLayerContent(
                     stage,
                     Object.entries(mapLayers)
-                        .filter(([name]) => name !== 'tooltip')
+                        .filter(([name, obj]) => name !== 'tooltip' && obj.layer)
                         .sort((a, b) => a[1].order - b[1].order)
                         .map(([name, obj]) => obj.layer)
                 );
@@ -447,8 +448,8 @@
         }
         function MapDraw_UpdatePaths(name, path_data) {
             // Clear previous route and waypoints for this path
-            mapLayers.path_lines.layer.find(`#route_${name}`).forEach(node => node.destroy());
-            mapLayers.path_points.layer.find(`#point_${name}_`).forEach(node => node.destroy());
+            mapLayers.paths.layer.find(`#PathPoint_${name}`).forEach(node => node.destroy());
+            mapLayers.paths.layer.find(`#Path_${name}_`).forEach(node => node.destroy());
 
             function shortenLineForArrow(x1, y1, x2, y2, q, r) {
                 const dx = x2 - x1;
@@ -517,7 +518,7 @@
                                 id: `Path_${name}`,
                                 tooltip: `Path: ${name}`
                             });
-                            mapLayers.path_lines.layer.add(routeLine1);
+                            mapLayers.paths.layer.add(routeLine1);
                         }
                     break;
                     case 1: // round-trip
@@ -530,7 +531,7 @@
                             id: `Path_${name}`,
                             tooltip: `Path: ${name}`
                         });
-                        mapLayers.path_lines.layer.add(routeLine2);
+                        mapLayers.paths.layer.add(routeLine2);
                         break;
                 }
             }
@@ -547,12 +548,11 @@
                         id: `PathPoint_${name}[${idx}]`,
                         tooltip: `PathPoint: ${name}[${idx}]`
                     });
-                    mapLayers.path_points.layer.add(waypoint);
+                    mapLayers.paths.layer.add(waypoint);
                 });
             }
 
-            mapLayers.path_lines.layer.batchDraw();
-            mapLayers.path_points.layer.batchDraw();
+            mapLayers.paths.layer.batchDraw();
 
             ResetMapWindow();
         }
@@ -563,12 +563,17 @@
             if (obj.key) {
                 const label = document.createElement('label');
                 label.style.display = 'block';
-                label.innerHTML = `<input type="checkbox" id="${obj.key.id}" ${obj.key.defaultChecked ? 'checked' : ''}> ${obj.key.label}`;
+                if (obj.layer) {
+                    label.innerHTML = `<input type="checkbox" id="${obj.key.id}" ${obj.key.defaultChecked ? 'checked' : ''}> ${obj.key.label}`;
+                } else {
+                    label.innerHTML = `<input type="checkbox" id="${obj.key.id}" disabled> ${obj.key.label}`;
+                    label.children[0].indeterminate = true;
+                }
                 mapKeyList.appendChild(label);
             }
         });
         Object.entries(mapLayers).forEach(([name, obj]) => {
-            if (obj.key) {
+            if (obj.key && obj.layer) {
                 document.getElementById(obj.key.id).addEventListener('change', function() {
                     obj.layer.visible(this.checked);
                     stage.batchDraw();
@@ -579,6 +584,7 @@
         // ------------------- Konva Tooltip Logic -------------------
         Object.entries(mapLayers).forEach(([name, obj]) => {
             if (name === 'tooltip') return;
+            if (!obj.layer) return;
 
             let currentTooltip = null;
             let currentShapeId = null;

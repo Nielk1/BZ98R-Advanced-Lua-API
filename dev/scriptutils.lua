@@ -788,11 +788,13 @@ end
 --- @deprecated See `_gameobject` module.
 function SetPosition(h, target, point) end
 
---- Returns the game object's or path point's position vector. Returns nil if none exists.
+--- Returns the game object's or path point's position vector.
+--- Returns last path point if asking for a point past the end.
+--- @todo code suggests it will return VEC(0,0,0) not nil if none exists, confirm
 --- @param target Handle|string
 --- @param point integer? If the target is a path this is the path point index, defaults to 0.
---- @return Vector?
---- @todo Can't depricate this because it's used for paths too, at least for now
+--- @return Vector
+--- @deprecated See `_gameobject` and `_path` module.
 function GetPosition(target, point)
     error("This function is provided by the engine.");
 end
@@ -1578,26 +1580,31 @@ function StopEarthquake() end
 --- {VERSION 2.0+}
 --- @param path string
 --- @param type integer
+--- @deprecated See `_path` module.
 function SetPathType(path, type) end
 
 --- Returns the type of the named path.
 --- {VERSION 2.0+}
 --- @param path string
 --- @return integer
+--- @deprecated See `_path` module.
 function GetPathType(path)
     error("This function is provided by the engine.");
 end
 
 --- Changes the named path to one-way. Once a unit reaches the end of the path, it will stop.
 --- @param path string
+--- @deprecated See `_path` module.
 function SetPathOneWay(path) end
 
 --- Changes the named path to round-trip. Once a unit reaches the end of the path, it will follow the path backwards to the start and begin again.
 --- @param path string
+--- @deprecated See `_path` module.
 function SetPathRoundTrip(path) end
 
 --- Changes the named path to looping. Once a unit reaches the end of the path, it will continue along to the start and begin again.
 --- @param path string
+--- @deprecated See `_path` module.
 function SetPathLoop(path) end
 
 --- @section Path Points
@@ -1607,6 +1614,7 @@ function SetPathLoop(path) end
 --- {VERSION 2.0+}
 --- @param path string
 --- @return integer
+--- @deprecated See `_path` module.
 function GetPathPointCount(path)
     error("This function is provided by the engine.");
 end

@@ -1046,46 +1046,6 @@ function Tokenizer:ReadToken()
 end
 
 
---- @class Euler
---- @field v Vector
---- @field omega Vector
---- @field Accel Vector
---- @field Alpha Vector
---- @field Pos Vector
---- @field mass number
---- @field mass_inv number
---- @field I number
---- @field I_inv number
---- @field v_mag number
---- @field v_mag_inv number
-
---- @class GameObjectClass
---- @field illumination number
---- @field pos Vector
---- @field euler Euler
---- @field seqNo integer
---- @field name string
---- @field isObjective boolean
---- @field isSelected boolean
---- @field isVisible integer
---- @field seen integer
---- @field healthRatio number
---- @field curHealth integer
---- @field maxHealth integer
---- @field ammoRatio number
---- @field curAmmo integer
---- @field maxAmmo integer
---- @field priority integer
---- @field what integer
---- @field who integer
---- @field where integer
---- @field param integer
---- @field aiProcess boolean
---- @field isCargo boolean
---- @field independence integer
---- @field curPilot string
---- @field perceivedTeam integer
-
 
 
 local ClassReaders = {};
@@ -2145,6 +2105,7 @@ end
 
 --- Hydrate a GameObject from the BZN
 --- @param reader Tokenizer
+--- @return GameObjectWrapper
 local function HydrateGameObject(reader)
     local obj = {}
     local tok
@@ -2568,6 +2529,12 @@ end
 --- @class FileReferenceBZN : CustomSavableType
 --- @field filename string
 --- @field version integer
+--- @field binary boolean
+--- @field msn_filename string?
+--- @field seq_count integer
+--- @field missionSave boolean?
+--- @field TerrainName string?
+--- @field entities table<number, table>
 --- @field AiPaths BZN_Path[]?
 local FileReferenceBZN = {}
 FileReferenceBZN.__index = FileReferenceBZN
@@ -2692,3 +2659,47 @@ customsavetype.Register(FileReferenceBZN);
 logger.print(logger.LogLevel.DEBUG, nil, "_bzn Loaded");
 
 return M;
+
+
+--- @class Euler
+--- @field v Vector
+--- @field omega Vector
+--- @field Accel Vector
+--- @field Alpha Vector
+--- @field Pos Vector
+--- @field mass number
+--- @field mass_inv number
+--- @field I number
+--- @field I_inv number
+--- @field v_mag number
+--- @field v_mag_inv number
+
+--- @class GameObjectClass
+--- @field illumination number
+--- @field pos Vector
+--- @field euler Euler
+--- @field seqNo integer
+--- @field name string
+--- @field isObjective boolean
+--- @field isSelected boolean
+--- @field isVisible integer
+--- @field seen integer
+--- @field healthRatio number
+--- @field curHealth integer
+--- @field maxHealth integer
+--- @field ammoRatio number
+--- @field curAmmo integer
+--- @field maxAmmo integer
+--- @field priority integer
+--- @field what integer
+--- @field who integer
+--- @field where integer
+--- @field param integer
+--- @field aiProcess boolean
+--- @field isCargo boolean
+--- @field independence integer
+--- @field curPilot string
+--- @field perceivedTeam integer
+
+--- @class GameObjectWrapper
+--- @field obj GameObjectClass

@@ -26,6 +26,7 @@ local utility = require("_utility");
 local gameobject = require("_gameobject");
 local _api = require("_api");
 local hook = require("_hook");
+local paths = require("_paths");
 
 --- @class _camera
 local M = {};
@@ -85,10 +86,10 @@ end
 local function GetPathVectorAfterTime(path, speed, time)
     --- @todo edge case when path as 1 point
 
-    local pathLength = GetPathPointCount(path);
+    local pathLength = paths.GetPathPointCount(path);
     if pathLength == 0 then return SetVector(), SetVector(), true; end
     --- @diagnostic disable-next-line: return-type-mismatch
-    if pathLength == 1 then return GetPosition(path, 0), SetVector(), true; end
+    if pathLength == 1 then return paths.GetPosition(path, 0), SetVector(), true; end
 
     local distance = speed * time / 100;
 
@@ -96,7 +97,7 @@ local function GetPathVectorAfterTime(path, speed, time)
     local lastPosition = nil;
     local direction = SetVector();
     for i = 0, pathLength - 1 do
-        local currentPosition = GetPosition(path, i);
+        local currentPosition = paths.GetPosition(path, i);
         if currentPosition == nil then
             error("GetPosition returned nil for path: " .. tostring(path) .. " at index: " .. tostring(i))
         end
@@ -216,7 +217,7 @@ function M.GetPosition()
         local height = CameraParams[2];
         local speed = CameraParams[3];
         local target = CameraParams[4];
-        local target_pos = GetPosition(target);
+        local target_pos = paths.GetPosition(target);
         local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
@@ -239,7 +240,7 @@ function M.GetPosition()
         local speed = CameraParams[3];
         local target = CameraParams[4];
         local pos = GetPathVectorAfterTime(path, speed, WorldTime - CameraTime);
-        local target_pos = GetPosition(target, 0);
+        local target_pos = paths.GetPosition(target, 0);
         pos.y = GetTerrainHeightAndNormal (pos) + height;
         return pos, Normalize(target_pos - pos);
     elseif CameraType == "FollowPathAimFollowPath" then
@@ -268,12 +269,12 @@ function M.GetPosition()
         local offset = SetVector(right, up, forward);
         local target = CameraParams[5];
         
-        local base_pos = GetPosition(base);
+        local base_pos = paths.GetPosition(base);
         --- @diagnostic disable-next-line: deprecated
         local base_transform = GetTransform(base);
 
         local pos = base_transform * offset + base_pos;
-        return pos, Normalize(GetPosition(target) - pos);
+        return pos, Normalize(paths.GetPosition(target) - pos);
     end
 
     return SetVector(), SetVector();
@@ -320,7 +321,7 @@ function M.FollowPathAimFollowPath(path, height, speed, target, target_height, t
     target_height = math.floor(target_height * 100); -- convert to centimeters
     target_speed = math.floor(target_speed * 100); -- convert to centimeters per second
     CheckCameraType("FollowPathAimFollowPath", {path, height, speed, target, target_height, target_speed});
-    local target_pos = GetPosition(target);
+    local target_pos = paths.GetPosition(target);
     if not target_pos then
         error("Target position is nil for target: " .. tostring(target));
     end

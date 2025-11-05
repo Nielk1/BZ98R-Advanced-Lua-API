@@ -130,8 +130,9 @@ end
 
 --- Gets the bounding circle of a set of points.
 --- @param points Vector[]
+--- @param center Vector? Optional location to use for the circle center
 --- @return Vector? center Y component is radius
-local function bounding_circle(points)
+local function bounding_circle(points, center)
     local sum_x, sum_z = 0, 0
     local count = 0
     for _, p in ipairs(points) do
@@ -139,6 +140,18 @@ local function bounding_circle(points)
         sum_z = sum_z + p.z
         count = count + 1
     end
+    
+    if center then
+        if count == 0 then return SetVector(center.x, 0, center.z) end
+        local max_dist = 0
+        for _, p in ipairs(points) do
+            local dx, dz = p.x - center.x, p.z - center.z
+            local dist = math.sqrt(dx*dx + dz*dz)
+            if dist > max_dist then max_dist = dist end
+        end
+        return SetVector(center.x, max_dist, center.z)
+    end
+
     if count == 0 then return nil end
     local cx, cz = sum_x / count, sum_z / count
     local max_dist = 0
@@ -186,14 +199,14 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
     -- Recalculate approximate location vectors
     local start_positions = {};
     for path_name, _ in pairs(self.cache_startpoints[startpoint]) do
-        local pos = GetPosition(path_name, 0);
+        local pos = paths.GetPosition(path_name, 0);
         if pos then
             table.insert(start_positions, pos);
         end
     end
     if self.cache_destination[startpoint] then
         for path_name, _ in pairs(self.cache_destination[startpoint]) do
-            local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
+            local pos = paths.GetPosition(path_name, paths.GetPathPointCount(path_name) - 1);
             if pos then
                 table.insert(start_positions, pos);
             end
@@ -207,14 +220,14 @@ function PatrolEngine:AddRoute(startpoint, endpoint, path, weight, enabled)
         local end_positions = {};
         if self.cache_startpoints[endpoint] then
             for path_name, _ in pairs(self.cache_startpoints[endpoint]) do
-                local pos = GetPosition(path_name, 0);
+                local pos = paths.GetPosition(path_name, 0);
                 if pos then
                     table.insert(end_positions, pos);
                 end
             end
         end
         for path_name, _ in pairs(self.cache_destination[endpoint]) do
-            local pos = GetPosition(path_name, GetPathPointCount(path_name) - 1);
+            local pos = paths.GetPosition(path_name, paths.GetPathPointCount(path_name) - 1);
             if pos then
                 table.insert(end_positions, pos);
             end
@@ -371,7 +384,7 @@ function PatrolEngine:AddGameObject(object)
     for source, destination_data in pairs(self.graph) do
         for destination, path_data in pairs(destination_data) do
             for path_name, _ in pairs(path_data) do
-                local path_start_pos = GetPosition(path_name, 0)
+                local path_start_pos = paths.GetPosition(path_name, 0)
                 if not nearestLocation or Length(path_start_pos - pos) < Length(pos - nearestLocation) then
                     nearestLocation = path_start_pos;
                     location = source;

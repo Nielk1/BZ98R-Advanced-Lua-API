@@ -278,6 +278,22 @@ local SavePostCheck = nil;
 --- @class _api
 local _api = {};
 
+--- Stack of current callback called by the game.
+--- ```lua
+--- if not api.CurrentCall[#api.CurrentCall] then
+---     print("Initial Script Load")
+--- end
+--- if api.CurrentCall[#api.CurrentCall] == "Update" then
+---     print("Called from Update")
+--- end
+--- if #api.CurrentCall > 1 and api.CurrentCall[1] == "Update" then
+---     print("Called from Sub-Callback of Update")
+--- end
+--- ```
+--- @type string[]
+_api.CurrentCall = {};
+
+
 --- @vararg any data
 --- @return any ...
 local function SimplifyForSave(...)
@@ -413,6 +429,9 @@ end
 --- Save is called when you save a game
 local function _Save()
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Save()");
+
+    _api.CurrentCall[#_api.CurrentCall + 1] = "Save";
+
     CustomTypeMap = {};
     RefUUIID = 1;
     SaveUUIDMap = {};
@@ -472,6 +491,8 @@ local function _Save()
     SavePostCheck = nil;
     --- @diagnostic enable: cast-local-type
 
+    _api.CurrentCall[#_api.CurrentCall] = nil;
+
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/Save");
     return saveData;
 end
@@ -479,6 +500,9 @@ end
 --- Load is called when you load a game, or when a Resync is loaded.
 local function _Load(...)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Load()");
+
+    _api.CurrentCall[#_api.CurrentCall + 1] = "Load";
+
     local args = ...;
 
 --    str = table.show(args);
@@ -532,6 +556,8 @@ local function _Load(...)
     --- @diagnostic disable-next-line: unused-local, cast-local-type
     LoadUUIDToTable = nil;
 
+    _api.CurrentCall[#_api.CurrentCall] = nil;
+
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/Load");
 end
 
@@ -540,14 +566,19 @@ end
 local function _Start()
     logger.print(logger.LogLevel.DEBUG, nil, "_api::Start()");
 
+    _api.CurrentCall[#_api.CurrentCall + 1] = "Start";
+
     if hook.HasHooks("MapObject") then
         --- @diagnostic disable-next-line: deprecated
         for h in AllObjects() do
-            hook.CallAllNoReturn( "MapObject", gameobject.FromHandle(h));
+            hook.CallAllNoReturn("MapObject", gameobject.FromHandle(h));
         end
     end
 
-    hook.CallAllNoReturn( "Start" );
+    hook.CallAllNoReturn("Start");
+
+    _api.CurrentCall[#_api.CurrentCall] = nil;
+
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/Start");
 end
 
@@ -557,7 +588,9 @@ end
 --- The base key for other keys is the label on the keycap (e.g. PageUp, PageDown, Home, End, Backspace, and so forth).
 local function _GameKey(key)
     logger.print(logger.LogLevel.TRACE, nil, "_api::GameKey('" .. key .. "')");
-    hook.CallAllNoReturn( "GameKey", key );
+    _api.CurrentCall[#_api.CurrentCall + 1] = "GameKey";
+    hook.CallAllNoReturn("GameKey", key);
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.TRACE, nil, "_api::/GameKey");
 end
 
@@ -567,7 +600,9 @@ end
 --- Note that many game object functions may not work properly here.
 local function _CreateObject(h)
     logger.print(logger.LogLevel.TRACE, nil, "_api::CreateObject(" .. tostring(h) .. ")");
-    hook.CallAllNoReturn( "CreateObject", gameobject.FromHandle(h) );
+    _api.CurrentCall[#_api.CurrentCall + 1] = "CreateObject";
+    hook.CallAllNoReturn("CreateObject", gameobject.FromHandle(h));
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.TRACE, nil, "_api::/CreateObject");
 end
 
@@ -577,7 +612,9 @@ end
 --- Note that many game object functions may not work properly here.
 local function _AddObject(h)
     logger.print(logger.LogLevel.TRACE, nil, "_api::AddObject(" .. tostring(h) .. ")");
-    hook.CallAllNoReturn( "AddObject", gameobject.FromHandle(h) );
+    _api.CurrentCall[#_api.CurrentCall + 1] = "AddObject";
+    hook.CallAllNoReturn("AddObject", gameobject.FromHandle(h));
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.TRACE, nil, "_api::/AddObject");
 end
 
@@ -587,7 +624,9 @@ end
 --- Note: This is called after the object is largely removed from the game, so most Get functions won't return a valid value.
 local function _DeleteObject(h)
     logger.print(logger.LogLevel.TRACE, nil, "_api::DeleteObject(" .. tostring(h) .. ")");
-    hook.CallAllNoReturn( "DeleteObject", gameobject.FromHandle(h) );
+    _api.CurrentCall[#_api.CurrentCall + 1] = "DeleteObject";
+    hook.CallAllNoReturn("DeleteObject", gameobject.FromHandle(h));
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.TRACE, nil, "_api::/DeleteObject");
 end
 
@@ -596,10 +635,15 @@ end
 local function _Update(dtime)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Update()");
 
+    _api.CurrentCall[#_api.CurrentCall + 1] = "Update";
+
     --local start = GetTimeNow();
 
     local ttime = GetTime();
-    hook.CallAllNoReturn( "Update", dtime, ttime);
+    hook.CallAllNoReturn("Update", dtime, ttime);
+
+    _api.CurrentCall[#_api.CurrentCall] = nil;
+
     logger.print(logger.LogLevel.TRACE, nil, "_api::/Update");
     --local delta = GetTimeNow() - start;
 
@@ -613,7 +657,9 @@ end
 --- @param team integer Team number for this player
 local function _CreatePlayer(id, name, team)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::CreatePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    _api.CurrentCall[#_api.CurrentCall + 1] = "CreatePlayer";
     hook.CallAllNoReturn("CreatePlayer", id, name, team);
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/CreatePlayer");
 end
 
@@ -623,7 +669,9 @@ end
 --- @param team integer Team number for this player
 local function _AddPlayer(id, name, team)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::AddPlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    _api.CurrentCall[#_api.CurrentCall + 1] = "AddPlayer";
     hook.CallAllNoReturn("AddPlayer", id, name, team);
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/AddPlayer");
 end
 
@@ -633,7 +681,9 @@ end
 --- @param team integer Team number for this player
 local function _DeletePlayer(id, name, team)
     logger.print(logger.LogLevel.DEBUG, nil, "_api::DeletePlayer(" .. tostring(id) .. ", '" .. name .. "', " .. tostring(team) .. ")");
+    _api.CurrentCall[#_api.CurrentCall + 1] = "DeletePlayer";
     hook.CallAllNoReturn("DeletePlayer", id, name, team);
+    _api.CurrentCall[#_api.CurrentCall] = nil;
     logger.print(logger.LogLevel.DEBUG, nil, "_api::/DeletePlayer");
 end
 
@@ -641,11 +691,17 @@ end
 --- @param command string the command string
 local function _Command(command, ...)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Command('" .. command .. "')");
+    
+    _api.CurrentCall[#_api.CurrentCall + 1] = "Command";
+
     local args = ...;
     logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
     
     local retVal = nil;
     retVal = hook.CallAllPassReturn("Command", command, table.unpack(args));
+
+    _api.CurrentCall[#_api.CurrentCall] = nil;
+
     logger.print(logger.LogLevel.TRACE, nil, "_api::/Command");
     return retVal;
 end
@@ -656,11 +712,17 @@ end
 --- @vararg any
 local function _Receive(from, type, ...)
     logger.print(logger.LogLevel.TRACE, nil, "_api::Receive(" .. from .. ", '" .. type .. "')");
+
+    _api.CurrentCall[#_api.CurrentCall + 1] = "Receive";
+
     local args = {...};
     logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
     
     local retVal = nil;
     retVal = hook.CallAllPassReturn("Receive", from, type, table.unpack(args));
+
+    _api.CurrentCall[#_api.CurrentCall] = nil;
+    
     logger.print(logger.LogLevel.TRACE, nil, "_api::/Receive");
     return retVal;
 end

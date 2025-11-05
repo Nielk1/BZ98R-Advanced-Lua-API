@@ -279,10 +279,10 @@
         let stage = null;
         // Central registry for layers
         const mapLayers = {
-            locations:   { name: 'locations'  , layer: new Konva.Layer({ id: 'locations'   }), order: 90, key: { id: 'toggle-locations'  , label: 'Locations'  , defaultChecked: true } },
-            path_lines:  { name: 'path_lines' , layer: new Konva.Layer({ id: 'path_lines'  }), order:  2, key: { id: 'toggle-path_lines' , label: 'Paths'      , defaultChecked: true } },
-            path_points: { name: 'path_points', layer: new Konva.Layer({ id: 'path_points' }), order:  3, key: { id: 'toggle-path_points', label: 'Path Points', defaultChecked: true } },
-            tooltip:     { name: 'tooltip'    , layer: new Konva.Layer({ id: 'tooltip'     }), order: 99, key: null                                                                     },
+            path_points: { name: 'path_points', layer: new Konva.Layer({ id: 'path_points' }), order:  3, key_order: 2, key: { id: 'toggle-path_points', label: 'Path Points', defaultChecked: true } },
+            path_lines:  { name: 'path_lines' , layer: new Konva.Layer({ id: 'path_lines'  }), order:  2, key_order: 3, key: { id: 'toggle-path_lines' , label: 'Paths'      , defaultChecked: true } },
+            locations:   { name: 'locations'  , layer: new Konva.Layer({ id: 'locations'   }), order:  1, key_order: 1, key: { id: 'toggle-locations'  , label: 'Locations'  , defaultChecked: true } },
+            tooltip:     { name: 'tooltip'    , layer: new Konva.Layer({ id: 'tooltip'     }), order: 99,               key: null                                                                     },
         };
 
         function createOrResizeKonvaStage() {
@@ -417,11 +417,13 @@
                             y: -locData.z,
                             radius: locData.radius,
                             //fill: '#06d6a0',
+                            fill: null,
                             stroke: '#ffffff',
                             strokeWidth: 2,
+                            //hitStrokeWidth: 10 // makes the border easier to hit
                             dash: [6, 2],
                             id: locationId,
-                            tooltip: `${locName}`
+                            tooltip: `Location: ${locName}`,
                         });
                         mapLayers.locations.layer.add(locationCircle);
                     } else {
@@ -439,7 +441,7 @@
         function MapDraw_UpdatePaths(name, path_data) {
             // Clear previous route and waypoints for this path
             mapLayers.path_lines.layer.find(`#route_${name}`).forEach(node => node.destroy());
-            mapLayers.path_points.layer.find(`#wp_${name}_`).forEach(node => node.destroy());
+            mapLayers.path_points.layer.find(`#point_${name}_`).forEach(node => node.destroy());
 
             function shortenLineForArrow(x1, y1, x2, y2, q, r) {
                 const dx = x2 - x1;
@@ -452,7 +454,7 @@
                 return [
                     //x1, y1,
                     x1 - ux * -q, y1 - uy * -q,
-                    x2 - ux * r, y2 - uy * r
+                    x2 - ux *  r, y2 - uy *  r
                 ];
             }
 
@@ -460,15 +462,34 @@
             const lineStroke = 4; // stroke width (also needed to back off arrow)
 
             // Draw route as a line
-            if (path_data.render_paths && path_data.nodes.length > 1) {
+            let render_paths = true;
+            let render_points = true;
+            let render_box = false;
+            switch(path_data.special)
+            {
+                case 1: // bounds
+                    render_points = false;
+                    render_paths = false;
+                    render_box = true;
+                    break;
+                case 2: // area
+                    render_points = false;
+                    break;
+                case 3: // cloud
+                    render_paths = false;
+                    break;
+            }
+            if (path_data.nodes.length < 2)
+                render_paths = false;
+            if (render_paths) {
                 const points = [];
                 for (const pt of path_data.nodes) {
-                    points.push(pt.x, -pt.y);
+                    points.push(pt.x, -pt.z);
                 }
                 switch(path_data.type)
                 {
                     case 2: // loop
-                        points.push(path_data.nodes[0].x, -path_data.nodes[0].y);
+                        points.push(path_data.nodes[0].x, -path_data.nodes[0].z);
                     case 0: // one-way
                         // loop nodes
                         for (let i = 2; i < points.length; i += 2) {
@@ -487,7 +508,7 @@
                                 pointerWidth: 4,
                                 lineCap: 'round',
                                 id: `Path_${name}`,
-                                tooltip: name
+                                tooltip: `Path: ${name}`
                             });
                             mapLayers.path_lines.layer.add(routeLine1);
                         }
@@ -500,26 +521,28 @@
                             strokeWidth: lineStroke,
                             lineCap: 'round',
                             id: `Path_${name}`,
-                            tooltip: name
+                            tooltip: `Path: ${name}`
                         });
                         mapLayers.path_lines.layer.add(routeLine2);
                         break;
                 }
             }
 
-            // Draw waypoints as small circles
-            path_data.nodes.forEach((pt, idx) => {
-                const waypoint = new Konva.Circle({
-                    x: pt.x,
-                    y: -pt.y,
-                    radius: r,
-                    //fill: '#219ebc',
-                    fill: '#fb8500',
-                    id: `PathPoint_${name}[${idx}]`,
-                    tooltip: `${name}[${idx}]`
+            if (render_points) {
+                // Draw waypoints as small circles
+                path_data.nodes.forEach((pt, idx) => {
+                    const waypoint = new Konva.Circle({
+                        x: pt.x,
+                        y: -pt.z,
+                        radius: r,
+                        //fill: '#219ebc',
+                        fill: '#fb8500',
+                        id: `PathPoint_${name}[${idx}]`,
+                        tooltip: `PathPoint: ${name}[${idx}]`
+                    });
+                    mapLayers.path_points.layer.add(waypoint);
                 });
-                mapLayers.path_points.layer.add(waypoint);
-            });
+            }
 
             mapLayers.path_lines.layer.batchDraw();
             mapLayers.path_points.layer.batchDraw();
@@ -529,7 +552,7 @@
 
         // ------------------- Konva Layer Controls -------------------
         const mapKeyList = document.getElementById('map-key-list');
-        Object.entries(mapLayers).forEach(([name, obj]) => {
+        Object.entries(mapLayers).sort((a, b) => a[1].key_order - b[1].key_order).forEach(([name, obj]) => {
             if (obj.key) {
                 const label = document.createElement('label');
                 label.style.display = 'block';
@@ -816,11 +839,15 @@
                                             const parts = pathStr.split('|');
                                             // parts[0] = "Path", parts[1] = path name, parts[2] = path type, parts[3...] = coordinates
                                             const type = parseInt(parts[2]);
-                                            const cloud = parseInt(parts[3]);
+                                            const special = parseInt(parts[3]);
                                             const coords = parts.slice(4);
-                                            return { type: type, render_paths: coords.length > 0 && cloud != 1, nodes: coords.filter(coord => coord.includes(',')).map(coord => {
-                                                const [x, y] = coord.split(',').map(Number);
-                                                return { x, y };
+                                            return { type: type, special: special, nodes: coords.filter(coord => coord.includes(',')).map(coord => {
+                                                const [x, y, z] = coord.split(',').map(Number);
+                                                if (z == undefined) {
+                                                    // process old log format with only x,z
+                                                    return { x: x, y: y };
+                                                }
+                                                return { x, z }; // map y to z for 2D
                                             }) };
                                         }
                                         path_cache[name] = parsePathNodes(data);

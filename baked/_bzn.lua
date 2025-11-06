@@ -2526,7 +2526,7 @@ local function Hydrate(bzn, reader)
 end
 
 --- As Lua only runs for a small subset of Mission Classes, we alias them here
---- @alias MissionClass "Inst03Mission"|"Inst04Mission"|"MultDMMission"|"MultSTMission"|"LuaMission"
+--- @alias MissionClass "Inst03Mission"|"Inst04Mission"|"MultDMMission"|"MultSTMission"|"LuaMission"|"LuaMissionMP"
 
 --- @class BZN_Path
 --- @field label string?

@@ -118,6 +118,9 @@ function M.AbortResult(...)
     }, ReadOnly_MT);
 end
 
+--- Create a Fast HookResult
+--- @vararg any Return values passed from hook function
+--- @return StateMachineIterWrappedResult
 function M.FastResult(...)
     return setmetatable({
         Fast = true,

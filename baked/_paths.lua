@@ -222,8 +222,12 @@ end
 --- @return string
 --- @return integer?
 local function extract_name_and_number(str)
-    local name, after = str:match("^([A-Za-z0-9 !#$%%&'()%+,;=@%[%]^`{}~%.%-]{1,9})(.*)")
+    local name, after = str:match("^([A-Za-z0-9 !#$%%&'()%+,;=@%[%]^`{}~%.%-]+)(.*)")
     local num = nil
+    if name and #name > 9 then
+        after = name:sub(10) .. after
+        name = name:sub(1,9)
+    end
     if after and after:sub(1,1) == "_" then
         local digits = after:match("^_(%d+)")
         if digits then

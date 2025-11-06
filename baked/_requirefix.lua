@@ -94,10 +94,10 @@ function moduleTable.addmod(mod_id)
     return moduleTable; -- chaining
 end;
 
-logger.print(logger.LogLevel.DEBUG, nil, "Processing config.cfg");
+logger.print(logger.LogLevel.DEBUG, nil, "Processing _api.cfg");
 --- @type ParameterDB?
 --- @diagnostic disable-next-line: deprecated
-local settingsFile = OpenODF("config.cfg");
+local settingsFile = OpenODF("_api.cfg");
 if settingsFile then
     -- loop until GetODFString returns nil
     for i = 1, 1000 do
@@ -110,7 +110,7 @@ if settingsFile then
     end
     settingsFile = nil;
 end
-logger.print(logger.LogLevel.DEBUG, nil, "Processed config.cfg");
+logger.print(logger.LogLevel.DEBUG, nil, "Processed _api.cfg");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_requirefix Loaded");
 

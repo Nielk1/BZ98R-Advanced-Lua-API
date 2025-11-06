@@ -158,7 +158,7 @@ end
 
 --- @type ParameterDB?
 --- @diagnostic disable-next-line: deprecated
-local settingsFile = OpenODF("config.cfg");
+local settingsFile = OpenODF("_api.cfg");
 if settingsFile then
     settings.level = GetODFEnum(settingsFile, "Logging", "level", M.LogLevel.NONE, M.LogLevel.DEBUG, M.LogLevel);
     if settings.level < M.LogLevel.NONE then
@@ -212,8 +212,8 @@ end
 local oldPrint = print;
 local wrapPrint = function(...)
     local args = {};
-    for i, v in ipairs({...}) do
-        args[i] = tostring(v); -- Convert each argument to a string
+    for i = 1, select("#", ...) do
+        args[i] = tostring(select(i, ...)); -- Convert each argument to a string
     end
     for s in table.concat(args, "\t"):gmatch("[^\r\n]+") do
         oldPrint("|LUA|PRINT|"..s.."|PRINT|LUA|");
@@ -223,8 +223,8 @@ end
 local oldError = error;
 local wrapError = function(...)
     local args = {};
-    for i, v in ipairs({...}) do
-        args[i] = tostring(v); -- Convert each argument to a string
+    for i = 1, select("#", ...) do
+        args[i] = tostring(select(i, ...)); -- Convert each argument to a string
     end
 
     -- Capture the stack trace at the appropriate level
@@ -286,8 +286,8 @@ function M.print(level, context, ...)
 
     if settings.format == M.LogFormat.RAW then
         local args = {};
-        for i, v in ipairs({...}) do
-            args[i] = tostring(v); -- Convert each argument to a string
+        for i = 1, select('#', ...) do
+            args[i] = tostring(select(i, ...)); -- Convert each argument to a string
             if settings.strip_colors then
                 args[i] = RemoveANSIColors(args[i]);
             end
@@ -297,8 +297,8 @@ function M.print(level, context, ...)
         end
     elseif settings.format == M.LogFormat.WRAPPED then
         local args = {};
-        for i, v in ipairs({...}) do
-            args[i] = tostring(v); -- Convert each argument to a string
+        for i = 1, select('#', ...) do
+            args[i] = tostring(select(i, ...)); -- Convert each argument to a string
             if settings.strip_colors then
                 args[i] = RemoveANSIColors(args[i]);
             end

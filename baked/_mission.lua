@@ -14,9 +14,10 @@ logger.print(logger.LogLevel.DEBUG, nil, "_mission Loading");
 --- @class _mission
 --- @field Bzn FileReferenceBZN?
 --- @field MissionClass MissionClass?
---- @field ModType ModType? Type of mod the map is a part of if found, can be overridden
---- @field MapType MapType? Type of map if multiplayer, can be overridden
---- @field MissionType BaseMapType? Type of map based on the Mission Class logic
+--- @field MapModType ModType? Type of mod the map is a part of if found (set to override)
+--- @field MapType MapType? Type of map if multiplayer (set to override)
+--- @field CampaignIndex integer? Index of the campaign mission if part of a campaign (set to override, 0 or less to clear)
+--- @field MissionType MapBaseType? Type of map based on the Mission Class logic
 local M = {};
 
 --- @type FileReferenceBZN?
@@ -34,11 +35,30 @@ local function TryLoadBZNFile()
     end
 end
 
---- @alias BaseMapType "A"|"D"|"K"|"M"|"S"
+--- @enum MapBaseType
+M.MapBaseType = {
+    Deathmatch    = "D", -- Deathmatch
+    KingOfTheHill = "K", -- King of the Hill
+    Strategy      = "S", -- Strategy
+    Single        = "*", -- Single Player
+};
 
---- @alias ModType "multiplayer"|"instant_action"|"campaign"|"mod"
+--- @enum ModType
+M.ModTypes = {
+    Multiplayer   = "multiplayer",
+    InstantAction = "instant_action",
+    Campaign      = "campaign",
+    Mod           = "mod",
+};
 
---- @alias MapType BaseMapType|"B"|"C"|"E"|"F"|"G"|"H"|"I"|"J"|"L"|"N"|"O"|"P"|"Q"|"R"|"T"|"U"|"V"|"W"|"X"|"Y"|"Z"
+--- @enum MapType
+M.MapTypes = {
+    Action        = "A", -- Action
+    Deathmatch    = "D", -- Deathmatch
+    KingOfTheHill = "K", -- King of the Hill
+    Mission       = "M", -- Mission
+    Strategy      = "S", -- Strategy
+};
 
 --- @type ModType?
 local modTypeOverride = nil;
@@ -46,9 +66,12 @@ local modTypeOverride = nil;
 --- @type MapType?
 local mapTypeOverride = nil;
 
+--- @type integer?
+local campaignIndexOverride = nil;
+
 --- @param mapBzn string
 --- @return ModType? modType Mod type if found
---- @return MapType? mapType Map type code if multiplayer
+--- @return MapType|nil|integer mapType Map type code if multiplayer or campaign mission index if campaign
 local function GetMissionTypeIndicated(mapBzn)
     -- change the .* extension to .ini if present, else just append .ini
     local mapIni = mapBzn:gsub("%.%w+$", ".ini");
@@ -64,11 +87,26 @@ local function GetMissionTypeIndicated(mapBzn)
         end
     elseif modType == "instant_action" then
         return modType;
-    elseif modType == "campaign" then
-        -- how did we get a campaign ini from a map BZN?
-        return nil;
-    elseif modType == "mod" then
-        return nil;
+    end
+
+    for i = 1, 1000 do
+        --- @diagnostic disable-next-line: deprecated
+        local ini, success = paramdb.GetValueString("_api.cfg", "Mission", "campaign"..tostring(i));
+        if not success or not ini then
+            break;
+        end
+        local modTypeCandidate = paramdb.GetValueString(ini, "WORKSHOP", "mapType");
+        if modTypeCandidate == "campaign" then
+            for j = 1, 1000 do
+                local bzn, success2 = paramdb.GetValueString(ini, "MISSION"..tostring(j), "missionBZN");
+                if not success2 or not bzn then
+                    break;
+                end
+                if bzn == mapBzn then
+                    return "campaign", j;
+                end
+            end
+        end
     end
 
     return nil;
@@ -78,6 +116,20 @@ end
 --    M.MissionClass
 --    return nil;
 --end
+
+local MissionClassLookup = {
+    ["Inst03Mission"] = M.MapBaseType.Single,
+    ["Inst04Mission"] = M.MapBaseType.Single,
+    ["MultSTMission"] = M.MapBaseType.Strategy,
+    ["MultDMMission"] = M.MapBaseType.Deathmatch,
+    ["LuaMission"]    = M.MapBaseType.Single,
+}
+
+-- I think these are actually only used when creating a mission from nothing to set the default
+--local MissionClassPathCheck = {
+--    ["Inst03Mission"] = { "^play.*"   },
+--    ["Inst04Mission"] = { "^UsrMsn.*" },
+--}
 
 local M_MT = {}
 M_MT.__index = function(t, k)
@@ -94,18 +146,41 @@ M_MT.__index = function(t, k)
                 -- If the game fails to construct a class it forces LuaMission
                 -- We know we must be in something that supports lua right now
                 -- so if the BZN did parse, and we still don't know the MissionClass
-                -- it must mean it was auto-forced to LuaMission
+                -- it must mean it was auto-forced to LuaMission in Load
                 return "LuaMission";
             end
         end
+        return nil;
     end
-    if k == "ModType" then
+    if k == "MapModType" then
+        if modTypeOverride then
+            return modTypeOverride;
+        end
         local modType, _ = GetMissionTypeIndicated(GetMissionFilename());
-        return modTypeOverride or modType;
+        return modType;
     end
     if k == "MapType" then
-        local _, mapType = GetMissionTypeIndicated(GetMissionFilename());
-        return mapTypeOverride or mapType;
+        if mapTypeOverride then
+            return mapTypeOverride;
+        end
+        local modType, mapType = GetMissionTypeIndicated(GetMissionFilename());
+        if modType ~= M.ModTypes.Multiplayer then
+            return nil;
+        end
+        return mapType;
+    end
+    if k == "CampaignIndex" then
+        if campaignIndexOverride then
+            if campaignIndexOverride < 1 then
+                return nil;
+            end
+            return campaignIndexOverride;
+        end
+        local modType, cIndex = GetMissionTypeIndicated(GetMissionFilename());
+        if modType ~= M.ModTypes.Campaign then
+            return nil;
+        end
+        return cIndex;
     end
     if k == "MissionType" then
         TryLoadBZNFile();
@@ -115,16 +190,17 @@ M_MT.__index = function(t, k)
                     if bznFile.AiPaths then
                         for _, path in ipairs(bznFile.AiPaths) do
                             if path.label and path.label:sub(1, 4) == "king" then
-                                return 'K';
+                                return M.MapBaseType.KingOfTheHill;
                             end
                         end
                     end
-                    return 'D';
-                elseif bznFile.Mission == "MultSTMission" then
-                    return 'S';
+                    return M.MapBaseType.Deathmatch;
+                else
+                    return MissionClassLookup[bznFile.Mission];
                 end
             end
         end
+        return nil;
     end
     return rawget(t, k);
 end
@@ -132,13 +208,20 @@ M_MT.__newindex = function(t, k, v)
     if k == "Bzn" or k == "MissionClass" then
         error(k.." is read-only");
     end
-    if k == "ModType" then
+    if k == "MapModType" then
         modTypeOverride = v;
         return;
     end
     if k == "MapType" then
         mapTypeOverride = v;
         return;
+    end
+    if k == "CampaignIndex" then
+        campaignIndexOverride = v;
+        return;
+    end
+    if k == "MissionType" then
+        error("MissionType is read-only");
     end
 
     rawset(t, k, v);

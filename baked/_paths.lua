@@ -10,6 +10,7 @@ local logger = require("_logger");
 local hook = require("_hook");
 local mission = require("_mission");
 local paramdb = require("_paramdb");
+local network = require("_network");
 
 local LOG_LEVEL_PRINT_ALL_PATHS = logger.LogLevel.DEBUG;
 logger.print(logger.LogLevel.DEBUG, nil, "_paths Loading");
@@ -34,9 +35,9 @@ M.PathType = {
 M.SpecialPathType = {
     None = 0,
     Bounds = 1, -- used for area bounds like edge_path
-    Area = 2, -- used in Point-in-Polygon tests
-    --Spawn = 3, -- used by the game
-    Cloud = 3, -- just a collection of points
+    Spawn = 2, -- used by the game to spawn objects, normally weapon crates
+    Area = 3, -- used in Point-in-Polygon tests
+    Cloud = 4, -- just a collection of points
 }
 
 --- Paths that shouldn't be considered linear but instead as point clouds.
@@ -167,6 +168,9 @@ function M.GetSpecialPathType(path)
     if path == "edge_path" then
         return M.SpecialPathType.Bounds;
     end
+    if M.GetPathPointCount(path) == 1 and M.SetSpecialPathType(path) then
+        return M.SpecialPathType.Spawn;
+    end
     return path_special_type[path] or M.SpecialPathType.None;
 end
 
@@ -225,7 +229,7 @@ local function extract_name_and_number(str)
     local name, after = str:match("^([A-Za-z0-9 !#$%%&'()%+,;=@%[%]^`{}~%.%-]+)(.*)")
     local num = nil
     if name and #name > 9 then
-        after = name:sub(10) .. after
+        after = name:sub(10) .. (after or "")
         name = name:sub(1,9)
     end
     if after and after:sub(1,1) == "_" then
@@ -240,8 +244,8 @@ local function extract_name_and_number(str)
 end
 
 --- Is the path a PathSpawn path?
---- For all mission types that Lua can be used in paths
---- with a specific name structure can be used for spawns.
+--- For all mission types that Lua can be used except "LuaMission"
+--- paths with a specific name structure can be used for spawns.
 --- Objects spawned this way use the path name as their label.
 --- You can bind the `MapObject` and `AddObject` events to
 --- search for spawned objects.
@@ -265,7 +269,16 @@ function M.IsSpawnPath(path)
             return false;
         end
     else
-        -- low accuracy mode would be here, just assume it's not LuaMission for now
+        -- low accuracy path here
+        if not network.IsNetGame() then
+            -- single player, unless we're testing
+            if mission.MapModType == mission.ModTypes.InstantAction or
+               mission.MapModType == mission.ModTypes.Campaign then
+                -- Instant Action or Campaign, so let's assume it's LuaMission
+                -- It could be Inst03Mission or Inst04Mission but those are unlikely
+                return false;
+            end
+        end
     end
 
     local name, num = extract_name_and_number(path);

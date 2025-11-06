@@ -987,9 +987,8 @@ end
 --- @return GameObject? object
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestObject(...)
-    local args = {...}
-    local target = args[1];
-    local point = args[2];
+    local target = select(1, ...);
+    local point = select(2, ...);
     if M.IsGameObject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1032,9 +1031,8 @@ end
 --- @return GameObject? object
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestVehicle(...)
-    local args = {...}
-    local target = args[1];
-    local point = args[2];
+    local target = select(1, ...);
+    local point = select(2, ...);
     if M.IsGameObject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1077,9 +1075,8 @@ end
 --- @return GameObject? object
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestBuilding(...)
-    local args = {...}
-    local target = args[1];
-    local point = args[2];
+    local target = select(1, ...);
+    local point = select(2, ...);
     if M.IsGameObject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1122,9 +1119,8 @@ end
 --- @return GameObject? object
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestEnemy(...)
-    local args = {...}
-    local target = args[1];
-    local point = args[2];
+    local target = select(1, ...);
+    local point = select(2, ...);
     if M.IsGameObject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1168,9 +1164,8 @@ end
 --- @return GameObject? object
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestFriend(...)
-    local args = {...}
-    local target = args[1];
-    local point = args[2];
+    local target = select(1, ...);
+    local point = select(2, ...);
     if M.IsGameObject(target) then
         --- @cast target GameObject
         --- @diagnostic disable-next-line: deprecated
@@ -1213,29 +1208,28 @@ end
 --- @return GameObject? object closest friend, or nil if none exists.
 --- @diagnostic enable: undefined-doc-param
 function M.GetNearestUnitOnTeam(...)
-    local args = {...}
-    if #args == 1 then
-        if M.IsGameObject(args[1]) then
-            local object = args[1]
+    if select('#', ...) == 1 then
+        if M.IsGameObject(select(1, ...)) then
+            local object = select(1, ...)
             --- @cast object GameObject
             --- @diagnostic disable-next-line: deprecated
             local handle = GetNearestUnitOnTeam(object:GetHandle());
             if handle == nil then return nil end;
             return M.FromHandle(handle);
         else
-            local location = args[1]
+            local location = select(1, ...)
             --- @cast location Vector|Matrix|Handle|string
             --- @diagnostic disable-next-line: deprecated
             local handle = GetNearestUnitOnTeam(location);
             if handle == nil then return nil end;
             return M.FromHandle(handle);
         end
-    elseif #args == 2 then
-        if utility.IsString(args[1]) then
-            local path = args[1]
+    elseif select('#', ...) == 2 then
+        if utility.IsString(select(1, ...)) then
+            local path = select(1, ...)
             --- @cast path string
             --- @diagnostic disable-next-line: deprecated
-            local handle = GetNearestUnitOnTeam(path, args[2]);
+            local handle = GetNearestUnitOnTeam(path, select(2, ...));
             if handle == nil then return nil end;
             return M.FromHandle(handle);
         else

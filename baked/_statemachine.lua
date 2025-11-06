@@ -80,7 +80,6 @@ logger.print(logger.LogLevel.DEBUG, nil, "_statemachine Loading");
 
 local utility = require("_utility");
 local config = require("_config");
-local _api = require("_api");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 
@@ -381,8 +380,11 @@ function M.Create( name, ... )
     local is_ordered = true;
     local has_any_named = false;
     local super_states = {};
-    for _, v in ipairs({...}) do
-        if utility.IsFunction(v) then
+    for i = 1, select("#", ...) do
+        local v = select(i, ...);
+        if v == nil then
+            error("StateMachineIter state paramaters must be a collection of state descriptors or state descriptor.");
+        elseif utility.IsFunction(v) then
             -- we are a bare function, so we are ordered but have no name
             -- func
             --- @cast v function

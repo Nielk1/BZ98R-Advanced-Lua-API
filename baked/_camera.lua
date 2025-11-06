@@ -24,7 +24,6 @@ logger.print(logger.LogLevel.DEBUG, nil, "_camera Loading");
 local config = require("_config");
 local utility = require("_utility");
 local gameobject = require("_gameobject");
-local _api = require("_api");
 local hook = require("_hook");
 local paths = require("_paths");
 
@@ -385,10 +384,8 @@ end
 --- @diagnostic enable: undefined-doc-param
 --- @return boolean exists true if the base or handle game object does not exist. Returns false otherwise.
 function M.FollowObjectAimObject(...)
-    local args = {...}
-
     --- @type GameObject|Handle
-    local base = args[1];
+    local base = select(1, ...);
 
     --- @type GameObject|Handle
     local target;
@@ -410,17 +407,18 @@ function M.FollowObjectAimObject(...)
     end
     --- @cast base Handle
 
-    if #args == 5 then
-        target = args[5];
-        right = math.floor(args[2] * 100); -- convert to centimeters
-        up = math.floor(args[3] * 100); -- convert to centimeters
-        forward = math.floor(args[4] * 100); -- convert to centimeters
-    elseif #args == 3 then
-        if not utility.IsVector(args[2]) then error("Parameter offset must be a Vector."); end
-        target = args[3];
-        right = math.floor(args[2].x * 100); -- convert to centimeters
-        up = math.floor(args[2].y * 100); -- convert to centimeters
-        forward = math.floor(args[2].z * 100); -- convert to centimeters
+    if select('#', ...) == 5 then
+        target = select(5, ...);
+        right = math.floor(select(2, ...) * 100); -- convert to centimeters
+        up = math.floor(select(3, ...) * 100); -- convert to centimeters
+        forward = math.floor(select(4, ...) * 100); -- convert to centimeters
+    elseif select('#', ...) == 3 then
+        local v = select(2, ...);
+        if not utility.IsVector(v) then error("Parameter offset must be a Vector."); end
+        target = select(3, ...);
+        right = math.floor(v.x * 100); -- convert to centimeters
+        up = math.floor(v.y * 100); -- convert to centimeters
+        forward = math.floor(v.z * 100); -- convert to centimeters
     else
         error("Invalid number of arguments. Expected 3 or 5.");
     end

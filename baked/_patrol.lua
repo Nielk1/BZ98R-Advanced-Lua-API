@@ -12,9 +12,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_patrol Loading");
 
-local utility = require("_utility");
 local config = require("_config");
-local _api = require("_api");
 local hook = require("_hook");
 local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");

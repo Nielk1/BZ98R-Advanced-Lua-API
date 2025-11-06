@@ -676,36 +676,41 @@ end
 --- @param ... any The items to choose from.
 --- @return any item The chosen item.
 function M.ChooseOne(...)
-    local items = {...};
-    if #items == 0 then
+    if select("#", ...) == 0 then
         error("ChooseOne requires at least one item");
     end
-    local random_index = math.random(#items);
-    return items[random_index];
+    local random_index = math.random(select("#", ...));
+    return select(random_index, ...);
 end
 
 --- Chooses a random item from a list of weighted items.
 --- @param ... WeightedItem The items to choose from.
 --- @return any|WeightedItem item The chosen item.
 function M.ChooseOneWeighted(...)
-    local items = {...};
-    if #items == 0 then
+    if select("#", ...) == 0 then
         error("ChooseOneWeighted requires at least one item");
     end
     local total_probability = 0;
-    for _, v in pairs(items) do
+    for i = 1, select("#", ...) do
+        local v = select(i, ...);
+        if not v then
+            error("ChooseOneWeighted received a nil item at index " .. i);
+        end
         total_probability = total_probability + (v.chance or 1);
     end
     local random_index = math.random() * total_probability;
     local running_weight = 0;
-    for _, v in ipairs(items) do
+    for i = 1, select("#", ...) do
+        local v = select(i, ...);
         local chance = (v.chance or 1);
         if (chance + running_weight) > random_index then
             return v.item or v;
         end
         running_weight = running_weight + chance;
     end
-    return items[1].item or items[1];
+    -- Fallback (should not happen)
+    local item = select(1, ...);
+    return item.item or item;
 end
 
 --- @section Utility - Iterator Operations

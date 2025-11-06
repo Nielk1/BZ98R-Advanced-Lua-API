@@ -17,6 +17,7 @@ require("_table_show");
 local deque = require("_deque");
 local paramdb = require("_paramdb");
 local color = require("_color");
+local paths = require("_paths");
 
 --- Called when a producer as completed building an object.
 ---
@@ -262,7 +263,7 @@ local function ProcessQueues()
                                                         and #location == 2
                                                         and utility.IsString(location[1])
                                                         and utility.IsInteger(location[2]) then
-                                                        location = GetPosition(location[1], location[2]);
+                                                        location = paths.GetPosition(location[1], location[2]);
                                                     end
                                                     --- @cast location string|Vector
                                                     producerObject:BuildAt(job.odf, location);

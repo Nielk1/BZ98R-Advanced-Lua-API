@@ -11,7 +11,6 @@
 --- ```
 
 local logger = require("_logger");
-local utility = require("_utility");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_customsavetype Loading");
 

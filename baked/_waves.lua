@@ -13,9 +13,7 @@ logger.print(logger.LogLevel.DEBUG, nil, "_waves Loading");
 
 local utility = require("_utility");
 local config = require("_config");
-local _api = require("_api");
 local hook = require("_hook");
-local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 local paths = require("_paths");
 local statemachine = require("_statemachine");
@@ -133,32 +131,32 @@ function M.SpawnInFormation(formation, location, dir, units, team, seperation)
         locationVector = location;
     elseif utility.IsString(location) then
         --- @cast location string
-        local pathSize = GetPathPointCount(location);
+        local pathSize = paths.GetPathPointCount(location);
         if pathSize <= 0 then
             error("path index is out of bounds");
         end
-        locationVector = GetPosition(location, 0);
+        locationVector = paths.GetPosition(location, 0);
         if not dir then
             -- If no direction is given, use the next point in the path to determine direction
             if pathSize <= 1 then
                 error("path index for direction is out of bounds");
             end
-            local pos2 = GetPosition(location, 1);
+            local pos2 = paths.GetPosition(location, 1);
             dir = pos2 - locationVector;
         end
     elseif paths.IsPathWithString(location) then
         --- @cast location PathWithIndex
-        local pathSize = GetPathPointCount(location[1]);
+        local pathSize = paths.GetPathPointCount(location[1]);
         if pathSize <= location[2] then
             error("path index is out of bounds");
         end
-        locationVector = GetPosition(location[1], location[2]);
+        locationVector = paths.GetPosition(location[1], location[2]);
         if not dir then
             -- If no direction is given, use the next point in the path to determine direction
             if pathSize <= (location[2] + 1) then
                 error("path index for direction is out of bounds");
             end
-            local pos2 = GetPosition(location[1], location[2] + 1);
+            local pos2 = paths.GetPosition(location[1], location[2] + 1);
             dir = pos2 - locationVector;
         end
     else

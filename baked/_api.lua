@@ -298,11 +298,7 @@ _api.CurrentCall = {};
 --- @return any ...
 local function SimplifyForSave(...)
     local output = {...}; -- output array
-    local ArraySize = 0;
     for k,v in pairs(output) do
-        if k > ArraySize then
-            ArraySize = k;
-        end
         if utility.IsTable(v) then -- it's a table, start special logic
             if not v.__nosave then
                 local ORIG = v;
@@ -344,7 +340,7 @@ local function SimplifyForSave(...)
             end
         end
     end
-    return table.unpack(output, 1, ArraySize);
+    return table.unpack(output, 1, select('#', ...));
 end
 
 --- map UUIDs to their tables as they are encountered
@@ -355,11 +351,7 @@ local LoadUUIDToTable = nil;
 --- @return any ...
 local function DeSimplifyForLoad(...)
     local output = {...}; -- output array
-    local ArraySize = 0;
     for k,v in pairs(output) do
-        if k > ArraySize then
-            ArraySize = k;
-        end
         if utility.IsTable(v) then -- it's a table, start special logic
             local PriorData = v.__refid and LoadUUIDToTable[v.__refid] or v.__ref and LoadUUIDToTable[v.__ref] or nil;
             local TableFromLoad = nil;
@@ -419,7 +411,7 @@ local function DeSimplifyForLoad(...)
             end
         end
     end
-    return table.unpack(output, 1, ArraySize);
+    return table.unpack(output, 1, select('#', ...));
 end
 
 --- @section Hooks
@@ -715,14 +707,13 @@ local function _Receive(from, type, ...)
 
     _api.CurrentCall[#_api.CurrentCall + 1] = "Receive";
 
-    local args = {...};
-    logger.print(logger.LogLevel.DEBUG, nil, table.show(args));
+    logger.print(logger.LogLevel.DEBUG, nil, table.show({...}));
     
     local retVal = nil;
-    retVal = hook.CallAllPassReturn("Receive", from, type, table.unpack(args));
+    retVal = hook.CallAllPassReturn("Receive", from, type, ...);
 
     _api.CurrentCall[#_api.CurrentCall] = nil;
-    
+
     logger.print(logger.LogLevel.TRACE, nil, "_api::/Receive");
     return retVal;
 end

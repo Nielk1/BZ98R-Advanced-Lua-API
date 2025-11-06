@@ -606,8 +606,8 @@
 
                     // Create new tooltip
                     currentTooltip = new Konva.Label({
-                        x: canvasX + 16,
-                        y: canvasY - 24,
+                        x: canvasX + 8 / scale,
+                        y: canvasY - 8 / scale,
                         opacity: 0.85
                     });
                     currentTooltip.add(new Konva.Tag({ fill: '#232425' }));
@@ -615,10 +615,11 @@
                     const tooltipText = shape.attrs.tooltip || shape.id();
                     currentTooltip.add(new Konva.Text({
                         text: tooltipText,
-                        fontSize: 16,
-                        padding: 6,
+                        fontSize: 16 / scale,
+                        padding: 6 / scale,
                         fill: '#fff'
                     }));
+                    currentTooltip.offsetY(currentTooltip.height());
                     mapLayers.tooltip.layer.add(currentTooltip);
                     mapLayers.tooltip.layer.batchDraw();
                     stage.batchDraw();
@@ -632,8 +633,29 @@
                     const stagePos = stage.position();
                     const canvasX = (pointer.x - stagePos.x) / scale;
                     const canvasY = (pointer.y - stagePos.y) / scale;
-                    currentTooltip.x(canvasX + 16);
-                    currentTooltip.y(canvasY - 24);
+                    currentTooltip.x(canvasX + 8 / scale);
+                    currentTooltip.y(canvasY - 8 / scale);
+                    currentTooltip.offsetY(currentTooltip.height());
+                    const textNode = currentTooltip.findOne('Text');
+                    textNode.fontSize(16 / scale);
+                    textNode.padding(6 / scale);
+                    mapLayers.tooltip.layer.batchDraw();
+                }
+            });
+
+            obj.layer.on('wheel', (e) => {
+                if (currentTooltip) {
+                    const pointer = stage.getPointerPosition();
+                    const scale = stage.scaleX();
+                    const stagePos = stage.position();
+                    const canvasX = (pointer.x - stagePos.x) / scale;
+                    const canvasY = (pointer.y - stagePos.y) / scale;
+                    currentTooltip.x(canvasX + 8 / scale);
+                    currentTooltip.y(canvasY - 8 / scale);
+                    currentTooltip.offsetY(currentTooltip.height());
+                    const textNode = currentTooltip.findOne('Text');
+                    textNode.fontSize(16 / scale);
+                    textNode.padding(6 / scale);
                     mapLayers.tooltip.layer.batchDraw();
                 }
             });

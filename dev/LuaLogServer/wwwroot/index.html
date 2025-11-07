@@ -273,9 +273,10 @@
 
             Object.values(mapLayers).forEach(obj => {
                 //if (obj.name !== 'tooltip') {
+                if (obj.layer) {
                     obj.layer.destroyChildren();
                     obj.layer.batchDraw();
-                //}
+                }
             });
 
             map_interacted = false;
@@ -428,7 +429,6 @@
                             fill: null,
                             stroke: '#ffffff',
                             strokeWidth: 2,
-                            //hitStrokeWidth: 10 // makes the border easier to hit
                             dash: [6, 2],
                             id: locationId,
                             tooltip: `Location: ${locName}`,
@@ -480,10 +480,13 @@
                     render_paths = false;
                     render_box = true;
                     break;
-                case 2: // area
+                case 2: // spawn
+                    // currently only can happen with 1 point so no rules needed
+                    break;
+                case 3: // area
                     render_points = false;
                     break;
-                case 3: // cloud
+                case 4: // cloud
                     render_paths = false;
                     break;
             }
@@ -545,6 +548,7 @@
                         radius: r,
                         //fill: '#219ebc',
                         fill: '#fb8500',
+                        hitStrokeWidth: 2, // makes the border easier to hit
                         id: `PathPoint_${name}[${idx}]`,
                         tooltip: `PathPoint: ${name}[${idx}]`
                     });

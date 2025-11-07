@@ -66,10 +66,16 @@ app.MapGet("/tail", async (HttpContext context) =>
                 await context.Response.WriteAsync($"data: {type}|{msg}\n\n");
                 await context.Response.Body.FlushAsync();
             }
+
+            // Throttle if not at tail (i.e., more lines are available)
+            if (fs.Position < fs.Length)
+            {
+                await Task.Delay(10); // Adjust delay as needed (10ms per line is a good start)
+            }
         }
         else
         {
-            await Task.Delay(500);
+            await Task.Delay(10);
         }
     }
 });

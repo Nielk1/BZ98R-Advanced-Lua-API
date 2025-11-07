@@ -158,7 +158,7 @@ end
 
 --- @type ParameterDB?
 --- @diagnostic disable-next-line: deprecated
-local settingsFile = OpenODF("_api.cfg");
+local settingsFile = OpenODF("_logger.cfg");
 if settingsFile then
     settings.level = GetODFEnum(settingsFile, "Logging", "level", M.LogLevel.NONE, M.LogLevel.DEBUG, M.LogLevel);
     if settings.level < M.LogLevel.NONE then

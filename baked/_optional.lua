@@ -20,26 +20,19 @@ logger.print(logger.LogLevel.DEBUG, nil, "_optional Loading");
 
 --- @class _optional
 local M = {};
-local M_MT = {};
 
-M_MT.__index = function(table, key)
-    local retVal = rawget(table, key);
-    if retVal ~= nil then
-        return retVal; -- found in table
-    end
-    return rawget(M_MT, key); -- move on to base (looking for functions)
-end
+-- [[START_IGNORE]]
+M.__index = M;
+-- [[END_IGNORE]]
 
 local KnownFailedModules = {};
 
---- __call
---- @function __call
 --- Attempt to load a module, if it fails return false and error, if succesful return true and the module.
 --- @param table table The module table itself.
 --- @param moduleName string Module name to load.
 --- @return boolean success True if the module loaded successfully, false if it failed.
---- @return ... The module return values or error if failed
-M_MT.__call = function(table, moduleName)
+--- @return any ... The module return values or error string if failed
+M.__call = function(table, moduleName)
     local priorError = KnownFailedModules[moduleName];
     if priorError ~= nil then
         return false, priorError;
@@ -51,7 +44,7 @@ M_MT.__call = function(table, moduleName)
     return ok, result;
 end
 
-M = setmetatable(M, M_MT);
+M = setmetatable(M, M);
 
 --- @section Utility - Core
 

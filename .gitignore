@@ -436,5 +436,5 @@ FodyWeavers.xsd
 temp/
 
 # generated lua doc files
-lssdoc/doc.json
-lssdoc/doc.mdf
+llsdoc/doc.json
+llsdoc/doc.md

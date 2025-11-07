@@ -221,6 +221,23 @@ function M.SetPathCloud(path)
     M.SetSpecialPathType(path, M.SpecialPathType.Cloud);
 end
 
+local log_ignored_paths = {};
+
+--- Log these paths as empty to reduce clutter.
+--- This is useful for unused paths that are left over in the bzn.
+--- @param path PathName|PathName[] Path name
+function M.LoggerIgnorePath(path)
+    if type(path) == "table" then
+        for _, p in ipairs(path) do
+            log_ignored_paths[p] = true;
+            paths_pending_log[p] = nil;
+        end
+    else
+        log_ignored_paths[path] = true;
+        paths_pending_log[path] = nil;
+    end
+end
+
 --- Extracts the name and number from a string.
 --- @param str string
 --- @return string
@@ -417,8 +434,10 @@ function M.LogPathToData(path, level)
             local path_data = path_short_term_cache[path];
             if path_data then
                 local path_points = {}
-                for _, point in ipairs(path_data.points) do
-                    table.insert(path_points, string.format("%f,%f,%f", point.x, point.y, point.z));
+                if not log_ignored_paths[path] then
+                    for _, point in ipairs(path_data.points) do
+                        table.insert(path_points, string.format("%f,%f,%f", point.x, point.y, point.z));
+                    end
                 end
                 logger.print(level, nil,
                     string.format("Path|%s|%d|%d|%s",
@@ -431,8 +450,10 @@ function M.LogPathToData(path, level)
             end
         else
             local path_points = {}
-            for _, point in M.IteratePath(path) do
-                table.insert(path_points, string.format("%f,%f,%f", point.x, point.y, point.z));
+            if not log_ignored_paths[path] then
+                for _, point in M.IteratePath(path) do
+                    table.insert(path_points, string.format("%f,%f,%f", point.x, point.y, point.z));
+                end
             end
             logger.print(level, nil,
                 string.format("Path|%s|%d|%d|%s",

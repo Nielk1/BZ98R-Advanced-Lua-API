@@ -56,6 +56,7 @@ local BinaryFieldType = {
 --- @field GetRaw fun(self: BZNToken, index: integer?, length: integer?): string
 --- @field IsValidationOnly fun(self: BZNToken): boolean
 --- @field Validate fun(self: BZNToken, name: string?, type: BinaryFieldType?): boolean
+--- @local
 
 --- @class _bzn
 local M = {};

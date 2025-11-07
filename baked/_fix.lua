@@ -35,9 +35,9 @@ if not _G.table.unpack then
 end
 
 -- [Polyfill] Remap SettLabel to SetLabel for BZ1.5
-logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: SetLabel");
 --- @diagnostic disable-next-line: undefined-field
 if not _G.SetLabel and _G.SettLabel then
+    logger.print(logger.LogLevel.DEBUG, nil, " - Fix/Polyfill: SetLabel");
     -- [[START_IGNORE]]
     --- @diagnostic disable-next-line: undefined-field
     _G.SetLabel = _G.SetLabel or _G.SettLabel; -- BZ1.5 compatibility
@@ -196,17 +196,18 @@ if pre_patch then
         -- we can safely assume we have a GameObject here, no need to test or extract
 
         --- @cast object GameObject_FixFallingPowerup
-        
+
         -- ignore objects that are not local ( can't be done in CreateObject, too early)
         --if not object:IsLocal() then return; end
+                
+        -- we only care about objects that aren't on a player team or team 0
+        local currentTeam = object:GetTeamNum();
+        if currentTeam == 0 then return; end
+        if gameobject.GetPlayer(currentTeam) ~= nil then return; end
 
         -- ignore objects that are not powerups
         if object:GetClassId() ~= ClassId.POWERUP then return; end
         if object:GetClassSig() == utility.ClassSig.TORPEDO then return; end
-        
-        -- we only care about objects that aren't on a player team
-        local currentTeam = object:GetTeamNum();
-        if gameobject.GetPlayer(currentTeam) ~= nil then return; end
 
         if paramdb.GetValueString(object:GetOdf(), "GameObjectClass", "aiName2", "") ~= "" then return; end
 

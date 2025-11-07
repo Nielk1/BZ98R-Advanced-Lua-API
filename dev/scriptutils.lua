@@ -2780,7 +2780,7 @@ function UnHide(h) end
 --- Creates an explosion with the given odf name at the target position vector, transform matrix, object, or the start of the named path.
 --- {VERSION 2.1+}
 ---
---- {(!)Multiplayer(!) Explosions are entirely local, this includes the visuals and the damage. This can be used to create clientside graphics.}
+--- {(i)Multiplayer(i) Explosions are entirely local, this includes the visuals and the damage. This can be used to create clientside graphics.}
 --- @param odfname string
 --- @param target Vector|Matrix|Handle|string Position vector, ransform matrix, Object, or path name.
 function MakeExplosion(odfname, target) end

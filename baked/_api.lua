@@ -310,7 +310,9 @@ local function SimplifyForSave(...)
                     else
                         SaveLoopCheck[ORIG] = true;
                     end
+                    -- [[START_IGNORE]]
                     newTable = { __ref = existingUUID };
+                    -- [[END_IGNORE]]
                 else
                     local currentUUID = RefUUIID;
                     RefUUIID = RefUUIID + 1;

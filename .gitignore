@@ -426,3 +426,15 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+
+
+
+# Custom ignore rules
+
+# temporary files from lua doc genereation
+temp/
+
+# generated lua doc files
+lssdoc/doc.json
+lssdoc/doc.mdf

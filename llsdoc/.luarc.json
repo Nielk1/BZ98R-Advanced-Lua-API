@@ -1,0 +1,21 @@
+{
+    "Lua": {
+        "runtime": {
+            "version": "Lua 5.1",
+			"builtin": {
+				"io": "disable",
+				"os": "disable",
+				"bit": "disable",
+				
+				"table": "disable",
+				"string": "disable",
+				"package": "disable",
+				"math": "disable",
+				"debug": "disable",
+				"coroutine": "disable",
+				"builtin": "disable",
+				"basic": "disable"
+			}
+        }
+    }
+}

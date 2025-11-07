@@ -31,8 +31,8 @@ local BinaryFieldType = {
     DATA_MAT3D = 12,
     DATA_STRING = 13,
     DATA_QUAT = 14,
-    --DATA_UNKNOWN = 255
 }
+--DATA_UNKNOWN = 255
 
 --- @class BZNToken
 --- @field IsBinary fun(self: BZNToken): boolean

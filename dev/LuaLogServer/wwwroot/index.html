@@ -484,14 +484,14 @@
 // see if we can encapsulate this as it is used more than once
                 const existingCheckbox = document.getElementById(`ChildToggle:PatrolEngine_${engineId}`);
                 if (!existingCheckbox) {
-                    const childList = document.getElementById(`ChildToggle:${mapLayers.patrol_engines.key.id}`);
+                    const childList = document.getElementById(`ChildToggles:${mapLayers.patrol_engines.key.id}`);
                     const childLabel = document.createElement('label');
                     childLabel.style.display = 'block';
                     childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:PatrolEngine_${engineId}" checked> ${engineId}`;
                     childList.appendChild(childLabel);
                 }
                 {
-                    const childList = document.getElementById(`ChildToggle:${mapLayers.patrol_engines.key.id}`);
+                    const childList = document.getElementById(`ChildToggles:${mapLayers.patrol_engines.key.id}`);
                     // fix child iteration during removal
                     const childListChildren = Array.from(childList.children);
                     childListChildren.forEach(label => {
@@ -630,14 +630,14 @@
 // see if we can encapsulate this as it is used more than once
             const existingCheckbox = document.getElementById(`ChildToggle:Path_${name}`);
             if (!existingCheckbox) {
-                const childList = document.getElementById(`ChildToggle:${mapLayers.paths.key.id}`);
+                const childList = document.getElementById(`ChildToggles:${mapLayers.paths.key.id}`);
                 const childLabel = document.createElement('label');
                 childLabel.style.display = 'block';
                 childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:Path_${name}" checked> ${name}`;
                 childList.appendChild(childLabel);
             }
             {
-                const childList = document.getElementById(`ChildToggle:${mapLayers.paths.key.id}`);
+                const childList = document.getElementById(`ChildToggles:${mapLayers.paths.key.id}`);
                 // fix child iteration during removal
                 const childListChildren = Array.from(childList.children);
                 childListChildren.forEach(label => {
@@ -670,7 +670,7 @@
                 }
                 mapKeyList.appendChild(label);
                 const childList = document.createElement('div');
-                childList.id = `ChildToggle:${obj.key.id}`;
+                childList.id = `ChildToggles:${obj.key.id}`;
                 childList.classList.add('ChildToggles');
                 childList.style.marginLeft = '20px';
                 mapKeyList.appendChild(childList);

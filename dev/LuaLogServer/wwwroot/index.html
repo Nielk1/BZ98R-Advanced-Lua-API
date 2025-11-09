@@ -441,6 +441,7 @@
             stage.batchDraw();
         }
     
+        // Update the patrol engine map elements and other elements
         function MapDraw_UpdatePatrolEngine(engineId) {
             let engines = null;
             if (engineId === true) {
@@ -488,6 +489,12 @@
                     const childLabel = document.createElement('label');
                     childLabel.style.display = 'block';
                     childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:PatrolEngine_${engineId}" checked> ${engineId}`;
+
+                    const saved = localStorage.getItem(`ChildToggle:PatrolEngine_${engineId}`);
+                    if (saved !== null) {
+                        childLabel.children[0].checked = saved === '1';
+                    }
+
                     childList.appendChild(childLabel);
                 }
                 {
@@ -502,9 +509,22 @@
                             //checkbox.checked = path_cache[id].defaultChecked;
                             checkbox.remove();
                         }
+                        else
+                        {
+                            const saved = localStorage.getItem(checkbox.id);
+                            if (saved !== null) {
+                                checkbox.checked = saved === '1';
+                            }
+                        }
                     });
                 }
 // /
+
+                {
+                    let locationId = `PatrolEngine_${engineId}`;
+                    const checkbox = document.getElementById(`ChildToggle:${locationId}`);
+                    SetMapNodeVisibility(locationId, checkbox.checked);
+                }
 
                 mapLayers.locations.layer.batchDraw();
             });
@@ -626,7 +646,6 @@
 
             mapLayers.paths.layer.batchDraw();
 
-
 // see if we can encapsulate this as it is used more than once
             const existingCheckbox = document.getElementById(`ChildToggle:Path_${name}`);
             if (!existingCheckbox) {
@@ -634,6 +653,12 @@
                 const childLabel = document.createElement('label');
                 childLabel.style.display = 'block';
                 childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:Path_${name}" checked> ${name}`;
+
+                const saved = localStorage.getItem(`ChildToggle:Path_${name}`);
+                if (saved !== null) {
+                    childLabel.children[0].checked = saved === '1';
+                }
+
                 childList.appendChild(childLabel);
             }
             {
@@ -648,9 +673,22 @@
                         //checkbox.checked = path_cache[id].defaultChecked;
                         checkbox.remove();
                     }
+                    else
+                    {
+                        const saved = localStorage.getItem(checkbox.id);
+                        if (saved !== null) {
+                            checkbox.checked = saved === '1';
+                        }
+                    }
                 });
             }
 // /
+
+            {
+                let locationId = `Path_${name}`;
+                const checkbox = document.getElementById(`ChildToggle:${locationId}`);
+                SetMapNodeVisibility(locationId, checkbox.checked);
+            }
 
             ResetMapWindow();
         }
@@ -679,50 +717,56 @@
         Object.entries(mapLayers).forEach(([name, obj]) => {
             if (obj.key && obj.layer) {
                 document.getElementById(obj.key.id).addEventListener('change', function() {
+                    localStorage.setItem(this.id, this.checked ? '1' : '0');
                     obj.layer.visible(this.checked);
                     stage.batchDraw();
                 });
             }
         });
+        function SetMapNodeVisibility(objectName, visible) {
+            // if we are checked, all dependent children should be visible, else we need to check each child to see if something else is making them visible
+
+            // get list of konva names that are affected by this checkbox
+            let affected = [];
+            map_concepts_to_objects.get(objectName)?.forEach(affectedId => {
+                affected.push(affectedId);
+            });
+
+            let showMap = new Set(); // we can't show everything, so check them
+            if (!visible) {
+                affected.forEach(affectedId => {
+                    map_objects_to_concepts.get(affectedId)?.forEach(parentId => {
+                        if (showMap.has(affectedId)) return; // already marked to show
+
+                        const parentCheckbox = document.getElementById(`ChildToggle:${parentId}`);
+                        if (parentCheckbox && parentCheckbox.checked) {
+                            showMap.add(affectedId);
+                        }
+                    });
+                });
+            }
+            affected.forEach(affectedId => {
+                Object.entries(mapLayers).forEach(([name, obj]) => {
+                    if (obj.layer) {
+                        obj.layer.find(`.${affectedId}`).forEach(node => {
+                            let shouldShow = visible || showMap.has(affectedId);
+                            node.visible(shouldShow);
+                        });
+                    }
+                });
+            });
+            stage.batchDraw();
+        }
         document.querySelectorAll('.ChildToggles').forEach(childList => {
             childList.addEventListener('change', function(e) {
                 const checkbox = e.target;
                 if (checkbox && checkbox.id.startsWith('ChildToggle:')) {
+                    localStorage.setItem(checkbox.id, checkbox.checked ? '1' : '0');
+
                     const checkedObject = checkbox.id.replace('ChildToggle:', '');
                     let showAll = checkbox.checked; // just show everything
 
-                    // if we are checked, all dependent children should be visible, else we need to check each child to see if something else is making them visible
-
-                    // get list of konva names that are affected by this checkbox
-                    let affected = [];
-                    map_concepts_to_objects.get(checkedObject)?.forEach(affectedId => {
-                        affected.push(affectedId);
-                    });
-
-                    let showMap = new Set(); // we can't show everything, so check them
-                    if (!showAll) {
-                        affected.forEach(affectedId => {
-                            map_objects_to_concepts.get(affectedId)?.forEach(parentId => {
-                                if (showMap.has(affectedId)) return; // already marked to show
-
-                                const parentCheckbox = document.getElementById(`ChildToggle:${parentId}`);
-                                if (parentCheckbox && parentCheckbox.checked) {
-                                    showMap.add(affectedId);
-                                }
-                            });
-                        });
-                    }
-                    affected.forEach(affectedId => {
-                        Object.entries(mapLayers).forEach(([name, obj]) => {
-                            if (obj.layer) {
-                                obj.layer.find(`.${affectedId}`).forEach(node => {
-                                    let shouldShow = showAll || showMap.has(affectedId);
-                                    node.visible(shouldShow);
-                                });
-                            }
-                        });
-                    });
-                    stage.batchDraw();
+                    SetMapNodeVisibility(checkedObject, showAll);
                 }
             });
         });

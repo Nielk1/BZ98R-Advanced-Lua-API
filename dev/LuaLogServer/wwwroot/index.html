@@ -369,6 +369,24 @@
             }
         }
 
+        function RescaleMapObjects() {
+            // Rescale objects that need to maintain size
+            Object.values(mapLayers).forEach(layerObj => {
+                if (layerObj.layer) {
+                    layerObj.layer.getChildren().forEach(shape => {
+                        if (shape.attrs.baseRadius) shape.radius(shape.attrs.baseRadius / Math.min(stage.scaleX(), 1));
+                        if (shape.attrs.baseStrokeWidth) shape.strokeWidth(shape.attrs.baseStrokeWidth / Math.min(stage.scaleX(), 1));
+                        if (shape.attrs.baseDash) {
+                            let dash = shape.attrs.baseDash.map(d => d / Math.min(stage.scaleX(), 1));
+                            shape.dash(dash);
+                        }
+                    });
+                    //layerObj.layer.batchDraw();
+                }
+            });
+            //mapLayers.tooltip.layer.batchDraw();
+        }
+
         function createOrResizeKonvaStage() {
             const width = mapDiv.offsetWidth;
             const height = mapDiv.offsetHeight;
@@ -419,6 +437,9 @@
                     y: pointer.y - mousePointTo.y * newScale,
                 };
                 stage.position(newPos);
+
+                RescaleMapObjects();
+
                 stage.batchDraw();
 
                 map_interacted = true;
@@ -439,6 +460,7 @@
                         .sort((a, b) => a[1].order - b[1].order)
                         .map(([name, obj]) => obj.layer)
                 );
+                RescaleMapObjects();
             }
         }
 
@@ -506,7 +528,9 @@
                             fill: null,
                             stroke: '#ffffff',
                             strokeWidth: 2,
+                            baseStrokeWidth: 2,
                             dash: [6, 2],
+                            baseDash: [6, 2],
                             id: locationId,
                             name: locationId,
                             tooltip: `Location: ${locName}`,
@@ -555,7 +579,7 @@
                 ];
             }
 
-            const r = 2; // waypoint radius
+            const r = 4; // waypoint radius
             const lineStroke = 2; // stroke width (also needed to back off arrow)
 
             // Draw route as a line
@@ -605,11 +629,13 @@
                 const boxLine = new Konva.Line({
                     points: points,
                     stroke: '#ff006e',
-                    strokeWidth: 2,
+                    strokeWidth: lineStroke,
+                    baseStrokeWidth: lineStroke,
                     dash: [6, 2],
+                    baseDash: [6, 2],
                     id: `Path_${name}`,
                     name: `Path_${name}`,
-                    tooltip: `Path Box: ${name}`
+                    tooltip: `Path Bounds: ${name}`
                 });
                 mapLayers.paths.layer.add(boxLine);
             }
@@ -635,6 +661,7 @@
                                 //stroke: '#8ecae6',
                                 stroke: '#8ecae6',
                                 strokeWidth: lineStroke,
+                                baseStrokeWidth: lineStroke,
                                 //fill: '#8ecae6',
                                 fill: '#8ecae6',
                                 pointerLength: 4,
@@ -653,6 +680,7 @@
                             //stroke: '#8ecae6',
                             stroke: '#8ecae6',
                             strokeWidth: lineStroke,
+                            baseStrokeWidth: lineStroke,
                             lineCap: 'round',
                             id: `Path_${name}`,
                             name: `Path_${name}`,
@@ -670,9 +698,10 @@
                         x: pt.x,
                         y: -pt.z,
                         radius: r,
+                        baseRadius: r,
                         //fill: '#219ebc',
                         fill: '#fb8500',
-                        hitStrokeWidth: 2, // makes the border easier to hit
+                        //hitStrokeWidth: 2, // makes the border easier to hit
                         id: `PathPoint_${name}[${idx}]`,
                         name: `Path_${name}`,
                         tooltip: `PathPoint: ${name}[${idx}]`

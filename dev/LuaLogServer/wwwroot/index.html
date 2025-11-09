@@ -577,6 +577,39 @@
             }
             if (path_data.nodes.length < 2)
                 render_paths = false;
+
+            if (render_box) {
+                // Draw bounding box
+                let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                path_data.nodes.forEach(pt => {
+                    minX = Math.min(minX, pt.x);
+                    minY = Math.min(minY, -pt.z);
+                    maxX = Math.max(maxX, pt.x);
+                    maxY = Math.max(maxY, -pt.z);
+                });
+                const boxWidth = maxX - minX;
+                const boxHeight = maxY - minY;
+
+                // draw box as lines so we don't hit the area
+                const points = [
+                    minX, minY,
+                    minX + boxWidth, minY,
+                    minX + boxWidth, minY + boxHeight,
+                    minX, minY + boxHeight,
+                    minX, minY
+                ];
+                const boxLine = new Konva.Line({
+                    points: points,
+                    stroke: '#ff006e',
+                    strokeWidth: 2,
+                    dash: [6, 2],
+                    id: `Path_${name}`,
+                    name: `Path_${name}`,
+                    tooltip: `Path Box: ${name}`
+                });
+                mapLayers.paths.layer.add(boxLine);
+            }
+
             if (render_paths) {
                 const points = [];
                 for (const pt of path_data.nodes) {

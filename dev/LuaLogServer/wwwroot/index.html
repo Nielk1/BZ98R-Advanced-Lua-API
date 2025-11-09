@@ -62,13 +62,13 @@
                     </div>
                 </div>
             </div>
-            <!-- Map Window (Konva will be added here) -->
             <div class="grid-stack-item" id="window-map" gs-x="0" gs-y="6" gs-w="6" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
                         <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
                             <span>Map</span>
                             <div>
+                                <button type="button" class="btn btn-sm btn-info me-1" title="Fit" id="Map:Fit"><i class="bi-square"></i></button>
                                 <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
                                 <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
                             </div>
@@ -393,8 +393,8 @@
         document.addEventListener('gridstack-change', createOrResizeKonvaStage);
 
         // ------------------- Konva Map Drawing -------------------
-        function ResetMapWindow() {
-            if (!map_interacted) {
+        function ResetMapWindow(force) {
+            if (!map_interacted || force) {
                 fitStageToLayerContent(
                     stage,
                     Object.entries(mapLayers)
@@ -1194,6 +1194,10 @@
                         h: 8
                     });
                 });
+            });
+
+            document.getElementById('Map:Fit').addEventListener('click', function () {
+                ResetMapWindow(true);
             });
         });
 

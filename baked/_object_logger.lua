@@ -10,9 +10,10 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "_object_logger Loading");
 
-local config = require("_config");
+--local config = require("_config");
 local hook = require("_hook");
 local gameobject = require("_gameobject");
+local customsavetypes = require("_customsavetype");
 
 --- @class _object_logger
 local M = {}
@@ -27,8 +28,16 @@ local function LogObject(obj)
     local whitelist = {
         {"id"},
         {"__type"},
+        {"__object_logger"}
     };
-    logger.data(logger.LogLevel.DEBUG, nil, "GameObject", obj);
+
+    -- update our state data
+    if not obj.__object_logger then
+        obj.__object_logger = customsavetypes.NoSave();
+    end
+    obj.__object_logger.position = obj:GetPosition();
+
+    logger.data(logger.LogLevel.DEBUG, nil, "GameObject", obj, whitelist);
 end
 
 function M.AddObject(obj)
@@ -63,7 +72,7 @@ hook.Add("Update", "_object_logger:Update", function(dtime, ttime)
             for obj, _ in pairs(EmitRemovals) do
                 table.insert(removals, obj:GetSeqNo() );
             end
-            logger.print(logger.LogLevel.DEBUG, nil, "Removed|", removals.join('|'));
+            logger.print(logger.LogLevel.DEBUG, nil, "Removed|", table.concat(removals, '|'));
             EmitRemovals = {};
         end
         

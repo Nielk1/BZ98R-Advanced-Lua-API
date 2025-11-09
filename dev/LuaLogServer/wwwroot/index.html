@@ -85,19 +85,18 @@
                     </div>
                 </div>
             </div>
-            <!-- Processed Data/Test Window -->
-            <div class="grid-stack-item" id="window-test" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
+            <div class="grid-stack-item" id="window-patrol_engine" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
                         <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
-                            <span>Test</span>
+                            <span>Patrol Engine</span>
                             <div>
                                 <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
                                 <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
                             </div>
                         </div>
                         <div class="card-body p-2" style="overflow:scroll;">
-                            <div id="processed"></div>
+                            <div id="patrol_engine-processed"></div>
                         </div>
                     </div>
                 </div>
@@ -232,6 +231,8 @@
                 if (!map_objects_to_concepts.has(`Path_${path}`))
                     map_objects_to_concepts.set(`Path_${path}`, new Set());
                 map_objects_to_concepts.get(`Path_${path}`).add(`PatrolEngine_${id}`);
+
+                this.UpdatePanels(id);
             },
             Location: function(id, location, location_data) {
                 if (!this.Engines[id]) {
@@ -254,6 +255,8 @@
                 if (!map_objects_to_concepts.has(`Path_${location}`))
                     map_objects_to_concepts.set(`Path_${location}`, new Set());
                 map_objects_to_concepts.get(`Path_${location}`).add(`PatrolEngine_${id}`);
+              
+                this.UpdatePanels(id);
             },
             PatrolEngines: function(ids) {
                 // Remove patrol engines that are not in the existing list
@@ -267,6 +270,7 @@
                         }
                         map_concepts_to_objects.delete(`PatrolEngine_${key}`);
                     }
+                    this.UpdatePanels(key);
                 }
             },
             PatrolObjects: function(engine, seqnos) {
@@ -287,6 +291,65 @@
                             }
                         }
                     }
+                }
+
+                this.UpdatePanels(engine);
+            },
+            UpdatePanels: function(engineId) {
+                if (this.Engines[engineId])
+                {
+                    let existingPanel = document.getElementById(`patrol_engine_item:${engineId}`);
+                    if (!existingPanel)
+                    {
+                        let parent = document.getElementById('patrol_engine-processed');
+                        let panel = document.createElement('div');
+                        panel.id = `patrol_engine_item:${engineId}`;
+                        panel.className = 'mb-3 p-2 border border-secondary rounded';
+                        let title = document.createElement('h5');
+                        title.textContent = `Patrol Engine: ${engineId}`;
+                        panel.appendChild(title);
+                        let objectList = document.createElement('ul');
+                        objectList.className = 'list-unstyled';
+                        objectList.id = `patrol_engine_object_list:${engineId}`;
+                        panel.appendChild(objectList);
+                        parent.appendChild(panel);
+                        existingPanel = panel;
+                    }
+
+                    let patrol_engine_object_list = document.getElementById(`patrol_engine_object_list:${engineId}`);
+                    let existing_panels = new Map();
+                    Array.from(patrol_engine_object_list.children).forEach(child => {
+                        existing_panels.set(child.dataset.id, child);
+                    });
+
+                    this.Engines[engineId].patrol_objects?.forEach(obj => {
+                        let objectId = parseInt(obj.id.split(':')[1]);
+                        existing_panels.delete(objectId.toString());
+                        let objectInstance = document.getElementById(`patrol_engine_object:${engineId}:${objectId}`);
+                        if (!objectInstance)
+                        {
+                            let objectList = document.getElementById(`patrol_engine_object_list:${engineId}`);
+                            let listItem = document.createElement('li');
+                            listItem.id = `patrol_engine_object:${engineId}:${objectId}`;
+                            listItem.dataset.id = objectId;
+                            //listItem.textContent = `Object ID: ${objectId}`;
+                            objectList.appendChild(listItem);
+                            objectInstance = listItem;
+                        }
+
+                        let GO = handle_to_gameobject.get(objectId);
+                        if (GO) GO = main_data_store.get(GO)?.deref();
+
+                        objectInstance.textContent = `SeqNo: ${objectId}, TO: ${GO?.addonData?._patrol?.location??'?'}, FROM: ${GO?.addonData?._patrol?.origin_location??'?'}, VIA: ${GO?.addonData?._patrol?.path??'?'}`;
+                    });
+
+                    existing_panels.forEach((panel, id) => {
+                        panel.remove();
+                    });
+                }
+                else
+                {
+                    document.getElementById(`patrol_engine_item:${engineId}`)?.remove();
                 }
             },
             Engines: {},
@@ -311,6 +374,8 @@
                 }
             });
 
+            document.getElementById('patrol_engine-processed').innerHTML = '';
+
             map_interacted = false;
         }
 
@@ -320,6 +385,11 @@
         // ChildToggles:{layer id}   - id for divs that hold object checkboxes
         // ChildToggle:{object name} - id for individual object checkboxes
         // {type}:{id}               - (object name) name for objects in Konva based on the data source
+
+        // patrol_engine-processed                    - Engine data panel
+        // patrol_engine_item:{id}                    - Engine instance data panel
+        // patrol_engine_object_list:{engineId}       - Engine instance object list
+        // patrol_engine_object:{engineId}:{objectId} - Engine instance object
 
         // Concept/Konva Object pairs
         // Path_{name}                      - Path nodes and lines

@@ -18,6 +18,11 @@ local customsavetype = require("_customsavetype");
 local gameobject = require("_gameobject");
 local paths = require("_paths");
 
+local object_logger = nil;
+if logger.IsDataMode() and logger.DoLogLevel(logger.LogLevel.DEBUG) then
+    object_logger = require("_object_logger");
+end
+
 --- @param tbl table
 --- @return string
 local function getTableId(tbl)
@@ -372,6 +377,12 @@ function PatrolEngine:AddGameObject(object)
         error("object is not a GameObject");
     end
 
+    --- @todo check if already in another engine?
+    
+    if object_logger and not self.patrol_units[object] then
+       object_logger.AddObject(object);
+    end
+
     --- @cast object GameObject_patrol
     local nearestLocation = nil
     local location = nil
@@ -431,6 +442,11 @@ function PatrolEngine:RemoveGameObject(object)
     if object == nil then
         error("PatrolEngine.RemoveGameObject: object is not a GameObject");
     end
+
+    if object_logger and self.patrol_units[object] then
+       object_logger.RemoveObject(object);
+    end
+
     --- @cast object GameObject_patrol
     object._patrol = nil
     self.patrol_units[object] = nil

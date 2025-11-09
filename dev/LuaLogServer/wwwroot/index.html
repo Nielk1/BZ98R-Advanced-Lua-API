@@ -245,10 +245,15 @@
                 if (!map_concepts_to_objects.has(`PatrolEngine_${id}`))
                     map_concepts_to_objects.set(`PatrolEngine_${id}`, new Set());
                 map_concepts_to_objects.get(`PatrolEngine_${id}`).add(`PatrolLocation_${id}_${location}`);
+                map_concepts_to_objects.get(`PatrolEngine_${id}`).add(`Path_${location}`);
 
                 if (!map_objects_to_concepts.has(`PatrolLocation_${id}_${location}`))
                     map_objects_to_concepts.set(`PatrolLocation_${id}_${location}`, new Set());
                 map_objects_to_concepts.get(`PatrolLocation_${id}_${location}`).add(`PatrolEngine_${id}`);
+
+                if (!map_objects_to_concepts.has(`Path_${location}`))
+                    map_objects_to_concepts.set(`Path_${location}`, new Set());
+                map_objects_to_concepts.get(`Path_${location}`).add(`PatrolEngine_${id}`);
             },
             PatrolEngines: function(ids) {
                 // Remove patrol engines that are not in the existing list
@@ -356,7 +361,7 @@
                     // extract id
                     if (!testActive(checkbox)) {
                         //checkbox.checked = path_cache[id].defaultChecked;
-                        checkbox.remove();
+                        checkbox.parentElement.remove();
                     }
                     else
                     {

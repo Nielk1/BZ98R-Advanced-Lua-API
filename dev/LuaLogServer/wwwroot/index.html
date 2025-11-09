@@ -332,6 +332,43 @@
             tooltip:        { layer: new Konva.Layer({ id: 'tooltip'   }), order: 99,                                                                                                   },
         };
 
+        function createOrUpdatePathCheckbox(text, nodeId, layer, testActive) {
+            const existingCheckbox = document.getElementById(`ChildToggle:${nodeId}`);
+            if (!existingCheckbox) {
+                const childList = document.getElementById(`ChildToggles:${layer.key.id}`);
+                const childLabel = document.createElement('label');
+                childLabel.style.display = 'block';
+                childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:${nodeId}" checked> ${text}`;
+
+                const saved = localStorage.getItem(`ChildToggle:${nodeId}`);
+                if (saved !== null) {
+                    childLabel.children[0].checked = saved === '1';
+                }
+
+                childList.appendChild(childLabel);
+            }
+            {
+                const childList = document.getElementById(`ChildToggles:${layer.key.id}`);
+                // fix child iteration during removal
+                const childListChildren = Array.from(childList.children);
+                childListChildren.forEach(label => {
+                    const checkbox = label.children[0];
+                    // extract id
+                    if (!testActive(checkbox)) {
+                        //checkbox.checked = path_cache[id].defaultChecked;
+                        checkbox.remove();
+                    }
+                    else
+                    {
+                        const saved = localStorage.getItem(checkbox.id);
+                        if (saved !== null) {
+                            checkbox.checked = saved === '1';
+                        }
+                    }
+                });
+            }
+        }
+
         function createOrResizeKonvaStage() {
             const width = mapDiv.offsetWidth;
             const height = mapDiv.offsetHeight;
@@ -482,43 +519,10 @@
                     }
                 });
 
-// see if we can encapsulate this as it is used more than once
-                const existingCheckbox = document.getElementById(`ChildToggle:PatrolEngine_${engineId}`);
-                if (!existingCheckbox) {
-                    const childList = document.getElementById(`ChildToggles:${mapLayers.patrol_engines.key.id}`);
-                    const childLabel = document.createElement('label');
-                    childLabel.style.display = 'block';
-                    childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:PatrolEngine_${engineId}" checked> ${engineId}`;
-
-                    const saved = localStorage.getItem(`ChildToggle:PatrolEngine_${engineId}`);
-                    if (saved !== null) {
-                        childLabel.children[0].checked = saved === '1';
-                    }
-
-                    childList.appendChild(childLabel);
-                }
-                {
-                    const childList = document.getElementById(`ChildToggles:${mapLayers.patrol_engines.key.id}`);
-                    // fix child iteration during removal
-                    const childListChildren = Array.from(childList.children);
-                    childListChildren.forEach(label => {
-                        const checkbox = label.children[0];
-                        // extract id
-                        const id = checkbox.id.replace('ChildToggle:PatrolEngine_', '');
-                        if (!_patrol.Engines[id]) {
-                            //checkbox.checked = path_cache[id].defaultChecked;
-                            checkbox.remove();
-                        }
-                        else
-                        {
-                            const saved = localStorage.getItem(checkbox.id);
-                            if (saved !== null) {
-                                checkbox.checked = saved === '1';
-                            }
-                        }
-                    });
-                }
-// /
+                createOrUpdatePathCheckbox(engineId, `PatrolEngine_${engineId}`, mapLayers.patrol_engines, function(checkbox) {
+                    const id = checkbox.id.replace('ChildToggle:PatrolEngine_', '');
+                    return _patrol.Engines[id];
+                });
 
                 {
                     let locationId = `PatrolEngine_${engineId}`;
@@ -679,43 +683,10 @@
 
             mapLayers.paths.layer.batchDraw();
 
-// see if we can encapsulate this as it is used more than once
-            const existingCheckbox = document.getElementById(`ChildToggle:Path_${name}`);
-            if (!existingCheckbox) {
-                const childList = document.getElementById(`ChildToggles:${mapLayers.paths.key.id}`);
-                const childLabel = document.createElement('label');
-                childLabel.style.display = 'block';
-                childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:Path_${name}" checked> ${name}`;
-
-                const saved = localStorage.getItem(`ChildToggle:Path_${name}`);
-                if (saved !== null) {
-                    childLabel.children[0].checked = saved === '1';
-                }
-
-                childList.appendChild(childLabel);
-            }
-            {
-                const childList = document.getElementById(`ChildToggles:${mapLayers.paths.key.id}`);
-                // fix child iteration during removal
-                const childListChildren = Array.from(childList.children);
-                childListChildren.forEach(label => {
-                    const checkbox = label.children[0];
-                    // extract id
-                    const id = checkbox.id.replace('ChildToggle:Path_', '');
-                    if (!path_cache[id]) {
-                        //checkbox.checked = path_cache[id].defaultChecked;
-                        checkbox.remove();
-                    }
-                    else
-                    {
-                        const saved = localStorage.getItem(checkbox.id);
-                        if (saved !== null) {
-                            checkbox.checked = saved === '1';
-                        }
-                    }
-                });
-            }
-// /
+            createOrUpdatePathCheckbox(name, `Path_${name}`, mapLayers.paths, function(checkbox) {
+                const id = checkbox.id.replace('ChildToggle:Path_', '');
+                return path_cache[id];
+            });
 
             {
                 let locationId = `Path_${name}`;

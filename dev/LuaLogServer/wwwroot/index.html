@@ -313,7 +313,7 @@
         // toggle-{layer id}         - checkbox IDs
         // ChildToggles              - class for divs that hold object checkboxes
         // ChildToggles:{layer id}   - id for divs that hold object checkboxes
-        // ChildToggle:{object name}  - id for individual object checkboxes
+        // ChildToggle:{object name} - id for individual object checkboxes
         // {type}:{id}               - (object name) name for objects in Konva based on the data source
 
         // Concept/Konva Object pairs
@@ -1033,16 +1033,18 @@
                                         }
                                         path_cache[name] = parsePathNodes(data);
 
-                                        if (!map_concepts_to_objects.has(`Path_${name}`))
-                                            map_concepts_to_objects.set(`Path_${name}`, new Set());
-                                        map_concepts_to_objects.get(`Path_${name}`).add(`Path_${name}`);
+                                        if (path_cache[name].nodes.length > 0) {
+                                            if (!map_concepts_to_objects.has(`Path_${name}`))
+                                                map_concepts_to_objects.set(`Path_${name}`, new Set());
+                                            map_concepts_to_objects.get(`Path_${name}`).add(`Path_${name}`);
 
-                                        if (!map_objects_to_concepts.has(`Path_${name}`))
-                                            map_objects_to_concepts.set(`Path_${name}`, new Set());
-                                        map_objects_to_concepts.get(`Path_${name}`).add(`Path_${name}`);
+                                            if (!map_objects_to_concepts.has(`Path_${name}`))
+                                                map_objects_to_concepts.set(`Path_${name}`, new Set());
+                                            map_objects_to_concepts.get(`Path_${name}`).add(`Path_${name}`);
 
-                                        // Draw on Konva map
-                                        MapDraw_UpdatePaths(name, path_cache[name]);
+                                            // Draw on Konva map
+                                            MapDraw_UpdatePaths(name, path_cache[name]);
+                                        }
 
                                         used = true;
                                     }

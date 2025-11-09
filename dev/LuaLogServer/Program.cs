@@ -29,6 +29,7 @@ app.MapGet("/tail", async (HttpContext context) =>
     var errorRegex = new Regex(@"\|LUA\|ERROR\|(.*?)\|ERROR\|LUA\|");
 
     long lastPosition = fs.Position;
+    int grouper = 0;
 
     while (!context.RequestAborted.IsCancellationRequested)
     {
@@ -70,8 +71,16 @@ app.MapGet("/tail", async (HttpContext context) =>
             // Throttle if not at tail (i.e., more lines are available)
             if (fs.Position < fs.Length)
             {
-                await Task.Delay(10); // Adjust delay as needed (10ms per line is a good start)
+                if (grouper == 0)
+                    await Task.Delay(10);
+                grouper++;
             }
+            else
+            {
+                grouper = 0;
+            }
+            if (grouper > 100)
+                grouper = 0;
         }
         else
         {

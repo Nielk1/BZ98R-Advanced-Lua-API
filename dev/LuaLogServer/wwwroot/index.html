@@ -204,6 +204,8 @@
         let handle_to_gameobject = new Map(); // map handles to gameobject IDs just because they're useful for manual systems
         // manual data management
         let path_cache = {};
+        let map_concepts_to_objects = new Map(); // list of Konva objects that if visible the parent concept is active
+        let map_objects_to_concepts = new Map(); // list of concepts that if active the parent Konva object is visible
         let _patrol = {
             AddRoute: function(id, origin, destination, path, weight, enabled)
             {
@@ -221,6 +223,15 @@
                     weight: weight,
                     enabled: enabled
                 };
+
+                if (!map_concepts_to_objects.has(`PatrolEngine_${id}`)) {
+                    map_concepts_to_objects.set(`PatrolEngine_${id}`, new Set());
+                }
+                map_concepts_to_objects.get(`PatrolEngine_${id}`).add(`Path_${path}`);
+                
+                if (!map_objects_to_concepts.has(`Path_${path}`))
+                    map_objects_to_concepts.set(`Path_${path}`, new Set());
+                map_objects_to_concepts.get(`Path_${path}`).add(`PatrolEngine_${id}`);
             },
             Location: function(id, location, location_data) {
                 if (!this.Engines[id]) {
@@ -230,12 +241,26 @@
                     this.Engines[id].locations = {};
                 }
                 this.Engines[id].locations[location] = location_data;
+
+                if (!map_concepts_to_objects.has(`PatrolEngine_${id}`))
+                    map_concepts_to_objects.set(`PatrolEngine_${id}`, new Set());
+                map_concepts_to_objects.get(`PatrolEngine_${id}`).add(`PatrolLocation_${id}_${location}`);
+
+                if (!map_objects_to_concepts.has(`PatrolLocation_${id}_${location}`))
+                    map_objects_to_concepts.set(`PatrolLocation_${id}_${location}`, new Set());
+                map_objects_to_concepts.get(`PatrolLocation_${id}_${location}`).add(`PatrolEngine_${id}`);
             },
             PatrolEngines: function(ids) {
                 // Remove patrol engines that are not in the existing list
                 for (const key in this.Engines) {
                     if (!ids.includes(key)) {
                         delete this.Engines[key];
+
+                        // use cross_map to know what to remove in show_map which is reversed
+                        for (const location of map_concepts_to_objects.get(`PatrolEngine_${key}`)) {
+                            map_objects_to_concepts.delete(location);
+                        }
+                        map_concepts_to_objects.delete(`PatrolEngine_${key}`);
                     }
                 }
             },
@@ -270,6 +295,8 @@
 
             _patrol.Engines = {};
             path_cache = {};
+            map_concepts_to_objects = new Map();
+            map_objects_to_concepts = new Map();
 
             Object.values(mapLayers).forEach(obj => {
                 //if (obj.name !== 'tooltip') {
@@ -282,15 +309,27 @@
             map_interacted = false;
         }
 
+        // ------------------- Patterns -------------------
+        // toggle-{layer id}         - checkbox IDs
+        // ChildToggles              - class for divs that hold object checkboxes
+        // ChildToggles:{layer id}   - id for divs that hold object checkboxes
+        // ChildToggle:{object name}  - id for individual object checkboxes
+        // {type}:{id}               - (object name) name for objects in Konva based on the data source
+
+        // Concept/Konva Object pairs
+        // Path_{name}                      - Path nodes and lines
+        // PatrolEngine_{id}                - Patrol engine
+        // PatrolLocation_${id}_${location} - Patrol location
+
         // ------------------- Konva Map Setup -------------------
         const mapDiv = document.getElementById('map');
         let stage = null;
         // Central registry for layers
         const mapLayers = {
-            patrol_engines: { name: 'patrol_engines',                                                           key_order: 1, key: { id: 'toggle-patrol_engines', label: 'Patrol Engines', defaultChecked: true } },
-            locations:      { name: 'locations'     , layer: new Konva.Layer({ id: 'locations' }), order:  1, key_order: 2, key: { id: 'toggle-locations'     , label: 'Locations'     , defaultChecked: true } },
-            paths:          { name: 'paths'         , layer: new Konva.Layer({ id: 'paths'     }), order:  2, key_order: 4, key: { id: 'toggle-paths'    , label: 'Paths'         , defaultChecked: true } },
-            tooltip:        { name: 'tooltip'       , layer: new Konva.Layer({ id: 'tooltip'   }), order: 99,                                                                                                   },
+            patrol_engines: {                                                         key_order: 1, key: { id: 'toggle-patrol_engines', label: 'Patrol Engines', defaultChecked: true } },
+            locations:      { layer: new Konva.Layer({ id: 'locations' }), order:  1, key_order: 2, key: { id: 'toggle-locations'     , label: 'Locations'     , defaultChecked: true } },
+            paths:          { layer: new Konva.Layer({ id: 'paths'     }), order:  2, key_order: 4, key: { id: 'toggle-paths'         , label: 'Paths'         , defaultChecked: true } },
+            tooltip:        { layer: new Konva.Layer({ id: 'tooltip'   }), order: 99,                                                                                                   },
         };
 
         function createOrResizeKonvaStage() {
@@ -415,7 +454,7 @@
 
                 // Draw locations
                 Object.entries(engine.locations).forEach(([locName, locData]) => {
-                    let locationId = `Patrol_Location_${engineId}_${locName}`;
+                    let locationId = `PatrolLocation_${engineId}_${locName}`;
 
                     // Check if location already exists
                     let existing = mapLayers.locations.layer.findOne(`#${locationId}`);
@@ -431,6 +470,7 @@
                             strokeWidth: 2,
                             dash: [6, 2],
                             id: locationId,
+                            name: locationId,
                             tooltip: `Location: ${locName}`,
                         });
                         mapLayers.locations.layer.add(locationCircle);
@@ -441,6 +481,31 @@
                     }
                 });
 
+// see if we can encapsulate this as it is used more than once
+                const existingCheckbox = document.getElementById(`ChildToggle:PatrolEngine_${engineId}`);
+                if (!existingCheckbox) {
+                    const childList = document.getElementById(`ChildToggle:${mapLayers.patrol_engines.key.id}`);
+                    const childLabel = document.createElement('label');
+                    childLabel.style.display = 'block';
+                    childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:PatrolEngine_${engineId}" checked> ${engineId}`;
+                    childList.appendChild(childLabel);
+                }
+                {
+                    const childList = document.getElementById(`ChildToggle:${mapLayers.patrol_engines.key.id}`);
+                    // fix child iteration during removal
+                    const childListChildren = Array.from(childList.children);
+                    childListChildren.forEach(label => {
+                        const checkbox = label.children[0];
+                        // extract id
+                        const id = checkbox.id.replace('ChildToggle:PatrolEngine_', '');
+                        if (!_patrol.Engines[id]) {
+                            //checkbox.checked = path_cache[id].defaultChecked;
+                            checkbox.remove();
+                        }
+                    });
+                }
+// /
+
                 mapLayers.locations.layer.batchDraw();
             });
 
@@ -449,7 +514,7 @@
         function MapDraw_UpdatePaths(name, path_data) {
             // Clear previous route and waypoints for this path
             mapLayers.paths.layer.find(`#PathPoint_${name}`).forEach(node => node.destroy());
-            mapLayers.paths.layer.find(`#Path_${name}_`).forEach(node => node.destroy());
+            mapLayers.paths.layer.find(`#Path_${name}`).forEach(node => node.destroy());
 
             function shortenLineForArrow(x1, y1, x2, y2, q, r) {
                 const dx = x2 - x1;
@@ -519,6 +584,7 @@
                                 pointerWidth: 4,
                                 lineCap: 'round',
                                 id: `Path_${name}`,
+                                name: `Path_${name}`,
                                 tooltip: `Path: ${name}`
                             });
                             mapLayers.paths.layer.add(routeLine1);
@@ -532,6 +598,7 @@
                             strokeWidth: lineStroke,
                             lineCap: 'round',
                             id: `Path_${name}`,
+                            name: `Path_${name}`,
                             tooltip: `Path: ${name}`
                         });
                         mapLayers.paths.layer.add(routeLine2);
@@ -550,6 +617,7 @@
                         fill: '#fb8500',
                         hitStrokeWidth: 2, // makes the border easier to hit
                         id: `PathPoint_${name}[${idx}]`,
+                        name: `Path_${name}`,
                         tooltip: `PathPoint: ${name}[${idx}]`
                     });
                     mapLayers.paths.layer.add(waypoint);
@@ -558,12 +626,39 @@
 
             mapLayers.paths.layer.batchDraw();
 
+
+// see if we can encapsulate this as it is used more than once
+            const existingCheckbox = document.getElementById(`ChildToggle:Path_${name}`);
+            if (!existingCheckbox) {
+                const childList = document.getElementById(`ChildToggle:${mapLayers.paths.key.id}`);
+                const childLabel = document.createElement('label');
+                childLabel.style.display = 'block';
+                childLabel.innerHTML = `<input type="checkbox" id="ChildToggle:Path_${name}" checked> ${name}`;
+                childList.appendChild(childLabel);
+            }
+            {
+                const childList = document.getElementById(`ChildToggle:${mapLayers.paths.key.id}`);
+                // fix child iteration during removal
+                const childListChildren = Array.from(childList.children);
+                childListChildren.forEach(label => {
+                    const checkbox = label.children[0];
+                    // extract id
+                    const id = checkbox.id.replace('ChildToggle:Path_', '');
+                    if (!path_cache[id]) {
+                        //checkbox.checked = path_cache[id].defaultChecked;
+                        checkbox.remove();
+                    }
+                });
+            }
+// /
+
             ResetMapWindow();
         }
 
         // ------------------- Konva Layer Controls -------------------
         const mapKeyList = document.getElementById('map-key-list');
         Object.entries(mapLayers).sort((a, b) => a[1].key_order - b[1].key_order).forEach(([name, obj]) => {
+            console.log("Adding map key for layer:", name, obj);
             if (obj.key) {
                 const label = document.createElement('label');
                 label.style.display = 'block';
@@ -574,6 +669,11 @@
                     label.children[0].indeterminate = true;
                 }
                 mapKeyList.appendChild(label);
+                const childList = document.createElement('div');
+                childList.id = `ChildToggle:${obj.key.id}`;
+                childList.classList.add('ChildToggles');
+                childList.style.marginLeft = '20px';
+                mapKeyList.appendChild(childList);
             }
         });
         Object.entries(mapLayers).forEach(([name, obj]) => {
@@ -583,6 +683,48 @@
                     stage.batchDraw();
                 });
             }
+        });
+        document.querySelectorAll('.ChildToggles').forEach(childList => {
+            childList.addEventListener('change', function(e) {
+                const checkbox = e.target;
+                if (checkbox && checkbox.id.startsWith('ChildToggle:')) {
+                    const checkedObject = checkbox.id.replace('ChildToggle:', '');
+                    let showAll = checkbox.checked; // just show everything
+
+                    // if we are checked, all dependent children should be visible, else we need to check each child to see if something else is making them visible
+
+                    // get list of konva names that are affected by this checkbox
+                    let affected = [];
+                    map_concepts_to_objects.get(checkedObject)?.forEach(affectedId => {
+                        affected.push(affectedId);
+                    });
+
+                    let showMap = new Set(); // we can't show everything, so check them
+                    if (!showAll) {
+                        affected.forEach(affectedId => {
+                            map_objects_to_concepts.get(affectedId)?.forEach(parentId => {
+                                if (showMap.has(affectedId)) return; // already marked to show
+
+                                const parentCheckbox = document.getElementById(`ChildToggle:${parentId}`);
+                                if (parentCheckbox && parentCheckbox.checked) {
+                                    showMap.add(affectedId);
+                                }
+                            });
+                        });
+                    }
+                    affected.forEach(affectedId => {
+                        Object.entries(mapLayers).forEach(([name, obj]) => {
+                            if (obj.layer) {
+                                obj.layer.find(`.${affectedId}`).forEach(node => {
+                                    let shouldShow = showAll || showMap.has(affectedId);
+                                    node.visible(shouldShow);
+                                });
+                            }
+                        });
+                    });
+                    stage.batchDraw();
+                }
+            });
         });
 
         // ------------------- Konva Tooltip Logic -------------------
@@ -890,6 +1032,14 @@
                                             }) };
                                         }
                                         path_cache[name] = parsePathNodes(data);
+
+                                        if (!map_concepts_to_objects.has(`Path_${name}`))
+                                            map_concepts_to_objects.set(`Path_${name}`, new Set());
+                                        map_concepts_to_objects.get(`Path_${name}`).add(`Path_${name}`);
+
+                                        if (!map_objects_to_concepts.has(`Path_${name}`))
+                                            map_objects_to_concepts.set(`Path_${name}`, new Set());
+                                        map_objects_to_concepts.get(`Path_${name}`).add(`Path_${name}`);
 
                                         // Draw on Konva map
                                         MapDraw_UpdatePaths(name, path_cache[name]);

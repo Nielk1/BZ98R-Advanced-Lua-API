@@ -483,7 +483,7 @@ end
 hook.Add("Start", "_paths_Start", function()
     AutoLogAllPaths();
 end);
-hook.Add("Load", "_paths_Load", function()
+hook.AddSaveLoad("_paths", nil, function()
     AutoLogAllPaths();
 end);
 hook.Add("Update", "_paths_Update", function()

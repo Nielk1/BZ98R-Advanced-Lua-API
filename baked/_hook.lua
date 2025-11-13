@@ -228,8 +228,8 @@ function M.Add( event, identifier, func, priority )
     HookLookup[ event ][ identifier ] = new_handler; -- store in lookup strong-table
     table.insert(Hooks[ event ], new_handler); -- store in priority weak-table
     table.sort(Hooks[ event ], sort_handlers);
-  
-    logger.print(logger.LogLevel.DEBUG, nil, "Added " .. event .. " hook for " .. identifier .. " with priority " .. priority );
+
+    logger.print(logger.LogLevel.DEBUG, nil, "Added \"" .. event .. "\" hook for \"" .. identifier .. "\" with priority " .. priority );
 end
 
 --- Removes the hook with the given identifier.
@@ -249,7 +249,7 @@ function M.Remove( event, identifier )
         end
     end
 
-    logger.print(logger.LogLevel.DEBUG, nil, "Removed " .. event .. " hook for " .. identifier);
+    logger.print(logger.LogLevel.DEBUG, nil, "Removed \"" .. event .. "\" hook for \"" .. identifier .. "\"");
 end
 
 --- Add a hook to listen to the Save and Load event.
@@ -272,8 +272,8 @@ function M.AddSaveLoad( identifier, save, load, postload )
     SaveLoadHooks[ identifier ]['Save'] = save;
     SaveLoadHooks[ identifier ]['Load'] = load;
     SaveLoadHooks[ identifier ]['PostLoad'] = postload;
-    
-    logger.print(logger.LogLevel.DEBUG, nil, "Added Save/Load hooks for " .. identifier);
+
+    logger.print(logger.LogLevel.DEBUG, nil, "Added \"Save/Load/PostLoad\" hooks for \"" .. identifier .. "\" ("..tostring(save and 1 or 0).."\\"..tostring(load and 1 or 0).."\\"..tostring(postload and 1 or 0)..")");
 end
 
 --- Removes the Save and Load hooks with the given identifier.
@@ -286,8 +286,8 @@ function M.RemoveSaveLoad( identifier )
     -- This should be safe since they are stored by identifier, no arrays being looped
     -- Ff it does become an issue having the execution loop use a copy of the key list would solve it
     SaveLoadHooks[ identifier ] = nil;
-    
-    logger.print(logger.LogLevel.DEBUG, nil, "Removed Save/Load hooks for " .. identifier);
+
+    logger.print(logger.LogLevel.DEBUG, nil, "Removed \"Save/Load/PostLoad\" hooks for \"" .. identifier .. "\"");
 end
 
 --- Calls hooks associated with Save.

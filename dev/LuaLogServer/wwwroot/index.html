@@ -17,13 +17,15 @@
             display: inline-block;
             min-width: 100%;
         }
-        #log > div {
+        .log-row {
             padding-left: 0.5em;
             padding-right: 0.5em;
         }
-        #log > div:nth-child(even) { background-color: #232425; }
-        #log > div:nth-child(odd) { background-color: #181a1b; }
-        #log > div:hover { background-color: #000000; }
+        .log-row:nth-child(even) { background-color: #232425; }
+        .log-row:nth-child(odd) { background-color: #181a1b; }
+        .log-row:hover { background-color: #000000; }
+        .log-row.log-processed { opacity: 0.25; }
+        .log-row.log-processed:hover { opacity: 1.0; }
         .source-filename { color: #8ecae6; }
         .source-line { color: #ffb703; }
         .source-other { color: #fb8500; }
@@ -35,6 +37,9 @@
         #map-key {
             max-height: 200px;
             overflow-y: auto;
+        }
+        #_hooks-processed .badge {
+            white-space: pre;
         }
     </style>
 </head>
@@ -85,7 +90,7 @@
                     </div>
                 </div>
             </div>
-            <div class="grid-stack-item" id="window-patrol_engine" gs-x="6" gs-y="0" gs-w="6" gs-h="8">
+            <div class="grid-stack-item" id="window-patrol_engine" gs-x="6" gs-y="6" gs-w="6" gs-h="4">
                 <div class="grid-stack-item-content p-0">
                     <div class="card bg-dark text-light h-100 shadow border-secondary">
                         <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
@@ -97,6 +102,22 @@
                         </div>
                         <div class="card-body p-2" style="overflow:scroll;">
                             <div id="patrol_engine-processed"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-stack-item" id="window-patrol_engine" gs-x="0" gs-y="14" gs-w="4" gs-h="8">
+                <div class="grid-stack-item-content p-0">
+                    <div class="card bg-dark text-light h-100 shadow border-secondary">
+                        <div class="card-header d-flex align-items-center justify-content-between bg-secondary bg-gradient text-white py-2 px-3">
+                            <span>Events &amp; Hooks</span>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-light me-1" title="Maximize"><i class="bi-arrows-fullscreen"></i></button>
+                                <button type="button" class="btn btn-sm btn-danger" title="Minimize"><i class="bi bi-dash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body p-2" style="overflow:scroll;">
+                            <div id="_hooks-processed"></div>
                         </div>
                     </div>
                 </div>
@@ -205,6 +226,99 @@
         let path_cache = {};
         let map_concepts_to_objects = new Map(); // list of Konva objects that if visible the parent concept is active
         let map_objects_to_concepts = new Map(); // list of concepts that if active the parent Konva object is visible
+        //let script_files = new Set();
+        let _hook = {
+            hooks: {},
+            saved_load_hooks: {},
+            Add: function(event, identifier, priority, handler) {
+                if (!this.hooks[event]) {
+                    this.hooks[event] = [];
+                }
+                this.hooks[event].push({ identifier: identifier, priority: priority, handler: handler });
+                // Sort by priority
+                this.hooks[event].sort((a, b) => b.priority - a.priority);
+            },
+            Remove: function(event, identifier) {
+                if (this.hooks[event]) {
+                    this.hooks[event] = this.hooks[event].filter(hook => hook.identifier !== identifier);
+                }
+            },
+            AddSaveLoad: function(event, identifier, save, load, postload) {
+                this.saved_load_hooks[identifier] = { identifier: identifier, save: save, load: load, postload: postload };
+            },
+            RemoveSaveLoad: function(event, identifier) {
+                delete this.saved_load_hooks[identifier];
+            },
+            UpdatePanels: function() {
+                function toArray(hooks) {
+                    if (Array.isArray(hooks)) return hooks;
+                    if (hooks && typeof hooks === 'object') return Object.values(hooks);
+                    return [];
+                }
+                let UpdateSubpanel = function(event, hooks)
+                {
+                    let eventPanel = document.getElementById(`_hook-${event}`);
+                    if (!eventPanel) {
+                        eventPanel = document.createElement('div');
+                        eventPanel.id = `_hook-${event}`;
+                        parent.appendChild(eventPanel);
+                    }else{
+                        // clear existing content
+                        eventPanel.innerHTML = '';
+                    }
+
+                    eventPanel.className = 'mb-3 p-2 border border-secondary rounded';
+                    let title = document.createElement('h5');
+                    title.textContent = event;
+                    eventPanel.appendChild(title);
+                    let hookList = document.createElement('ul');
+                    hookList.className = 'font-monospace list-unstyled';
+                    eventPanel.appendChild(hookList);
+
+                    let numLength = 1;
+                    toArray(hooks).forEach(hook => {
+                        let listItem = document.createElement('li');
+
+                        if (hook.priority !== undefined) {
+                            let badge = document.createElement('span');
+                            badge.className = 'badge bg-info text-dark ms-2';
+                            badge.textContent = hook.priority.toString().padStart(numLength, ' ');
+                            numLength = Math.max(numLength, badge.textContent.length);
+                            listItem.appendChild(badge);
+                        } else {
+                            for (const term of ['save', 'load', 'postload']) {
+                                let badge = document.createElement('span');
+                                badge.className = 'badge text-dark ms-2';
+                                //badge.textContent = term.charAt(0).toUpperCase();
+                                badge.textContent = term;
+                                if (!hook[term]) {
+                                    badge.classList.add('bg-secondary', 'text-light');
+                                    badge.style.opacity = '0.5';
+                                }else{
+                                    badge.classList.add('bg-info', 'text-light');
+                                }
+                                listItem.appendChild(badge);
+                            }
+                        }
+
+                        listItem.appendChild(document.createTextNode(" "));
+
+                        let name = document.createElement('span');
+                        name.className = 'font-monospace text-muted';
+                        name.textContent = hook.identifier;
+                        listItem.appendChild(name);
+
+                        hookList.appendChild(listItem);
+                    });
+                };
+                let parent = document.getElementById('_hooks-processed');
+                UpdateSubpanel(`Save/Load/PostLoad`, this.saved_load_hooks);
+                for (const [event, hooks] of Object.entries(this.hooks)) {
+                    // update existing panels if they exist
+                    UpdateSubpanel(event, hooks);
+                }
+            }
+        };
         let _patrol = {
             AddRoute: function(id, origin, destination, path, weight, enabled)
             {
@@ -375,10 +489,13 @@
             ttl_data_store.clear();
             handle_to_gameobject.clear();
 
+            _hook.hooks = {};
+            _hook.saved_load_hooks = {};
             _patrol.Engines = {};
             path_cache = {};
             map_concepts_to_objects = new Map();
             map_objects_to_concepts = new Map();
+            //script_files = new Set();
 
             Object.values(mapLayers).forEach(obj => {
                 //if (obj.name !== 'tooltip') {
@@ -1140,8 +1257,16 @@
 
         let inDataBlock = null;
         let linesDataBlock = [];
+
+        // Process incoming data line
+        // Returns:
+        //  -1 = processed, don't show log line
+        //   0 = not processed, show log line
+        //   1 = processed, but show log line anyway (special type 1)
         function procPossibleData(source, data)
         {
+            //script_files.add(source);
+
             let lastDataItem = null;
             let lastDataItemBlock = null;
             if (inDataBlock != null) {
@@ -1159,22 +1284,107 @@
                     // continue down
                 } else {
                     linesDataBlock.push(data);
-                    return true;
+                    return -1;
                 }
             } else {
                 const [block_type, block_name] = data.split('|', 2);
                 if (block_type == "START") {
                     inDataBlock = block_name;
                     linesDataBlock.push(data);
-                    return true;
+                    return -1;
                 }
             }
 
             if (lastDataItem != null) {
-                return true;
+                return -1;
             } else {
-                let used = false;
+                let used = 0;
                 switch (source) {
+                    case '_hook.lua':
+                        {
+                            const regex_event_add = /Added "(?<event>[^"]+)" hook for "(?<identifier>[^"]+)" with priority (?<priority>\d+)/;
+                            const regex_event_remove = /Removed "(?<event>[^"]+)" hook for "(?<identifier>[^"]+)"/;
+                            const regex_event2_add = /Added "Save\/Load\/PostLoad" hooks for "(?<identifier>[^"]+)" \((?<save>[01])\\(?<load>[01])\\(?<postload>[01])\)/;
+                            const regex_event2_remove = /Removed "Save\/Load\/PostLoad" hooks for "(?<identifier>[^"]+)"/;
+
+                            let match = data.match(regex_event_add);
+                            if (match) {
+                                const { event, identifier, priority } = match.groups;
+                                _hook.Add(event, identifier, parseInt(priority));
+                                used = 1;
+                                _hook.UpdatePanels();
+                            } else {
+                                match = data.match(regex_event_remove);
+                                if (match) {
+                                    const { event, identifier } = match.groups;
+                                    _hook.Remove(event, identifier);
+                                    used = 1;
+                                    _hook.UpdatePanels();
+                                } else {
+                                    match = data.match(regex_event2_add);
+                                    if (match) {
+                                        const { event, identifier, save, load, postload } = match.groups;
+                                        _hook.AddSaveLoad(event, identifier, parseInt(save) != 0, parseInt(load) != 0, parseInt(postload) != 0);
+                                        used = 1;
+                                        _hook.UpdatePanels();
+                                    } else {
+                                        match = data.match(regex_event2_remove);
+                                        if (match) {
+                                            const { event, identifier } = match.groups;
+                                            _hook.RemoveSaveLoad(event, identifier);
+                                            used = 1;
+                                            _hook.UpdatePanels();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case '_patrol.lua':
+                        {
+                            const [type] = data.split('|', 1);
+                            let UpdatedEngineId = null;
+                            switch (type) {
+                                case 'AddRoute':
+                                    {
+                                        const [id, origin, destination, path, weight, enabled] = data.split('|').slice(1);
+                                        _patrol.AddRoute(id, origin, destination, path, weight, enabled);
+                                        used = 1;
+                                        UpdatedEngineId = id;
+                                    }
+                                    break;
+                                case 'Location':
+                                    {
+                                        const [id, location, position] = data.split('|').slice(1);
+                                        let location_data = parseLuaValue(position);
+                                        location_data.radius = location_data.y;
+                                        delete location_data.y;
+
+                                        _patrol.Location(id, location, location_data);
+                                        used = 1;
+                                        UpdatedEngineId = id;
+                                    }
+                                    break;
+                                case 'PatrolEngines':
+                                    {
+                                        const existing_engines = data.split('|').slice(1);
+                                        _patrol.PatrolEngines(existing_engines);
+                                        used = -1;
+                                        UpdatedEngineId = true;
+                                    }
+                                    break;
+                                case 'PatrolObjects':
+                                    {
+                                        const [engine, seqnos] = data.split('|').slice(1);
+                                        _patrol.PatrolObjects(engine, seqnos);
+                                        used = -1;
+                                    }
+                                    break;
+                            }
+                            if (UpdatedEngineId)
+                                MapDraw_UpdatePatrolEngine(UpdatedEngineId);
+                        }
+                        break;
                     case '_paths.lua':
                         {
                             const [type] = data.split('|', 1);
@@ -1213,55 +1423,10 @@
                                             MapDraw_UpdatePaths(name, path_cache[name]);
                                         }
 
-                                        used = true;
+                                        used = -1;
                                     }
                                     break;
                             }
-                        }
-                        break;
-                    case '_patrol.lua':
-                        {
-                            const [type] = data.split('|', 1);
-                            let UpdatedEngineId = null;
-                            switch (type) {
-                                case 'AddRoute':
-                                    {
-                                        const [id, origin, destination, path, weight, enabled] = data.split('|').slice(1);
-                                        _patrol.AddRoute(id, origin, destination, path, weight, enabled);
-                                        used = true;
-                                        UpdatedEngineId = id;
-                                    }
-                                    break;
-                                case 'Location':
-                                    {
-                                        const [id, location, position] = data.split('|').slice(1);
-                                        let location_data = parseLuaValue(position);
-                                        location_data.radius = location_data.y;
-                                        delete location_data.y;
-
-                                        _patrol.Location(id, location, location_data);
-                                        used = true;
-                                        UpdatedEngineId = id;
-                                    }
-                                    break;
-                                case 'PatrolEngines':
-                                    {
-                                        const existing_engines = data.split('|').slice(1);
-                                        _patrol.PatrolEngines(existing_engines);
-                                        used = true;
-                                        UpdatedEngineId = true;
-                                    }
-                                    break;
-                                case 'PatrolObjects':
-                                    {
-                                        const [engine, seqnos] = data.split('|').slice(1);
-                                        _patrol.PatrolObjects(engine, seqnos);
-                                        used = true;
-                                    }
-                                    break;
-                            }
-                            if (UpdatedEngineId)
-                                MapDraw_UpdatePatrolEngine(UpdatedEngineId);
                         }
                         break;
                 }
@@ -1269,7 +1434,7 @@
                 return used;
             }
 
-            return false;
+            return 0;
         }
 
         // ------------------- GridStack & UI Logic -------------------
@@ -1342,14 +1507,22 @@
                     document.getElementById('raw-log-timestamp').textContent = formattedTime;
                     document.getElementById('raw-log-timestamp2').textContent = rawTime;
 
-                    if (!procPossibleData(extractSource(source), msg)) {
+                    let result = procPossibleData(extractSource(source), msg);
+                    if (result >= 0) {
                         const line = document.createElement('div');
                         line.innerHTML =
                             //`<span class="text-secondary" style="font-family:monospace; margin-right:0.5em;">${rawTime}</span>` +
                             `<span class="text-info" style="font-family:monospace; margin-right:0.5em;">${formattedTime}</span> ` +
                             formatSource(source) +
                             ansiToHtml(msg);
-                        line.className = parent_type === 'error' ? 'text-danger log-row' : 'text-light log-row';
+                        line.classList.add('log-row');
+                        if (parent_type === 'error') {
+                            line.classList.add('text-danger');
+                        } else {
+                            line.classList.add('text-light');
+                        }
+                        if (result == 1)
+                            line.classList.add('log-processed');
                         const isAtBottom = Math.abs(logScrollParent.scrollTop + logScrollParent.clientHeight - logScrollParent.scrollHeight) < 2;
                         logDiv.appendChild(line);
                         if (isAtBottom) {

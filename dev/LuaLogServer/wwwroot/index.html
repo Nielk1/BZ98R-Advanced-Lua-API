@@ -265,8 +265,22 @@
                         delete this.Engines[key];
 
                         // use cross_map to know what to remove in show_map which is reversed
-                        for (const location of map_concepts_to_objects.get(`PatrolEngine_${key}`)) {
-                            map_objects_to_concepts.delete(location);
+                        for (const child_of_engine of map_concepts_to_objects.get(`PatrolEngine_${key}`)) {
+                            let existingData = map_objects_to_concepts.get(child_of_engine);
+                            existingData.delete(`PatrolEngine_${key}`);
+                            if (existingData.size === 0)
+                            {
+                                map_objects_to_concepts.delete(child_of_engine);
+                                // remove from map layer as well
+                                for (const mapLayer of Object.values(mapLayers)) {
+                                    if (!mapLayer.layer) continue;
+                                    let konvaObject = mapLayer.layer.findOne(`#${child_of_engine}`);
+                                    if (konvaObject) {
+                                        konvaObject.destroy();
+                                        mapLayer.layer.batchDraw();
+                                    }
+                                }
+                            }
                         }
                         map_concepts_to_objects.delete(`PatrolEngine_${key}`);
                     }
@@ -777,7 +791,8 @@
                         //fill: '#219ebc',
                         fill: '#fb8500',
                         //hitStrokeWidth: 2, // makes the border easier to hit
-                        id: `PathPoint_${name}[${idx}]`,
+                        //id: `PathPoint_${name}[${idx}]`,
+                        id: `Path_${name}`,
                         name: `Path_${name}`,
                         tooltip: `PathPoint: ${name}[${idx}]`
                     });

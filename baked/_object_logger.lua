@@ -26,9 +26,9 @@ local EmitRemovals = {};
 
 local function LogObject(obj)
     local whitelist = {
-        {"id"},
-        {"__type"},
-        {"__object_logger"}
+        { "id" },
+        { "__type" },
+        { "addonData", "__object_logger", "*" }
     };
 
     -- update our state data
@@ -77,7 +77,7 @@ hook.Add("Update", "_object_logger:Update", function(dtime, ttime)
         end
         
         if ttime > next_dump then
-            next_dump = ttime + 60;
+            next_dump = ttime + 1;
             for obj, _ in pairs(TrackedObjects) do
                 LogObject(obj);
             end

@@ -451,8 +451,17 @@ function M.data(level, context, name, data, whitelist)
             --        break
             --    end
             --end
+            --print("PATH CHECK")
+            --print("Input: " .. table.concat(path, ","))
+            --print("Checked Against: " .. table.concat(allowed, ","))
+            local checked_length = 1;
             for i = 1, math.min(#path, #allowed) do
+                checked_length = i;
                 if allowed[i] ~= path[i] then
+                    if allowed[i] == "*" then
+                        -- wildcard match, allow rest of path
+                        return true
+                    end
                     match = false
                     break
                 end
@@ -460,7 +469,8 @@ function M.data(level, context, name, data, whitelist)
             if match and #path == #allowed then
                 return true
             end
-            if match and idx == #allowed and allow_more then
+            --print("path check match="..tostring(match).." checked_length="..tostring(checked_length).." allowed_length="..tostring(#allowed).." allow_more="..tostring(allow_more))
+            if match and checked_length == #path and allow_more then
                 return true
             end
         end
@@ -551,15 +561,19 @@ function M.data(level, context, name, data, whitelist)
                 for _, allowed in ipairs(whitelist) do
                     if #allowed == #path + 1 then
                         local key = allowed[#allowed]
-                        local match = true
-                        for i = 1, #path do
-                            if allowed[i] ~= path[i] then
-                                match = false
-                                break
+                        if key == "*" then
+                            -- wildcard, skip
+                        else
+                            local match = true
+                            for i = 1, #path do
+                                if allowed[i] ~= path[i] then
+                                    match = false
+                                    break
+                                end
                             end
-                        end
-                        if match and out[key] == nil then
-                            out[key] = { __type = "nil" }
+                            if match and out[key] == nil then
+                                out[key] = { __type = "nil" }
+                            end
                         end
                     end
                 end

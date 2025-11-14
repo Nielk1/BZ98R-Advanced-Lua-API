@@ -44,6 +44,9 @@ function M.AddObject(obj)
     if obj ~= nil and gameobject.IsGameObject(obj) then
         TrackedObjects[obj] = (TrackedObjects[obj] or 0) + 1;
         LogObject(obj);
+        if next_dump == math.huge then
+            next_dump = 0;
+        end
     end
 end
 
